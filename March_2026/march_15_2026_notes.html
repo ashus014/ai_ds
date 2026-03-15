@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Patna M.Tech - Generative AI & LLMs | March 15, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            content: "📌";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .section h3:first-child {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .example {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #1565c0;
+        }
+
+        .key-point {
+            background: #f3e5f5;
+            padding: 15px;
+            border-left: 4px solid #764ba2;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+            color: #6a1b9a;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 30px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background: #667eea;
+        }
+
+        .timeline-item:last-child::before {
+            height: 0;
+        }
+
+        .timeline-dot {
+            position: relative;
+            z-index: 2;
+            min-width: 32px;
+            height: 32px;
+            background: #667eea;
+            border: 3px solid white;
+            border-radius: 50%;
+            margin-right: 20px;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .timeline-content {
+            padding-top: 2px;
+        }
+
+        .timeline-content strong {
+            color: #667eea;
+            font-size: 1.05em;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 40px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .footer strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+        }
+
+        .print-friendly {
+            page-break-inside: avoid;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Generative AI & Large Language Models</h1>
+            <p>IIT Patna M.Tech Introductory Class</p>
+            <div class="date-badge">📅 Lecture Notes — March 15, 2026</div>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: Motivation -->
+            <div class="section print-friendly">
+                <h2>Motivation: AI for Indian Languages</h2>
+                <p>India has <span class="highlight">26 official languages</span>, many of which are low-resource languages.</p>
+
+                <h3>What is a Low-Resource Language?</h3>
+                <ul>
+                    <li>Not enough training data available</li>
+                    <li>AI models struggle to understand them properly</li>
+                </ul>
+
+                <div class="example">
+                    <strong>Example Problem:</strong> If you ask a question in a rare Indian language using tools like ChatGPT or Gemini, the model may fail to understand it.
+                </div>
+
+                <h3>The Solution</h3>
+                <p>Researchers are working on:</p>
+                <ul>
+                    <li>Building datasets for Indian languages</li>
+                    <li>Creating language resources for all 26 languages</li>
+                    <li>Training AI models specifically for Indian linguistic diversity</li>
+                </ul>
+
+                <div class="key-point">
+                    <strong>Goal:</strong> Make Generative AI usable for Indian languages, not just English.
+                </div>
+            </div>
+
+            <!-- Section 2: What is AI -->
+            <div class="section print-friendly">
+                <h2>What is Artificial Intelligence?</h2>
+                <p>Artificial Intelligence means creating machines that can perform tasks requiring human intelligence.</p>
+
+                <h3>How Human Intelligence Works</h3>
+                <p>Humans are intelligent because our brain contains neurons:</p>
+                <ul>
+                    <li>Connected through synapses</li>
+                    <li>Transfer information</li>
+                    <li>Control reasoning, thinking, and decisions</li>
+                </ul>
+
+                <div class="key-point">
+                    <strong>AI Approach:</strong> AI tries to mimic this neuron structure using Artificial Neural Networks.
+                </div>
+            </div>
+
+            <!-- Section 3: Large Language Models -->
+            <div class="section print-friendly">
+                <h2>Large Language Models (LLMs)</h2>
+                <p>Large Language Models are AI systems that understand and generate human language.</p>
+
+                <h3>Popular Examples</h3>
+                <ul>
+                    <li>ChatGPT</li>
+                    <li>Gemini</li>
+                    <li>Claude</li>
+                    <li>DeepSeek</li>
+                </ul>
+
+                <h3>Why "Large"?</h3>
+                <p>These models are trained on huge datasets from:</p>
+                <ul>
+                    <li>Wikipedia</li>
+                    <li>News articles</li>
+                    <li>Books</li>
+                    <li>Websites</li>
+                    <li>Social media</li>
+                    <li>Online documents</li>
+                </ul>
+
+                <div class="key-point">
+                    <strong>Interesting Fact:</strong> These models may see more text during training than a human reads in their entire life.
+                </div>
+            </div>
+
+            <!-- Section 4: Core Architecture -->
+            <div class="section print-friendly">
+                <h2>Core Architecture of LLMs</h2>
+                <p>Most modern LLMs use the <span class="highlight">Transformer architecture</span>, which has two main parts:</p>
+
+                <h3>1. Encoder</h3>
+                <ul>
+                    <li>Processes the input (sentence, image, etc.)</li>
+                    <li>Converts input into a vector representation</li>
+                </ul>
+
+                <h3>2. Decoder</h3>
+                <ul>
+                    <li>Uses encoded information to generate output</li>
+                    <li>Outputs: text, image description, summary, translation</li>
+                </ul>
+
+                <div class="example">
+                    <strong>Visual Language Model Example:</strong><br>
+                    Image → Encoder → Vectors → Decoder → "A dog playing in a park."
+                </div>
+            </div>
+
+            <!-- Section 5: LLMs vs Traditional ML -->
+            <div class="section print-friendly">
+                <h2>Why LLMs are Different from Traditional ML</h2>
+                <p><span class="highlight">Traditional ML:</span> Requires a separate model for every task</p>
+                <ul>
+                    <li>Tumor classification</li>
+                    <li>Fraud detection</li>
+                    <li>Disease detection</li>
+                    <li>Each needs its own dataset and training</li>
+                </ul>
+
+                <h3>LLMs Have General Intelligence</h3>
+                <p>You can give them a new task with only a few examples. This ability is called <span class="highlight">Few-shot learning</span>.</p>
+
+                <div class="key-point">
+                    This is a fundamental difference that makes LLMs more versatile and efficient.
+                </div>
+            </div>
+
+            <!-- Section 6: Types of Language Models -->
+            <div class="section print-friendly">
+                <h2>Types of Language Models</h2>
+                <p>Language models are categorized by number of parameters (internal weights the model learns).</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Parameters</th>
+                            <th>Characteristics</th>
+                            <th>Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Small</strong></td>
+                            <td>&lt; 100B</td>
+                            <td>Easier to run locally, can be fine-tuned by universities</td>
+                            <td>LLaMA small models</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Large</strong></td>
+                            <td>100B+</td>
+                            <td>Require massive computing power, usually owned by companies</td>
+                            <td>GPT-4, Gemini, Claude</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 7: History of AI -->
+            <div class="section print-friendly">
+                <h2>History of Artificial Intelligence</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>1950 — Turing Test</strong><br>
+                            Proposed by Alan Turing to check whether a machine behaves like a human. If a person cannot distinguish between a human and a computer in conversation, the machine passes.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>1956 — Dartmouth Conference</strong><br>
+                            Birth of AI. John McCarthy introduced the term "Artificial Intelligence." Researchers began discussing machine intelligence, automation, and neural networks.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>1980 — Expert Systems</strong><br>
+                            AI systems using multiple models together — similar to modern multi-agent/agentic AI — where different components collaborate to solve problems.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>1997 — IBM Deep Blue</strong><br>
+                            AI chess program defeated world champion Garry Kasparov — a major milestone proving AI could outperform humans in specific tasks.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>2012 — Deep Learning Revolution</strong><br>
+                            Triggered by cheaper GPUs and larger datasets. AlexNet demonstrated powerful image recognition and computer vision capabilities.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>2017 — Transformer Architecture</strong><br>
+                            Google published "Attention Is All You Need," introducing the Transformer — the foundation of modern LLMs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Attention Mechanism -->
+            <div class="section print-friendly">
+                <h2>Attention Mechanism</h2>
+                <p>When processing long sentences, models struggle to understand relationships.</p>
+
+                <div class="example">
+                    <strong>Example:</strong> "Shekhar who worked for many years in Delhi started his own business in Patna." — To understand that "he" refers to Shekhar, the model must track long-distance relationships.
+                </div>
+
+                <h3>How Attention Helps</h3>
+                <p>Attention helps models focus on important words and ignore irrelevant ones, enabling better understanding of context and relationships.</p>
+            </div>
+
+            <!-- Section 9: Rise of Generative AI -->
+            <div class="section print-friendly">
+                <h2>Rise of Generative AI</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>2020:</strong> GPT-3 released — the first large generative model widely used.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>2022:</strong> ChatGPT launched with a user-friendly interface (no Python code needed — anyone can type a prompt).
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>2025 (Current Era):</strong> Rise of Vision Language Models, Video Models, Audio Models, and Agentic AI. AI can now generate images, music, video, text, and code.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 10: Generative AI -->
+            <div class="section print-friendly">
+                <h2>Generative AI</h2>
+                <p>Generative AI refers to systems that <span class="highlight">generate new content</span>.</p>
+
+                <h3>Input/Output Examples</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Input</th>
+                            <th>Output</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Text prompt</td>
+                            <td>Article / Image / Video</td>
+                        </tr>
+                        <tr>
+                            <td>Image</td>
+                            <td>Caption</td>
+                        </tr>
+                        <tr>
+                            <td>Audio</td>
+                            <td>Transcript</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Types of Generative Models</h3>
+                <ul>
+                    <li><span class="highlight">LLMs</span> — Text generation</li>
+                    <li><span class="highlight">VLMs</span> — Vision + text</li>
+                    <li><span class="highlight">Diffusion models</span> — Image generation</li>
+                </ul>
+            </div>
+
+            <!-- Section 11: Agentic AI -->
+            <div class="section print-friendly">
+                <h2>Agentic AI</h2>
+                <p>Agentic AI systems contain multiple AI agents working together, each with a specific job.</p>
+
+                <h3>Example: Cricket Strategy System</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agent</th>
+                            <th>Task</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Agent 1</td>
+                            <td>Collect match data</td>
+                        </tr>
+                        <tr>
+                            <td>Agent 2</td>
+                            <td>Analyze player statistics</td>
+                        </tr>
+                        <tr>
+                            <td>Agent 3</td>
+                            <td>Calculate probabilities</td>
+                        </tr>
+                        <tr>
+                            <td>Agent 4</td>
+                            <td>Suggest strategy</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="margin-top: 15px;">All agents communicate and produce a final decision.</p>
+            </div>
+
+            <!-- Section 12: Reasoning Models -->
+            <div class="section print-friendly">
+                <h2>Reasoning Models</h2>
+                <p>Traditional LLMs are good at text generation. Reasoning models aim to solve:</p>
+                <ul>
+                    <li>Mathematical problems</li>
+                    <li>Logical puzzles</li>
+                    <li>Financial analysis</li>
+                </ul>
+
+                <h3>Examples</h3>
+                <ul>
+                    <li>DeepSeek</li>
+                    <li>OpenAI O1</li>
+                </ul>
+
+                <p style="margin-top: 15px;">These models use <span class="highlight">Reinforcement Learning</span> for improved reasoning.</p>
+            </div>
+
+            <!-- Section 13: Reinforcement Learning -->
+            <div class="section print-friendly">
+                <h2>Reinforcement Learning</h2>
+                <p>The model receives feedback during training:</p>
+
+                <div class="example">
+                    <strong>Feedback Mechanism:</strong><br>
+                    • If the model solves a math problem incorrectly → penalty<br>
+                    • If correct → reward
+                </div>
+
+                <p>The model learns the best reasoning path over time.</p>
+            </div>
+
+            <!-- Section 14: RLHF -->
+            <div class="section print-friendly">
+                <h2>Reinforcement Learning with Human Feedback (RLHF)</h2>
+                <p>Humans evaluate model outputs — the model produces two answers, humans choose the better one, and the model learns preferences.</p>
+
+                <div class="key-point">
+                    <strong>Outcome:</strong> This process improves alignment and model quality.
+                </div>
+            </div>
+
+            <!-- Section 15: RAG -->
+            <div class="section print-friendly">
+                <h2>Retrieval Augmented Generation (RAG)</h2>
+                <p>Sometimes models hallucinate (generate wrong answers). RAG solves this by:</p>
+                <ul>
+                    <li>Searching the internet/database</li>
+                    <li>Retrieving relevant information</li>
+                    <li>Generating the answer using that information</li>
+                </ul>
+
+                <div class="key-point">
+                    <strong>Benefit:</strong> This approach reduces hallucination significantly.
+                </div>
+            </div>
+
+            <!-- Section 16: In-Context Learning -->
+            <div class="section print-friendly">
+                <h2>In-Context Learning</h2>
+                <p>LLMs can learn tasks during inference without retraining.</p>
+
+                <div class="key-point">
+                    <strong>How it Works:</strong> You provide a few examples in the prompt, and the LLM learns the pattern from those examples to solve a new one.
+                </div>
+            </div>
+
+            <!-- Section 17: Ethical Issues -->
+            <div class="section print-friendly">
+                <h2>Ethical Issues in AI</h2>
+                <p>AI misuse is increasing. Key concerns include:</p>
+                <ul>
+                    <li>Fake content and deepfakes</li>
+                    <li>Bias in AI models</li>
+                    <li>Privacy issues</li>
+                </ul>
+
+                <h3>Regulatory Response</h3>
+                <p>Because of these concerns:</p>
+                <ul>
+                    <li>The EU introduced the <span class="highlight">AI Act (2024)</span></li>
+                    <li>Institutes now require <span class="highlight">ethical clearance</span> before AI research</li>
+                </ul>
+            </div>
+
+            <!-- Section 18: Current Research -->
+            <div class="section print-friendly">
+                <h2>Current Research Directions in AI</h2>
+
+                <h3>1. Model Distillation</h3>
+                <p>Reducing model size while maintaining performance.</p>
+
+                <h3>2. Mechanistic Interpretability</h3>
+                <p>Understanding what happens inside each layer of the model. Goal: remove unnecessary layers.</p>
+
+                <h3>3. Edge Deployment</h3>
+                <p>Making smaller, efficient models that can run on small devices (not just large cloud infrastructure).</p>
+            </div>
+
+            <!-- Section 19: Future of AI -->
+            <div class="section print-friendly">
+                <h2>Future of AI</h2>
+                <p>Researchers aim for <span class="highlight">Artificial General Intelligence (AGI)</span> — AI capable of performing any intellectual task a human can do.</p>
+
+                <h3>Future AI Systems Will Have</h3>
+                <ul>
+                    <li>Reasoning and decision making</li>
+                    <li>Self-learning capabilities</li>
+                    <li>Autonomous agents</li>
+                </ul>
+
+                <div class="key-point">
+                    This represents the ultimate goal of AI research and development.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <strong>End of Lecture Notes</strong><br>
+            IIT Patna M.Tech | Generative AI & Large Language Models<br>
+            📅 March 15, 2026
+        </div>
+    </div>
+</body>
+</html>

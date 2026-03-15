@@ -1,1 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashu Singh - M.Tech Student | IIT Patna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .subtitle {
+            font-size: 1.05em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .hero-divider {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            margin: 25px 0;
+            border-radius: 2px;
+        }
+
+        /* Content Section */
+        .content {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quick-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            color: #333;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .courses-section {
+            margin-top: 30px;
+        }
+
+        .courses-title {
+            color: #764ba2;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .courses-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .course-item {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .course-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-left-color: #764ba2;
+            padding-left: 20px;
+        }
+
+        /* Lecture Notes Section */
+        .lecture-notes {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .lecture-notes h3 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .note-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .note-card:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .note-info {
+            flex: 1;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.05em;
+            margin-bottom: 5px;
+        }
+
+        .note-date {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .note-arrow {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-left: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .note-card:hover .note-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 40px;
+            }
+
+            .content {
+                padding: 40px;
+            }
+
+            .hero h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero {
+                padding: 30px;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 1.8em;
+            }
+
+            .content h2 {
+                font-size: 1.5em;
+            }
+
+            .note-card {
+                flex-direction: column;
+                text-align: left;
+                gap: 10px;
+            }
+
+            .note-arrow {
+                transform: rotate(90deg);
+                margin-left: 0;
+            }
+
+            .note-card:hover .note-arrow {
+                transform: rotate(90deg) translateX(5px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            .hero, .content {
+                padding: 20px;
+            }
+
+            .hero h1 {
+                font-size: 1.5em;
+            }
+
+            .content h2 {
+                font-size: 1.2em;
+            }
+
+            .hero-divider {
+                width: 40px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .navbar {
+                display: none;
+            }
+
+            .main-container {
+                box-shadow: none;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .main-container {
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .note-card {
+            animation: fadeInUp 1s ease;
+        }
+
+        .note-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .note-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .note-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-brand">🎓 Ashu Singh</div>
+            <ul class="navbar-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#notes">Notes</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Ashu Singh</h1>
+                <p>M.Tech Student</p>
+                <div class="hero-divider"></div>
+                <p class="subtitle">
+                    Passionate about Artificial Intelligence, Machine Learning, and Building Solutions that Matter.
+                </p>
+                <p class="subtitle">
+                    Currently pursuing M.Tech at IIT Patna, exploring the frontiers of Generative AI and Language Models.
+                </p>
+            </section>
+
+            <!-- Content Section -->
+            <section class="content">
+                <h2>Welcome! 👋</h2>
+
+                <!-- Quick Info -->
+                <div class="quick-info">
+                    <div class="info-item">
+                        <span class="info-icon">🎓</span>
+                        <strong>Education:</strong> M.Tech at IIT Patna
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">🎯</span>
+                        <strong>Focus:</strong> Generative AI & Large Language Models
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">💡</span>
+                        <strong>Interests:</strong> AI for Indian Languages, Deep Learning
+                    </div>
+                </div>
+
+                <!-- Courses Section -->
+                <div class="courses-section">
+                    <div class="courses-title">📚 Current Courses</div>
+                    <ul class="courses-list">
+                        <li class="course-item">Generative AI & Large Language Models</li>
+                        <li class="course-item">Advanced Machine Learning</li>
+                        <li class="course-item">Natural Language Processing</li>
+                    </ul>
+                </div>
+
+                <!-- Lecture Notes -->
+                <div class="lecture-notes">
+                    <h3>📖 Lecture Notes</h3>
+                    <div class="notes-grid">
+                        <a href="./March_2026/march_15_2026_notes.html" class="note-card">
+                            <div class="note-info">
+                                <div class="note-title">Generative AI & LLMs</div>
+                                <div class="note-date">📅 March 15, 2026</div>
+                            </div>
+                            <div class="note-arrow">→</div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
