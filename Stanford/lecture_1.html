@@ -337,27 +337,41 @@
         /* List */
         ul.styled {
             list-style: none;
-            display: flex;
-            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            display: block; /* prefer normal block flow for lists */
             gap: 12px;
             margin-top: 8px;
             margin-bottom: 15px;
         }
 
+        /* Two-column grid: fixed column for the arrow, flexible column for the content */
         ul.styled li {
             display: grid;
-            grid-template-columns: 20px 1fr;
-            gap: 15px;
+            grid-template-columns: 28px 1fr;
+            gap: 12px;
+            align-items: start;
             font-size: 1em;
             color: #333;
             line-height: 1.6;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
 
         ul.styled li::before {
             content: '→';
             color: #667eea;
-            font-weight: bold;
-            flex-shrink: 0;
+            font-weight: 700;
+            grid-column: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 4px;
+        }
+
+        /* Ensure the actual list text occupies the second column */
+        ul.styled li .li-content {
+            grid-column: 2;
         }
 
         @media (max-width: 768px) {
@@ -490,10 +504,10 @@
             <div class="highlight-box">
                 <p>CS229 is a <strong>mathematically rigorous</strong> course. Students are expected to arrive with a working knowledge of:</p>
                 <ul class="styled">
-                    <li><strong>Probability &amp; Statistics</strong> — random variables, expected value, variance. Review sessions are available in Friday sections for students who feel rusty.</li>
-                    <li><strong>Linear Algebra</strong> — matrices, vectors, and matrix multiplication. Familiarity with eigenvectors is a bonus; Friday sections will cover key ideas if needed.</li>
-                    <li><strong>Basic computer science fundamentals</strong> — Big-O notation and common data structures (queues, stacks, binary trees).</li>
-                    <li><strong>Python</strong> — basic familiarity recommended; NumPy will be introduced early in the course.</li>
+                    <li><div class="li-content"><strong>Probability &amp; Statistics</strong> — random variables, expected value, variance. Review sessions are available in Friday sections for students who feel rusty.</div></li>
+                    <li><div class="li-content"><strong>Linear Algebra</strong> — matrices, vectors, and matrix multiplication. Familiarity with eigenvectors is a bonus; Friday sections will cover key ideas if needed.</div></li>
+                    <li><div class="li-content"><strong>Basic computer science fundamentals</strong> — Big-O notation and common data structures (queues, stacks, binary trees).</div></li>
+                    <li><div class="li-content"><strong>Python</strong> — basic familiarity recommended; NumPy will be introduced early in the course.</div></li>
                 </ul>
             </div>
         </div>
@@ -621,8 +635,8 @@
                 <p>A common pitfall is spending months on an approach that was unlikely to work. Experienced practitioners can often identify such flaws quickly; the goal is to make that tacit knowledge explicit and teachable.</p>
                 <h3>Key Analogies:</h3>
                 <ul class="styled">
-                    <li><strong>Debugging code:</strong> Removing lines with syntax errors isn't the right approach. Good engineers profile first, identify bottlenecks, and then optimize the true problem.</li>
-                    <li><strong>Machine Learning Yearning:</strong> Ng wrote a freely available book, Machine Learning Yearning, that codifies many practical strategies for designing and troubleshooting ML systems.</li>
+                    <li><div class="li-content"><strong>Debugging code:</strong> Removing lines with syntax errors isn't the right approach. Good engineers profile first, identify bottlenecks, and then optimize the true problem.</div></li>
+                    <li><div class="li-content"><strong>Machine Learning Yearning:</strong> Ng wrote a freely available book, Machine Learning Yearning, that codifies many practical strategies for designing and troubleshooting ML systems.</div></li>
                 </ul>
                 <p><strong>Topics covered include:</strong> when to collect more data, which model architectures are appropriate for a problem, how to interpret gaps between training and test error, and practical tips for leading and scaling ML teams.</p>
             </div>
