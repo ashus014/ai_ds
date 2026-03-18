@@ -152,6 +152,16 @@
             font-weight: bold;
         }
 
+        /* Override for styled lists */
+        ul.styled li {
+            padding-left: 0;
+            position: static;
+        }
+
+        ul.styled li:before {
+            position: static;
+        }
+
         .highlight-box {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
             border-left: 4px solid #667eea;
@@ -328,15 +338,18 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: 8px;
+            margin-bottom: 15px;
         }
 
         ul.styled li {
-            display: flex;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            gap: 15px;
             font-size: 1em;
             color: #333;
+            line-height: 1.6;
         }
 
         ul.styled li::before {
