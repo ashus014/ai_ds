@@ -291,6 +291,51 @@
             transform: translateX(5px);
         }
 
+        /* Added CS229 Stanford section */
+        .cs229-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .cs229-section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .cs229-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .cs229-links a {
+            text-decoration: none;
+            color: #764ba2;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .cs229-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .cs229-links a:hover::after {
+            width: 100%;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .main-container {
@@ -508,6 +553,14 @@
                             <div class="note-arrow">→</div>
                         </a>
                     </div>
+                </div>
+
+                <!-- CS229 Stanford Section -->
+                <div class="cs229-section">
+                    <h2>CS229 Stanford</h2>
+                    <ul class="cs229-links">
+                        <li><a href="CS229_Stanford.html">CS229 Stanford Page</a></li>
+                    </ul>
                 </div>
             </section>
         </div>
