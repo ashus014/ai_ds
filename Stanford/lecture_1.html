@@ -423,230 +423,230 @@
         <h1>CS229 Lecture 1</h1>
         <p class="subtitle">Machine Learning: An Introduction | Instructor: Andrew Ng</p>
 
-  <!-- SECTION 1 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">01</span>
-      <h2>Why Machine Learning? The Big Picture</h2>
-    </div>
-    <div class="card">
-      <p>Professor Andrew Ng opened the lecture with a sweeping vision: <strong>AI is the new electricity.</strong> Just as electricity transformed every major industry ~100 years ago, machine learning is poised to reshape healthcare, transportation, law, education, and virtually every other domain — not just technology companies.</p>
-      <p>He emphasized that the demand for ML skills is growing faster than supply, and this asymmetry creates a unique opportunity. Many industries — logistics, manufacturing, healthcare — are desperately seeking people who understand these tools, yet very few practitioners exist outside traditional tech.</p>
-      <p><strong>Key analogy:</strong> Ng compared getting into ML today to working on the Internet 20 years ago — an early mover advantage with enormous long-term upside.</p>
-      <div class="tags">
-        <span class="tag tag-blue">AI as Infrastructure</span>
-        <span class="tag tag-green">Industry Transformation</span>
-        <span class="tag tag-gold">Career Opportunity</span>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 1 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>Why Machine Learning? The Big Picture</h2>
+            </div>
+            <div class="highlight-box">
+                <p>Professor Andrew Ng opened the lecture with a sweeping vision: <strong>AI is the new electricity.</strong> Just as electricity transformed every major industry ~100 years ago, machine learning is poised to reshape healthcare, transportation, law, education, and virtually every other domain — not just technology companies.</p>
+                <p>He emphasized that the demand for ML skills is growing faster than supply, and this asymmetry creates a unique opportunity. Many industries — logistics, manufacturing, healthcare — are desperately seeking people who understand these tools, yet very few practitioners exist outside traditional tech.</p>
+                <p><strong>Key analogy:</strong> Ng compared getting into ML today to working on the Internet 20 years ago — an early mover advantage with enormous long-term upside.</p>
+                <div class="tags">
+                    <span class="tag tag-blue">AI as Infrastructure</span>
+                    <span class="tag tag-green">Industry Transformation</span>
+                    <span class="tag tag-gold">Career Opportunity</span>
+                </div>
+            </div>
+        </div>
 
-  <!-- SECTION 2 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">02</span>
-      <h2>Course Logistics & Structure</h2>
-    </div>
-    <div class="grid-2">
-      <div class="mini-card">
-        <h4>Schedule</h4>
-        <p>Main lectures on <strong>Mondays & Wednesdays</strong>. Optional discussion sections on <strong>Fridays</strong> (first 3 cover prerequisites; later ones cover advanced topics like Hidden Markov Models, time series, convex optimization).</p>
-      </div>
-      <div class="mini-card">
-        <h4>Assessments</h4>
-        <p><strong>4 homeworks</strong> (individual write-ups required). A <strong>take-home midterm</strong> (replacing the traditional timed exam). An <strong>open-ended final project</strong> in groups of 1–3 (4 with stricter grading).</p>
-      </div>
-      <div class="mini-card">
-        <h4>Tools & Tech</h4>
-        <p>Transitioning from MATLAB/Octave to <strong>Python + NumPy</strong>. Assignments, discussions, and grades managed via <strong>Piazza</strong> and <strong>Gradescope</strong>. All lectures recorded via SCPD.</p>
-      </div>
-      <div class="mini-card">
-        <h4>Office Hours & Support</h4>
-        <p>~<strong>60 office hours/week</strong> across the TA team. TAs cover specializations from computer vision to computational biology to robotics — matched to project areas.</p>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 2 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>Course Logistics & Structure</h2>
+            </div>
+            <div class="grid-2">
+                <div class="mini-card">
+                    <h4>Schedule</h4>
+                    <p>Main lectures on <strong>Mondays & Wednesdays</strong>. Optional discussion sections on <strong>Fridays</strong> (first 3 cover prerequisites; later ones cover advanced topics like Hidden Markov Models, time series, convex optimization).</p>
+                </div>
+                <div class="mini-card">
+                    <h4>Assessments</h4>
+                    <p><strong>4 homeworks</strong> (individual write-ups required). A <strong>take-home midterm</strong> (replacing the traditional timed exam). An <strong>open-ended final project</strong> in groups of 1–3 (4 with stricter grading).</p>
+                </div>
+                <div class="mini-card">
+                    <h4>Tools & Tech</h4>
+                    <p>Transitioning from MATLAB/Octave to <strong>Python + NumPy</strong>. Assignments, discussions, and grades managed via <strong>Piazza</strong> and <strong>Gradescope</strong>. All lectures recorded via SCPD.</p>
+                </div>
+                <div class="mini-card">
+                    <h4>Office Hours & Support</h4>
+                    <p>~<strong>60 office hours/week</strong> across the TA team. TAs cover specializations from computer vision to computational biology to robotics — matched to project areas.</p>
+                </div>
+            </div>
+        </div>
 
-  <!-- SECTION 3 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">03</span>
-      <h2>Prerequisites</h2>
-    </div>
-    <div class="card accent2">
-      <p>CS229 is a <strong>mathematically rigorous</strong> course. Students are expected to arrive with working knowledge of:</p>
-      <ul class="styled">
-        <li><strong>Probability & Statistics</strong> — random variables, expected value, variance. Review sessions in Friday sections for those rusty.</li>
-        <li><strong>Linear Algebra</strong> — matrices, vectors, matrix multiplication. Eigenvectors a bonus. Covered in Friday sections if needed.</li>
-        <li><strong>Basic CS fundamentals</strong> — Big-O notation, data structures (queues, stacks, binary trees).</li>
-        <li><strong>Python</strong> — basic familiarity recommended; NumPy will be introduced in early sections.</li>
-      </ul>
-    </div>
-  </div>
+        <!-- SECTION 3 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Prerequisites</h2>
+            </div>
+            <div class="highlight-box">
+                <p>CS229 is a <strong>mathematically rigorous</strong> course. Students are expected to arrive with working knowledge of:</p>
+                <ul class="styled">
+                    <li><strong>Probability & Statistics</strong> — random variables, expected value, variance. Review sessions in Friday sections for those rusty.</li>
+                    <li><strong>Linear Algebra</strong> — matrices, vectors, matrix multiplication. Eigenvectors a bonus. Covered in Friday sections if needed.</li>
+                    <li><strong>Basic CS fundamentals</strong> — Big-O notation, data structures (queues, stacks, binary trees).</li>
+                    <li><strong>Python</strong> — basic familiarity recommended; NumPy will be introduced in early sections.</li>
+                </ul>
+            </div>
+        </div>
 
-  <!-- SECTION 4 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">04</span>
-      <h2>What Is Machine Learning? — Formal Definitions</h2>
-    </div>
-    <div class="card accent3">
-      <div class="quote">
-        <p>"A field of study that gives computers the ability to learn without being explicitly programmed."</p>
-        <div class="attribution">— Arthur Samuel (1959), inventor of the first self-learning checkers program</div>
-      </div>
-      <div class="quote" style="border-color: var(--accent); background: rgba(79,142,247,0.04);">
-        <p>"A program is said to learn from experience <strong>E</strong> with respect to some task <strong>T</strong> and performance measure <strong>P</strong>, if its performance on T, as measured by P, improves with experience E."</p>
-        <div class="attribution" style="color: var(--accent);">— Tom Mitchell (1997), Machine Learning textbook</div>
-      </div>
-      <p>Applied to checkers: <strong>E</strong> = games played against itself, <strong>T</strong> = playing checkers, <strong>P</strong> = probability of winning. Arthur Samuel's program eventually surpassed Samuel himself — one of the earliest examples of a computer outperforming its own programmer.</p>
-    </div>
-  </div>
+        <!-- SECTION 4 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2>What Is Machine Learning? — Formal Definitions</h2>
+            </div>
+            <div class="highlight-box">
+                <div class="quote">
+                    <p>"A field of study that gives computers the ability to learn without being explicitly programmed."</p>
+                    <div class="attribution">— Arthur Samuel (1959), inventor of the first self-learning checkers program</div>
+                </div>
+                <div class="quote">
+                    <p>"A program is said to learn from experience <strong>E</strong> with respect to some task <strong>T</strong> and performance measure <strong>P</strong>, if its performance on T, as measured by P, improves with experience E."</p>
+                    <div class="attribution">— Tom Mitchell (1997), Machine Learning textbook</div>
+                </div>
+                <p>Applied to checkers: <strong>E</strong> = games played against itself, <strong>T</strong> = playing checkers, <strong>P</strong> = probability of winning. Arthur Samuel's program eventually surpassed Samuel himself — one of the earliest examples of a computer outperforming its own programmer.</p>
+            </div>
+        </div>
 
-  <!-- SECTION 5 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">05</span>
-      <h2>The Five Core Topics of CS229</h2>
-    </div>
-    <div class="algo-grid">
-      <div class="algo-box">
-        <span class="algo-num">TOPIC 01</span>
-        <h3>Supervised Learning</h3>
-        <p>Learning a mapping X → Y given labeled examples. Includes regression and classification. The dominant source of ML's economic value today.</p>
-      </div>
-      <div class="algo-box">
-        <span class="algo-num">TOPIC 02</span>
-        <h3>ML Strategy & Learning Theory</h3>
-        <p>How to systematically diagnose and improve ML systems. Avoids wasting months on unproductive approaches. Unique to CS229's teaching philosophy.</p>
-      </div>
-      <div class="algo-box">
-        <span class="algo-num">TOPIC 03</span>
-        <h3>Deep Learning</h3>
-        <p>Neural networks and backpropagation. Rapidly advancing sub-field. CS229 gives the foundations; CS230 goes deeper exclusively into this area.</p>
-      </div>
-      <div class="algo-box">
-        <span class="algo-num">TOPIC 04</span>
-        <h3>Unsupervised Learning</h3>
-        <p>Finding structure in unlabeled data — clustering, dimensionality reduction, ICA. Used in genomics, social networks, market segmentation, news grouping.</p>
-      </div>
-      <div class="algo-box">
-        <span class="algo-num">TOPIC 05</span>
-        <h3>Reinforcement Learning</h3>
-        <p>Learning through reward signals — no explicit labels. Like training a dog: reward good behavior, penalize bad. Used in robotics, game-playing (AlphaGo), logistics.</p>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 5 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2>The Five Core Topics of CS229</h2>
+            </div>
+            <div class="algo-grid">
+                <div class="algo-box">
+                    <span class="algo-num">TOPIC 01</span>
+                    <h3>Supervised Learning</h3>
+                    <p>Learning a mapping X → Y given labeled examples. Includes regression and classification. The dominant source of ML's economic value today.</p>
+                </div>
+                <div class="algo-box">
+                    <span class="algo-num">TOPIC 02</span>
+                    <h3>ML Strategy & Learning Theory</h3>
+                    <p>How to systematically diagnose and improve ML systems. Avoids wasting months on unproductive approaches. Unique to CS229's teaching philosophy.</p>
+                </div>
+                <div class="algo-box">
+                    <span class="algo-num">TOPIC 03</span>
+                    <h3>Deep Learning</h3>
+                    <p>Neural networks and backpropagation. Rapidly advancing sub-field. CS229 gives the foundations; CS230 goes deeper exclusively into this area.</p>
+                </div>
+                <div class="algo-box">
+                    <span class="algo-num">TOPIC 04</span>
+                    <h3>Unsupervised Learning</h3>
+                    <p>Finding structure in unlabeled data — clustering, dimensionality reduction, ICA. Used in genomics, social networks, market segmentation, news grouping.</p>
+                </div>
+                <div class="algo-box">
+                    <span class="algo-num">TOPIC 05</span>
+                    <h3>Reinforcement Learning</h3>
+                    <p>Learning through reward signals — no explicit labels. Like training a dog: reward good behavior, penalize bad. Used in robotics, game-playing (AlphaGo), logistics.</p>
+                </div>
+            </div>
+        </div>
 
-  <hr>
+        <hr>
 
-  <!-- SECTION 6 — Deep dive: Supervised -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">06</span>
-      <h2>Supervised Learning — Deep Dive</h2>
-    </div>
-    <div class="card">
-      <p>The core idea: you are given a dataset of input–output pairs <strong>(X, Y)</strong> and your goal is to learn a function that maps any new X to the correct Y.</p>
-      <p><strong>Regression</strong> — predicting a <em>continuous</em> value. Example: predicting house prices from square footage. A straight line or quadratic can be fit; how to choose the best model is a key topic.</p>
-      <p><strong>Classification</strong> — predicting a <em>discrete</em> label. Example: tumor malignancy (benign = 0, malignant = 1). The output Y takes on a finite set of values.</p>
-      <p>As features grow, data becomes high-dimensional and cannot be visualized. This motivates algorithms like the <strong>Support Vector Machine (SVM)</strong>, which can operate in infinite-dimensional feature spaces via the "kernel trick" — representing a patient with an infinitely long feature vector without ever storing it explicitly in memory.</p>
-      <p><strong>Real-world demo shown:</strong> ALVINN (1989), a neural network trained via supervised learning to steer an autonomous car. The human drives → network records (image, steering angle) pairs → network learns the mapping. A simple but landmark demonstration of end-to-end supervised learning.</p>
-      <div class="tags">
-        <span class="tag tag-blue">Regression</span>
-        <span class="tag tag-green">Classification</span>
-        <span class="tag tag-gold">Logistic Regression</span>
-        <span class="tag tag-pink">SVM + Kernels</span>
-        <span class="tag tag-blue">ALVINN Demo</span>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 6 — Deep dive: Supervised -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h2>Supervised Learning — Deep Dive</h2>
+            </div>
+            <div class="highlight-box">
+                <p>The core idea: you are given a dataset of input–output pairs <strong>(X, Y)</strong> and your goal is to learn a function that maps any new X to the correct Y.</p>
+                <p><strong>Regression</strong> — predicting a <em>continuous</em> value. Example: predicting house prices from square footage. A straight line or quadratic can be fit; how to choose the best model is a key topic.</p>
+                <p><strong>Classification</strong> — predicting a <em>discrete</em> label. Example: tumor malignancy (benign = 0, malignant = 1). The output Y takes on a finite set of values.</p>
+                <p>As features grow, data becomes high-dimensional and cannot be visualized. This motivates algorithms like the <strong>Support Vector Machine (SVM)</strong>, which can operate in infinite-dimensional feature spaces via the "kernel trick" — representing a patient with an infinitely long feature vector without ever storing it explicitly in memory.</p>
+                <p><strong>Real-world demo shown:</strong> ALVINN (1989), a neural network trained via supervised learning to steer an autonomous car. The human drives → network records (image, steering angle) pairs → network learns the mapping. A simple but landmark demonstration of end-to-end supervised learning.</p>
+                <div class="tags">
+                    <span class="tag tag-blue">Regression</span>
+                    <span class="tag tag-green">Classification</span>
+                    <span class="tag tag-gold">Logistic Regression</span>
+                    <span class="tag tag-pink">SVM + Kernels</span>
+                    <span class="tag tag-blue">ALVINN Demo</span>
+                </div>
+            </div>
+        </div>
 
-  <!-- SECTION 7 — Unsupervised -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">07</span>
-      <h2>Unsupervised Learning — Deep Dive</h2>
-    </div>
-    <div class="card accent-pink">
-      <p>In unsupervised learning, you are given only inputs X — <strong>no labels</strong>. The task is to discover hidden structure or patterns on your own.</p>
-      <p><strong>Clustering (K-Means):</strong> Automatically groups data into clusters. Applications include Google News (grouping articles by topic), genomic microarray analysis (grouping individuals by genetic profile), social network community detection, and customer market segmentation.</p>
-      <p><strong>Cocktail Party Problem / ICA:</strong> Multiple microphones record overlapping voices in a noisy room. Independent Components Analysis (ICA) separates them into individual clean audio streams — with no labels, purely from the mixed recordings. Students implement this in a homework.</p>
-      <p><strong>Word Embeddings (from unlabeled text):</strong> Learning analogies like <em>man:woman :: king:queen</em> or <em>Tokyo:Japan :: Washington DC:USA</em> purely from raw internet text — no labeled data needed.</p>
-    </div>
-  </div>
+        <!-- SECTION 7 — Unsupervised -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">07</span>
+                <h2>Unsupervised Learning — Deep Dive</h2>
+            </div>
+            <div class="highlight-box">
+                <p>In unsupervised learning, you are given only inputs X — <strong>no labels</strong>. The task is to discover hidden structure or patterns on your own.</p>
+                <p><strong>Clustering (K-Means):</strong> Automatically groups data into clusters. Applications include Google News (grouping articles by topic), genomic microarray analysis (grouping individuals by genetic profile), social network community detection, and customer market segmentation.</p>
+                <p><strong>Cocktail Party Problem / ICA:</strong> Multiple microphones record overlapping voices in a noisy room. Independent Components Analysis (ICA) separates them into individual clean audio streams — with no labels, purely from the mixed recordings. Students implement this in a homework.</p>
+                <p><strong>Word Embeddings (from unlabeled text):</strong> Learning analogies like <em>man:woman :: king:queen</em> or <em>Tokyo:Japan :: Washington DC:USA</em> purely from raw internet text — no labeled data needed.</p>
+            </div>
+        </div>
 
-  <!-- SECTION 8 — Reinforcement -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">08</span>
-      <h2>Reinforcement Learning — Deep Dive</h2>
-    </div>
-    <div class="card accent-purple">
-      <p>In reinforcement learning (RL), there are no labeled (X, Y) pairs at all. Instead, the agent interacts with an environment and receives a <strong>reward signal</strong> — positive for good outcomes, negative for bad ones.</p>
-      <p><strong>Helicopter example:</strong> No one knows the optimal way to move a helicopter's control sticks. So you let the helicopter try different actions; when it flies steadily, reward it ("good helicopter!"); when it crashes, penalize it ("bad helicopter!"). Over time the RL algorithm learns the optimal control policy.</p>
-      <p><strong>Dog-training analogy:</strong> Ng used training a dog as an intuitive metaphor — reward desired behaviors, discourage unwanted ones, and the animal (or algorithm) gradually learns the optimal behavior pattern without being explicitly told every rule.</p>
-      <p>Famous applications: <strong>AlphaGo</strong> (Go), Atari game-playing, robotic locomotion (Boston Dynamics-style obstacle navigation), and logistics optimization.</p>
-      <div class="tags">
-        <span class="tag tag-blue">Reward Signal</span>
-        <span class="tag tag-green">Policy Learning</span>
-        <span class="tag tag-gold">Robotics</span>
-        <span class="tag tag-pink">AlphaGo</span>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 8 — Reinforcement -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">08</span>
+                <h2>Reinforcement Learning — Deep Dive</h2>
+            </div>
+            <div class="highlight-box">
+                <p>In reinforcement learning (RL), there are no labeled (X, Y) pairs at all. Instead, the agent interacts with an environment and receives a <strong>reward signal</strong> — positive for good outcomes, negative for bad ones.</p>
+                <p><strong>Helicopter example:</strong> No one knows the optimal way to move a helicopter's control sticks. So you let the helicopter try different actions; when it flies steadily, reward it ("good helicopter!"); when it crashes, penalize it ("bad helicopter!"). Over time the RL algorithm learns the optimal control policy.</p>
+                <p><strong>Dog-training analogy:</strong> Ng used training a dog as an intuitive metaphor — reward desired behaviors, discourage unwanted ones, and the animal (or algorithm) gradually learns the optimal behavior pattern without being explicitly told every rule.</p>
+                <p>Famous applications: <strong>AlphaGo</strong> (Go), Atari game-playing, robotic locomotion (Boston Dynamics-style obstacle navigation), and logistics optimization.</p>
+                <div class="tags">
+                    <span class="tag tag-blue">Reward Signal</span>
+                    <span class="tag tag-green">Policy Learning</span>
+                    <span class="tag tag-gold">Robotics</span>
+                    <span class="tag tag-pink">AlphaGo</span>
+                </div>
+            </div>
+        </div>
 
-  <!-- SECTION 9 — ML Strategy -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">09</span>
-      <h2>ML Strategy — The "Hidden" Skill</h2>
-    </div>
-    <div class="card accent2">
-      <p>One of CS229's most distinctive offerings is its emphasis on <strong>systematic engineering principles</strong> for ML. Ng observed that two teams using the exact same algorithm can have vastly different outcomes — often because one team is strategic and the other is not.</p>
-      <p>Common pitfall: spending 6 months on an approach that was never going to work. An experienced practitioner can sometimes look at a setup and immediately see the flaw — but this "black magic tribal knowledge" should be made systematic.</p>
-      <p><strong>Analogies used:</strong></p>
-      <ul class="styled">
-        <li>Debugging code by <em>deleting lines with syntax errors</em> — wrong approach. Good engineers profile first, then optimize the bottleneck.</li>
-        <li>Ng mentioned he was writing a free book (<em>Machine Learning Yearning</em>) to codify these systematic engineering principles for ML practitioners.</li>
-      </ul>
-      <p>Topics include: when to collect more data, which architecture to choose, how to interpret training/test error gaps, and how to efficiently lead an ML team.</p>
-    </div>
-  </div>
+        <!-- SECTION 9 — ML Strategy -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">09</span>
+                <h2>ML Strategy — The "Hidden" Skill</h2>
+            </div>
+            <div class="highlight-box">
+                <p>One of CS229's most distinctive offerings is its emphasis on <strong>systematic engineering principles</strong> for ML. Ng observed that two teams using the exact same algorithm can have vastly different outcomes — often because one team is strategic and the other is not.</p>
+                <p>Common pitfall: spending 6 months on an approach that was never going to work. An experienced practitioner can sometimes look at a setup and immediately see the flaw — but this "black magic tribal knowledge" should be made systematic.</p>
+                <p><strong>Analogies used:</strong></p>
+                <ul class="styled">
+                    <li>Debugging code by <em>deleting lines with syntax errors</em> — wrong approach. Good engineers profile first, then optimize the bottleneck.</li>
+                    <li>Ng mentioned he was writing a free book (<em>Machine Learning Yearning</em>) to codify these systematic engineering principles for ML practitioners.</li>
+                </ul>
+                <p>Topics include: when to collect more data, which architecture to choose, how to interpret training/test error gaps, and how to efficiently lead an ML team.</p>
+            </div>
+        </div>
 
-  <hr>
+        <hr>
 
-  <!-- SECTION 10 — Courses Comparison -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-number">10</span>
-      <h2>CS229 vs. CS229a vs. CS230</h2>
-    </div>
-    <div class="grid-2">
-      <div class="mini-card">
-        <h4>CS229 (This Course)</h4>
-        <p>Most <strong>mathematical</strong>. Broadest coverage of ML algorithms. Rigorous derivations, proofs, and theory. Heavy workload. Best for those ready for depth.</p>
-      </div>
-      <div class="mini-card">
-        <h4>CS229a</h4>
-        <p>Flipped classroom, more <strong>applied</strong>. Less math; more hands-on programming. Good stepping stone before CS229. Enrollment capped at 100.</p>
-      </div>
-      <div class="mini-card">
-        <h4>CS230</h4>
-        <p>Focused exclusively on <strong>deep learning</strong>. Narrower scope than CS229 but goes deep on neural networks. More practical/applied than CS229 in that specific domain.</p>
-      </div>
-      <div class="mini-card">
-        <h4>Taking Multiple</h4>
-        <p>Ng actively <strong>encourages</strong> taking multiple courses. Little overlap in content. For true ML expertise: CS229 + CS230 + probability, optimization, and RL courses recommended.</p>
-      </div>
-    </div>
-  </div>
+        <!-- SECTION 10 — Courses Comparison -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">10</span>
+                <h2>CS229 vs. CS229a vs. CS230</h2>
+            </div>
+            <div class="grid-2">
+                <div class="mini-card">
+                    <h4>CS229 (This Course)</h4>
+                    <p>Most <strong>mathematical</strong>. Broadest coverage of ML algorithms. Rigorous derivations, proofs, and theory. Heavy workload. Best for those ready for depth.</p>
+                </div>
+                <div class="mini-card">
+                    <h4>CS229a</h4>
+                    <p>Flipped classroom, more <strong>applied</strong>. Less math; more hands-on programming. Good stepping stone before CS229. Enrollment capped at 100.</p>
+                </div>
+                <div class="mini-card">
+                    <h4>CS230</h4>
+                    <p>Focused exclusively on <strong>deep learning</strong>. Narrower scope than CS229 but goes deep on neural networks. More practical/applied than CS229 in that specific domain.</p>
+                </div>
+                <div class="mini-card">
+                    <h4>Taking Multiple</h4>
+                    <p>Ng actively <strong>encourages</strong> taking multiple courses. Little overlap in content. For true ML expertise: CS229 + CS230 + probability, optimization, and RL courses recommended.</p>
+                </div>
+            </div>
+        </div>
 
-  <!-- Closing takeaway -->
-  <div class="takeaway">
-    <h3>The Meaning Behind the Math</h3>
-    <p>Ng closed by noting that beyond career success, machine learning offers a rare opportunity to meaningfully improve the world — better healthcare, personalized education, stronger democratic systems. "With these tools, you actually have the power to do that."</p>
-  </div>
+        <!-- Closing takeaway -->
+        <div class="takeaway">
+            <h3>The Meaning Behind the Math</h3>
+            <p>Ng closed by noting that beyond career success, machine learning offers a rare opportunity to meaningfully improve the world — better healthcare, personalized education, stronger democratic systems. "With these tools, you actually have the power to do that."</p>
+        </div>
 
     </div>
 </div>
