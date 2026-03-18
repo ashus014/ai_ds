@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS229 — Lecture 1 Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --bg: #0a0e1a;
+          --surface: #111827;
+          --card: #161d2e;
+          --accent: #4f8ef7;
+          --accent2: #f7c94f;
+          --accent3: #5ef7b4;
+          --muted: #8892aa;
+          --text: #e8edf8;
+          --border: rgba(79,142,247,0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'Outfit', sans-serif;
+          font-weight: 300;
+          line-height: 1.75;
+          min-height: 100vh;
+        }
+
+        /* Noise overlay */
+        body::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 0;
+          opacity: 0.5;
+        }
+
+        /* Navigation */
+        .nav-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 40px;
+          background: var(--surface);
+          border-bottom: 1px solid var(--border);
+          position: relative;
+          z-index: 10;
+        }
+
+        .nav-links {
+          display: flex;
+          gap: 20px;
+          list-style: none;
+        }
+
+        .nav-links a {
+          color: var(--accent);
+          text-decoration: none;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+          color: var(--accent2);
+        }
+
+        .hero {
+          position: relative;
+          padding: 80px 40px 60px;
+          text-align: center;
+          overflow: hidden;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .hero::before {
+          content: '';
+          position: absolute;
+          top: -120px; left: 50%;
+          transform: translateX(-50%);
+          width: 700px; height: 400px;
+          background: radial-gradient(ellipse, rgba(79,142,247,0.18) 0%, transparent 70%);
+          pointer-events: none;
+        }
+
+        .course-tag {
+          display: inline-block;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--accent);
+          background: rgba(79,142,247,0.1);
+          border: 1px solid rgba(79,142,247,0.3);
+          padding: 5px 16px;
+          border-radius: 2px;
+          margin-bottom: 24px;
+        }
+
+        h1 {
+          font-family: 'DM Serif Display', serif;
+          font-size: clamp(36px, 6vw, 68px);
+          line-height: 1.1;
+          color: var(--text);
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+        }
+
+        h1 span { color: var(--accent); font-style: italic; }
+
+        .subtitle {
+          font-size: 15px;
+          color: var(--muted);
+          font-family: 'IBM Plex Mono', monospace;
+          letter-spacing: 0.04em;
+        }
+
+        .meta-bar {
+          display: flex;
+          justify-content: center;
+          gap: 32px;
+          margin-top: 36px;
+          flex-wrap: wrap;
+        }
+
+        .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 13px;
+          color: var(--muted);
+        }
+
+        .meta-dot {
+          width: 8px; height: 8px;
+          border-radius: 50%;
+          background: var(--accent3);
+          flex-shrink: 0;
+        }
+
+        /* Main layout */
+        .container {
+          max-width: 1000px;
+          margin: 0 auto;
+          padding: 60px 32px 100px;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* Section */
+        .section {
+          margin-bottom: 56px;
+          animation: fadeUp 0.6s ease both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.05s; }
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.15s; }
+        .section:nth-child(4) { animation-delay: 0.2s; }
+        .section:nth-child(5) { animation-delay: 0.25s; }
+        .section:nth-child(6) { animation-delay: 0.3s; }
+        .section:nth-child(7) { animation-delay: 0.35s; }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          margin-bottom: 20px;
+        }
+
+        .section-number {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--accent);
+          background: rgba(79,142,247,0.1);
+          border: 1px solid rgba(79,142,247,0.25);
+          padding: 3px 10px;
+          border-radius: 2px;
+          letter-spacing: 0.1em;
+          flex-shrink: 0;
+        }
+
+        h2 {
+          font-family: 'DM Serif Display', serif;
+          font-size: clamp(22px, 3vw, 30px);
+          color: var(--text);
+          letter-spacing: -0.01em;
+          line-height: 1.2;
+        }
+
+        .card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: 28px 32px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0;
+          width: 3px; height: 100%;
+          background: var(--accent);
+          border-radius: 0 2px 2px 0;
+        }
+
+        .card.accent2::before { background: var(--accent2); }
+        .card.accent3::before { background: var(--accent3); }
+        .card.accent-pink::before { background: #f74fb5; }
+        .card.accent-purple::before { background: #a44ff7; }
+
+        p {
+          color: var(--muted);
+          font-size: 15px;
+          line-height: 1.85;
+          margin-bottom: 14px;
+        }
+
+        p:last-child { margin-bottom: 0; }
+
+        strong { color: var(--text); font-weight: 500; }
+
+        /* Grid */
+        .grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+
+        @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .mini-card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 20px 22px;
+        }
+
+        .mini-card h4 {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: var(--accent2);
+          margin-bottom: 10px;
+        }
+
+        .mini-card p {
+          font-size: 13.5px;
+          margin-bottom: 0;
+        }
+
+        /* Tag pills */
+        .tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 16px;
+        }
+
+        .tag {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          padding: 4px 12px;
+          border-radius: 100px;
+          border: 1px solid;
+          letter-spacing: 0.05em;
+        }
+
+        .tag-blue  { border-color: rgba(79,142,247,0.4); color: var(--accent); background: rgba(79,142,247,0.08); }
+        .tag-green { border-color: rgba(94,247,180,0.4); color: var(--accent3); background: rgba(94,247,180,0.08); }
+        .tag-gold  { border-color: rgba(247,201,79,0.4); color: var(--accent2); background: rgba(247,201,79,0.08); }
+        .tag-pink  { border-color: rgba(247,79,181,0.4); color: #f74fb5; background: rgba(247,79,181,0.08); }
+
+        /* Quote block */
+        .quote {
+          border-left: 3px solid var(--accent2);
+          padding: 14px 20px;
+          background: rgba(247,201,79,0.04);
+          border-radius: 0 6px 6px 0;
+          margin: 16px 0;
+        }
+
+        .quote p {
+          font-style: italic;
+          color: #cdd6ee;
+          font-size: 14.5px;
+        }
+
+        .quote .attribution {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          color: var(--accent2);
+          font-style: normal;
+          margin-top: 8px;
+        }
+
+        /* Algorithm boxes */
+        .algo-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 14px;
+          margin-top: 8px;
+        }
+
+        .algo-box {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 18px 20px;
+          transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .algo-box:hover {
+          border-color: var(--accent);
+          transform: translateY(-2px);
+        }
+
+        .algo-num {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          color: var(--accent);
+          letter-spacing: 0.1em;
+          display: block;
+          margin-bottom: 6px;
+        }
+
+        .algo-box h3 {
+          font-family: 'DM Serif Display', serif;
+          font-size: 17px;
+          color: var(--text);
+          margin-bottom: 6px;
+        }
+
+        .algo-box p {
+          font-size: 12.5px;
+          line-height: 1.6;
+          margin-bottom: 0;
+        }
+
+        /* Divider */
+        hr {
+          border: none;
+          border-top: 1px solid var(--border);
+          margin: 48px 0;
+        }
+
+        /* Key takeaway */
+        .takeaway {
+          background: linear-gradient(135deg, rgba(79,142,247,0.08) 0%, rgba(94,247,180,0.05) 100%);
+          border: 1px solid rgba(79,142,247,0.25);
+          border-radius: 8px;
+          padding: 28px 32px;
+          text-align: center;
+        }
+
+        .takeaway h3 {
+          font-family: 'DM Serif Display', serif;
+          font-size: 22px;
+          color: var(--text);
+          margin-bottom: 10px;
+        }
+
+        .takeaway p { font-size: 14px; max-width: 600px; margin: 0 auto; }
+
+        /* List */
+        ul.styled {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 8px;
+        }
+
+        ul.styled li {
+          display: flex;
+          gap: 12px;
+          font-size: 14px;
+          color: var(--muted);
+        }
+
+        ul.styled li::before {
+          content: '→';
+          color: var(--accent);
+          font-family: 'IBM Plex Mono', monospace;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+          .nav-bar {
+            flex-direction: column;
+            gap: 15px;
+          }
+
+          .hero {
+            padding: 40px 20px;
+          }
+
+          .container {
+            padding: 40px 16px;
+          }
+
+          .grid-2 {
+            grid-template-columns: 1fr;
+          }
+
+          .algo-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <div style="font-family: 'DM Serif Display', serif; font-size: 1.3em; color: var(--accent);">CS229 Lecture 1</div>
+  <ul class="nav-links">
+    <li><a href="./CS229_Stanford.html">← Back to CS229</a></li>
+    <li><a href="../index.html">↑ Back to Home</a></li>
+  </ul>
+</div>
+
+<header class="hero">
+    <div class="course-tag">Stanford University · CS229 · Lecture 01</div>
+    <h1>Machine Learning<br><span>An Introduction</span></h1>
+    <p class="subtitle">Instructor: Andrew Ng &nbsp;·&nbsp; Overview, Logistics & Core Concepts</p>
+    <div class="meta-bar">
+        <div class="meta-item"><span class="meta-dot"></span> ~800 Students Enrolled</div>
+        <div class="meta-item"><span class="meta-dot" style="background:var(--accent2)"></span> 5 Major ML Topics Covered</div>
+        <div class="meta-item"><span class="meta-dot" style="background:#f74fb5"></span> First Lecture of the Quarter</div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- SECTION 1 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">01</span>
+            <h2>Why Machine Learning? The Big Picture</h2>
+        </div>
+        <div class="card">
+            <p>Professor Andrew Ng opened the lecture with a sweeping vision: <strong>AI is the new electricity.</strong> Just as electricity transformed every major industry ~100 years ago, machine learning is poised to reshape healthcare, transportation, law, education, and virtually every other domain — not just technology companies.</p>
+            <p>He emphasized that the demand for ML skills is growing faster than supply, and this asymmetry creates a unique opportunity. Many industries — logistics, manufacturing, healthcare — are desperately seeking people who understand these tools, yet very few practitioners exist outside traditional tech.</p>
+            <p><strong>Key analogy:</strong> Ng compared getting into ML today to working on the Internet 20 years ago — an early mover advantage with enormous long-term upside.</p>
+            <div class="tags">
+                <span class="tag tag-blue">AI as Infrastructure</span>
+                <span class="tag tag-green">Industry Transformation</span>
+                <span class="tag tag-gold">Career Opportunity</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">02</span>
+            <h2>Course Logistics & Structure</h2>
+        </div>
+        <div class="grid-2">
+            <div class="mini-card">
+                <h4>Schedule</h4>
+                <p>Main lectures on <strong>Mondays & Wednesdays</strong>. Optional discussion sections on <strong>Fridays</strong> (first 3 cover prerequisites; later ones cover advanced topics like Hidden Markov Models, time series, convex optimization).</p>
+            </div>
+            <div class="mini-card">
+                <h4>Assessments</h4>
+                <p><strong>4 homeworks</strong> (individual write-ups required). A <strong>take-home midterm</strong> (replacing the traditional timed exam). An <strong>open-ended final project</strong> in groups of 1–3 (4 with stricter grading).</p>
+            </div>
+            <div class="mini-card">
+                <h4>Tools & Tech</h4>
+                <p>Transitioning from MATLAB/Octave to <strong>Python + NumPy</strong>. Assignments, discussions, and grades managed via <strong>Piazza</strong> and <strong>Gradescope</strong>. All lectures recorded via SCPD.</p>
+            </div>
+            <div class="mini-card">
+                <h4>Office Hours & Support</h4>
+                <p>~<strong>60 office hours/week</strong> across the TA team. TAs cover specializations from computer vision to computational biology to robotics — matched to project areas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">03</span>
+            <h2>Prerequisites</h2>
+        </div>
+        <div class="card accent2">
+            <p>CS229 is a <strong>mathematically rigorous</strong> course. Students are expected to arrive with working knowledge of:</p>
+            <ul class="styled">
+                <li><strong>Probability & Statistics</strong> — random variables, expected value, variance. Review sessions in Friday sections for those rusty.</li>
+                <li><strong>Linear Algebra</strong> — matrices, vectors, matrix multiplication. Eigenvectors a bonus. Covered in Friday sections if needed.</li>
+                <li><strong>Basic CS fundamentals</strong> — Big-O notation, data structures (queues, stacks, binary trees).</li>
+                <li><strong>Python</strong> — basic familiarity recommended; NumPy will be introduced in early sections.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">04</span>
+            <h2>What Is Machine Learning? — Formal Definitions</h2>
+        </div>
+        <div class="card accent3">
+            <div class="quote">
+                <p>"A field of study that gives computers the ability to learn without being explicitly programmed."</p>
+                <div class="attribution">— Arthur Samuel (1959), inventor of the first self-learning checkers program</div>
+            </div>
+            <div class="quote" style="border-color: var(--accent); background: rgba(79,142,247,0.04);">
+                <p>"A program is said to learn from experience <strong>E</strong> with respect to some task <strong>T</strong> and performance measure <strong>P</strong>, if its performance on T, as measured by P, improves with experience E."</p>
+                <div class="attribution" style="color: var(--accent);">— Tom Mitchell (1997), Machine Learning textbook</div>
+            </div>
+            <p>Applied to checkers: <strong>E</strong> = games played against itself, <strong>T</strong> = playing checkers, <strong>P</strong> = probability of winning. Arthur Samuel's program eventually surpassed Samuel himself — one of the earliest examples of a computer outperforming its own programmer.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">05</span>
+            <h2>The Five Core Topics of CS229</h2>
+        </div>
+        <div class="algo-grid">
+            <div class="algo-box">
+                <span class="algo-num">TOPIC 01</span>
+                <h3>Supervised Learning</h3>
+                <p>Learning a mapping X → Y given labeled examples. Includes regression and classification. The dominant source of ML's economic value today.</p>
+            </div>
+            <div class="algo-box">
+                <span class="algo-num">TOPIC 02</span>
+                <h3>ML Strategy & Learning Theory</h3>
+                <p>How to systematically diagnose and improve ML systems. Avoids wasting months on unproductive approaches. Unique to CS229's teaching philosophy.</p>
+            </div>
+            <div class="algo-box">
+                <span class="algo-num">TOPIC 03</span>
+                <h3>Deep Learning</h3>
+                <p>Neural networks and backpropagation. Rapidly advancing sub-field. CS229 gives the foundations; CS230 goes deeper exclusively into this area.</p>
+            </div>
+            <div class="algo-box">
+                <span class="algo-num">TOPIC 04</span>
+                <h3>Unsupervised Learning</h3>
+                <p>Finding structure in unlabeled data — clustering, dimensionality reduction, ICA. Used in genomics, social networks, market segmentation, news grouping.</p>
+            </div>
+            <div class="algo-box">
+                <span class="algo-num">TOPIC 05</span>
+                <h3>Reinforcement Learning</h3>
+                <p>Learning through reward signals — no explicit labels. Like training a dog: reward good behavior, penalize bad. Used in robotics, game-playing (AlphaGo), logistics.</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 6 — Deep dive: Supervised -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">06</span>
+            <h2>Supervised Learning — Deep Dive</h2>
+        </div>
+        <div class="card">
+            <p>The core idea: you are given a dataset of input–output pairs <strong>(X, Y)</strong> and your goal is to learn a function that maps any new X to the correct Y.</p>
+            <p><strong>Regression</strong> — predicting a <em>continuous</em> value. Example: predicting house prices from square footage. A straight line or quadratic can be fit; how to choose the best model is a key topic.</p>
+            <p><strong>Classification</strong> — predicting a <em>discrete</em> label. Example: tumor malignancy (benign = 0, malignant = 1). The output Y takes on a finite set of values.</p>
+            <p>As features grow, data becomes high-dimensional and cannot be visualized. This motivates algorithms like the <strong>Support Vector Machine (SVM)</strong>, which can operate in infinite-dimensional feature spaces via the "kernel trick" — representing a patient with an infinitely long feature vector without ever storing it explicitly in memory.</p>
+            <p><strong>Real-world demo shown:</strong> ALVINN (1989), a neural network trained via supervised learning to steer an autonomous car. The human drives → network records (image, steering angle) pairs → network learns the mapping. A simple but landmark demonstration of end-to-end supervised learning.</p>
+            <div class="tags">
+                <span class="tag tag-blue">Regression</span>
+                <span class="tag tag-green">Classification</span>
+                <span class="tag tag-gold">Logistic Regression</span>
+                <span class="tag tag-pink">SVM + Kernels</span>
+                <span class="tag tag-blue">ALVINN Demo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7 — Unsupervised -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">07</span>
+            <h2>Unsupervised Learning — Deep Dive</h2>
+        </div>
+        <div class="card accent-pink">
+            <p>In unsupervised learning, you are given only inputs X — <strong>no labels</strong>. The task is to discover hidden structure or patterns on your own.</p>
+            <p><strong>Clustering (K-Means):</strong> Automatically groups data into clusters. Applications include Google News (grouping articles by topic), genomic microarray analysis (grouping individuals by genetic profile), social network community detection, and customer market segmentation.</p>
+            <p><strong>Cocktail Party Problem / ICA:</strong> Multiple microphones record overlapping voices in a noisy room. Independent Components Analysis (ICA) separates them into individual clean audio streams — with no labels, purely from the mixed recordings. Students implement this in a homework.</p>
+            <p><strong>Word Embeddings (from unlabeled text):</strong> Learning analogies like <em>man:woman :: king:queen</em> or <em>Tokyo:Japan :: Washington DC:USA</em> purely from raw internet text — no labeled data needed.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 8 — Reinforcement -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">08</span>
+            <h2>Reinforcement Learning — Deep Dive</h2>
+        </div>
+        <div class="card accent-purple">
+            <p>In reinforcement learning (RL), there are no labeled (X, Y) pairs at all. Instead, the agent interacts with an environment and receives a <strong>reward signal</strong> — positive for good outcomes, negative for bad ones.</p>
+            <p><strong>Helicopter example:</strong> No one knows the optimal way to move a helicopter's control sticks. So you let the helicopter try different actions; when it flies steadily, reward it ("good helicopter!"); when it crashes, penalize it ("bad helicopter!"). Over time the RL algorithm learns the optimal control policy.</p>
+            <p><strong>Dog-training analogy:</strong> Ng used training a dog as an intuitive metaphor — reward desired behaviors, discourage unwanted ones, and the animal (or algorithm) gradually learns the optimal behavior pattern without being explicitly told every rule.</p>
+            <p>Famous applications: <strong>AlphaGo</strong> (Go), Atari game-playing, robotic locomotion (Boston Dynamics-style obstacle navigation), and logistics optimization.</p>
+            <div class="tags">
+                <span class="tag tag-blue">Reward Signal</span>
+                <span class="tag tag-green">Policy Learning</span>
+                <span class="tag tag-gold">Robotics</span>
+                <span class="tag tag-pink">AlphaGo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 9 — ML Strategy -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">09</span>
+            <h2>ML Strategy — The "Hidden" Skill</h2>
+        </div>
+        <div class="card accent2">
+            <p>One of CS229's most distinctive offerings is its emphasis on <strong>systematic engineering principles</strong> for ML. Ng observed that two teams using the exact same algorithm can have vastly different outcomes — often because one team is strategic and the other is not.</p>
+            <p>Common pitfall: spending 6 months on an approach that was never going to work. An experienced practitioner can sometimes look at a setup and immediately see the flaw — but this "black magic tribal knowledge" should be made systematic.</p>
+            <p><strong>Analogies used:</strong></p>
+            <ul class="styled">
+                <li>Debugging code by <em>deleting lines with syntax errors</em> — wrong approach. Good engineers profile first, then optimize the bottleneck.</li>
+                <li>Ng mentioned he was writing a free book (<em>Machine Learning Yearning</em>) to codify these systematic engineering principles for ML practitioners.</li>
+            </ul>
+            <p>Topics include: when to collect more data, which architecture to choose, how to interpret training/test error gaps, and how to efficiently lead an ML team.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Courses Comparison -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-number">10</span>
+            <h2>CS229 vs. CS229a vs. CS230</h2>
+        </div>
+        <div class="grid-2">
+            <div class="mini-card">
+                <h4>CS229 (This Course)</h4>
+                <p>Most <strong>mathematical</strong>. Broadest coverage of ML algorithms. Rigorous derivations, proofs, and theory. Heavy workload. Best for those ready for depth.</p>
+            </div>
+            <div class="mini-card">
+                <h4>CS229a</h4>
+                <p>Flipped classroom, more <strong>applied</strong>. Less math; more hands-on programming. Good stepping stone before CS229. Enrollment capped at 100.</p>
+            </div>
+            <div class="mini-card">
+                <h4>CS230</h4>
+                <p>Focused exclusively on <strong>deep learning</strong>. Narrower scope than CS229 but goes deep on neural networks. More practical/applied than CS229 in that specific domain.</p>
+            </div>
+            <div class="mini-card">
+                <h4>Taking Multiple</h4>
+                <p>Ng actively <strong>encourages</strong> taking multiple courses. Little overlap in content. For true ML expertise: CS229 + CS230 + probability, optimization, and RL courses recommended.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Closing takeaway -->
+    <div class="takeaway">
+        <h3>The Meaning Behind the Math</h3>
+        <p>Ng closed by noting that beyond career success, machine learning offers a rare opportunity to meaningfully improve the world — better healthcare, personalized education, stronger democratic systems. "With these tools, you actually have the power to do that."</p>
+    </div>
+
+</div>
+
+</body>
+</html>
