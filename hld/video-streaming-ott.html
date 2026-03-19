@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Streaming (Netflix/YouTube) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Video Streaming (Netflix/YouTube)</h1>
+                <p>OTT Platform System Design — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design guide for building an OTT (Over-The-Top) video streaming platform similar to Netflix, Amazon Prime, or Hotstar. Covers video processing, backend architecture, API design, and streaming protocols.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li><strong>User registration and subscription management:</strong> Create accounts, subscribe (monthly/yearly) before accessing content</li>
+                        <li><strong>Content search:</strong> Search movies/shows by title or genre</li>
+                        <li><strong>Video playback:</strong> Multiple resolutions from 480p to 4K</li>
+                        <li><strong>Recommendation engine:</strong> Typically out of scope (complexity, AI/ML)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> ~200 million users globally, ~10,000 videos (~1 hour each)</li>
+                        <li><strong>CAP:</strong> Prioritize high availability for viewing; strong consistency for payment and subscription only</li>
+                        <li><strong>Latency:</strong> Zero or minimal buffering for seamless playback</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>User</strong> — Metadata including subscription status</li>
+                        <li><strong>Video</strong> — Actual video files in blob storage (e.g., S3)</li>
+                        <li><strong>Video metadata</strong> — Titles, descriptions, thumbnails, manifest files in metadata DB</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design Overview</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Details</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/register</code></td><td>POST</td><td>User registration</td><td>Input: name, email, password</td></tr>
+                            <tr><td><code>/login</code>, <code>/logout</code>, <code>/updateProfile</code></td><td>GET/POST</td><td>Auth &amp; profile management</td><td>—</td></tr>
+                            <tr><td><code>/subscriptions</code></td><td>GET</td><td>Fetch subscription plans</td><td>Output: list of plans</td></tr>
+                            <tr><td><code>/subscribe</code></td><td>POST</td><td>User subscribes to plan</td><td>Input: user ID, plan ID</td></tr>
+                            <tr><td><code>/search</code></td><td>GET</td><td>Search movies/shows by title or genre</td><td>Output: paginated video metadata</td></tr>
+                            <tr><td><code>/video/{videoId}/metadata</code></td><td>GET</td><td>Video metadata</td><td>Output: video metadata JSON</td></tr>
+                            <tr><td><code>/video/{videoId}/play</code></td><td>GET</td><td>Stream video for playback</td><td>Output: video chunks/manifest</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Architecture</h2>
+                    <ul>
+                        <li><strong>Client:</strong> Interface for streaming and interaction</li>
+                        <li><strong>Load Balancer &amp; API Gateway:</strong> Round-robin traffic; auth, routing, rate limiting</li>
+                        <li><strong>User Service:</strong> Registration, login, metadata; MySQL</li>
+                        <li><strong>Subscription Service:</strong> Plans, payments, status; Payment Gateway, Payment DB; Kafka for async updates</li>
+                        <li><strong>Search Service:</strong> Video metadata search via Elasticsearch</li>
+                        <li><strong>Play Service:</strong> Streaming; fetches manifest, adaptive streaming</li>
+                        <li><strong>Uploader Service:</strong> Backend uploads videos; not user-facing</li>
+                        <li><strong>Blob Storage (S3):</strong> Video files and thumbnails</li>
+                        <li><strong>CDN:</strong> Caches popular video chunks closer to users</li>
+                        <li><strong>Kafka:</strong> Event-driven; subscription payments, async updates</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design — Databases and Schema</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Database</th><th>Type</th><th>Purpose</th><th>Key Fields</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User DB</td><td>MySQL</td><td>User info, subscription status</td><td>user_id, name, email, password, subscription_status, expiry_date</td></tr>
+                            <tr><td>Subscription DB</td><td>MySQL</td><td>Subscription plans</td><td>subscription_id, name, price, validity, currency</td></tr>
+                            <tr><td>Payment DB</td><td>MySQL</td><td>Payment transactions</td><td>payment_id, user_id, amount, currency, timestamp</td></tr>
+                            <tr><td>Video Metadata DB</td><td>MongoDB</td><td>Video metadata, manifest files</td><td>video_id, title, description, thumbnails, manifest file</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Video Processing Pipeline</h2>
+                    <ul>
+                        <li><strong>Uploader Service</strong> uploads video and metadata</li>
+                        <li><strong>Blob Storage</strong> holds raw video and thumbnails</li>
+                        <li><strong>Chunker Service</strong> splits video into segments (2–10 seconds)</li>
+                        <li><strong>Kafka</strong> buffers chunked segments</li>
+                        <li><strong>Video Encoder Service</strong> encodes each chunk into multiple resolutions (480p, 720p, 1080p, 4K) using H.264/H.265</li>
+                        <li>Encoded segments stored back in Blob Storage</li>
+                        <li><strong>Manifest file</strong> (playlist) maintains sequence and resolution variants:
+                            <ul>
+                                <li><strong>M3U8</strong> — HLS protocol</li>
+                                <li><strong>MPD</strong> — DASH protocol</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Streaming Protocols Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>HLS</th><th>DASH</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Manifest format</td><td>M3U8</td><td>MPD</td></tr>
+                            <tr><td>Segment formats</td><td>TS or MP4</td><td>MP4 or TS</td></tr>
+                            <tr><td>Bitrate switching</td><td>One segment at a time</td><td>Prefetch multiple segments/bitrates</td></tr>
+                            <tr><td>Segment duration</td><td>6–10 seconds</td><td>2–4 seconds</td></tr>
+                            <tr><td>Multiple bitrate fetching</td><td>No</td><td>Yes</td></tr>
+                            <tr><td>Usage</td><td>Widely used; limited flexibility</td><td>Netflix, Amazon Prime prefer</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Adaptive Streaming Logic</h2>
+                    <ul>
+                        <li>Client downloads manifest from Play Service</li>
+                        <li>Client measures bandwidth and requests appropriate chunk resolution</li>
+                        <li>Chunks fetched from CDN for lower latency</li>
+                        <li>Quality adjusts dynamically based on real-time bandwidth</li>
+                        <li>Each chunk starts with I-frame for smooth transitions</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: System Components</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Responsibility</th><th>Notes</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>API Gateway</td><td>Auth, routing, rate limiting</td><td>Round-robin load balancing</td></tr>
+                            <tr><td>User Service</td><td>Onboarding, authentication</td><td>MySQL, JWT</td></tr>
+                            <tr><td>Subscription Service</td><td>Payments, plan management</td><td>Payment gateway, Kafka</td></tr>
+                            <tr><td>Search Service</td><td>Video metadata search</td><td>Elasticsearch, CDC pipeline</td></tr>
+                            <tr><td>Play Service</td><td>Streaming orchestration</td><td>Manifest, chunk delivery</td></tr>
+                            <tr><td>Blob Storage</td><td>Raw and encoded video, thumbnails</td><td>S3 or equivalent</td></tr>
+                            <tr><td>CDN</td><td>Caches popular video chunks</td><td>Geographically distributed</td></tr>
+                            <tr><td>Uploader Service</td><td>Backend video upload</td><td>Internal only</td></tr>
+                            <tr><td>Kafka</td><td>Event-driven messaging</td><td>Subscription, notifications</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>Separate concerns: user management, subscription, search, playback</li>
+                        <li>High availability and low latency are critical for streaming</li>
+                        <li>Pipeline: chunking → encoding → manifest files enables adaptive streaming</li>
+                        <li>CDN reduces latency and buffering by caching content near users</li>
+                        <li>DASH offers multi-bitrate prefetching; preferred by Netflix, Prime</li>
+                        <li>Kafka for async subscription and notification updates</li>
+                        <li>MongoDB for video metadata due to schema flexibility</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

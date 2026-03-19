@@ -134,26 +134,6 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
-        .mind-map {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .mind-map-node {
-            background: white;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            padding: 12px 16px;
-            min-width: 140px;
-            text-align: center;
-        }
-        .mind-map-node.center { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; }
-        .mind-map-node.branch { background: #e8eaf6; border-color: #764ba2; }
-        .mind-map-node.leaf { background: #f8f9fa; font-size: 0.9em; }
-        .mind-map-branch { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
-        .mind-map-branch-title { width: 100%; font-weight: 600; color: #764ba2; margin-bottom: 8px; font-size: 0.95em; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -178,77 +158,6 @@
                 <div class="section">
                     <h2>Summary</h2>
                     <p>Comprehensive system design walkthrough for building a chat application similar to WhatsApp or Facebook Messenger. Supports one-to-one and group messaging, media sharing, message history, delivery/read receipts, and scalability to billions of users.</p>
-                </div>
-
-                <div class="section">
-                    <h2>Mind Map Overview</h2>
-                    <p>Visual summary of the Chat Application system design:</p>
-                    <div class="mind-map">
-                        <div class="mind-map-node center">Chat Application<br>System Design</div>
-                        <div class="mind-map-branch" style="width: 100%;">
-                            <div class="mind-map-branch-title">1. Requirements</div>
-                            <div class="mind-map-node branch">Functional</div>
-                            <div class="mind-map-node leaf">User Signup/Login</div>
-                            <div class="mind-map-node leaf">One-to-One Messaging</div>
-                            <div class="mind-map-node leaf">Group Messaging</div>
-                            <div class="mind-map-node leaf">Chat History</div>
-                            <div class="mind-map-node leaf">Media (Image/Video)</div>
-                            <div class="mind-map-node leaf">Sent/Delivered/Read Receipt</div>
-                            <div class="mind-map-node branch">Non-Functional</div>
-                            <div class="mind-map-node leaf">High Availability</div>
-                            <div class="mind-map-node leaf">Low Latency (&lt;300ms)</div>
-                            <div class="mind-map-node leaf">High Reliability (Zero Message Loss)</div>
-                            <div class="mind-map-node leaf">Scalability (1B Users)</div>
-                        </div>
-                        <div class="mind-map-branch" style="width: 100%;">
-                            <div class="mind-map-branch-title">2. Core Entities</div>
-                            <div class="mind-map-node leaf">User</div>
-                            <div class="mind-map-node leaf">Message</div>
-                            <div class="mind-map-node leaf">Group</div>
-                        </div>
-                        <div class="mind-map-branch" style="width: 100%;">
-                            <div class="mind-map-branch-title">3. API Design</div>
-                            <div class="mind-map-node leaf">User Register</div>
-                            <div class="mind-map-node leaf">WS Send Message</div>
-                            <div class="mind-map-node leaf">Get Chat History</div>
-                            <div class="mind-map-node leaf">Create/Join Group</div>
-                            <div class="mind-map-node leaf">Upload Media</div>
-                        </div>
-                        <div class="mind-map-branch" style="width: 100%;">
-                            <div class="mind-map-branch-title">4. High-Level Architecture</div>
-                            <div class="mind-map-node branch">Gateway Layer</div>
-                            <div class="mind-map-node leaf">API Gateway (HTTP)</div>
-                            <div class="mind-map-node leaf">WebSocket Gateway</div>
-                            <div class="mind-map-node leaf">Load Balancer</div>
-                            <div class="mind-map-node branch">Services</div>
-                            <div class="mind-map-node leaf">User Service</div>
-                            <div class="mind-map-node leaf">Chat Service</div>
-                            <div class="mind-map-node leaf">Group Service</div>
-                            <div class="mind-map-node leaf">Media Upload Service</div>
-                            <div class="mind-map-node leaf">Notification (FCM/APNs)</div>
-                            <div class="mind-map-node branch">Storage</div>
-                            <div class="mind-map-node leaf">User DB (PostgreSQL)</div>
-                            <div class="mind-map-node leaf">Group DB (PostgreSQL)</div>
-                            <div class="mind-map-node leaf">Chat DB (Cassandra)</div>
-                            <div class="mind-map-node leaf">Blob Storage (S3)</div>
-                            <div class="mind-map-node leaf">Redis (WS Registry)</div>
-                        </div>
-                        <div class="mind-map-branch" style="width: 100%;">
-                            <div class="mind-map-branch-title">5. Key Design Components</div>
-                            <div class="mind-map-node branch">WebSocket Protocol</div>
-                            <div class="mind-map-node leaf">Full-Duplex Connection</div>
-                            <div class="mind-map-node leaf">HTTP Handshake</div>
-                            <div class="mind-map-node leaf">Sticky Sessions</div>
-                            <div class="mind-map-node branch">Message Flow</div>
-                            <div class="mind-map-node leaf">Redis Streams</div>
-                            <div class="mind-map-node leaf">Message Consumer</div>
-                            <div class="mind-map-node leaf">Offline Support</div>
-                            <div class="mind-map-node branch">Optimizations</div>
-                            <div class="mind-map-node leaf">CDN for Media</div>
-                            <div class="mind-map-node leaf">Local Cache (SQLite)</div>
-                            <div class="mind-map-node leaf">ElasticSearch (Message Search)</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="section">
@@ -404,7 +313,7 @@
                 </div>
 
                 <div class="section">
-                    <h2>Key Design Components (from Mind Map)</h2>
+                    <h2>Key Design Components</h2>
                     <h3>WebSocket Protocol</h3>
                     <ul>
                         <li>Full-duplex connection</li>
