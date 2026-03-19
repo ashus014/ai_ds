@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proximity Search - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Proximity Search</h1>
+                <p>Quad Tree vs Geohash vs PostGIS vs Elasticsearch — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Overview</h2>
+                    <p>Proximity search finds nearby locations (restaurants, hotels, drivers) within a radius from a user. Essential in Uber, Zomato, hotel booking systems. Four main approaches covered: Quad Tree, Geohashing, PostgreSQL GIS, Elasticsearch.</p>
+                </div>
+
+                <div class="section">
+                    <h2>1. Quad Tree</h2>
+                    <h3>Definition</h3>
+                    <p>Tree data structure where each node has four children, recursively partitioning 2D geographic space into four quadrants.</p>
+                    <h3>Implementation</h3>
+                    <ul>
+                        <li>Entire world divided into four quadrants</li>
+                        <li>Each quadrant subdivided recursively until fine granularity (one or few data points)</li>
+                        <li>Leaf nodes represent actual data points or small clusters</li>
+                    </ul>
+                    <h3>Pros</h3>
+                    <ul><li>Simple to explain in interviews</li></ul>
+                    <h3>Cons</h3>
+                    <ul>
+                        <li>Assumes <strong>uniform data distribution</strong> — unrealistic; real data is uneven</li>
+                        <li><strong>Unbalanced trees:</strong> dense areas have many subdivisions, increasing height and search complexity</li>
+                        <li>Search requires traversing multiple nodes and parent-child backtracking — time-consuming</li>
+                        <li>Data structure, not a database — significant memory and auxiliary space</li>
+                        <li>Updating with new points is costly; partial or full rebuilds (like AVL/BST)</li>
+                        <li>Concurrency: separate read/write copies add overhead</li>
+                    </ul>
+                    <p><strong>Conclusion:</strong> <em>Not recommended for real-world production</em> due to complexity, maintenance challenges, and inefficiency.</p>
+                </div>
+
+                <div class="section">
+                    <h2>2. Geohashing</h2>
+                    <h3>Definition</h3>
+                    <p>Spatial indexing that encodes lat/long into a string via recursive quadrant subdivision and base64 encoding.</p>
+                    <h3>Implementation</h3>
+                    <ul>
+                        <li>Divide world into quadrants labeled with numbers/characters</li>
+                        <li>Subdivide recursively; each step encoded as a character forming the geohash string</li>
+                        <li>Nearby locations share similar geohash prefixes; last character change = adjacent areas</li>
+                    </ul>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Easy to compute and compare geohash strings for proximity</li>
+                        <li>Efficient neighbor lookup by manipulating a few characters</li>
+                        <li>Precision levels control radius: ~5 km (level 5), ~500 m (level 6)</li>
+                        <li>Well-suited for fast location-only proximity search</li>
+                        <li>Simple to store geohash with lat/long in a database</li>
+                    </ul>
+                    <p><strong>Conclusion:</strong> <em>Powerful and practical</em> for pure location-based proximity search (e.g., nearby drivers).</p>
+                </div>
+
+                <div class="section">
+                    <h2>3. PostgreSQL with GIS Extension (PostGIS)</h2>
+                    <h3>Description</h3>
+                    <p>PostgreSQL with GIS capabilities — built-in spatial types and functions.</p>
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Direct storage of geographic points (lat/long)</li>
+                        <li>Spatial functions (e.g., <code>ST_DWithin</code>) for radius queries</li>
+                        <li>Combine spatial queries with indexing and other DB features</li>
+                    </ul>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Mature, well-supported</li>
+                        <li>Complex queries: proximity + other filters</li>
+                        <li>Extensible with fuzzy string matching for text search</li>
+                    </ul>
+                    <p><strong>Use case:</strong> Location + additional attributes or text (e.g., restaurants by name and proximity).</p>
+                </div>
+
+                <div class="section">
+                    <h2>4. Elasticsearch with Geolocation</h2>
+                    <h3>Description</h3>
+                    <p>Elasticsearch natively supports geolocation queries and indexing.</p>
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Built-in geospatial data types</li>
+                        <li>Fast, scalable proximity search</li>
+                        <li>Out-of-the-box full-text and fuzzy search</li>
+                        <li>No extra extension installation</li>
+                    </ul>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Easy integration</li>
+                        <li>Combined geo + text search naturally</li>
+                    </ul>
+                    <p><strong>Use case:</strong> Both textual and proximity search at scale (e.g., restaurants by name and location).</p>
+                </div>
+
+                <div class="section">
+                    <h2>Comparative Summary</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Approach</th><th>Data Structure / Tool</th><th>Pros</th><th>Cons</th><th>Best Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Quad Tree</td>
+                                <td>Data Structure</td>
+                                <td>Easy to explain</td>
+                                <td>Complex to maintain, unbalanced, memory heavy</td>
+                                <td><em>Not recommended for production</em></td>
+                            </tr>
+                            <tr>
+                                <td>Geohashing</td>
+                                <td>Indexing Algorithm</td>
+                                <td>Simple, fast, precision control</td>
+                                <td>Location-only; needs additional DB</td>
+                                <td>Fast location-only proximity search</td>
+                            </tr>
+                            <tr>
+                                <td>PostgreSQL + GIS</td>
+                                <td>Database + Extension</td>
+                                <td>Mature, spatial &amp; textual</td>
+                                <td>Requires extension setup</td>
+                                <td>Location + attribute/text search</td>
+                            </tr>
+                            <tr>
+                                <td>Elasticsearch</td>
+                                <td>Search Engine</td>
+                                <td>Plug-and-play, geo + full-text</td>
+                                <td>Setup complexity if unfamiliar</td>
+                                <td>Combined geo + fuzzy text at scale</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li><strong>Avoid Quad Trees</strong> in production — complexity and inefficiency</li>
+                        <li><strong>Geohashing</strong> for pure location-based proximity search</li>
+                        <li>For <strong>spatial + textual</strong> search: PostgreSQL GIS or Elasticsearch</li>
+                        <li>Geohash precision: tune radius from km to meters</li>
+                        <li>Store geohash with lat/long for efficient prefix-matching queries</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Keywords</h2>
+                    <p>Proximity Search · Quad Tree · Geohashing · PostgreSQL GIS · Elasticsearch Geolocation · Spatial Indexing · Location-Based Services · System Design · Fuzzy Search · Radius Query</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
