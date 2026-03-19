@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centralized Logging (Splunk) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Centralized Logging (Splunk)</h1>
+                <p>Distributed Logging System — HLD Notes</p>
+                <span class="date-badge">Completed: 18 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>System design for a distributed logging platform that collects, processes, and exposes logs from multiple microservices globally. Focus on scalability, reliability, and near real-time availability — similar to Splunk.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Multi-source ingestion:</strong> Logs from microservices deployed worldwide</li>
+                        <li><strong>Near real-time submission:</strong> Low latency from generation to availability</li>
+                        <li><strong>Offline/batch submission:</strong> Support reconnecting clients uploading logs</li>
+                        <li><strong>Validation and normalization:</strong> Parse and convert to standard format</li>
+                        <li><strong>Dashboard and search UI:</strong> Search for developers and support engineers</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> Millions of log events per hour</li>
+                        <li><strong>Low latency:</strong> Minimal delay from generation to availability</li>
+                        <li><strong>CAP:</strong> Availability over consistency</li>
+                        <li><strong>Reliability:</strong> No data loss during ingestion</li>
+                        <li><strong>Retention:</strong> Configurable TTL (e.g., 30–45 days)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Entity</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Log Event</td><td>Individual log entries from microservices</td></tr>
+                            <tr><td>Injection Job</td><td>Batch job for offline log submission</td></tr>
+                            <tr><td>Agent/Source</td><td>Client agent (e.g., Fluent Bit) that collects and forwards logs</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Design</h2>
+                    <ul>
+                        <li><strong>Clients/Microservices:</strong> Log4j → stdout/stderr</li>
+                        <li><strong>Agent:</strong> Reads container log files; forwards to backend via API Gateway</li>
+                        <li><strong>API Gateway &amp; Load Balancer:</strong> Auth, rate limiting, routing</li>
+                        <li><strong>Client Onboarding Service:</strong> Registers organizations; issues client ID and token</li>
+                        <li><strong>Injection Service:</strong> Real-time (agent) and batch (file) ingestion</li>
+                        <li><strong>Kafka Broker:</strong> Buffer and queue for high ingestion; decoupled processing</li>
+                        <li><strong>Apache Flink:</strong> Validation, parsing, normalization, enrichment, de-duplication</li>
+                        <li><strong>Log DB (Cassandra):</strong> Write-optimized storage for validated logs</li>
+                        <li><strong>Elasticsearch:</strong> Fast text search for recent logs (e.g., last 14 days)</li>
+                        <li><strong>Cold Storage (S3):</strong> Long-term archive for older logs</li>
+                        <li><strong>Search Service:</strong> Queries Elasticsearch (recent) and Cassandra (older)</li>
+                        <li><strong>Dashboard/UI:</strong> WebSocket streaming or polling</li>
+                        <li><strong>Alerting &amp; Notification:</strong> Error detection, alerts, email/SMS/pager</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Log Flow</h2>
+                    <p>Microservice → Log4j (stdout/stderr) → Kubernetes captures → Agent (Fluent Bit) → API Gateway → Injection Service → Kafka → Apache Flink → Cassandra &amp; Elasticsearch → Search Service → Dashboard</p>
+                </div>
+
+                <div class="section">
+                    <h2>Client Onboarding</h2>
+                    <ul>
+                        <li>Organizations register once; receive client ID and token</li>
+                        <li>Postgres schema: client_id, token, token_ttl, environment (dev/staging/prod)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Kafka Topics</h2>
+                    <ul>
+                        <li><strong>Raw logs:</strong> Unprocessed logs</li>
+                        <li><strong>Validated/enriched logs:</strong> Processed logs</li>
+                        <li><strong>Alert topic:</strong> Error logs that trigger alerts</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Apache Flink Responsibilities</h2>
+                    <ul>
+                        <li>Validation (malicious content, incomplete logs)</li>
+                        <li>Parsing and normalization (standard formats)</li>
+                        <li>Enrichment (metadata)</li>
+                        <li>De-duplication</li>
+                        <li>Write to Cassandra, Elasticsearch, S3</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Storage Tiers and Retention</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Storage</th><th>Retention</th><th>Purpose</th><th>Tradeoff</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Elasticsearch</td><td>Last 14 days</td><td>Fast text search for dashboard</td><td>Costly but performant</td></tr>
+                            <tr><td>Cassandra</td><td>30–45 days</td><td>Persistent log storage</td><td>Write-optimized, scalable</td></tr>
+                            <tr><td>S3 / Blob</td><td>Long-term</td><td>Cold storage, compliance</td><td>Cost-effective, slower</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Soft delete from Cassandra after TTL; cold storage retains for compliance.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Search Optimization</h2>
+                    <p>Index by log level, trace ID, service name for quick filtering.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Alerting Design</h2>
+                    <ul>
+                        <li>Flink identifies error logs → pushes to Kafka alert topic</li>
+                        <li>Alert Service consumes; evaluates rules (Alert DB); triggers Notification Service</li>
+                        <li>Preferences (email, SMS, pager) stored as client metadata</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Dashboard Log Streaming</h2>
+                    <ul>
+                        <li><strong>WebSocket:</strong> Continuous near real-time streaming</li>
+                        <li><strong>Polling:</strong> Periodic fetch (every few seconds)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Components and Responsibilities</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Responsibility</th><th>Technology</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Client Onboarding</td><td>Register org, issue ID/token</td><td>REST API, PostgreSQL</td></tr>
+                            <tr><td>Agent</td><td>Read container logs, forward</td><td>Fluent Bit</td></tr>
+                            <tr><td>API Gateway</td><td>Auth, rate limiting, routing</td><td>Load balancer</td></tr>
+                            <tr><td>Injection Service</td><td>Ingest real-time &amp; batch</td><td>Microservices</td></tr>
+                            <tr><td>Kafka</td><td>Buffer, decouple</td><td>Kafka Broker</td></tr>
+                            <tr><td>Apache Flink</td><td>Validation, enrichment, dedup</td><td>Apache Flink</td></tr>
+                            <tr><td>Log DB</td><td>Store validated logs</td><td>Cassandra</td></tr>
+                            <tr><td>Search Service</td><td>Search logs</td><td>Elasticsearch</td></tr>
+                            <tr><td>Cold Storage</td><td>Long-term archive</td><td>S3</td></tr>
+                            <tr><td>Alert Service</td><td>Consume alerts, trigger notifications</td><td>Kafka consumer</td></tr>
+                            <tr><td>Notification Service</td><td>Email, SMS, pager</td><td>Third-party APIs</td></tr>
+                            <tr><td>Dashboard/UI</td><td>Display logs, search</td><td>WebSocket, polling</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Separation of concerns: ingestion, processing, storage, search, alerting</li>
+                        <li>Kafka + Apache Flink for scalable stream processing</li>
+                        <li>Multi-tier storage balances cost and performance</li>
+                        <li>Availability over consistency for log ingestion</li>
+                        <li>Organization-level onboarding simplifies auth</li>
+                        <li>Alerting adds proactive monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
