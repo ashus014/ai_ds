@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener (Bitly) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>URL Shortener (Bitly-like)</h1>
+                <p>System Design — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design walkthrough for building a URL shortening service, a common interview question. Introduces a structured framework: gathering requirements, defining core entities, designing APIs, and iterating from high-level to low-level design with scalability, reliability, and performance in mind.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key Concepts and Framework</h2>
+                    <h3>System Design Framework (5 Steps)</h3>
+                    <ol style="list-style: decimal; margin-left: 25px;">
+                        <li style="padding-left: 5px; margin-bottom: 8px;">Requirement Gathering: Functional &amp; non-functional requirements</li>
+                        <li style="padding-left: 5px; margin-bottom: 8px;">Identify Core Entities</li>
+                        <li style="padding-left: 5px; margin-bottom: 8px;">API Design</li>
+                        <li style="padding-left: 5px; margin-bottom: 8px;">High-Level Design</li>
+                        <li style="padding-left: 5px; margin-bottom: 8px;">Low-Level Design</li>
+                    </ol>
+                    <h3>Problem Statement</h3>
+                    <p>Design a system that converts long URLs into short, easy-to-share URLs. <strong>One-to-one mapping</strong> between short and long URLs. Users provide a long URL; system returns shortened version. When short URL is accessed, system redirects to original long URL.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li>Generate short URL for a given long URL</li>
+                        <li>Redirect short URL to corresponding long URL</li>
+                        <li>Support for <strong>custom short URLs</strong> (premium feature)</li>
+                        <li>Support for URL <strong>expiration dates</strong> (default 90 days, customizable for premium users)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Low latency:</strong> URL shortening and redirection within ~200 ms</li>
+                        <li><strong>High availability:</strong> Prioritize availability over strict consistency (CAP theorem)</li>
+                        <li><strong>Scalability:</strong> ~100 million daily active users, ~1 billion URLs shortened</li>
+                        <li><strong>Uniqueness:</strong> Shortened URLs must be unique</li>
+                        <li><strong>Eventual consistency:</strong> Acceptable small delay in redirection consistency</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Entity</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User</td><td>Person creating or accessing URLs</td></tr>
+                            <tr><td>Long URL</td><td>Original full-length URL</td></tr>
+                            <tr><td>Short URL</td><td>Generated shortened URL</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>API Design</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Method</th><th>Request Body</th><th>Response</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>/v1/shorten</code></td>
+                                <td>POST</td>
+                                <td><code>long_url</code> (required), <code>custom_url</code> (optional), <code>expiration_date</code> (optional)</td>
+                                <td><code>short_url</code></td>
+                                <td>Generate short URL from long URL</td>
+                            </tr>
+                            <tr>
+                                <td><code>/v1/{short_url}</code></td>
+                                <td>GET</td>
+                                <td>None</td>
+                                <td>Redirect to <code>long_url</code></td>
+                                <td>Redirect user from short URL to long URL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level Design</h2>
+                    <ul>
+                        <li><strong>Client:</strong> Sends requests to shorten or access URLs</li>
+                        <li><strong>Backend Server:</strong> Handles URL shortening logic and redirection</li>
+                        <li><strong>Database:</strong> Stores mapping between short URLs and long URLs, user metadata, expiration dates, custom URL info</li>
+                        <li><strong>Redis Cache:</strong> Speeds up redirection by caching mappings to reduce DB hits</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design — URL Shortening Approaches</h2>
+
+                    <h3>1. Hash-based / Encryption Approach</h3>
+                    <ul>
+                        <li>Use hashing libraries (MD5, SHA1, Base64) to create hash of long URL</li>
+                        <li>Return first 5–6 characters as short URL</li>
+                        <li><strong>Problem:</strong> Hash collisions (only substring used) → duplicates</li>
+                        <li><strong>Mitigation:</strong> Check DB for duplicates; if collision, re-hash with additional data</li>
+                        <li><strong>Drawbacks:</strong> High latency due to DB scanning; increases exponentially with collisions</li>
+                    </ul>
+
+                    <h3>2. Counter-Based Approach</h3>
+                    <ul>
+                        <li>Maintain a <strong>global counter</strong> that increments for each new URL</li>
+                        <li>Return counter value (converted to base62) as short URL</li>
+                        <li><strong>Advantages:</strong> No collision; faster generation (no DB scans needed)</li>
+                        <li><strong>Challenges:</strong>
+                            <ul>
+                                <li>Scaling counters with multiple servers → duplicate IDs if counters are local</li>
+                                <li>Requires <strong>centralized counter store</strong> (e.g., Redis) for atomic increments</li>
+                                <li>Single Redis = single point of failure; Redis clusters add synchronization complexity</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>3. Distributed Unique ID Generation Using Zookeeper</h3>
+                    <ul>
+                        <li><strong>Zookeeper</strong> as distributed coordination service</li>
+                        <li>Servers register with Zookeeper; each gets a <strong>unique worker ID</strong></li>
+                        <li><strong>Snowflake ID generator:</strong> 64-bit ID composed of:
+                            <ul>
+                                <li>1-bit sign</li>
+                                <li>41-bit timestamp</li>
+                                <li>10-bit worker ID (from Zookeeper)</li>
+                                <li>12-bit local counter</li>
+                            </ul>
+                        </li>
+                        <li>Snowflake IDs generated locally with guaranteed uniqueness across servers; no cross-server coordination or DB hits</li>
+                        <li>Snowflake ID can be hashed (e.g., MD5) and truncated to produce short URL</li>
+                        <li><strong>Benefits:</strong> No collisions; lowest latency; removes single points of failure</li>
+                        <li>Zookeeper called <strong>only on server startup</strong>, not per request</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Additional Design Considerations</h2>
+                    <h3>Separation of Concerns</h3>
+                    <ul>
+                        <li>Separate microservices for URL shortening (encryption) and redirection (decryption)</li>
+                        <li>Scale decryption services more than encryption (redirection traffic ~80% of requests)</li>
+                    </ul>
+                    <h3>Caching</h3>
+                    <ul>
+                        <li>Redis cache for redirection lookups; reduces DB latency from ~10ms to ~2ms</li>
+                        <li>Cache TTL matches URL expiration to avoid stale data</li>
+                    </ul>
+                    <h3>Expiration and Cleanup</h3>
+                    <ul>
+                        <li>Store expiration dates in DB and cache</li>
+                        <li>Daily cron job to clean expired URLs from DB and cache</li>
+                    </ul>
+                    <h3>Custom URLs</h3>
+                    <p>Check uniqueness in DB before allowing user-defined short URLs (premium feature).</p>
+                    <h3>HTTP Redirect Status Codes</h3>
+                    <ul>
+                        <li><strong>301 (Permanent Redirect):</strong> Browser caches mapping; reduces server load but loses tracking</li>
+                        <li><strong>302 (Temporary Redirect):</strong> Every request hits server; enables analytics and logging</li>
+                    </ul>
+                    <h3>Database Choice</h3>
+                    <ul>
+                        <li>Simple key-value store with indexing on short URL</li>
+                        <li>PostgreSQL or MySQL sufficient</li>
+                        <li>Index on short URL for efficient lookups</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: URL Shortening Approaches</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Approach</th><th>Uniqueness</th><th>Latency</th><th>Scalability</th><th>Single Point of Failure</th><th>Complexity</th><th>Notes</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hash-based</td>
+                                <td>No (collisions)</td>
+                                <td>Higher (~16ms+)</td>
+                                <td>Limited</td>
+                                <td>No</td>
+                                <td>Low</td>
+                                <td>Needs collision resolution via DB check</td>
+                            </tr>
+                            <tr>
+                                <td>Counter-based</td>
+                                <td>Yes (with global counter)</td>
+                                <td>Low (~6ms)</td>
+                                <td>Moderate</td>
+                                <td>Redis (single or cluster complexity)</td>
+                                <td>Medium</td>
+                                <td>Requires global atomic counter</td>
+                            </tr>
+                            <tr>
+                                <td>Zookeeper + Snowflake</td>
+                                <td>Yes</td>
+                                <td>Lowest (~2–3ms)</td>
+                                <td>High</td>
+                                <td>Distributed</td>
+                                <td>High</td>
+                                <td>Best for large scale; complex to implement</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Requirement gathering and clarifying functional &amp; non-functional needs are crucial first steps</li>
+                        <li>Prioritize availability over consistency for URL shortening (user experience, eventual consistency tolerance)</li>
+                        <li>Effective scaling requires microservices, load balancing, caching, distributed ID generation</li>
+                        <li>Zookeeper + Snowflake solves scaling and uniqueness; reduces latency and runtime complexity</li>
+                        <li>Caching and separation of encryption/decryption services optimize resource utilization</li>
+                        <li>HTTP status codes (301 vs 302) impact caching and analytics; choice depends on business needs</li>
+                        <li>Always discuss trade-offs and limitations of each design choice in interviews</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Conclusion</h2>
+                    <p>The design progresses from basic ideas (hashing) through practical improvements (counter with Redis) to a robust, scalable distributed system using <strong>Zookeeper and Snowflake IDs</strong>. The final solution balances <strong>performance, scalability, uniqueness, availability</strong>, and <strong>maintainability</strong>. Emphasizes structured problem-solving, API clarity, and system-level trade-offs in system design interviews.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
