@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Platform (Facebook/Instagram) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Social Media Platform (Facebook/Instagram)</h1>
+                <p>System Design — HLD Notes</p>
+                <span class="date-badge">Completed: 15 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive approach to designing a large-scale social media platform like Facebook or Instagram for system design interviews. Covers functional and non-functional requirements, core entities, API design, high-level architecture, and low-level design with optimization techniques.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key Functional Requirements</h2>
+                    <ul>
+                        <li><strong>User onboarding:</strong> Sign up and login</li>
+                        <li><strong>Post creation and sharing:</strong> Text, image, and video posts</li>
+                        <li><strong>Follow system:</strong> Users can follow each other (simplified; no friend requests)</li>
+                        <li><strong>User interactions:</strong> Like and comment on posts</li>
+                        <li><strong>User feed:</strong> Display feed from followed users, prioritized by relevance</li>
+                    </ul>
+                    <p><strong>Out of scope:</strong> Stories, messaging/chat, other advanced features.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> ~500 million daily active users</li>
+                        <li><strong>Availability vs Consistency:</strong> High availability and eventual consistency over strong consistency</li>
+                        <li><strong>Latency:</strong> Average upload latency ~500 ms for posts (text/image)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>User</strong> — Individual using the platform</li>
+                        <li><strong>Post</strong> — Content (text, images, videos)</li>
+                        <li><strong>Follower/Friend relationship</strong> — Who follows whom</li>
+                        <li><strong>Engagement</strong> — Likes and comments on posts</li>
+                        <li><strong>Feed</strong> — Aggregated posts visible on login</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design Overview</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>Endpoints</th><th>Method</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>User Onboarding</td>
+                                <td>Register, Login, Get User Metadata, Update Metadata</td>
+                                <td>POST, GET, PUT</td>
+                                <td>Registration and profile management</td>
+                            </tr>
+                            <tr>
+                                <td>Post Management</td>
+                                <td>Create Post, Get Post, Edit Post, Delete Post, Get Posts by User</td>
+                                <td>POST, GET, PUT, DELETE</td>
+                                <td>CRUD on posts</td>
+                            </tr>
+                            <tr>
+                                <td>Feed</td>
+                                <td>Get Feed</td>
+                                <td>GET</td>
+                                <td>Retrieve paginated feed posts</td>
+                            </tr>
+                            <tr>
+                                <td>Interaction</td>
+                                <td>Like/Unlike, Comment, Follow/Unfollow</td>
+                                <td>POST, DELETE</td>
+                                <td>User interactions with posts and social graph</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>Pagination used for feeds and user posts to handle large volumes.</p>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Architecture</h2>
+                    <ul>
+                        <li><strong>Clients:</strong> Mobile apps or web browsers</li>
+                        <li><strong>Load Balancer &amp; API Gateway:</strong> Auth, authorization, rate limiting; round-robin routing</li>
+                        <li><strong>Microservices:</strong>
+                            <ul>
+                                <li><strong>User Service</strong> — Onboarding, metadata; Postgres</li>
+                                <li><strong>Content Service</strong> — Post creation; text in Cassandra, media in blob storage (S3)</li>
+                                <li><strong>Follower Service</strong> — Follower relationships; Postgres</li>
+                                <li><strong>Engagement Service</strong> — Likes and comments; Kafka + Cassandra</li>
+                                <li><strong>Feed Service</strong> — Generates and serves feeds from feed DB and cache</li>
+                                <li><strong>Moderator Service</strong> — AI/ML content filtering before publishing</li>
+                                <li><strong>Notification Service</strong> — Alerts users on blocked posts</li>
+                                <li><strong>Fan-out Service</strong> — Propagates new posts to followers' feeds</li>
+                                <li><strong>Backfill Service</strong> — Generates feeds in near real-time for infinite scroll</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Deep Dive: Design Details &amp; Optimizations</h2>
+
+                    <h3>Content Upload Flow</h3>
+                    <ul>
+                        <li>Posts buffered in Kafka topic ("raw post")</li>
+                        <li><strong>Moderator service</strong> consumes raw posts, filters, publishes to "filtered post" or "blocked post" topics</li>
+                        <li><strong>Post consumer service</strong> ingests filtered posts → Cassandra (metadata) + blob storage (media)</li>
+                        <li>Blocked posts trigger notifications to users</li>
+                    </ul>
+
+                    <h3>Database Choices and Schema</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Database</th><th>Key Schema Attributes</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User Service</td><td>Postgres (Relational)</td><td>user_id, username, email, password, phone, metadata</td></tr>
+                            <tr><td>Post Metadata</td><td>Cassandra (NoSQL)</td><td>post_id, user_id, post_type, content_text, media_url, counts</td></tr>
+                            <tr><td>Follower Service</td><td>Postgres (Relational)</td><td>follow_id, follower_id, following_id, status, timestamp</td></tr>
+                            <tr><td>Engagement Service</td><td>Cassandra (NoSQL)</td><td>comment_id, post_id, user_id, like_count, reaction_type</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Cassandra for write-heavy, low-latency posts and comments; Postgres for users and followers.</p>
+
+                    <h3>Feed Generation: Challenges and Solutions</h3>
+                    <ul>
+                        <li><strong>Naïve approach</strong> (join followers + posts at runtime) infeasible at scale</li>
+                        <li><strong>Fan-out design</strong> with two models:
+                            <ul>
+                                <li><strong>Push model:</strong> Normal users with fewer followers → update feeds immediately on post creation</li>
+                                <li><strong>Pull model:</strong> Celebrities with millions of followers → fetch posts on-demand when feed requested</li>
+                            </ul>
+                        </li>
+                        <li>Feed <strong>precomputed</strong> and stored in feed DB + cache</li>
+                        <li><strong>Feed cache</strong> (e.g., Redis) in front of feed DB for faster reads</li>
+                        <li><strong>Fan-out service</strong> creates feed entries after moderation; publishes to Kafka</li>
+                        <li><strong>Fan-out consumer</strong> consumes Kafka, updates feed DB and cache</li>
+                        <li><strong>Feed size limits</strong> (e.g., 50–100 posts per user) with TTL</li>
+                        <li>When cached feed exhausted, <strong>backfill service</strong> generates more posts in near real-time</li>
+                        <li><strong>Post materializer</strong> maintains recent user activity in Redis for faster feed generation</li>
+                        <li><strong>Top follower cache</strong> — stores frequently interacted followers to optimize relevance</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights &amp; Conclusions</h2>
+                    <ul>
+                        <li>Microservices and distributed architecture essential for hundreds of millions of users</li>
+                        <li>Prioritize availability and eventual consistency for social media UX</li>
+                        <li>Message brokers (Kafka) enable buffering, async processing, resilience in write-heavy scenarios</li>
+                        <li>Caching layers (feed cache, Redis for activity and top followers) critical for latency and DB load</li>
+                        <li>Fan-out models balance real-time updates with scale: push for average users, pull for high-follower users</li>
+                        <li>Trade-offs between complexity and performance, especially in feed generation and moderation</li>
+                        <li>API design maps closely to functional requirements</li>
+                        <li>Postgres for structured user/relationship data; NoSQL for write-heavy post and engagement data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
