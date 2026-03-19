@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Delivery App (Zomato/Swiggy) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        .flow-block {
+            background: #e8eaf6;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+        .flow-indent { margin-left: 24px; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Food Delivery App (Zomato/Swiggy)</h1>
+                <p>High-Level Design Notes</p>
+                <span class="date-badge">Completed: 18 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Actors</h2>
+                    <ul>
+                        <li><strong>User</strong> – places order</li>
+                        <li><strong>Restaurant</strong> – accepts & prepares food</li>
+                        <li><strong>Delivery Agent</strong> – picks up & delivers food</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li>Sign up / Login</li>
+                        <li>Show nearby open restaurants (by location)</li>
+                        <li>Search restaurant/menu by name</li>
+                        <li>Show restaurant details & menu</li>
+                        <li>Add to cart → Place order → Payment</li>
+                        <li>Restaurant accepts order</li>
+                        <li>Delivery partner gets allocated</li>
+                        <li>Real-time delivery tracking for user</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> 50M users, 1M restaurants</li>
+                        <li><strong>Architecture:</strong> Microservices (due to scale)</li>
+                        <li><strong>CAP Theorem:</strong>
+                            <ul>
+                                <li>Search/browsing → High Availability</li>
+                                <li>Payments/ordering → High Consistency</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <p><strong>User | Restaurant | Food/Menu Item | Delivery Agent | Payment</strong></p>
+                </div>
+
+                <div class="section">
+                    <h2>API Design</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>/register</td><td>POST</td><td>Sign up (body: name, email, password, address)</td></tr>
+                            <tr><td>/login, /logout, /update</td><td>GET/PUT</td><td>Auth operations</td></tr>
+                            <tr><td>/restaurants?lat=&lng=&radius=</td><td>GET</td><td>Nearby restaurants (paginated)</td></tr>
+                            <tr><td>/search?title=&item=</td><td>GET</td><td>Search by name/menu (paginated)</td></tr>
+                            <tr><td>/restaurant/{id}</td><td>GET</td><td>Restaurant metadata</td></tr>
+                            <tr><td>/restaurant/{id}/menu</td><td>GET</td><td>Menu items</td></tr>
+                            <tr><td>/cart</td><td>POST</td><td>Add item (body: itemId, quantity, restaurantId; userId in header)</td></tr>
+                            <tr><td>/cart</td><td>PUT/DELETE</td><td>Update/remove cart items</td></tr>
+                            <tr><td>/order</td><td>POST</td><td>Place order (internally calls payment gateway)</td></tr>
+                            <tr><td>/track/{orderId}</td><td>GET</td><td>Real-time order/delivery status</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level Design — Services</h2>
+
+                    <h3>User Flow</h3>
+                    <p>User Service → User DB (MySQL/Postgres) — handles registration, login, JWT token generation</p>
+
+                    <h3>Search Flow</h3>
+                    <ul>
+                        <li>Search Service → Elasticsearch (for geo + text search) → queries Restaurant DB</li>
+                        <li>Restaurant DB → Elasticsearch via CDC pipeline</li>
+                        <li>Images stored in S3/Blob Storage (URLs saved in DB)</li>
+                    </ul>
+
+                    <h3>Cart Flow</h3>
+                    <ul>
+                        <li>Cart Service → Cart DB (Postgres)</li>
+                        <li>One cart per restaurant (can't mix items from different restaurants)</li>
+                        <li>Schema: cartId, restaurantId, userId, items[ ]</li>
+                    </ul>
+
+                    <h3>Order & Payment Flow</h3>
+                    <p>Order Service → calls Payment Service → 3rd party Payment Gateway → Payment DB (MySQL, highly consistent). On success, Order Service publishes event to Kafka</p>
+
+                    <h3>Kafka Event-Driven Flow (Order Lifecycle)</h3>
+                    <div class="flow-block">
+                        Order Placed<br>
+                        <span class="flow-indent">└── Kafka Topic: "order"</span><br>
+                        <span class="flow-indent">├── Order Consumer → updates Order DB</span><br>
+                        <span class="flow-indent">├── Notification Service → notifies User</span><br>
+                        <span class="flow-indent">└── Restaurant Acceptance Service → sends notification to Restaurant</span><br>
+                        <span class="flow-indent">└── Restaurant Accepts</span><br>
+                        <span class="flow-indent">└── Kafka Topic: "order_confirmed"</span><br>
+                        <span class="flow-indent">├── Order Consumer → updates Order DB (status: confirmed)</span><br>
+                        <span class="flow-indent">└── Delivery Matching Service → finds nearby driver</span><br>
+                        <span class="flow-indent">└── Kafka Topic: "driver_assigned"</span><br>
+                        <span class="flow-indent">└── Order Consumer → updates Order DB (adds driverId)</span>
+                    </div>
+
+                    <h3>Delivery Matching — How It Works</h3>
+                    <ul>
+                        <li>Delivery Matching Service reads from Kafka (accepted orders)</li>
+                        <li>Uses GeoHashing for proximity search to find nearby idle drivers</li>
+                        <li>Sends notification to multiple nearby drivers via Delivery Acceptance Service → API Gateway → Drivers</li>
+                        <li>First driver to accept gets assigned → confirmation event posted back to Kafka</li>
+                    </ul>
+
+                    <h3>Driver Location Updates</h3>
+                    <ul>
+                        <li>Drivers send location every 5–10 seconds</li>
+                        <li>Goes via Kafka Gateway → Kafka Broker (handles massive load)</li>
+                        <li>Location Update Service (consumer) → writes to Redis Cache (NOT directly to DB — too slow)</li>
+                        <li>Delivery Matching Service reads from Redis Cache</li>
+                        <li>TTL set on each driver entry (e.g., 10s) — if no update received, driver considered unavailable</li>
+                    </ul>
+
+                    <h3>Real-Time Tracking (User sees driver location)</h3>
+                    <ul>
+                        <li>WebSocket connection opened once order is picked up</li>
+                        <li>WebSocket Manager — handles connections efficiently (memory-intensive)</li>
+                        <li>Driver streams location → WebSocket Gateway → User</li>
+                    </ul>
+
+                    <h3>"Food Ready" Notification to Driver</h3>
+                    <p>Restaurant marks order as ready → event sent to Order Confirmation Service via Kafka. Order Confirmation Service sends push notification to assigned driver → driver goes for pickup</p>
+                </div>
+
+                <div class="section">
+                    <h2>Schema Snapshots</h2>
+                    <ul>
+                        <li><strong>User DB:</strong> userId, email, password, address, metadata</li>
+                        <li><strong>Restaurant DB:</strong> restaurantId, name, address, status (open/closed), lat/lng, imageURLs[ ]</li>
+                        <li><strong>Menu DB:</strong> menuId, itemId, restaurantId, title, description, imageURL, category, price</li>
+                        <li><strong>Cart DB:</strong> cartId, restaurantId, userId, items[ ]</li>
+                        <li><strong>Order DB:</strong> orderId, userId, restaurantId, items[ ], price, currency, timestamp, driverId</li>
+                        <li><strong>Payment DB:</strong> paymentId, userId, orderId, amount, currency, timestamp, status</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Tech Choices & Justifications</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Choice</th><th>Why</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Elasticsearch</td><td>Geo + text search together; fast for large-scale lookups</td></tr>
+                            <tr><td>Kafka</td><td>Decouples multi-step order lifecycle; prevents tight coupling between services</td></tr>
+                            <tr><td>Redis Cache (for driver location)</td><td>Thousands of drivers updating every 10s — DB writes too slow</td></tr>
+                            <tr><td>WebSockets</td><td>Real-time bidirectional updates for live tracking</td></tr>
+                            <tr><td>GeoHashing</td><td>Efficient proximity search for nearby drivers</td></tr>
+                            <tr><td>S3/Blob Storage</td><td>Store restaurant/food images separately from metadata</td></tr>
+                            <tr><td>MySQL for Payments</td><td>Strong consistency required</td></tr>
+                            <tr><td>Postgres for Orders/Users</td><td>Relational data with good query support</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Interview Tip</h2>
+                    <p>You likely won't need to cover all 3 flows. Clarify with interviewer which actor (User/Restaurant/Driver) to focus on — but know all three.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
