@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Streaming Platform (Spotify) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Music Streaming Platform (Spotify)</h1>
+                <p>System Design Guide — HLD Notes</p>
+                <span class="date-badge">Completed: 22 Nov 2025</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>A comprehensive guide to designing a music streaming platform akin to Spotify, focusing on system design principles. The design process is broken down into seven clear steps: requirements and capacity planning, architecture design, API and database design, scalability considerations, and insights into skillset for senior engineering roles.</p>
+                </div>
+
+                <div class="section">
+                    <h2>1. Requirements and Capacity Planning</h2>
+                    <h3>Target Scale</h3>
+                    <ul>
+                        <li>500,000 users initially</li>
+                        <li>30 million songs</li>
+                    </ul>
+
+                    <h3>Core Features</h3>
+                    <ul>
+                        <li>Artists upload songs</li>
+                        <li>Users search, play songs, create/manage playlists</li>
+                        <li>User profiles to maintain playlists</li>
+                        <li>Basic monitoring: health checks, error tracking, performance metrics</li>
+                    </ul>
+
+                    <h3>Supported Audio Formats</h3>
+                    <p>OGG and AAC, with bitrates:</p>
+                    <ul>
+                        <li>64 kbps — mobile data saving</li>
+                        <li>128 kbps — standard users</li>
+                        <li>320 kbps — premium users</li>
+                    </ul>
+                    <p>Average file size: ~3 MB per song (128 kbps quality).</p>
+
+                    <h3>Storage Estimates</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Estimate</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Raw audio data (30M songs)</td><td>~90 TB</td></tr>
+                            <tr><td>Metadata per song (~100 bytes)</td><td>~3 GB total</td></tr>
+                            <tr><td>User metadata (~1 KB per user)</td><td>~0.5 GB total</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Bandwidth Considerations</h3>
+                    <ul>
+                        <li>Average listening time: 3.5 minutes</li>
+                        <li>Each user streams ~10–15 songs daily</li>
+                        <li>Audio streaming dominates both storage and bandwidth costs</li>
+                        <li>Egress costs are significant</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>2. High-Level Architecture</h2>
+                    <ul>
+                        <li><strong>User interface:</strong> Mobile/web app for playback, search, playlist management</li>
+                        <li><strong>Load Balancer:</strong> Distributes requests across stateless REST API servers (round-robin or least connections); performs health checks</li>
+                        <li><strong>API Layer:</strong> Authenticates using JWT tokens; queries metadata from SQL database</li>
+                        <li><strong>Storage:</strong>
+                            <ul>
+                                <li>Metadata in relational database (SQL)</li>
+                                <li>Audio files in blob/object storage (e.g., AWS S3) for durability, cost efficiency, scalability</li>
+                                <li>Signed URLs for secure, temporary access to audio files</li>
+                            </ul>
+                        </li>
+                        <li><strong>CDN:</strong> Optional caching close to users; cache invalidation for updates</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>3. System Workflows</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Workflow</th><th>Steps</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Read (Play Song)</strong></td>
+                                <td>
+                                    1. User hits play → GET /songs/{id} → load balancer routes to API server<br>
+                                    2. Validate JWT token<br>
+                                    3. Fetch song metadata from SQL<br>
+                                    4. Generate signed URL for audio file<br>
+                                    5. Return metadata + signed URL to client<br>
+                                    6. Client streams audio chunks from blob storage<br>
+                                    7. Track play analytics via POST /songs/{id}/play
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Write (Upload Song)</strong></td>
+                                <td>
+                                    1. Artist uploads via POST /songs with metadata<br>
+                                    2. Load balancer routes request<br>
+                                    3. Validate file size and format<br>
+                                    4. Store audio file in blob storage<br>
+                                    5. Extract and save metadata in SQL database<br>
+                                    6. Organize files hierarchically (artist/album/song)<br>
+                                    7. Invalidate CDN caches<br>
+                                    8. Respond with upload success
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>4. API Design Highlights</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>GET /search?query=&type=&limit=&offset=</td><td>Search with type filtering and pagination</td></tr>
+                            <tr><td>GET /songs/trending</td><td>Trending songs (optional filters)</td></tr>
+                            <tr><td>GET /artists/{id}/songs</td><td>Artist's songs</td></tr>
+                            <tr><td>GET /songs/{id}</td><td>Song metadata and streaming URL</td></tr>
+                            <tr><td>POST /plays</td><td>Create playlist (name, visibility)</td></tr>
+                            <tr><td>PUT /plays/{id}/songs</td><td>Add/remove songs (song IDs, position)</td></tr>
+                            <tr><td>GET /plays/{id}</td><td>Get playlist details (optionally with songs)</td></tr>
+                            <tr><td>GET /users/me/plays</td><td>Fetch user playlists</td></tr>
+                            <tr><td>GET /users/me/likes</td><td>Fetch liked songs</td></tr>
+                            <tr><td>POST /users/me/follow</td><td>Follow artist (artist ID)</td></tr>
+                        </tbody>
+                    </table>
+                    <p>RESTful conventions with plural resource names and consistent query parameters.</p>
+                </div>
+
+                <div class="section">
+                    <h2>5. Data Storage Design</h2>
+                    <h3>Blob Storage</h3>
+                    <p>AWS S3 or Azure Blob for immutable audio files.</p>
+
+                    <h3>Relational Database (PostgreSQL/MySQL) — Metadata Tables</h3>
+                    <ul>
+                        <li><strong>Users:</strong> user ID, email, password hash, subscription type, timestamps</li>
+                        <li><strong>Playlists:</strong> playlist ID, owner ID (user), name, created date</li>
+                        <li><strong>Playlist items:</strong> Join table linking playlists and songs (position, timestamp)</li>
+                        <li><strong>Songs:</strong> song ID, title, duration, file URL</li>
+                        <li><strong>Artists:</strong> artist ID, name, country</li>
+                        <li><strong>Artist-Song:</strong> Join table linking songs and artists</li>
+                    </ul>
+                    <p>Index on frequently queried columns: song titles, artist names, playlist-song relationships.</p>
+                </div>
+
+                <div class="section">
+                    <h2>6. Scalability Considerations</h2>
+                    <p>Scale to <strong>50 million users</strong> and <strong>200 million songs</strong>:</p>
+                    <ul>
+                        <li>Metadata: ~20 GB (songs) + 50 GB (users)</li>
+                        <li>Audio storage: ~600 TB (excluding replicas and versions)</li>
+                    </ul>
+
+                    <h3>Scaling Strategies</h3>
+                    <ul>
+                        <li>CDN edges distributed globally for faster content delivery</li>
+                        <li>Multiple load balancers in different regions</li>
+                        <li>Stateless API servers for easy horizontal scaling</li>
+                        <li><strong>Database:</strong> Read-write separation (leader + read replicas); sharding by region (US, Europe); partition songs by artist ID ranges</li>
+                        <li>Blob storage replication across regions</li>
+                        <li>LRU cache eviction for CDN</li>
+                    </ul>
+                    <p>Start simple and evolve — avoid premature optimization.</p>
+                </div>
+
+                <div class="section">
+                    <h2>7. Skillset to Become a Senior Engineer</h2>
+                    <p><strong>System design as a pyramid:</strong></p>
+                    <ul>
+                        <li><strong>Base:</strong> Planning and requirement analysis (blueprinting)</li>
+                        <li><strong>Middle:</strong> Technical stack selection (database, cache, storage)</li>
+                        <li><strong>Top:</strong> Coding/implementation (smallest, least brainpower-intensive)</li>
+                    </ul>
+                    <p><strong>Senior engineers excel in:</strong> Understanding requirements, capacity estimation, choosing architecture and tech, thinking before coding.</p>
+                    <p><strong>Common pitfall:</strong> Mid-level developers often start coding without a clear design or plan.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Audio streaming dominates storage and bandwidth costs — efficient object storage and CDN are critical</li>
+                        <li>Stateless API servers and load balancers enable straightforward horizontal scaling</li>
+                        <li>SQL preferred for metadata due to complex relational queries and joins</li>
+                        <li>Signed URLs provide secure access to audio files</li>
+                        <li>Caching and CDN invalidation crucial for performance and data freshness</li>
+                        <li>Scaling: read-write splitting, sharding, geographic replication</li>
+                        <li>Senior skills emphasize planning and problem understanding over coding</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Technical Terms</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Term</th><th>Definition</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Blob Storage</td><td>Object storage for large binary files (audio, video)</td></tr>
+                            <tr><td>Signed URL</td><td>Temporary URL granting limited-time access to a resource</td></tr>
+                            <tr><td>JWT</td><td>JSON Web Token — compact format for securely transmitting authentication data</td></tr>
+                            <tr><td>CDN</td><td>Content Delivery Network — distributed servers caching content closer to users</td></tr>
+                            <tr><td>LRU Cache</td><td>Least Recently Used eviction — removes oldest accessed items first</td></tr>
+                            <tr><td>Sharding</td><td>Horizontal partitioning of database tables across servers/regions</td></tr>
+                            <tr><td>Read Replica</td><td>Database instance for reads, synced with primary write database</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
