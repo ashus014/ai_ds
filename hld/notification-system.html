@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification System - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Notification System</h1>
+                <p>Scalable Design — HLD Notes</p>
+                <span class="date-badge">Completed: 19 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Detailed walkthrough of designing a scalable notification system for modern applications (e.g., social media). Focuses on engineering challenges, architectural improvements, and design patterns to handle emails, in-app notifications, and push notifications efficiently.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Core Concepts and Initial Design</h2>
+                    <ul>
+                        <li>A <strong>notification system</strong> triggers messages (emails, in-app, push) when user actions occur (sign-up, posts, friend requests)</li>
+                        <li><strong>Basic example:</strong> On sign-up, backend creates DB entry and sends welcome email synchronously via external API (e.g., Gmail API)</li>
+                        <li><strong>Problems with synchronous design:</strong>
+                            <ul>
+                                <li><strong>Added latency:</strong> External API calls ~3 seconds → delays sign-up response</li>
+                                <li><strong>System dependency:</strong> Email provider down → entire sign-up flow crashes</li>
+                                <li><strong>Rate limiting:</strong> Providers limit (e.g., 30 emails/sec); high traffic → dropped requests</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Improving Architecture: Asynchronous Processing</h2>
+                    <ul>
+                        <li>Transition to <strong>asynchronous email sending</strong> via separate internal email server/worker</li>
+                        <li>Sign-up sends request to internal server; internal server calls external email API</li>
+                        <li><strong>Benefits:</strong>
+                            <ul>
+                                <li>Sign-up completes without waiting for email</li>
+                                <li>Loosely coupled from external service failures</li>
+                                <li>Email server failures don't directly affect sign-up flow</li>
+                            </ul>
+                        </li>
+                        <li><strong>Remaining issue:</strong> External rate limiting still causes failures if too many requests hit email server</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Queue-Based Architecture and Rate Limiting</h2>
+                    <ul>
+                        <li>Introduce <strong>queue (FIFO)</strong> to buffer email requests</li>
+                        <li>Worker continuously polls queue to send emails</li>
+                        <li><strong>Rate limiting in worker:</strong> Send in batches (e.g., 25/sec to stay under 30); pause (e.g., 2s) when limit reached</li>
+                        <li><strong>Retry with exponential backoff:</strong> Failed sends retry after 1s, 2s, 4s, etc.; max retries (e.g., 10); messages exceeding limit → <strong>Dead Letter Queue (DLQ)</strong> for manual inspection</li>
+                        <li>Drastically improves robustness and scalability</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Supporting Multiple Notification Channels</h2>
+                    <ul>
+                        <li>Initially: single email queue</li>
+                        <li>Evolving requirements: login notifications, friend requests, posts → multiple channels:
+                            <ul>
+                                <li>Email</li>
+                                <li>In-app notifications</li>
+                                <li>Push (e.g., Firebase)</li>
+                            </ul>
+                        </li>
+                        <li>Naive approach: separate queues per channel → high coupling, scattered code changes</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Event-Driven and Fan-Out Architecture</h2>
+                    <ul>
+                        <li>Use <strong>event-driven architecture</strong> with <strong>pub/sub</strong> (e.g., AWS SNS)</li>
+                        <li>Publish events: <code>user.sign_up</code>, <code>user.login</code>, <code>friend.request</code></li>
+                        <li>Multiple queues (email, in-app, push) subscribe to relevant topics</li>
+                        <li><strong>Fan-out:</strong> One event distributed to multiple channels without changing core logic</li>
+                        <li><strong>Benefits:</strong> Minimal code changes for new channels; flexible binding; easier maintenance and scale</li>
+                        <li>Workers consume from queues and send notifications</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Intelligent Notification Triggering and User Preferences</h2>
+                    <ul>
+                        <li><strong>Intelligent filtering:</strong> Not all events need all notification types for every user</li>
+                        <li>Skip email if user is online or already viewed content</li>
+                        <li>Respect user preferences (enable/disable email, push, in-app)</li>
+                        <li><strong>Business rules:</strong>
+                            <ul>
+                                <li>Don't email every chat message; batch and summarize</li>
+                                <li>Suppress in muted channels or "Do Not Disturb"</li>
+                                <li>Notify only when mentioned or subscribed</li>
+                            </ul>
+                        </li>
+                        <li>Ingestion/filtering layer reduces noise and improves UX</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Key Components</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Role &amp; Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Frontend Clients</td><td>Users interact (sign-up, login, posting)</td></tr>
+                            <tr><td>Load Balancer</td><td>Distributes requests to backend servers</td></tr>
+                            <tr><td>Backend Servers</td><td>Handle requests, write to DB, publish events to SNS/topic</td></tr>
+                            <tr><td>Message Broker (SNS)</td><td>Publishes events to multiple subscribers (queues)</td></tr>
+                            <tr><td>Queues (SQS)</td><td>Separate queues for Email, In-App, Push</td></tr>
+                            <tr><td>Workers</td><td>Consume from queues; send via SES, Firebase, etc.</td></tr>
+                            <tr><td>Dead Letter Queue</td><td>Stores failed messages after max retries for manual inspection</td></tr>
+                            <tr><td>Retry Mechanism</td><td>Exponential backoff for failed sends</td></tr>
+                            <tr><td>User Preferences DB</td><td>User notification preferences and online status for filtering</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Important Design Patterns and Techniques</h2>
+                    <ul>
+                        <li><strong>Asynchronous processing:</strong> Reduce latency, decouple external dependencies</li>
+                        <li><strong>Queue-based buffering:</strong> Handle traffic spikes and rate limits</li>
+                        <li><strong>Retry with exponential backoff and DLQ:</strong> Avoid infinite loops; enable manual recovery</li>
+                        <li><strong>Pub/Sub fan-out:</strong> Decouple producers and consumers; simplify multi-channel dispatch</li>
+                        <li><strong>Ingestion/filtering layer:</strong> Control which notifications are sent based on context and preferences</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Notification systems are complex; must handle latency, failures, rate limiting, and UX</li>
+                        <li>Asynchronous queues and event-driven design improve scalability and fault tolerance</li>
+                        <li>Fan-out with pub/sub enables flexible, maintainable multi-channel notifications</li>
+                        <li>Filtering and user preference management are critical to avoid spamming</li>
+                        <li>Solutions like Courier, SNS+SQS can accelerate development for startups</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Conclusion</h2>
+                    <p>Designing a robust notification system involves:</p>
+                    <ul>
+                        <li>Avoiding blocking user flows with synchronous external calls</li>
+                        <li>Handling API failures and rate limiting via queues and retries</li>
+                        <li>Supporting multiple channels with minimal coupling using event-driven fan-out</li>
+                        <li>Incorporating smart filtering based on user context and preferences</li>
+                    </ul>
+                    <p>This layered, scalable architecture ensures reliable, user-friendly notification delivery at scale.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
