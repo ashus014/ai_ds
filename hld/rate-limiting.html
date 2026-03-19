@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Limiting - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Rate Limiting</h1>
+                <p>Strategies and Algorithms — HLD Notes</p>
+                <span class="date-badge">Completed: 14 June 2025</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Rate limiting is a crucial concept in system design used to control the number of requests a server processes to prevent overload and misuse. It covers the fundamental idea behind rate limiting, its importance, and various algorithms used to implement it.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Core Concepts</h2>
+                    <h3>Rate Limiting Definition</h3>
+                    <p>Controls the number of requests a server can handle in a given time window to prevent server crashes or performance degradation.</p>
+
+                    <h3>Typical Scenario</h3>
+                    <p>Multiple users send requests to a server, which processes them and sends responses.</p>
+
+                    <h3>Server Limitations</h3>
+                    <p>Servers have hardware constraints (e.g., CPU, RAM) limiting how many requests can be processed per unit time. For example, a server might handle only 100 requests per minute safely.</p>
+
+                    <h3>Purpose of Rate Limiter</h3>
+                    <p>Introduce a layer that caps requests at a configured threshold (e.g., 100 requests/minute). Requests exceeding this limit are rejected with <strong>HTTP 429 Too Many Requests</strong> status code.</p>
+
+                    <h3>Rate Limiter Workflow</h3>
+                    <ul>
+                        <li>Checks if incoming requests exceed the threshold</li>
+                        <li>Allows requests within limits to pass</li>
+                        <li>Drops/rejects excess requests to protect server stability</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Rate Limiting Algorithms</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Algorithm</th><th>Principle</th><th>Key Characteristics</th><th>Pros</th><th>Cons/Challenges</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Token Bucket</strong></td>
+                                <td>A bucket holds tokens refilled at a fixed rate; each request consumes one token to proceed.</td>
+                                <td>Bucket capacity limits burst size; tokens refill at fixed rate; requests denied if no tokens</td>
+                                <td>Easy to implement; allows traffic bursts; memory efficient</td>
+                                <td>Requires careful tuning of bucket size and refill rate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Leaky Bucket</strong></td>
+                                <td>Requests enter a queue (bucket) and are processed at a fixed rate; excess requests overflow.</td>
+                                <td>Fixed processing rate; queue size limits burst capacity; requests dropped when queue full</td>
+                                <td>Suitable for steady output rate; memory efficient</td>
+                                <td>Queue can fill up causing drops; difficult tuning</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fixed Window Counter</strong></td>
+                                <td>Counts requests in fixed time windows (e.g., 1 second, 1 minute); resets counter at window end.</td>
+                                <td>Simple counting per fixed interval; rejects exceeding threshold within window</td>
+                                <td>Simple to implement and understand</td>
+                                <td>Burst problem: spikes at window edges allow more requests than limit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sliding Window Log</strong></td>
+                                <td>Maintains a log of timestamps for requests; counts requests in a moving/sliding time window.</td>
+                                <td>More accurate than fixed window; removes expired timestamps; accept/reject based on count in sliding window</td>
+                                <td>Solves burst problem; precise rate limiting</td>
+                                <td>Higher memory usage due to logging timestamps</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sliding Window Counter</strong></td>
+                                <td>Hybrid of fixed window and sliding window; uses weighted counts of current and previous windows.</td>
+                                <td>Applies sliding window concept over fixed windows; counts requests proportionally from overlapping windows</td>
+                                <td>Balances accuracy and efficiency; reduces edge burst issue</td>
+                                <td>Slightly more complex logic and implementation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Detailed Algorithm Insights</h2>
+
+                    <h3>Token Bucket Algorithm</h3>
+                    <p><strong>Mechanism:</strong> Tokens represent permission to process requests. Bucket has a capacity (e.g., 5 tokens) and refills tokens at a fixed rate (e.g., 3 tokens per second). Each incoming request requires a token; if available, request proceeds; if not, request is rejected (429 error).</p>
+                    <p><strong>Burst Handling:</strong> Allows short bursts if tokens are available, making it flexible and widely used in production (e.g., Amazon, Stripe APIs).</p>
+                    <p><strong>Challenges:</strong> Requires tuning bucket capacity and refill rate based on server capacity.</p>
+
+                    <h3>Leaky Bucket Algorithm</h3>
+                    <p><strong>Mechanism:</strong> Requests queue up in a bucket. Requests are processed at a fixed rate regardless of incoming burst size. If bucket fills, excess requests are dropped.</p>
+                    <p><strong>Analogy:</strong> Like a shower controlling water flow from an overhead tank to prevent flooding.</p>
+                    <p><strong>Suitable Use Cases:</strong> When stable outflow rate is necessary.</p>
+                    <p><strong>Challenges:</strong> Tuning queue size and processing rate; risk of request starvation under heavy bursts.</p>
+
+                    <h3>Fixed Window Counter Algorithm</h3>
+                    <p><strong>Mechanism:</strong> Time divided into fixed intervals (e.g., 1 second). Requests counted per window; if count exceeds threshold, further requests rejected until next window.</p>
+                    <p><strong>Issue:</strong> Burst problem where requests at window edges can exceed limits (e.g., 3 requests allowed per second, but 4 requests processed if some fall at end of one window and some at start of next).</p>
+                    <p><strong>Pros:</strong> Easy to implement and reset.</p>
+
+                    <h3>Sliding Window Log Algorithm</h3>
+                    <p><strong>Mechanism:</strong> Maintains a timestamp log of each request. When a new request arrives, expired timestamps outside sliding window are removed. Requests are accepted or rejected based on counts within the sliding window.</p>
+                    <p><strong>Advantage:</strong> Addresses the burst problem of fixed windows by keeping precise request history.</p>
+                    <p><strong>Trade-off:</strong> More memory and computational overhead due to logging and cleaning timestamps.</p>
+
+                    <h3>Sliding Window Counter Algorithm</h3>
+                    <p><strong>Mechanism:</strong> Combines fixed window counting with sliding window logic. Uses weighted counts of current and previous fixed windows to estimate request counts in a sliding manner. For example, if a request falls 10% into the current window, 90% weight is given to the previous window count and 10% to current.</p>
+                    <p><strong>Benefit:</strong> Reduces burstiness seen in fixed window counters while being more memory efficient than sliding window logs.</p>
+                    <p><strong>Use:</strong> Hybrid approach balancing accuracy and resource usage.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Algorithm Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Algorithm</th><th>Accuracy</th><th>Memory Use</th><th>Burst Support</th><th>Implementation Complexity</th><th>Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Token Bucket</td>
+                                <td>Moderate</td>
+                                <td>Low</td>
+                                <td>Yes</td>
+                                <td>Low</td>
+                                <td>Flexible burst handling</td>
+                            </tr>
+                            <tr>
+                                <td>Leaky Bucket</td>
+                                <td>Moderate</td>
+                                <td>Low</td>
+                                <td>No</td>
+                                <td>Moderate</td>
+                                <td>Smooth, steady request pacing</td>
+                            </tr>
+                            <tr>
+                                <td>Fixed Window Counter</td>
+                                <td>Low</td>
+                                <td>Very Low</td>
+                                <td>No (burst problem)</td>
+                                <td>Very Low</td>
+                                <td>Simple cases, low accuracy</td>
+                            </tr>
+                            <tr>
+                                <td>Sliding Window Log</td>
+                                <td>High</td>
+                                <td>High</td>
+                                <td>Yes</td>
+                                <td>High</td>
+                                <td>Precise rate limiting</td>
+                            </tr>
+                            <tr>
+                                <td>Sliding Window Counter</td>
+                                <td>High</td>
+                                <td>Moderate</td>
+                                <td>Yes</td>
+                                <td>Moderate</td>
+                                <td>Balanced solution</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>Rate limiting is essential for protecting servers from overload and ensuring fair resource allocation.</li>
+                        <li>Different algorithms offer trade-offs between accuracy, complexity, memory usage, and burst handling.</li>
+                        <li>Token Bucket and Leaky Bucket are common, practical algorithms with different focuses on burst and steady flow.</li>
+                        <li>Fixed Window Counter is simple but suffers from burst problems at window edges.</li>
+                        <li>Sliding Window Log and Sliding Window Counter improve accuracy by smoothing the counting over time, mitigating burst issues.</li>
+                        <li>Proper tuning of parameters (bucket sizes, refill rates, queue length) is crucial for optimal performance.</li>
+                        <li><strong>HTTP 429 Too Many Requests</strong> is the standard error code for rejecting excess requests.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
