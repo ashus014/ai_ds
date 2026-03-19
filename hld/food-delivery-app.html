@@ -137,6 +137,12 @@
             font-size: 0.95em;
         }
         .flow-indent { margin-left: 24px; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -159,168 +165,195 @@
             </div>
             <div class="content">
                 <div class="section">
-                    <h2>Actors</h2>
-                    <ul>
-                        <li><strong>User</strong> – places order</li>
-                        <li><strong>Restaurant</strong> – accepts & prepares food</li>
-                        <li><strong>Delivery Agent</strong> – picks up & delivers food</li>
-                    </ul>
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design walkthrough for a food delivery application similar to Zomato, Swiggy, or Uber Eats. Main goal: enable users to order food online from any restaurant. Covers functional and non-functional requirements, core entities, API design, high-level architecture, and low-level design including databases, services, event-driven architecture, and real-time updates.</p>
                 </div>
 
                 <div class="section">
                     <h2>Functional Requirements</h2>
                     <ul>
-                        <li>Sign up / Login</li>
-                        <li>Show nearby open restaurants (by location)</li>
-                        <li>Search restaurant/menu by name</li>
-                        <li>Show restaurant details & menu</li>
-                        <li>Add to cart → Place order → Payment</li>
-                        <li>Restaurant accepts order</li>
-                        <li>Delivery partner gets allocated</li>
-                        <li>Real-time delivery tracking for user</li>
+                        <li>User signup, login, logout, and profile update</li>
+                        <li>Display all nearby open restaurants based on user location</li>
+                        <li>Search restaurants by name or food menu items</li>
+                        <li>View detailed restaurant metadata and menu items</li>
+                        <li>Add multiple items to cart and manage cart (add, update, delete)</li>
+                        <li>Place order with successful payment processing</li>
+                        <li>Restaurant accepts the order and prepares food</li>
+                        <li>Allocate delivery partner once order is accepted</li>
+                        <li>Provide real-time tracking of delivery partner to the user</li>
+                    </ul>
+                    <h3>Actors</h3>
+                    <ul>
+                        <li><strong>User</strong> — places orders</li>
+                        <li><strong>Restaurant</strong> — accepts and prepares orders</li>
+                        <li><strong>Delivery Partner</strong> — delivers food from restaurant to user</li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>Non-Functional Requirements</h2>
                     <ul>
-                        <li><strong>Scale:</strong> 50M users, 1M restaurants</li>
-                        <li><strong>Architecture:</strong> Microservices (due to scale)</li>
-                        <li><strong>CAP Theorem:</strong>
+                        <li><strong>Scale:</strong> ~50 million users globally, 1 million restaurants</li>
+                        <li><strong>Availability vs Consistency (CAP Theorem):</strong>
                             <ul>
-                                <li>Search/browsing → High Availability</li>
-                                <li>Payments/ordering → High Consistency</li>
+                                <li>Search and browse → highly available</li>
+                                <li>Payment and order placement → highly consistent</li>
                             </ul>
                         </li>
+                        <li><strong>Architecture:</strong> Microservices with distributed systems</li>
+                        <li>Support rate limiting, authentication, authorization, efficient load balancing</li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>Core Entities</h2>
-                    <p><strong>User | Restaurant | Food/Menu Item | Delivery Agent | Payment</strong></p>
-                </div>
-
-                <div class="section">
-                    <h2>API Design</h2>
                     <table>
                         <thead>
-                            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                            <tr><th>Entity</th><th>Description</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>/register</td><td>POST</td><td>Sign up (body: name, email, password, address)</td></tr>
-                            <tr><td>/login, /logout, /update</td><td>GET/PUT</td><td>Auth operations</td></tr>
-                            <tr><td>/restaurants?lat=&lng=&radius=</td><td>GET</td><td>Nearby restaurants (paginated)</td></tr>
-                            <tr><td>/search?title=&item=</td><td>GET</td><td>Search by name/menu (paginated)</td></tr>
-                            <tr><td>/restaurant/{id}</td><td>GET</td><td>Restaurant metadata</td></tr>
-                            <tr><td>/restaurant/{id}/menu</td><td>GET</td><td>Menu items</td></tr>
-                            <tr><td>/cart</td><td>POST</td><td>Add item (body: itemId, quantity, restaurantId; userId in header)</td></tr>
-                            <tr><td>/cart</td><td>PUT/DELETE</td><td>Update/remove cart items</td></tr>
-                            <tr><td>/order</td><td>POST</td><td>Place order (internally calls payment gateway)</td></tr>
-                            <tr><td>/track/{orderId}</td><td>GET</td><td>Real-time order/delivery status</td></tr>
+                            <tr><td>User</td><td>Customer placing orders</td></tr>
+                            <tr><td>Restaurant</td><td>Vendor providing food and updating menu data</td></tr>
+                            <tr><td>Food Menu Item</td><td>Food items available in restaurants</td></tr>
+                            <tr><td>Delivery Partner</td><td>Assigned delivery agent for order fulfillment</td></tr>
+                            <tr><td>Payment Module</td><td>Handles payment processing and transaction data</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="section">
-                    <h2>High-Level Design — Services</h2>
-
-                    <h3>User Flow</h3>
-                    <p>User Service → User DB (MySQL/Postgres) — handles registration, login, JWT token generation</p>
-
-                    <h3>Search Flow</h3>
+                    <h2>API Design Overview</h2>
+                    <h3>User APIs</h3>
                     <ul>
-                        <li>Search Service → Elasticsearch (for geo + text search) → queries Restaurant DB</li>
-                        <li>Restaurant DB → Elasticsearch via CDC pipeline</li>
-                        <li>Images stored in S3/Blob Storage (URLs saved in DB)</li>
+                        <li>POST <code>/register</code> — signup with user metadata</li>
+                        <li>GET <code>/login</code>, <code>/logout</code></li>
+                        <li>PUT <code>/update</code> — user details</li>
                     </ul>
-
-                    <h3>Cart Flow</h3>
+                    <h3>Restaurant APIs</h3>
                     <ul>
-                        <li>Cart Service → Cart DB (Postgres)</li>
-                        <li>One cart per restaurant (can't mix items from different restaurants)</li>
-                        <li>Schema: cartId, restaurantId, userId, items[ ]</li>
+                        <li>GET <code>/restaurants?lat=&long=&radius=</code> — list nearby open restaurants</li>
+                        <li>GET <code>/restaurants/search?title=&menu=</code> — search by title and menu</li>
+                        <li>GET <code>/restaurant/{id}</code> — restaurant details</li>
+                        <li>GET <code>/restaurant/{id}/menu</code> — menu for restaurant</li>
                     </ul>
-
-                    <h3>Order & Payment Flow</h3>
-                    <p>Order Service → calls Payment Service → 3rd party Payment Gateway → Payment DB (MySQL, highly consistent). On success, Order Service publishes event to Kafka</p>
-
-                    <h3>Kafka Event-Driven Flow (Order Lifecycle)</h3>
-                    <div class="flow-block">
-                        Order Placed<br>
-                        <span class="flow-indent">└── Kafka Topic: "order"</span><br>
-                        <span class="flow-indent">├── Order Consumer → updates Order DB</span><br>
-                        <span class="flow-indent">├── Notification Service → notifies User</span><br>
-                        <span class="flow-indent">└── Restaurant Acceptance Service → sends notification to Restaurant</span><br>
-                        <span class="flow-indent">└── Restaurant Accepts</span><br>
-                        <span class="flow-indent">└── Kafka Topic: "order_confirmed"</span><br>
-                        <span class="flow-indent">├── Order Consumer → updates Order DB (status: confirmed)</span><br>
-                        <span class="flow-indent">└── Delivery Matching Service → finds nearby driver</span><br>
-                        <span class="flow-indent">└── Kafka Topic: "driver_assigned"</span><br>
-                        <span class="flow-indent">└── Order Consumer → updates Order DB (adds driverId)</span>
-                    </div>
-
-                    <h3>Delivery Matching — How It Works</h3>
+                    <h3>Cart APIs</h3>
                     <ul>
-                        <li>Delivery Matching Service reads from Kafka (accepted orders)</li>
-                        <li>Uses GeoHashing for proximity search to find nearby idle drivers</li>
-                        <li>Sends notification to multiple nearby drivers via Delivery Acceptance Service → API Gateway → Drivers</li>
-                        <li>First driver to accept gets assigned → confirmation event posted back to Kafka</li>
+                        <li>POST <code>/cart</code> — add items (item ID, quantity, restaurant ID)</li>
+                        <li>PUT <code>/cart/{id}</code> — update cart</li>
+                        <li>DELETE <code>/cart/{id}</code> — remove cart</li>
                     </ul>
+                    <h3>Order APIs</h3>
+                    <ul>
+                        <li>POST <code>/order</code> — place order (calls payment internally)</li>
+                        <li>GET <code>/order/{id}/tracking</code> — track order and delivery partner</li>
+                    </ul>
+                    <h3>Internal APIs</h3>
+                    <p>Not exposed publicly: restaurant order acceptance, delivery partner allocation and status updates.</p>
+                </div>
 
-                    <h3>Driver Location Updates</h3>
+                <div class="section">
+                    <h2>High-Level Architecture</h2>
+                    <ul>
+                        <li><strong>API Gateway & Load Balancer:</strong> Routing, rate limiting, authentication, load distribution</li>
+                        <li><strong>User Service:</strong> Signup, login, profile; relational DB</li>
+                        <li><strong>Search Service:</strong> Location + text search via Elasticsearch</li>
+                        <li><strong>Restaurant Service:</strong> Restaurant metadata and menu updates</li>
+                        <li><strong>Cart Service:</strong> User carts with relational DB</li>
+                        <li><strong>Order Service:</strong> Order placement, payment coordination, order state tracking</li>
+                        <li><strong>Payment Gateway:</strong> Third-party integration</li>
+                        <li><strong>Delivery Matching Service:</strong> Assigns nearby idle delivery partners using geohashing</li>
+                        <li><strong>Location Update Service:</strong> Driver location updates; cache and database</li>
+                        <li><strong>Notification Service:</strong> Notifications to users and restaurants</li>
+                        <li><strong>Delivery Acceptance Service:</strong> Delivery partner confirmation</li>
+                        <li><strong>WebSocket Manager:</strong> Real-time delivery tracking</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design — Databases and Schema</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Database</th><th>Description</th><th>Schema Highlights</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User DB</td><td>User credentials and metadata</td><td>user_id, email, password, address</td></tr>
+                            <tr><td>Restaurant DB</td><td>Restaurant info and status</td><td>restaurant_id, name, address, geolocation, image URLs (S3)</td></tr>
+                            <tr><td>Menu DB</td><td>Food items per restaurant</td><td>menu_id, item_id, restaurant_id, title, price, image URL</td></tr>
+                            <tr><td>Cart DB</td><td>User cart per restaurant</td><td>cart_id, restaurant_id, user_id, list of items</td></tr>
+                            <tr><td>Order DB</td><td>Orders and status</td><td>order_id, user_id, restaurant_id, items, status, driver_id</td></tr>
+                            <tr><td>Payment DB</td><td>Payment transactions</td><td>payment_id, user_id, order_id, amount, status, timestamp</td></tr>
+                            <tr><td>Driver DB</td><td>Delivery partner location and status</td><td>driver_id, current_location, status (idle/delivering)</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Images stored separately in blob storage or S3.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Search Implementation</h2>
+                    <ul>
+                        <li><strong>Elasticsearch</strong> to index restaurant and menu metadata</li>
+                        <li>Data updated via <strong>CDC (Change Data Capture) pipeline</strong> from restaurant DB to Elastic</li>
+                        <li>Search queries use geolocation and text matching</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Order Processing and Event-Driven Workflow</h2>
+                    <ul>
+                        <li>Order placement publishes event to <strong>Kafka</strong></li>
+                        <li>Consumers: update Order DB, notify user, notify restaurant for acceptance</li>
+                        <li>Restaurant acceptance → event updates order status and triggers delivery partner assignment</li>
+                        <li>Delivery Matching Service (Kafka consumer) assigns idle nearby drivers using geohashing</li>
+                        <li>Delivery Acceptance Service notifies multiple drivers; first to accept is assigned</li>
+                        <li>Delivery updates streamed via <strong>WebSocket</strong> for real-time user tracking</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Delivery Partner Location Updates</h2>
                     <ul>
                         <li>Drivers send location every 5–10 seconds</li>
-                        <li>Goes via Kafka Gateway → Kafka Broker (handles massive load)</li>
-                        <li>Location Update Service (consumer) → writes to Redis Cache (NOT directly to DB — too slow)</li>
-                        <li>Delivery Matching Service reads from Redis Cache</li>
-                        <li>TTL set on each driver entry (e.g., 10s) — if no update received, driver considered unavailable</li>
-                    </ul>
-
-                    <h3>Real-Time Tracking (User sees driver location)</h3>
-                    <ul>
-                        <li>WebSocket connection opened once order is picked up</li>
-                        <li>WebSocket Manager — handles connections efficiently (memory-intensive)</li>
-                        <li>Driver streams location → WebSocket Gateway → User</li>
-                    </ul>
-
-                    <h3>"Food Ready" Notification to Driver</h3>
-                    <p>Restaurant marks order as ready → event sent to Order Confirmation Service via Kafka. Order Confirmation Service sends push notification to assigned driver → driver goes for pickup</p>
-                </div>
-
-                <div class="section">
-                    <h2>Schema Snapshots</h2>
-                    <ul>
-                        <li><strong>User DB:</strong> userId, email, password, address, metadata</li>
-                        <li><strong>Restaurant DB:</strong> restaurantId, name, address, status (open/closed), lat/lng, imageURLs[ ]</li>
-                        <li><strong>Menu DB:</strong> menuId, itemId, restaurantId, title, description, imageURL, category, price</li>
-                        <li><strong>Cart DB:</strong> cartId, restaurantId, userId, items[ ]</li>
-                        <li><strong>Order DB:</strong> orderId, userId, restaurantId, items[ ], price, currency, timestamp, driverId</li>
-                        <li><strong>Payment DB:</strong> paymentId, userId, orderId, amount, currency, timestamp, status</li>
+                        <li>Updates via <strong>Kafka gateway</strong> for high throughput</li>
+                        <li>Location Update Service consumes events; stores in <strong>in-memory cache (e.g., Redis with TTL)</strong></li>
+                        <li>Cache used by Delivery Matching Service for efficient driver assignment</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>Key Tech Choices & Justifications</h2>
+                    <h2>Timeline: Order Lifecycle</h2>
                     <table>
                         <thead>
-                            <tr><th>Choice</th><th>Why</th></tr>
+                            <tr><th>Step</th><th>Description</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>Elasticsearch</td><td>Geo + text search together; fast for large-scale lookups</td></tr>
-                            <tr><td>Kafka</td><td>Decouples multi-step order lifecycle; prevents tight coupling between services</td></tr>
-                            <tr><td>Redis Cache (for driver location)</td><td>Thousands of drivers updating every 10s — DB writes too slow</td></tr>
-                            <tr><td>WebSockets</td><td>Real-time bidirectional updates for live tracking</td></tr>
-                            <tr><td>GeoHashing</td><td>Efficient proximity search for nearby drivers</td></tr>
-                            <tr><td>S3/Blob Storage</td><td>Store restaurant/food images separately from metadata</td></tr>
-                            <tr><td>MySQL for Payments</td><td>Strong consistency required</td></tr>
-                            <tr><td>Postgres for Orders/Users</td><td>Relational data with good query support</td></tr>
+                            <tr><td>User places order</td><td>Add items to cart, place order, initiate payment</td></tr>
+                            <tr><td>Payment processing</td><td>Payment service calls third-party gateway</td></tr>
+                            <tr><td>Order event published</td><td>Kafka event triggers order DB update, notifications</td></tr>
+                            <tr><td>Restaurant notified</td><td>Restaurant acceptance service sends order acceptance request</td></tr>
+                            <tr><td>Restaurant accepts order</td><td>Acceptance event updates order status</td></tr>
+                            <tr><td>Delivery partner assigned</td><td>Delivery matching service finds idle nearby driver</td></tr>
+                            <tr><td>Delivery partner notified</td><td>Delivery acceptance service sends notification to drivers</td></tr>
+                            <tr><td>Driver accepts delivery</td><td>Driver assigned, order DB updated with driver ID</td></tr>
+                            <tr><td>Driver picks order</td><td>Driver location updates via WebSocket</td></tr>
+                            <tr><td>User receives real-time tracking</td><td>Frontend shows delivery partner location updates</td></tr>
+                            <tr><td>Order delivered</td><td>Final status update</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="section">
-                    <h2>Interview Tip</h2>
-                    <p>You likely won't need to cover all 3 flows. Clarify with interviewer which actor (User/Restaurant/Driver) to focus on — but know all three.</p>
+                    <h2>Key Insights and Conclusions</h2>
+                    <ul>
+                        <li><strong>Microservice architecture</strong> essential due to scale (50M users, 1M restaurants)</li>
+                        <li><strong>Event-driven architecture (Kafka)</strong> ensures loose coupling and scalable order processing</li>
+                        <li>Separation of concerns: distinct services for user, search, cart, order, restaurant, delivery, payment</li>
+                        <li>Real-time tracking via WebSockets and efficient location update handling</li>
+                        <li><strong>Geohashing</strong> effective for delivery partner proximity search</li>
+                        <li><strong>Elasticsearch</strong> improves search for location and text-based queries</li>
+                        <li>Strong consistency for payment/order; high availability for browsing/search</li>
+                        <li>Multi-actor workflows with asynchronous notifications and state updates</li>
+                        <li>Design can be progressively expanded (user → restaurant → delivery partner) depending on interview scope</li>
+                    </ul>
                 </div>
             </div>
         </div>
