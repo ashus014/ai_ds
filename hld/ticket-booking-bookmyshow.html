@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Booking (BookMyShow) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Ticket Booking (BookMyShow)</h1>
+                <p>Event Ticketing System — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive design for a scalable ticket booking system similar to BookMyShow or PTM. Users search for events, view details, and book tickets for movies, concerts, or shows. Covers requirements, API design, high-level and low-level design, concurrency handling, and peak traffic management.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Search for events:</strong> By keywords, location, or date</li>
+                        <li><strong>View event details:</strong> Performers, venue, seat layout</li>
+                        <li><strong>Book tickets:</strong> Select seats and complete booking via payment</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> Up to 100 million daily active users</li>
+                        <li><strong>CAP Theorem:</strong>
+                            <ul>
+                                <li><strong>High availability</strong> for search and viewing</li>
+                                <li><strong>High consistency</strong> for booking to avoid double booking</li>
+                            </ul>
+                        </li>
+                        <li><strong>Trade-off:</strong> Search prioritizes availability; booking prioritizes consistency</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Entity</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User</td><td>End consumer booking tickets</td></tr>
+                            <tr><td>Event</td><td>Movies, concerts, or shows</td></tr>
+                            <tr><td>Venue</td><td>Location or hall where event takes place</td></tr>
+                            <tr><td>Seat</td><td>Individual seats available for booking</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>API Design</h2>
+                    <ul>
+                        <li><strong>GET <code>/search</code>:</strong> Params — event title, location (lat/long), date; returns paginated event IDs and metadata</li>
+                        <li><strong>GET <code>/event/{eventId}</code>:</strong> Returns event metadata including seat availability</li>
+                        <li><strong>POST <code>/booking/reserve</code>:</strong> Input list of seat IDs; temporary reservation (5–10 min)</li>
+                        <li><strong>POST <code>/booking/confirm</code>:</strong> Input booking ID + payment details; finalizes booking</li>
+                    </ul>
+                    <p>User ID passed in request headers for authentication.</p>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Design</h2>
+                    <ul>
+                        <li><strong>Architecture:</strong> Microservices for scalability</li>
+                        <li><strong>Clients:</strong> Mobile/web users</li>
+                        <li><strong>API Gateway:</strong> Authentication, rate limiting, routing</li>
+                        <li><strong>Microservices:</strong>
+                            <ul>
+                                <li><strong>Search Service</strong> — Search queries</li>
+                                <li><strong>Event Service</strong> — Event metadata retrieval</li>
+                                <li><strong>Booking Service</strong> — Seat reservations and bookings</li>
+                            </ul>
+                        </li>
+                        <li><strong>Databases:</strong>
+                            <ul>
+                                <li>Event metadata → <strong>Cassandra</strong> (NoSQL, highly available, write-optimized)</li>
+                                <li>Booking and payment → <strong>PostgreSQL/MySQL</strong> (strong consistency)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design — Data Storage</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Database</th><th>Data Stored</th><th>Strengths</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Cassandra (NoSQL)</td><td>Event metadata</td><td>High availability, write-optimized</td></tr>
+                            <tr><td>PostgreSQL/MySQL</td><td>Booking, payment info</td><td>Strong consistency</td></tr>
+                            <tr><td>Elasticsearch</td><td>Search index</td><td>Low-latency, flexible search</td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Search Optimization</h3>
+                    <ul>
+                        <li>Cassandra write-optimized but not ideal for complex search</li>
+                        <li><strong>Elasticsearch</strong> for fast, flexible search</li>
+                        <li><strong>CDC pipeline</strong> syncs Cassandra → Elasticsearch in near real-time</li>
+                    </ul>
+                    <h3>CDC Pipeline Flow</h3>
+                    <ul>
+                        <li>Cassandra changes captured by <strong>Debezium</strong></li>
+                        <li>Events streamed via <strong>Kafka</strong></li>
+                        <li>Data ingested into Elasticsearch for instant search updates</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Booking Service &amp; Concurrency Handling</h2>
+                    <p><strong>Two-step booking:</strong></p>
+                    <ol style="list-style: decimal; margin-left: 25px; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;"><strong>Reserve seats</strong> — Temporary lock (5–10 min)</li>
+                        <li style="margin-bottom: 8px;"><strong>Confirm booking</strong> — After successful payment</li>
+                    </ol>
+                    <h3>Avoiding Race Conditions (Double Booking)</h3>
+                    <ul>
+                        <li><strong>Redis cluster with TTL</strong> as distributed lock for seat reservations</li>
+                        <li>Seat reserved → entry in Redis with 10-minute expiry</li>
+                        <li>Payment success → remove Redis lock, update persistent DB</li>
+                        <li>Payment fails or timeout → Redis auto-releases lock (no cron job)</li>
+                        <li>Eliminates unreliability of periodic cron jobs scanning for expired reservations</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Handling Traffic Spikes</h2>
+                    <ul>
+                        <li>High-demand events (e.g., concerts) → <strong>waiting queue</strong> via <strong>Kafka</strong></li>
+                        <li>Incoming booking requests enqueued to manage load</li>
+                        <li>Sequential dequeue for orderly processing; prevents system overload</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Design Decisions</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Aspect</th><th>Decision</th><th>Reasoning</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Architecture</td><td>Microservices</td><td>Scalability for 100M users</td></tr>
+                            <tr><td>Event Metadata</td><td>Cassandra (NoSQL)</td><td>High availability, write-optimized</td></tr>
+                            <tr><td>Search Engine</td><td>Elasticsearch</td><td>Low-latency search</td></tr>
+                            <tr><td>Booking Data</td><td>PostgreSQL/MySQL</td><td>Strong consistency</td></tr>
+                            <tr><td>Booking Concurrency</td><td>Redis with TTL locks</td><td>Distributed seat reservation locking</td></tr>
+                            <tr><td>Data Sync</td><td>CDC (Debezium + Kafka)</td><td>Near real-time sync to Elasticsearch</td></tr>
+                            <tr><td>API Gateway</td><td>Auth, rate limiting</td><td>Traffic and security management</td></tr>
+                            <tr><td>Peak Traffic</td><td>Kafka queue</td><td>Throttling high demand</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li><strong>Separation of concerns</strong> in microservices enhances scalability and maintainability</li>
+                        <li><strong>CAP trade-offs</strong> per use case: availability for search, consistency for booking</li>
+                        <li><strong>Redis TTL</strong> for seat locks provides clean concurrency control without cron jobs</li>
+                        <li><strong>Elasticsearch + CDC</strong> enables fast search over large event datasets</li>
+                        <li><strong>Kafka queue</strong> for peak traffic ensures stability during high demand</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
