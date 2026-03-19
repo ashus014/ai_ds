@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking (Airbnb) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Hotel Booking (Airbnb)</h1>
+                <p>Accommodation Booking System — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive design for a hotel booking system similar to Airbnb, MakeMyTrip, or Booking.com. Covers functional and non-functional requirements, API design, high-level architecture, database schemas, search optimization, and concurrency control for bookings.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li>Register and login</li>
+                        <li>Search hotels by <strong>location, hotel name, and booking date</strong></li>
+                        <li>View hotel details and available rooms for a specific date</li>
+                        <li>Book available rooms and complete payment</li>
+                        <li>Access history of past bookings</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> ~50 million users, ~1 million hotels globally</li>
+                        <li><strong>CAP Theorem:</strong>
+                            <ul>
+                                <li><strong>High availability</strong> for search</li>
+                                <li><strong>High consistency</strong> for booking (prevent double booking)</li>
+                            </ul>
+                        </li>
+                        <li>Pagination for search results to reduce latency</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>User</strong> — Customer booking hotels</li>
+                        <li><strong>Hotel</strong> — Hotel entity</li>
+                        <li><strong>Room</strong> — Rooms within hotels</li>
+                        <li><strong>Booking</strong> — Booking record</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design Overview</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Key Parameters</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/user/register</code></td><td>POST</td><td>User registration</td><td>name, email, password, phone</td></tr>
+                            <tr><td><code>/user/login</code></td><td>POST</td><td>User login</td><td>Credentials</td></tr>
+                            <tr><td><code>/hotels/search</code></td><td>GET</td><td>Search by location, name, date</td><td>location, hotelName (opt), date</td></tr>
+                            <tr><td><code>/hotel/{hotelId}/details</code></td><td>GET</td><td>Hotel metadata, amenities, rooms, pricing</td><td>hotelId, date</td></tr>
+                            <tr><td><code>/booking</code></td><td>POST</td><td>Book a room</td><td>hotel ID, room ID, date, user ID</td></tr>
+                            <tr><td><code>/user/{userId}/bookings</code></td><td>GET</td><td>Past bookings</td><td>user ID</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Architecture</h2>
+                    <ul>
+                        <li><strong>Architecture:</strong> Microservices for scale</li>
+                        <li><strong>Load Balancer &amp; API Gateway:</strong> Traffic, auth, rate limiting</li>
+                        <li><strong>User Service:</strong> Registration, authentication, metadata</li>
+                        <li><strong>Search Service:</strong> Hotel search via ElasticSearch</li>
+                        <li><strong>Booking Service:</strong> Booking requests, payment delegation</li>
+                        <li><strong>Payment Service:</strong> Third-party gateway integration</li>
+                        <li><strong>Booking Info Service:</strong> Past bookings</li>
+                        <li><strong>Review Service:</strong> Hotel reviews, separate metadata storage</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Database Design and Storage</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Database</th><th>Purpose</th><th>Schema Highlights</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User DB (MySQL/Postgres)</td><td>User metadata</td><td>user_id, name, email, password (hashed), phone</td></tr>
+                            <tr><td>Hotel DB (Postgres)</td><td>Hotel and room metadata</td><td>hotel (name, geolocation, address), rooms (room_id, type, capacity), price (date-range), availability</td></tr>
+                            <tr><td>Availability Table</td><td>Room availability</td><td>1) One record per room per day (efficient search) 2) Date-range based (lower volume)</td></tr>
+                            <tr><td>Review DB (MySQL/Postgres)</td><td>User reviews</td><td>hotel_id, user_id, rating, comments; images in S3</td></tr>
+                            <tr><td>Booking DB (MySQL/Postgres)</td><td>Bookings</td><td>booking_id, hotel_id, user_id, rooms, start/end date, amount, status, currency</td></tr>
+                            <tr><td>Payment DB (MySQL)</td><td>Payment transactions</td><td>user_id, booking_id, amount, currency, date</td></tr>
+                            <tr><td>Blob Storage (S3)</td><td>Hotel and review images</td><td>Images stored outside relational DB</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Search Service and Optimization</h2>
+                    <ul>
+                        <li><strong>ElasticSearch</strong> for:
+                            <ul>
+                                <li>Text search (hotel name)</li>
+                                <li>Geospatial proximity search (location)</li>
+                            </ul>
+                        </li>
+                        <li>Alternatives considered: Quad Tree (large memory), Postgres GIS (limited text), GeoHash (no text search)</li>
+                        <li><strong>Two-phase search:</strong>
+                            <ul>
+                                <li>Phase 1: ElasticSearch queries hotel metadata (name, location)</li>
+                                <li>Phase 2: Fetch room availability and pricing from <strong>Redis cache</strong> for filtered hotel IDs</li>
+                            </ul>
+                        </li>
+                        <li>Images from S3 included in search response</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Booking Service and Payment Flow</h2>
+                    <p><strong>Two-step booking:</strong></p>
+                    <ol style="list-style: decimal; margin-left: 25px; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;">Booking request received; availability checked</li>
+                        <li style="margin-bottom: 8px;">Payment via Payment Service and third-party gateway</li>
+                    </ol>
+                    <h3>Avoiding Double Booking</h3>
+                    <ul>
+                        <li>Availability verified via <strong>Availability Service</strong> before payment</li>
+                        <li><strong>Redis distributed locks</strong> with TTL (~5 min) to hold rooms during payment</li>
+                        <li>Payment success → booking confirmed; payment fails or lock expires → room released</li>
+                        <li><strong>Kafka event-driven</strong> for: user notification, async booking DB update, availability update</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Concurrency Control for Booking</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Scenario</th><th>Solution</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Two users book same room seconds apart</td><td>Real-time availability check before payment</td></tr>
+                            <tr><td>Nearly simultaneous booking attempts</td><td>Redis distributed lock (TTL) on room; only one booking proceeds</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Design Choices</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Aspect</th><th>Choice</th><th>Reason</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Architecture</td><td>Microservices</td><td>Scalable, 50M users; maintainable</td></tr>
+                            <tr><td>User DB</td><td>MySQL/Postgres</td><td>Relational, strong consistency</td></tr>
+                            <tr><td>Hotel DB</td><td>Postgres</td><td>Complex relations: hotels, rooms, pricing, availability</td></tr>
+                            <tr><td>Search</td><td>ElasticSearch</td><td>Text + geo queries</td></tr>
+                            <tr><td>Image Storage</td><td>S3 (Blob)</td><td>Efficient for large binary data</td></tr>
+                            <tr><td>Booking Concurrency</td><td>Redis locks + Kafka</td><td>No double booking; async updates</td></tr>
+                            <tr><td>Payment DB</td><td>MySQL/Postgres</td><td>ACID, strong consistency</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Requirement gathering is critical for core functionalities and constraints</li>
+                        <li>Balance CAP by splitting availability (search) and consistency (booking) across services</li>
+                        <li>ElasticSearch for combined text and location-based search</li>
+                        <li>Event-driven (Kafka) for decoupled, reliable updates</li>
+                        <li>Redis distributed locking for booking concurrency</li>
+                        <li>Separate metadata and image storage for performance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

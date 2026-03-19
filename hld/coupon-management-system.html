@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Management System - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .pre-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Coupon Management System</h1>
+                <p>Discount Coupon Generation &amp; Validation — HLD Notes</p>
+                <span class="date-badge">Completed: 08 January 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Problem Statement</h2>
+                    <ul>
+                        <li>Design a coupon generation system</li>
+                        <li>Allow users to create, manage, and validate discount coupons</li>
+                        <li>One user gets a single coupon per day</li>
+                        <li>User must buy within 5 minutes; otherwise coupon becomes available for others</li>
+                        <li>Coupons cannot be redeemed multiple times</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li>Admin can create 100k coupons daily</li>
+                        <li>User can search coupons</li>
+                        <li>User can get and redeem coupons</li>
+                        <li>One user gets a single coupon per day</li>
+                        <li>User must use coupon within 5 minutes</li>
+                        <li>If not used in 5 min, coupon becomes available for others</li>
+                        <li>System validates coupons (no multiple redemption)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>CAP:</strong> High availability for search/viewing; strong consistency for getting coupons</li>
+                        <li><strong>Latency:</strong> Low-latency search</li>
+                        <li><strong>Scale:</strong> 10M users for 100k coupons</li>
+                        <li><strong>Read heavy:</strong> 100:1 read/write ratio</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>Coupon</strong> — couponId, category, description, date, type, status</li>
+                        <li><strong>Redeem</strong> — redeemId, couponId, userId, orderId, timestamp</li>
+                        <li><strong>User</strong> — userId, firstName, lastName, email, phone</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design</h2>
+                    <h3>1. Create Coupon (Admin)</h3>
+                    <p><code>POST /coupons</code> — Returns couponId. Body: category, description, expiryDate, type (PERCENTAGE/FLAT)</p>
+                    <h3>2. Search Coupon</h3>
+                    <p><code>GET /coupons/search?search_term=&type=</code> — Returns list of coupons matching filters</p>
+                    <h3>3. Get (Lock) Coupon</h3>
+                    <p><code>POST /coupons/locked/{couponId}</code> — Locks coupon for user. Status → LOCKED; lockedByUser, lockExpiresAt set. Returns coupon.</p>
+                    <h3>4. Redeem Coupon</h3>
+                    <p><code>POST /coupons/redeem/{couponId}</code> — Body: userId, orderId. Validates, applies discount, marks REDEEMED.</p>
+                    <p><strong>Validations:</strong> Not expired, belongs to user (if personalized), not already redeemed, was locked (optional).</p>
+                </div>
+
+                <div class="section">
+                    <h2>Object Modeling</h2>
+                    <h3>Coupons</h3>
+                    <p>couponId, category, description, dateCreated, type (PERCENTAGE/FLAT), status (ACTIVE/LOCKED/REDEEMED/EXPIRED), createdTimeStamp, lockedTimeStamp, userId</p>
+                    <h3>Redeem</h3>
+                    <p>redeemId, couponId, userId, orderId, redeemTimeStamp</p>
+                    <h3>Users</h3>
+                    <p>userId, firstName, lastName, email, phoneNumber</p>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level Design Flow</h2>
+                    <ol style="list-style: decimal; margin-left: 25px;">
+                        <li style="margin-bottom: 12px;"><strong>Admin creates coupon</strong> — POST /coupons → Coupon Generation Service → DB (status: ACTIVE)</li>
+                        <li style="margin-bottom: 12px;"><strong>User searches</strong> — Search Service queries DB (basic) or Elasticsearch (optimized)</li>
+                        <li style="margin-bottom: 12px;"><strong>User selects coupon</strong> — POST lock → status LOCKED, lockedBy, lockExpiresAt (5 min)</li>
+                        <li style="margin-bottom: 12px;"><strong>Redeem or release</strong> — If redeemed within 5 min: REDEEMED. Else: background job resets to ACTIVE</li>
+                    </ol>
+                </div>
+
+                <div class="section">
+                    <h2>Redis for Lock Mechanism</h2>
+                    <p>Redis fits coupon locking: temporary, auto-expire, high contention, fast, avoids race conditions.</p>
+                    <p><strong>Basic Redis lock:</strong></p>
+                    <div class="pre-block">SET coupon:lock:C123 USER123 NX EX 300</div>
+                    <p>NX = set only if key does NOT exist; EX 300 = expire after 5 minutes. OK → lock acquired; null → already locked.</p>
+                    <h3>Flow with Redis</h3>
+                    <ul>
+                        <li><strong>Lock:</strong> Try Redis lock → if success, proceed; if fail, reject. TTL 300s. No cron for expiry.</li>
+                        <li><strong>Redeem:</strong> Check Redis lock exists, user matches, apply discount, save Redeem record, mark REDEEMED, DEL lock</li>
+                        <li><strong>Abandon:</strong> Redis TTL expires automatically; coupon available again</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Elasticsearch for Search</h2>
+                    <p>At scale: millions of coupons, high read traffic, free-text search. DB has full table scans, high latency.</p>
+                    <p><strong>Key concepts:</strong></p>
+                    <ul>
+                        <li><strong>Index</strong> — Collection of documents (e.g., coupons_index)</li>
+                        <li><strong>Document</strong> — JSON per coupon (couponId, category, description, type, status, expiryDate)</li>
+                        <li><strong>Inverted Index</strong> — Word → list of documents (e.g., "laptop" → [C123, C456])</li>
+                        <li><strong>Shards</strong> — Index split for scale; parallel search</li>
+                        <li><strong>Replicas</strong> — Fault tolerance, read capacity</li>
+                    </ul>
+                    <p><strong>Rule:</strong> DB = source of truth; Elasticsearch = search only. DB not good for: transactions, joins, strict consistency, frequent updates.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Redis TTL for locking — no cron jobs; auto-expiry</li>
+                        <li>Elasticsearch for low-latency search at scale</li>
+                        <li>5-minute lock prevents double allocation and race conditions</li>
+                        <li>One coupon per user per day enforced at application layer</li>
+                        <li>Strong consistency for get/lock; high availability for search</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

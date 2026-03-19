@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce (Flipkart/Amazon) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>E-commerce (Flipkart/Amazon)</h1>
+                <p>E-commerce Platform — HLD Notes</p>
+                <span class="date-badge">Completed: 14 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design for a scalable e-commerce platform similar to Amazon or Flipkart. Covers requirement gathering, high-level architecture, API design, and low-level design including database choices, search optimization, caching, and concurrency control for limited stock.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li>User login/signup and authentication</li>
+                        <li>Product search by keywords or title</li>
+                        <li>View product details (description, images, manufacturer, reviews)</li>
+                        <li>Add products with quantities to cart</li>
+                        <li>Checkout and payment processing</li>
+                        <li>Order status tracking</li>
+                        <li>Handle concurrent purchases for limited stock (e.g., flash sales)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> 10 million monthly active users, 10 orders/second</li>
+                        <li><strong>Latency:</strong> Search response ~200 ms</li>
+                        <li><strong>CAP Theorem:</strong>
+                            <ul>
+                                <li><strong>Search:</strong> High availability (users must always search)</li>
+                                <li><strong>Payment, orders, inventory:</strong> Strong consistency</li>
+                            </ul>
+                        </li>
+                        <li>Microservices architecture, round-robin load balancing</li>
+                        <li>API Gateway: routing, auth, rate limiting</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Design Steps Timeline</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Step</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1. Requirement Gathering</td><td>Functional &amp; non-functional; clarify scope</td></tr>
+                            <tr><td>2. Core Entities</td><td>User, Product, Cart, Orders, Checkout</td></tr>
+                            <tr><td>3. API Design</td><td>REST endpoints for search, product, cart, checkout, payment, order status</td></tr>
+                            <tr><td>4. High-Level Design</td><td>Microservices, API Gateway, Load Balancer</td></tr>
+                            <tr><td>5. Low-Level Design</td><td>DB choices, schema, ElasticSearch, Redis, concurrency, Kafka</td></tr>
+                            <tr><td>6. Limited Stock</td><td>Redis distributed locking for concurrent purchases</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Core Microservices</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Microservice</th><th>Responsibility</th><th>Database</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User Service</td><td>Signup/login, metadata, authentication</td><td>MySQL</td></tr>
+                            <tr><td>Product Service</td><td>Product metadata (description, category, quantity, price, images)</td><td>MongoDB</td></tr>
+                            <tr><td>Search Service</td><td>Product search by keyword/title</td><td>ElasticSearch</td></tr>
+                            <tr><td>Cart Service</td><td>Cart items and quantities</td><td>PostgreSQL</td></tr>
+                            <tr><td>Checkout Service</td><td>Validate cart, initiate order placement</td><td>—</td></tr>
+                            <tr><td>Payment Service</td><td>Payment processing, third-party gateway</td><td>PostgreSQL</td></tr>
+                            <tr><td>Inventory Service</td><td>Track and update inventory with strong consistency</td><td>PostgreSQL</td></tr>
+                            <tr><td>Order Status Service</td><td>Order tracking</td><td>MySQL</td></tr>
+                            <tr><td>Notification Service</td><td>Order/payment status notifications</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>API Endpoints Overview</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Method</th><th>Input</th><th>Output</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/search</code></td><td>GET</td><td>Search term (query param)</td><td>Paginated product metadata</td><td>Search products</td></tr>
+                            <tr><td><code>/product/{id}</code></td><td>GET</td><td>Product ID</td><td>Full product details</td><td>View product</td></tr>
+                            <tr><td><code>/cart</code></td><td>POST</td><td>User ID (header), product ID + quantity</td><td>Cart ID</td><td>Add to cart</td></tr>
+                            <tr><td><code>/checkout</code></td><td>POST</td><td>Cart info (products, quantities, prices)</td><td>Order ID</td><td>Checkout</td></tr>
+                            <tr><td><code>/payment</code></td><td>POST</td><td>Payment metadata + order ID</td><td>Payment confirmation</td><td>Process payment</td></tr>
+                            <tr><td><code>/order/status</code></td><td>GET</td><td>Order ID</td><td>Order status</td><td>Check status</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design Highlights</h2>
+                    <ul>
+                        <li><strong>User Service:</strong> MySQL for structured user data</li>
+                        <li><strong>Product Service:</strong> MongoDB for flexible metadata; images in S3/CDN</li>
+                        <li><strong>Search Service:</strong> ElasticSearch synced via CDC (Kafka) from Product DB</li>
+                        <li><strong>Cart Service:</strong> PostgreSQL (cart_id, user_id, product_ids, quantities); price fetched from Product Service for freshness</li>
+                        <li><strong>Checkout flow:</strong>
+                            <ul>
+                                <li>Validate inventory via Inventory Service before payment</li>
+                                <li>Payment via Payment Service + third-party gateway</li>
+                                <li>Kafka events post-payment: update Order DB, Inventory DB, Notification Service</li>
+                            </ul>
+                        </li>
+                        <li><strong>Inventory Service:</strong>
+                            <ul>
+                                <li>Source-of-truth in PostgreSQL</li>
+                                <li>Redis cache to reduce DB load; write-through or CDC for consistency</li>
+                                <li>Redis distributed lock with TTL for limited-stock concurrent purchases</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Concurrency and Race Condition Handling</h2>
+                    <ul>
+                        <li>Multiple checkouts can query inventory for limited-stock items simultaneously</li>
+                        <li><strong>Redis distributed lock</strong> ensures only one process decrements inventory per product</li>
+                        <li>Lock TTL (e.g., 30 sec–1 min) to avoid deadlocks</li>
+                        <li>If lock held by another process → request fails gracefully; user notified of unavailability</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Database Choices Summary</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Database</th><th>Reason</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User Service</td><td>MySQL</td><td>Structured, consistent user data</td></tr>
+                            <tr><td>Product Service</td><td>MongoDB</td><td>Flexible schema for diverse product metadata</td></tr>
+                            <tr><td>Search Service</td><td>ElasticSearch</td><td>Fast full-text search</td></tr>
+                            <tr><td>Cart Service</td><td>PostgreSQL</td><td>Consistent cart items and quantities</td></tr>
+                            <tr><td>Inventory Service</td><td>PostgreSQL</td><td>Strong consistency for inventory counts</td></tr>
+                            <tr><td>Payment Service</td><td>PostgreSQL</td><td>Payment transaction records</td></tr>
+                            <tr><td>Order Service</td><td>MySQL</td><td>Consistent order tracking</td></tr>
+                            <tr><td>Cache Layer</td><td>Redis</td><td>Reduce DB load; distributed locks for concurrency</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Balance consistency and availability per CAP theorem</li>
+                        <li>Microservices with clear separation enhance scalability and maintainability</li>
+                        <li>Event-driven (Kafka) decouples services; improves reliability in payment/order flows</li>
+                        <li>ElasticSearch and Redis critical for search and caching at scale</li>
+                        <li>Concurrency handling for limited stock prevents overselling and builds trust</li>
+                        <li>Design addresses latency, scalability, and fault tolerance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
