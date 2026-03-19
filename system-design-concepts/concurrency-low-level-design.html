@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrency in Low-Level Design - System Design Concepts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../system-design-concepts.html" class="back-link">← Back to System Design Concepts</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Concurrency in Low-Level Design</h1>
+                <p>How to Handle Concurrency in LLD Interviews — Correctness, Coordination, Scarcity</p>
+                <span class="date-badge">LLD Interview Prep</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Overview</h2>
+                    <p>Three main categories of concurrency problems in low-level design: <strong>Correctness</strong>, <strong>Coordination</strong>, and <strong>Scarcity</strong>. Use concurrency primitives (locks, atomics, blocking queues, semaphores) to solve them.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Categories of Concurrency Issues</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Description</th><th>Common Problems</th><th>Solutions</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Correctness</strong></td>
+                                <td>Shared state corruption due to simultaneous thread access</td>
+                                <td>Check-then-act race, read-modify-write race</td>
+                                <td>Locks (mutex, synchronized), atomic variables</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Coordination</strong></td>
+                                <td>Work flow between threads (producer-consumer)</td>
+                                <td>Busy-waiting, unbounded queue growth</td>
+                                <td>Blocking queues (bounded), back pressure</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scarcity</strong></td>
+                                <td>Limiting access to finite resources</td>
+                                <td>API rate limits, connection pool overload</td>
+                                <td>Semaphores, blocking queues as resource pools</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>1. Correctness</h2>
+                    <h3>Definition</h3>
+                    <p>Multiple threads access and modify shared state without synchronization → inconsistent or corrupted data.</p>
+                    <h3>Common Patterns</h3>
+                    <ul>
+                        <li><strong>Check then Act:</strong> Thread checks a condition (e.g., seat available), then acts (books seat). Another thread can intervene between check and act.</li>
+                        <li><strong>Read-Modify-Write:</strong> Read value, modify (e.g., increment), write back. Simultaneous updates can lose increments.</li>
+                    </ul>
+                    <h3>Example</h3>
+                    <p>Ticket booking: two threads book the same seat; one overwrites the other.</p>
+                    <h3>Solutions</h3>
+                    <ul>
+                        <li><strong>Locks:</strong> Java <code>synchronized</code>, Python <code>Lock</code> — make check and act atomic</li>
+                        <li><strong>Atomic variables:</strong> Java <code>AtomicInteger</code> for single-variable updates (compare-and-swap). Python lacks built-in atomics; use locks.</li>
+                    </ul>
+                    <p><strong>Key insight:</strong> Make the entire operation atomic to prevent interference.</p>
+                </div>
+
+                <div class="section">
+                    <h2>2. Coordination</h2>
+                    <h3>Definition</h3>
+                    <p>Communication and synchronization between threads — passing work from producers to consumers.</p>
+                    <h3>Scenario</h3>
+                    <p>Background task queue for sending emails asynchronously without blocking the main request thread.</p>
+                    <h3>Problems</h3>
+                    <ul>
+                        <li><strong>Busy-waiting:</strong> Worker threads poll the queue inefficiently, wasting CPU</li>
+                        <li><strong>Unbounded growth:</strong> Work arrives faster than consumers process → memory overflow</li>
+                    </ul>
+                    <h3>Naive Solutions</h3>
+                    <p>Busy-wait wastes CPU; adding sleep reduces waste but adds latency.</p>
+                    <h3>Proper Solution</h3>
+                    <ul>
+                        <li><strong>Blocking queues:</strong> Consumers sleep when no work; wake when work arrives</li>
+                        <li><strong>Bounded blocking queues:</strong> Limit size; apply back pressure — block producers when full</li>
+                    </ul>
+                    <h3>Implementation</h3>
+                    <ul>
+                        <li>Java: <code>BlockingQueue</code> — <code>put()</code>, <code>take()</code></li>
+                        <li>Python: <code>queue</code> module — blocking by default, <code>put()</code>, <code>get()</code></li>
+                    </ul>
+                    <p><strong>Key insight:</strong> Coordination = work handoff. Bounded blocking queues handle idle wait and overload.</p>
+                </div>
+
+                <div class="section">
+                    <h2>3. Scarcity</h2>
+                    <h3>Definition</h3>
+                    <p>Managing access to limited resources — API rate limits, database connection pools.</p>
+                    <h3>Example</h3>
+                    <p>Limit concurrent API requests to 10 when 50 threads may call simultaneously.</p>
+                    <h3>Tools</h3>
+                    <ul>
+                        <li><strong>Semaphores:</strong> Bucket of permits; threads acquire to proceed, release after use</li>
+                        <li><strong>Blocking queues as resource pools:</strong> Store actual resources (e.g., DB connections) in a bounded blocking queue; check out and return</li>
+                    </ul>
+                    <h3>Important</h3>
+                    <p>Always release permits/resources even on exceptions — use <code>try-finally</code> to avoid deadlock or starvation.</p>
+                    <h3>Implementation</h3>
+                    <ul>
+                        <li>Java: <code>Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
+                        <li>Python: <code>Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
+                    </ul>
+                    <p><strong>Key insight:</strong> Careful resource management; ensure release to avoid deadlock and ensure fairness.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Mental Checklist for Interview</h2>
+                    <ul>
+                        <li><strong>Shared mutable state accessed by multiple threads?</strong> → Correctness (locks, atomics)</li>
+                        <li><strong>Work flowing asynchronously (producer-consumer)?</strong> → Coordination (blocking queues, back pressure)</li>
+                        <li><strong>Fixed limit on resources threads must share?</strong> → Scarcity (semaphores, resource pools)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>Concurrency bugs stem from timing and ordering between threads</li>
+                        <li>Correctness: unsynchronized shared state → atomic operations</li>
+                        <li>Coordination: communication and task scheduling → blocking queues</li>
+                        <li>Scarcity: finite resources → semaphores; ensure proper release</li>
+                        <li>Fundamental primitives: locks, atomics, blocking queues, semaphores</li>
+                        <li>Consider exception safety for scarce resources and locks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
