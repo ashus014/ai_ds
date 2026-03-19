@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application (WhatsApp/Messenger) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .mind-map-img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 15px 0;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Chat Application (WhatsApp/Messenger)</h1>
+                <p>System Design — HLD Notes</p>
+                <span class="date-badge">Completed: 17 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design walkthrough for building a chat application similar to WhatsApp or Facebook Messenger. Supports one-to-one and group messaging, media sharing, message history, delivery/read receipts, and scalability to billions of users.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Mind Map Overview</h2>
+                    <p>Visual summary of the Chat Application system design:</p>
+                    <img src="../assets/chat-application-mind-map.png" alt="Chat Application System Design Mind Map" class="mind-map-img">
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li><strong>User Sign-up/Sign-in:</strong> Registration via phone (WhatsApp) or email (Messenger)</li>
+                        <li><strong>One-to-One Messaging:</strong> Real-time text and media between two users</li>
+                        <li><strong>Group Messaging:</strong> Group creation, member management, group chat</li>
+                        <li><strong>Message History:</strong> Access past messages in chats</li>
+                        <li><strong>Media Support:</strong> Images and videos</li>
+                        <li><strong>Message Status:</strong> Sent, delivered, and read receipts</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Requirement</th><th>Details</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Scale</td><td>1 billion users, 100 billion messages/day</td></tr>
+                            <tr><td>Latency</td><td>Message delivery within 300 ms</td></tr>
+                            <tr><td>Availability</td><td>High availability over strong consistency; eventual consistency acceptable</td></tr>
+                            <tr><td>Reliability</td><td>Zero message loss; messages delivered or stored</td></tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Storage:</strong> ~1 KB/message → ~1 PB/day. <strong>CAP:</strong> Prioritize Availability (A) and Partition Tolerance (P) over Consistency (C).</p>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>User</strong> — Chat app user</li>
+                        <li><strong>Group</strong> — Chat groups with multiple members</li>
+                        <li><strong>Message</strong> — Text or media exchanged between users or groups</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design Highlights</h2>
+                    <ul>
+                        <li><strong>User APIs:</strong> Register (POST), Sign-in (POST), Update/Delete metadata</li>
+                        <li><strong>Messaging:</strong> One-to-one and group messaging via <strong>WebSocket</strong> (real-time duplex)</li>
+                        <li><strong>Chat History:</strong> GET with lazy pagination</li>
+                        <li><strong>Group Management:</strong> Create group, add/remove members (POST/DELETE)</li>
+                        <li><strong>Receipts:</strong> Delivery/read via WebSocket events (no REST)</li>
+                        <li><strong>Media Upload:</strong> Separate service with blob storage (S3)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Architecture</h2>
+                    <ul>
+                        <li><strong>Clients:</strong> Mobile apps</li>
+                        <li><strong>Load Balancer / API Gateway:</strong> HTTP for REST (sign-in, media)</li>
+                        <li><strong>WebSocket Gateway / Load Balancer:</strong> Dedicated for chat connections</li>
+                        <li><strong>User Service &amp; User DB:</strong> Registration, metadata (PostgreSQL)</li>
+                        <li><strong>Group Service &amp; Group DB:</strong> Groups, membership (PostgreSQL)</li>
+                        <li><strong>Chat Service &amp; Chat DB:</strong> Text messages (Cassandra, write-optimized)</li>
+                        <li><strong>Media Upload Service &amp; Blob Storage:</strong> Images/videos</li>
+                        <li><strong>Redis Cache:</strong> WebSocket connection registry (user → connection mapping)</li>
+                        <li><strong>Message Service:</strong> Consumes event streams, persists to DB</li>
+                        <li><strong>Event Streaming:</strong> Redis Streams (lower latency than Kafka) for delivery coordination</li>
+                        <li><strong>Notification Service:</strong> Push for offline users (FCM, APNs)</li>
+                        <li><strong>Message Search Service:</strong> ElasticSearch for indexing and querying</li>
+                        <li><strong>CDN:</strong> Media content delivery</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Design Decisions</h2>
+                    <h3>WebSocket for Real-Time Messaging</h3>
+                    <ul>
+                        <li>Full-duplex persistent connections enable near real-time bidirectional communication</li>
+                        <li>Avoids overhead of HTTP polling, long polling, or SSE</li>
+                    </ul>
+                    <h3>Sticky WebSocket Connections</h3>
+                    <ul>
+                        <li>Each user mapped to specific WebSocket instance; mapping in Redis</li>
+                        <li>Ensures message routing to correct backend instance</li>
+                    </ul>
+                    <h3>Offline Users</h3>
+                    <ul>
+                        <li>Messages persisted in Chat DB via Redis Streams</li>
+                        <li>Push notifications sent; on reconnect, undelivered messages fetched via WebSocket</li>
+                    </ul>
+                    <h3>Group Messaging</h3>
+                    <ul>
+                        <li>Backend fetches member list; sends individually to each member's WebSocket or persists if offline</li>
+                        <li>Per-user delivery/read status tracking</li>
+                    </ul>
+                    <h3>Media Handling</h3>
+                    <p>Media via REST to upload service → blob storage; chat messages store URLs.</p>
+                    <h3>Message History &amp; Search</h3>
+                    <ul>
+                        <li>Cassandra for storage; ElasticSearch for keyword search (async indexing)</li>
+                        <li>Lazy loading for chat history</li>
+                    </ul>
+                    <h3>User Presence</h3>
+                    <p>Online status from active WebSocket entries in Redis; last seen via CDC on connection end.</p>
+                    <h3>Delivery/Read Receipts</h3>
+                    <p>WebSocket events for immediate feedback; status updated in Chat DB.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Communication Protocols</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Protocol</th><th>Description</th><th>Suitability for Chat</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>HTTP</td><td>Request-response; unidirectional</td><td>Inefficient; requires polling</td></tr>
+                            <tr><td>Long Polling</td><td>Client holds request until server has data</td><td>Resource intensive, delayed</td></tr>
+                            <tr><td>SSE</td><td>Unidirectional server push</td><td>Only server→client; needs extra client requests</td></tr>
+                            <tr><td><strong>WebSocket</strong></td><td>Full-duplex, persistent</td><td>Ideal; low latency, efficient</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Data Flow Overview</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Step</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>User registers via User Service → User DB</td></tr>
+                            <tr><td>2</td><td>User logs in; WebSocket upgraded from HTTP handshake</td></tr>
+                            <tr><td>3</td><td>WebSocket registered in Redis (user → connection)</td></tr>
+                            <tr><td>4</td><td>On login, undelivered messages fetched and pushed via WebSocket</td></tr>
+                            <tr><td>5</td><td>User sends message over WebSocket to Chat Service</td></tr>
+                            <tr><td>6</td><td>Chat Service checks recipient connection in Redis</td></tr>
+                            <tr><td>7</td><td>If online: message pushed directly via WebSocket</td></tr>
+                            <tr><td>8</td><td>If offline: message to Redis Stream + notification</td></tr>
+                            <tr><td>9</td><td>Message Service consumes stream → stores in Chat DB</td></tr>
+                            <tr><td>10</td><td>Notification service sends push to offline recipient</td></tr>
+                            <tr><td>11</td><td>Delivery/read receipts flow back via WebSocket</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Database Schema Examples</h2>
+                    <h3>User Table (User DB)</h3>
+                    <p>user_id (PK), username, email/phone_number, status, last_seen, metadata</p>
+                    <h3>Group Table (Group DB)</h3>
+                    <p>group_id (PK), group_name, description, metadata</p>
+                    <h3>Group-Member Mapping</h3>
+                    <p>id (PK), group_id (FK), user_id (FK), join_date</p>
+                    <h3>Chat Message Table (Chat DB)</h3>
+                    <p>chat_id, message_id, sender_id, receiver_id, message, message_type, timestamp, delivery_status</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key Design Components (from Mind Map)</h2>
+                    <h3>WebSocket Protocol</h3>
+                    <ul>
+                        <li>Full-duplex connection</li>
+                        <li>HTTP handshake</li>
+                        <li>Sticky sessions</li>
+                    </ul>
+                    <h3>Message Flow</h3>
+                    <ul>
+                        <li>Redis Streams (lightweight broker)</li>
+                        <li>Message consumer</li>
+                        <li>Offline support</li>
+                    </ul>
+                    <h3>Optimizations</h3>
+                    <ul>
+                        <li>CDN for media</li>
+                        <li>Local caching (SQLite)</li>
+                        <li>ElasticSearch for message search</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights and Conclusions</h2>
+                    <ul>
+                        <li>WebSocket is essential for real-time bidirectional chat at scale</li>
+                        <li>High availability with eventual consistency is acceptable</li>
+                        <li>Redis cache for WebSocket mappings is crucial for low-latency routing</li>
+                        <li>Event streaming (Redis Streams) decouples ingestion and persistence</li>
+                        <li>Media stored separately in blob storage; chat stores URLs</li>
+                        <li>Offline handling and push notifications ensure reliability</li>
+                        <li>Group messaging as multiple individual messages for per-user status</li>
+                        <li>Lazy loading and ElasticSearch optimize retrieval and search</li>
+                        <li>User presence inferred from active WebSocket connections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
