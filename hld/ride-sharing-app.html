@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Sharing (Uber/Lyft) - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Ride Sharing (Uber/Lyft)</h1>
+                <p>Ride Booking Application — HLD Notes</p>
+                <span class="date-badge">Completed: 15 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Comprehensive system design for a ride booking application similar to Uber or Ola. Covers functional and non-functional requirements, core entities, API design, high-level architecture, and low-level design for scalability, availability, and consistency.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Fare Estimation:</strong> Input start/drop locations → fare estimates for bike, car, SUV</li>
+                        <li><strong>Ride Request:</strong> User selects vehicle type and requests ride</li>
+                        <li><strong>Driver Matching:</strong> Match rider with nearby available driver</li>
+                        <li><strong>Driver Response:</strong> Drivers accept or decline based on fare and location</li>
+                        <li><strong>Real-Time Tracking:</strong> Rider and driver track each other's location</li>
+                        <li><strong>Rating System:</strong> Both parties rate each other post-trip</li>
+                        <li><strong>Payment Processing:</strong> Pay final fare through the app</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Non-Functional Requirements</h2>
+                    <ul>
+                        <li><strong>Scale:</strong> Millions of users and drivers</li>
+                        <li><strong>CAP Theorem:</strong>
+                            <ul>
+                                <li><strong>High Availability (Users):</strong> Continuous ride request submissions</li>
+                                <li><strong>High Consistency (Drivers):</strong> Driver assignment consistent to prevent double allocation</li>
+                            </ul>
+                        </li>
+                        <li><strong>Latency:</strong> Driver assignment within 1 minute; request fails otherwise</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core Entities</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Entity</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>User/Rider</td><td>Customer requesting rides</td></tr>
+                            <tr><td>Driver</td><td>Service providers accepting rides</td></tr>
+                            <tr><td>Fare</td><td>Estimated cost of a ride</td></tr>
+                            <tr><td>Ride</td><td>Trip details and status</td></tr>
+                            <tr><td>Location</td><td>Pickup and drop-off locations</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>API Design Overview</h2>
+                    <h3>User APIs</h3>
+                    <ul>
+                        <li><strong>GET Fare Estimation:</strong> Input pickup/drop lat/long → list of fare estimates (vehicle type, request ID)</li>
+                        <li><strong>POST Ride Request:</strong> Input selected request ID → ride ID and driver info</li>
+                        <li><strong>GET Ride History:</strong> Past rides</li>
+                        <li><strong>POST Cancel Ride:</strong> Cancel by ride ID</li>
+                        <li><strong>POST Provide Rating:</strong> Submit rating post-ride</li>
+                    </ul>
+                    <h3>Driver APIs</h3>
+                    <ul>
+                        <li><strong>WebSocket Location Update:</strong> Real-time driver location</li>
+                        <li><strong>POST Accept/Deny Ride:</strong> Request ID + acceptance status</li>
+                        <li><strong>POST Start Ride:</strong> Indicate trip start</li>
+                        <li><strong>POST End Ride:</strong> Indicate trip completion</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level System Architecture</h2>
+                    <ul>
+                        <li><strong>Clients:</strong> Rider and driver mobile apps</li>
+                        <li><strong>Load Balancer &amp; API Gateway:</strong> Auth, authorization, rate limiting; round-robin routing</li>
+                        <li><strong>Ride Service:</strong> Fare estimates via map APIs (Google/Apple Maps) for distance and ETA</li>
+                        <li><strong>Driver Matching Service:</strong> Geospatial proximity search; finds nearby drivers; sends notifications</li>
+                        <li><strong>Notification Service:</strong> Push to drivers via FCM (Android) / APNs (iOS)</li>
+                        <li><strong>Databases:</strong> Driver DB, Ride DB, Fare/Rate DB, Rating DB, Payment DB</li>
+                        <li><strong>Location Update Service:</strong> WebSocket server for real-time location</li>
+                        <li><strong>Redis Cache:</strong> Active driver locations for fast reads</li>
+                        <li><strong>ZooKeeper:</strong> Distributed locking to prevent double driver assignment</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Low-Level Design — Key Technical Details</h2>
+
+                    <h3>Fare Calculation</h3>
+                    <ul>
+                        <li>Third-party map APIs for route distance and ETA</li>
+                        <li>Vehicle-specific rates and waiting charges from Fare DB</li>
+                        <li>Surge pricing from real-time demand analytics</li>
+                    </ul>
+
+                    <h3>Driver Matching</h3>
+                    <ul>
+                        <li><strong>GeoHashing</strong> and <strong>proximity search</strong> for drivers within radius (e.g., 5–10 km)</li>
+                        <li>Query Redis cache for active drivers</li>
+                        <li>Notify limited drivers (e.g., top 5) sequentially to meet 1-minute SLA</li>
+                        <li><strong>ZooKeeper distributed locks</strong> (ephemeral nodes) lock driver IDs during assignment; prevent race conditions</li>
+                        <li>Locks released on driver response or timeout; auto cleanup on service crash</li>
+                    </ul>
+
+                    <h3>Real-Time Location Tracking</h3>
+                    <ul>
+                        <li>WebSocket connections via dedicated gateway; sticky sessions</li>
+                        <li>Location updates every 5–10 seconds</li>
+                        <li>Active driver locations cached in Redis; async processing to avoid DB overload</li>
+                        <li><strong>Kafka</strong> streams location updates for active rides; route tracking, fare reconciliation</li>
+                    </ul>
+
+                    <h3>Payment and Rating</h3>
+                    <ul>
+                        <li>Payment service integrates with external gateways</li>
+                        <li>Payment data in relational DB with ACID properties</li>
+                        <li>Rating service stores granular ratings; batch jobs aggregate to update driver/user averages</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Key Components</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Responsibility</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ride Service</td><td>Fare estimation and surge pricing</td></tr>
+                            <tr><td>Driver Matching</td><td>Finding and notifying nearby drivers</td></tr>
+                            <tr><td>Notification Service</td><td>Push notifications to drivers</td></tr>
+                            <tr><td>Location Update</td><td>Real-time tracking via WebSocket</td></tr>
+                            <tr><td>Redis Cache</td><td>Caching active driver locations</td></tr>
+                            <tr><td>ZooKeeper</td><td>Distributed locking for consistent driver assignment</td></tr>
+                            <tr><td>Ride DB</td><td>Ride details and statuses</td></tr>
+                            <tr><td>Fare DB</td><td>Fare and rate configurations</td></tr>
+                            <tr><td>Rating Service &amp; DB</td><td>Storing and aggregating ratings</td></tr>
+                            <tr><td>Payment Service &amp; DB</td><td>Payment transactions</td></tr>
+                            <tr><td>Kafka Queue</td><td>Streaming location updates during active rides</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li><strong>Separation of concerns:</strong> Microservices for fare, matching, notification, rating, payment</li>
+                        <li><strong>CAP balance:</strong> Availability for users; strong consistency for driver assignment</li>
+                        <li><strong>Proximity search:</strong> GeoHashing and Redis for fast nearby driver retrieval</li>
+                        <li><strong>Distributed locking:</strong> ZooKeeper for concurrency control and consistency</li>
+                        <li><strong>WebSocket:</strong> Low-latency real-time tracking for matching and tracking</li>
+                        <li><strong>Latency management:</strong> Limited driver notifications and timeouts for 1-minute SLA</li>
+                        <li><strong>Data strategy:</strong> Relational DBs for consistency; caches/queues for performance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
