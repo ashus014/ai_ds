@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apache Kafka — System Design Concepts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
+        .header p { font-size: 1.05em; opacity: 0.95; margin-bottom: 8px; max-width: 720px; margin-left: auto; margin-right: auto; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.55em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h2.no-icon::before { content: none; margin-right: 0; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p { line-height: 1.7; margin-bottom: 12px; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        ol {
+            margin: 12px 0 18px 8px;
+            padding-left: 28px;
+            line-height: 1.7;
+        }
+        ol li { margin-bottom: 10px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .callout {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dde1e8;
+            margin: 28px 0;
+        }
+        .keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .keywords span {
+            background: #e8eaf6;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.88em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.88em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../system-design-concepts.html" class="back-link">← Back to System Design Concepts</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Apache Kafka</h1>
+                <p>Distributed event streaming — crash-course notes: problems it solves, architecture, consumer groups, and a Node.js-oriented setup path.</p>
+                <span class="date-badge">📅 Notes — March 20, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2 class="no-icon">What this page is for</h2>
+                    <p>Structured notes from a Kafka introduction video: why Kafka matters in industry, how it differs from databases, core components (producer, topic, partition, consumer, consumer group, Zookeeper), and a practical path with Docker and Node.js.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Key concepts and problems Kafka solves</h2>
+                    <p><strong>Kafka</strong> (काफ्का) shows up heavily in manufacturing, banking, insurance, telecom, and similar domains. Illustrative “Kafka usage intensity” from the course (out of 10 companies sampled in each vertical):</p>
+                    <table>
+                        <thead>
+                            <tr><th>Industry</th><th>Companies using Kafka (out of 10)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Manufacturing</td><td>10</td></tr>
+                            <tr><td>Banking</td><td>7</td></tr>
+                            <tr><td>Insurance</td><td>10</td></tr>
+                            <tr><td>Telecom</td><td>8</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Kafka addresses <strong>real-time data throughput</strong> for systems that must handle very high rates of events, for example:</p>
+                    <ul>
+                        <li>Live location tracking for delivery partners (e.g. Zomato riders).</li>
+                        <li>Real-time chat at large concurrency (e.g. Discord).</li>
+                        <li>Ride-booking platforms (Ola, Uber) streaming driver and trip updates.</li>
+                    </ul>
+                    <p>Traditional databases often hit <strong>throughput bottlenecks</strong> when write/read rates climb (hundreds or thousands of ops per second and beyond), risking failures or severe slowdowns.</p>
+                    <p><strong>Throughput</strong> (थ्रूपुट) means how many read/write operations per second a system can sustain. Kafka is built for <strong>very high throughput</strong>; typical databases trade that for durable storage, indexing, and rich querying.</p>
+                    <div class="callout">
+                        <strong>Not a database replacement:</strong> Kafka retains data for a <em>limited, configurable</em> window and streams events at scale. Databases excel at long-lived storage and query models — use both where each fits.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Kafka architecture overview</h2>
+                    <p>Kafka acts as a <strong>distributed message broker</strong>. Main pieces:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Producer</strong> (प्रोड्यूसर)</td>
+                                <td>Apps or services that publish messages to Kafka <strong>topics</strong>.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Topic</strong> (टॉपिक)</td>
+                                <td>Logical channel or category producers write to.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Partition</strong> (पार्टीशन)</td>
+                                <td>Topics are split into partitions for parallelism and scale.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Consumer</strong> (कंज्यूमर)</td>
+                                <td>Subscribers that read messages from topics.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Consumer group</strong> (कंज्यूमर ग्रुप)</td>
+                                <td>Consumers that share partition assignment and split the read load.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Zookeeper</strong> (जूकीपर)</td>
+                                <td>Manages cluster metadata, partition assignments, and consumer group coordination internally.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li><strong>Topics</strong> group messages logically; <strong>partitions</strong> split volume and enable parallel consumption.</li>
+                        <li>Within one <strong>consumer group</strong>, each partition is consumed by <strong>at most one</strong> consumer at a time — that preserves order inside the partition and avoids duplicate processing in the group.</li>
+                        <li><strong>Multiple consumer groups</strong> can subscribe to the same topic independently (pub/sub across applications).</li>
+                        <li>Kafka <strong>rebalances</strong> partition assignments when consumers join or leave a group.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Real-world use case: food delivery (Zomato)</h2>
+                    <ul>
+                        <li>Partner location updates stream into Kafka (e.g. roughly per-second).</li>
+                        <li>Messages land in partitions (e.g. by region or custom key).</li>
+                        <li>Analytics, customer apps, fare engines, etc. consume the same stream via different consumer groups.</li>
+                        <li>Downstream services process in near real time and persist aggregates or snapshots to their own databases.</li>
+                        <li>Ingestion stays decoupled from OLTP databases, avoiding overload on a single write path.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Kafka vs traditional databases</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>Kafka</th><th>Traditional DB (e.g. PostgreSQL, MongoDB)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Throughput</td>
+                                <td>Very high (millions of events/sec at scale)</td>
+                                <td>Lower to moderate for typical transactional workloads</td>
+                            </tr>
+                            <tr>
+                                <td>Data retention</td>
+                                <td>Time- or size-bounded (streaming log)</td>
+                                <td>Durable, long-term storage</td>
+                            </tr>
+                            <tr>
+                                <td>Query support</td>
+                                <td>Sequential consumption patterns; limited ad-hoc query</td>
+                                <td>Indexes, joins, rich queries</td>
+                            </tr>
+                            <tr>
+                                <td>Use case</td>
+                                <td>Streaming, buffering, event pipelines</td>
+                                <td>Transactional state, reporting source of truth</td>
+                            </tr>
+                            <tr>
+                                <td>Scalability</td>
+                                <td>Horizontal scale via partitions and brokers</td>
+                                <td>Often vertical + bounded horizontal patterns</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Internal concepts (producer, consumer, Zookeeper)</h2>
+                    <ul>
+                        <li><strong>Producers</strong> choose topic and partition (explicitly or via key hashing / custom logic).</li>
+                        <li><strong>Consumers:</strong> one consumer may read many partitions; one partition → one consumer <em>per group</em>; several consumers in a group share partitions; several groups read the same topic independently.</li>
+                        <li><strong>Zookeeper</strong> is used internally by Kafka for metadata management, leader election, and cluster coordination.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Practical setup and code outline (Node.js)</h2>
+                    <p><strong>Assumptions:</strong> comfortable with Node.js basics and distributed-systems vocabulary; <strong>Docker</strong> available.</p>
+                    <ol>
+                        <li>Run <strong>Zookeeper</strong> (commonly port <code>2181</code>).</li>
+                        <li>Run <strong>Kafka</strong> broker wired to Zookeeper (commonly <code>9092</code>).</li>
+                        <li>Use a Node Kafka client to: create an <strong>admin</strong> client and topics with partition counts; implement <strong>producers</strong> sending JSON (or other payloads) to chosen partitions; implement <strong>consumers</strong> subscribing asynchronously.</li>
+                    </ol>
+                    <p><strong>Example sketch:</strong> topic <code>rider_updates</code> with two partitions (e.g. North → partition 0, South → partition 1). Producer accepts input and routes by region; consumer logs messages; consumer groups show load spread when you add instances.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Important properties and behaviors</h2>
+                    <ul>
+                        <li><strong>Partition assignment:</strong> one consumer may own many partitions; each partition is assigned to exactly one consumer in a given group; adding consumers triggers rebalance.</li>
+                        <li><strong>Ordering:</strong> guaranteed <em>within</em> a partition; not guaranteed across partitions.</li>
+                        <li><strong>Replication:</strong> configurable replication factor for fault tolerance.</li>
+                        <li><strong>Consumer groups:</strong> multiple groups on one topic let different services process the same stream without stepping on each other’s offsets.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Benefits and typical use cases</h2>
+                    <ul>
+                        <li>High-throughput, fault-tolerant messaging and event streaming.</li>
+                        <li>Decouples high-rate ingestion from databases and batch jobs.</li>
+                        <li>Common in delivery, rideshare, telecom, banking, and chat-scale systems.</li>
+                        <li>Buffers spikes so databases and workers consume at sustainable rates.</li>
+                        <li>Partitioning + consumer groups = flexible scale-out consumption.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2 class="no-icon">Closing takeaways</h2>
+                    <p>Kafka <strong>complements</strong> databases — it is not a drop-in substitute. Partitioning and consumer-group mechanics enable scalable real-time pipelines. Hands-on practice (Docker + Node producer/consumer) solidifies the model faster than theory alone.</p>
+                </div>
+
+                <div class="section">
+                    <h2 class="no-icon">Core keywords</h2>
+                    <div class="keywords">
+                        <span>Apache Kafka</span>
+                        <span>Event streaming</span>
+                        <span>Producer</span>
+                        <span>Topic</span>
+                        <span>Partition</span>
+                        <span>Consumer</span>
+                        <span>Consumer group</span>
+                        <span>Throughput</span>
+                        <span>Message broker</span>
+                        <span>Zookeeper</span>
+                        <span>Ordering</span>
+                        <span>Replication</span>
+                        <span>Node.js</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
