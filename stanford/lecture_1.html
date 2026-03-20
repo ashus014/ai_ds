@@ -63,36 +63,53 @@
             color: #764ba2;
         }
 
-        /* Main Content */
-        .main-content {
+        /* Article shell — matches system-design article headers */
+        .article-container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 50px 40px;
+            overflow: hidden;
         }
 
-        .main-content h1 {
-            color: #667eea;
+        .article-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .article-header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-align: center;
+            font-weight: 700;
+            color: white;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
+        .article-header .subtitle {
             font-size: 1.1em;
-            margin-bottom: 6px;
+            opacity: 0.95;
+            margin-bottom: 8px;
+            color: white;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .header-date-line {
-            text-align: center;
-            margin-bottom: 40px;
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+            color: white;
         }
 
-        .header-date-line .date-tag {
-            font-size: 0.85em;
-            color: #999;
+        .main-content {
+            background: white;
+            padding: 40px 40px 50px;
         }
 
         .section {
@@ -456,11 +473,13 @@
         </ul>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <h1>CS229 Lecture 1</h1>
-        <p class="subtitle">Machine Learning: An Introduction | Instructor: Andrew Ng</p>
-        <p class="header-date-line"><span class="date-tag">— Mar 18, 2026</span></p>
+    <div class="article-container">
+        <header class="article-header">
+            <h1>CS229 Lecture 1</h1>
+            <p class="subtitle">Machine Learning: An Introduction | Instructor: Andrew Ng</p>
+            <span class="date-badge">📅 March 18, 2026</span>
+        </header>
+        <div class="main-content">
 
         <!-- SECTION 1 -->
         <div class="section">
@@ -687,6 +706,7 @@
             <p>Ng closed by noting that beyond career success, machine learning offers a rare opportunity to meaningfully improve the world — better healthcare, personalized education, stronger democratic systems. "With these tools, you actually have the power to do that."</p>
         </div>
 
+        </div>
     </div>
 </div>
 
