@@ -76,17 +76,13 @@
             min-width: 900px;
             font-size: 0.9em;
         }
-        thead th:nth-child(1),
-        tbody td.slno { width: 2.75rem; }
-        thead th:nth-child(2),
-        tbody td.stmt { width: 24%; }
-        thead th:nth-child(3),
-        tbody td:nth-child(3) { width: 5.5rem; }
-        thead th:nth-child(4),
-        tbody td.solution { width: 4.25rem; }
-        thead th:nth-child(5),
-        tbody td.linkcell { width: 4.5rem; }
-        /* column 6 (hint) uses remaining width */
+        /* Column widths: statement gets the most text space; hint is capped and wraps */
+        col.col-sl { width: 2.75rem; }
+        col.col-stmt { width: 36%; }
+        col.col-diff { width: 6.25rem; }
+        col.col-sol { width: 4rem; }
+        col.col-link { width: 4.25rem; }
+        col.col-hint { width: 22%; }
         thead th {
             background: #667eea;
             color: white;
@@ -140,6 +136,11 @@
             line-height: 1.45;
             color: #444;
             font-size: 0.92em;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            max-width: 0;
         }
         td.hint.muted .hint-placeholder { color: #bdbdbd; }
         .pill {
@@ -177,6 +178,14 @@
             <p class="sub">Official LeetCode <strong>75</strong> curated path (<code>envId=leetcode-75</code>). Use <strong>Solution</strong> for your own notes or links later; <strong>Link</strong> opens the problem or submission on LeetCode; <strong>Hint</strong> holds quick notes.</p>
             <div class="table-wrap">
                 <table>
+                    <colgroup>
+                        <col class="col-sl">
+                        <col class="col-stmt">
+                        <col class="col-diff">
+                        <col class="col-sol">
+                        <col class="col-link">
+                        <col class="col-hint">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th scope="col">Sl No</th>
