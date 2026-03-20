@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singleton Design Pattern — System Design Concepts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h2.no-icon::before { content: none; margin-right: 0; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p { line-height: 1.7; margin-bottom: 12px; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        pre {
+            background: #1e1e2e;
+            color: #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.88em;
+            line-height: 1.5;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+        .callout {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+        }
+        .interview-line {
+            font-style: italic;
+            color: #4a5568;
+            line-height: 1.7;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../system-design-concepts.html" class="back-link">← Back to System Design Concepts</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Singleton Design Pattern — From Basics to Spring Boot Reality</h1>
+                <p>Thread safety, double-checked locking, <code>volatile</code>, and when the framework makes it unnecessary</p>
+                <span class="date-badge">📅 Notes — March 20, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2 class="no-icon">Introduction</h2>
+                    <p>When you start learning system design or backend engineering, one pattern keeps coming up again and again: <strong>Singleton</strong>.</p>
+                    <p>At first, it looks simple. Once you go deeper — threading, JVM, Spring — it becomes very interesting.</p>
+                    <p>Here’s a step-by-step path from beginner ideas to real-world usage.</p>
+                </div>
+
+                <div class="section">
+                    <h2>What is Singleton?</h2>
+                    <p>Singleton is a design pattern that ensures:</p>
+                    <ul>
+                        <li>Only <strong>one instance</strong> of a class exists</li>
+                        <li>That instance is <strong>globally accessible</strong></li>
+                    </ul>
+                    <p>In simple terms: one object is created, and the same reference is used everywhere. (Hindi shorthand you might use: <em>“Ek hi object banega, aur wahi har jagah use hoga.”</em>)</p>
+                </div>
+
+                <div class="section">
+                    <h2>Why do we need Singleton?</h2>
+                    <p>Imagine you are building a backend system. Some components should not have multiple instances:</p>
+                    <ul>
+                        <li>Database connection manager</li>
+                        <li>Logger</li>
+                        <li>Configuration manager</li>
+                        <li>Cache</li>
+                    </ul>
+                    <p>If multiple objects are created by mistake, you risk <strong>data inconsistency</strong>, <strong>memory waste</strong>, and <strong>race conditions</strong>.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Basic Singleton implementation</h2>
+<pre><code>public class Browser {
+
+    private static Browser browser;
+
+    private Browser() {}
+
+    public static Browser getInstance() {
+        if (browser == null) {
+            browser = new Browser();
+        }
+        return browser;
+    }
+}</code></pre>
+                    <h3>What’s happening?</h3>
+                    <ul>
+                        <li>Constructor is <code>private</code> → callers cannot instantiate directly</li>
+                        <li>A <code>static</code> field holds the single instance</li>
+                        <li><code>getInstance()</code> is the controlled access point</li>
+                    </ul>
+                    <h3>Problem: not thread-safe</h3>
+                    <p>Under multithreading, two threads can both see <code>null</code>, both enter the block, and both create an instance — the pattern breaks.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Fix 1: synchronized method</h2>
+<pre><code>public static synchronized Browser getInstance() {
+    if (browser == null) {
+        browser = new Browser();
+    }
+    return browser;
+}</code></pre>
+                    <p><strong>Pros:</strong> thread-safe, easy to implement.</p>
+                    <p><strong>Cons:</strong> every call acquires the lock → can hurt performance when <code>getInstance()</code> is hot.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Fix 2: double-checked locking</h2>
+<pre><code>public static Browser getInstance() {
+    if (browser == null) {
+        synchronized (Browser.class) {
+            if (browser == null) {
+                browser = new Browser();
+            }
+        }
+    }
+    return browser;
+}</code></pre>
+                    <h3>Why “double check”?</h3>
+                    <ul>
+                        <li>Check <strong>before</strong> locking → avoid locking on every call after initialization</li>
+                        <li>Check <strong>after</strong> locking → only one thread constructs the instance</li>
+                    </ul>
+                    <h3>Hidden issue: publication without <code>volatile</code></h3>
+                    <p><code>browser = new Browser();</code> is not a single atomic “step” in the memory model sense. The JVM can reorder visible effects so another thread might observe a non-<code>null</code> reference before the object is fully constructed.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Final piece: <code>volatile</code></h2>
+<pre><code>private static volatile Browser browser;</code></pre>
+                    <p><code>volatile</code> helps establish the right happens-before relationship so that the fully constructed object is what other threads see when they read the reference — together with double-checked locking, this is the classic correct lazy Singleton in Java.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Approach</th>
+                                <th>Thread-safe</th>
+                                <th>Performance</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Simple (no sync)</td>
+                                <td>No</td>
+                                <td>Fast</td>
+                                <td>Unsafe under concurrency</td>
+                            </tr>
+                            <tr>
+                                <td><code>synchronized</code> method</td>
+                                <td>Yes</td>
+                                <td>Slower (lock every call)</td>
+                                <td>Fine for low call volume</td>
+                            </tr>
+                            <tr>
+                                <td>DCL without <code>volatile</code></td>
+                                <td>Risky</td>
+                                <td>Better</td>
+                                <td>Broken publication possible</td>
+                            </tr>
+                            <tr>
+                                <td>DCL + <code>volatile</code></td>
+                                <td>Yes</td>
+                                <td>Good</td>
+                                <td>Standard lazy Singleton fix in Java</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Reality check: Spring Boot</h2>
+                    <p>In a typical Spring Boot application, you usually <strong>do not</strong> hand-roll Singleton for services.</p>
+<pre><code>@Service
+public class OrderService { }</code></pre>
+                    <p>By default, Spring registers a <strong>single bean</strong> per scope (default singleton scope) in the application context and injects that same instance wherever it’s needed.</p>
+<pre><code>@Autowired OrderService s1;
+@Autowired OrderService s2;
+// s1 == s2  →  true (same bean)</code></pre>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Manual Singleton</th>
+                                <th>Spring singleton bean</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lifecycle</td>
+                                <td>You own it</td>
+                                <td>Container manages it</td>
+                            </tr>
+                            <tr>
+                                <td>Boilerplate</td>
+                                <td>Higher</td>
+                                <td>Minimal</td>
+                            </tr>
+                            <tr>
+                                <td>Typical recommendation in Spring apps</td>
+                                <td>Rarely needed</td>
+                                <td>Prefer this</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Practical mindset:</strong> in many modern backends, prefer letting the framework manage object scope and wiring instead of reinventing Singleton for every service.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Summary</h2>
+                    <ul>
+                        <li>Singleton = single shared instance + global access</li>
+                        <li>Naive lazy init is not safe under threads</li>
+                        <li><code>synchronized</code> method is safe but can be heavy</li>
+                        <li>Double-checked locking + <code>volatile</code> is the usual correct lazy pattern in Java</li>
+                        <li>In Spring Boot, default-scoped beans are already singletons — manual pattern often unnecessary</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2 class="no-icon">Interview line</h2>
+                    <div class="callout">
+                        <p class="interview-line">“In Java, Singleton can be implemented with double-checked locking and a <code>volatile</code> reference for safe publication under concurrency. In Spring Boot, the default bean scope is singleton, so the container handles that — you rarely need a hand-written Singleton for typical services.”</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
