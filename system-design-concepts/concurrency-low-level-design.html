@@ -290,13 +290,15 @@ while (true) {
     }
 }</code></pre>
                     <h3>What we want — block until work is there</h3>
-                    <p>Workers should <strong>sleep with zero busy CPU</strong> when the queue is empty and <strong>wake as soon as</strong> a producer adds a task. That is exactly what a <strong>blocking queue</strong> provides: blocking <code>take()</code> / <code>get()</code> on the consumer side, and blocking <code>put()</code> when the queue is full (bounded case). Most mainstream runtimes ship this — Java <code>java.util.concurrent.BlockingQueue</code>, Python <code>queue.Queue</code> (blocking <code>put</code>/<code>get</code>), C# <code>BlockingCollection</code>, Go channels, etc.</p>
-                    <h3>Proper solution — bounded <code>BlockingQueue</code> (Java)</h3>
-                    <p>Bounded capacity gives <strong>back pressure</strong>: if the queue is full, the producer blocks on <code>put()</code> instead of piling up unbounded work. The consumer blocks on <code>take()</code> when empty — no spin, no arbitrary sleep.</p>
+                    <p>Workers should <strong>sleep with zero busy CPU</strong> when the queue is empty and <strong>wake as soon as</strong> a producer adds a task. A <strong>blocking queue</strong> does that: <code>take()</code> / <code>get()</code> park the consumer until an item appears. Most mainstream runtimes ship this — Java <code>java.util.concurrent.BlockingQueue</code>, Python <code>queue.Queue</code> (blocking <code>put</code>/<code>get</code>), C# <code>BlockingCollection</code>, Go channels, etc.</p>
+                    <h3>Next problem — work arrives faster than consumers can drain</h3>
+                    <p>If producers keep enqueueing and consumers cannot keep up, an <strong>unbounded</strong> queue grows until you run out of memory. The fix is a <strong>bounded</strong> blocking queue: you set a maximum capacity (e.g. 1000 tasks). When the queue is <strong>full</strong>, <code>put()</code> <strong>blocks</strong> — producers wait until consumers free a slot. That slowdown is intentional: it is <strong>back pressure</strong> propagating upstream so the system <strong>naturally slows down</strong> instead of buffering an infinite backlog. Together, blocking <code>take()</code> (empty queue) and blocking <code>put()</code> (full queue) give you both idle efficiency and overload control.</p>
+                    <h3>Example — bounded blocking queue (Java)</h3>
+                    <p><code>LinkedBlockingQueue(capacity)</code> is bounded; <code>put</code> / <code>take</code> are the blocking entry points.</p>
 <pre><code>// Bounded queue — blocks when full (backpressure)
 BlockingQueue&lt;Task&gt; queue = new LinkedBlockingQueue&lt;&gt;(1000);
 
-// Producer — e.g. API handler
+// Producer — API handler
 public void handleSignup(User user) {
     saveUser(user);
     queue.put(new EmailTask(user));  // blocks if queue is full
@@ -305,7 +307,7 @@ public void handleSignup(User user) {
 
 // Consumer — worker thread
 while (true) {
-    Task task = queue.take();  // blocks if empty; thread parked, ~no busy CPU
+    Task task = queue.take();  // blocks if queue is empty, zero CPU
     process(task);
 }</code></pre>
                     <h3>Implementation cheat sheet</h3>
