@@ -321,22 +321,44 @@ while (true) {
                 <div class="section">
                     <h2>3. Scarcity</h2>
                     <h3>Definition</h3>
-                    <p>Managing access to limited resources — API rate limits, database connection pools.</p>
+                    <p>Managing access to a <strong>finite</strong> resource — only so many callers may use it at once (concurrency cap), analogous to rate limits or fixed-size pools.</p>
                     <h3>Example</h3>
-                    <p>Limit concurrent API requests to 10 when 50 threads may call simultaneously.</p>
-                    <h3>Tools</h3>
+                    <p>Fifty threads might call a service, but the service (or an upstream API) allows only <strong>10 concurrent</strong> operations. You need a gate that lets at most 10 through; the other 40 wait their turn instead of all hammering at once.</p>
+                    <h3>Semaphore — bucket of permits</h3>
+                    <p>A <strong>semaphore</strong> is a fixed-size “bucket” of permits. Before doing the guarded work, a thread <strong>acquires</strong> one permit (takes it out of the bucket). When the work finishes, it <strong>releases</strong> the permit (puts it back). If a thread tries to <code>acquire()</code> when the bucket is empty, it <strong>blocks</strong> until another thread <code>release()</code>s — same idea as waiting for a free slot.</p>
+                    <h3>Code — naive release (permit leak on exception)</h3>
+                    <p>If the work throws, <code>release()</code> never runs: permits leak out of the bucket until <strong>none are left</strong> and every thread blocks forever.</p>
+<pre><code>// import java.util.concurrent.Semaphore;
+
+Semaphore permits = new Semaphore(10); // max 10 concurrent
+
+public void download(String url) {
+    permits.acquire(); // blocks if no permit free
+    doDownload(url);   // if this throws → release() never runs ❌
+    permits.release();
+}</code></pre>
+                    <h3>Code — <code>try</code> / <code>finally</code> (always put the permit back)</h3>
+                    <p>Wrap the work in <code>try</code> and put <code>release()</code> in <code>finally</code> so it runs whether <code>doDownload</code> succeeds or throws. (Use <code>try-with-resources</code> or small helpers if you prefer; the interview answer is “guaranteed release.”)</p>
+<pre><code>Semaphore permits = new Semaphore(10); // max 10 concurrent
+
+public void download(String url) {
+    permits.acquire();
+    try {
+        doDownload(url);
+    } finally {
+        permits.release(); // ALWAYS runs, even if exception thrown
+    }
+}</code></pre>
+                    <h3>Other tools</h3>
                     <ul>
-                        <li><strong>Semaphores:</strong> Bucket of permits; threads acquire to proceed, release after use</li>
-                        <li><strong>Blocking queues as resource pools:</strong> Store actual resources (e.g., DB connections) in a bounded blocking queue; check out and return</li>
+                        <li><strong>Blocking queue as a pool:</strong> Hold real resources (e.g. DB connections) in a bounded queue; <code>take()</code> to borrow, <code>put()</code> to return — again use <code>try</code>/<code>finally</code> (or equivalent) so returns happen on errors.</li>
                     </ul>
-                    <h3>Important</h3>
-                    <p>Always release permits/resources even on exceptions — use <code>try-finally</code> to avoid deadlock or starvation.</p>
-                    <h3>Implementation</h3>
+                    <h3>APIs</h3>
                     <ul>
-                        <li>Java: <code>Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
-                        <li>Python: <code>Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
+                        <li><strong>Java:</strong> <code>java.util.concurrent.Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
+                        <li><strong>Python:</strong> <code>threading.Semaphore</code> or <code>asyncio.Semaphore</code> — same acquire/release idea</li>
                     </ul>
-                    <p><strong>Key insight:</strong> Careful resource management; ensure release to avoid deadlock and ensure fairness.</p>
+                    <p><strong>Key insight:</strong> Scarcity = cap concurrent use of a limited resource. Semaphores model a permit count; <strong>exception-safe</strong> <code>release()</code> in <code>finally</code> prevents silent permit leaks and total stall.</p>
                 </div>
 
                 <div class="section">
