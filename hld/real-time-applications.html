@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Building Real-Time Applications - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p { line-height: 1.65; margin-bottom: 12px; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .table-wrap { overflow-x: auto; margin: 15px 0; -webkit-overflow-scrolling: touch; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            min-width: 640px;
+        }
+        table.summary-table { min-width: 720px; }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        td.sub-technique { padding-left: 28px; color: #555; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .keywords { font-size: 0.95em; color: #555; line-height: 1.6; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.85em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Building Real-Time Applications</h1>
+                <p>Concepts and Techniques — WebSocket, Polling, Server-Sent Events</p>
+                <span class="date-badge">Completed: 20 March 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>An in-depth look at how to build <strong>real-time applications</strong>: communication between servers and clients, and techniques to stream and update data in real time. The discussion uses practical examples such as a <strong>stock market application</strong> to surface challenges and ways to keep client data current.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Core Concepts and Problem Statement</h2>
+                    <ul>
+                        <li><strong>Real-time application:</strong> The server continuously updates clients with fresh data as changes happen.</li>
+                        <li><strong>Traditional request-response model:</strong> The client sends a request; the server processes it (database, API, computation), responds, and the connection closes. After that, <strong>the server cannot push new data</strong> to the client, so the client’s view can become <strong>stale</strong> when backend data changes.</li>
+                        <li><strong>Example:</strong> In a stock app, after a one-off response, price moves on the exchange are not reflected until the client asks again.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Real-Time Communication Techniques</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Technique</th>
+                                    <th>Description</th>
+                                    <th>Pros</th>
+                                    <th>Cons</th>
+                                    <th>Use case examples</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>WebSocket</strong></td>
+                                    <td>Stateful, full-duplex connection; both sides can send anytime.</td>
+                                    <td>Real-time bidirectional updates; low latency; one continuous connection.</td>
+                                    <td>Harder to scale horizontally; connection state on servers; complex load balancing.</td>
+                                    <td>Chat, collaborative apps.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Polling</strong></td>
+                                    <td>Client asks for updates on a schedule.</td>
+                                    <td>Simple, stateless; scales with load balancers.</td>
+                                    <td>Request overhead; latency tied to interval.</td>
+                                    <td>Stock tickers, periodic updates.</td>
+                                </tr>
+                                <tr>
+                                    <td class="sub-technique">• Short polling</td>
+                                    <td>Frequent requests; server responds immediately (no hold).</td>
+                                    <td>Simple; server frees resources quickly.</td>
+                                    <td>Many requests; wasteful if data rarely changes.</td>
+                                    <td>High-frequency refresh needs.</td>
+                                </tr>
+                                <tr>
+                                    <td class="sub-technique">• Long polling</td>
+                                    <td>Server holds the request until new data (or timeout), then responds.</td>
+                                    <td>Fewer round trips than short polling; near real-time.</td>
+                                    <td>Many open connections; can be resource-heavy.</td>
+                                    <td>Notifications, chat-style updates.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Server-Sent Events (SSE)</strong></td>
+                                    <td>Server pushes over one long-lived HTTP connection (server → client).</td>
+                                    <td>Simpler than WebSocket for one-way push; continuous updates.</td>
+                                    <td>Not for client → server on that stream (unidirectional).</td>
+                                    <td>Live feeds, notifications.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Detailed Insights</h2>
+                    <h3>WebSockets</h3>
+                    <ul>
+                        <li><strong>Full duplex:</strong> Open channel; server can push anytime; client can send anytime.</li>
+                        <li>Established via an <strong>upgrade handshake</strong>.</li>
+                        <li><strong>Scalability:</strong> Stateful connections are harder to spread across many servers; load balancers must be connection-aware.</li>
+                    </ul>
+                    <h3>Polling</h3>
+                    <ul>
+                        <li><strong>Stateless</strong> pattern: client repeatedly asks for updates; works well behind load balancers.</li>
+                        <li><strong>Short polling:</strong> Fixed interval (e.g. every 2s); immediate response, with or without new data.</li>
+                        <li><strong>Long polling:</strong> Hold until data or timeout; client immediately opens the next request.</li>
+                        <li>Long polling cuts request count vs short polling but still ties up connections; large fleets often favor polling for simpler scaling and fault tolerance.</li>
+                    </ul>
+                    <h3>Server-Sent Events (SSE)</h3>
+                    <ul>
+                        <li>Server streams updates on a single HTTP connection.</li>
+                        <li><strong>Unidirectional:</strong> server → client only on that channel (REST or other paths for client → server).</li>
+                        <li>Good when you only need live server-driven updates.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Trade-offs and Choosing an Approach</h2>
+                    <ul>
+                        <li><strong>WebSocket</strong> when you need true two-way streaming (chat, collaboration).</li>
+                        <li><strong>Polling</strong> (short or long) when simplicity and horizontal scale matter and the client mostly pulls data (e.g. markets with occasional REST actions).</li>
+                        <li><strong>SSE</strong> as a middle ground: server push without duplex on one connection.</li>
+                        <li>Weigh: change frequency, client count, infra and ops budget, and team complexity.</li>
+                        <li>Example: a stock app where users mostly read prices and send occasional buy/sell via REST may suit <strong>polling</strong> better than WebSockets.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Summary: Real-Time Mechanisms Compared</h2>
+                    <div class="table-wrap">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>WebSocket</th>
+                                    <th>Short polling</th>
+                                    <th>Long polling</th>
+                                    <th>SSE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Connection type</td>
+                                    <td>Stateful, full duplex</td>
+                                    <td>Stateless, repeated requests</td>
+                                    <td>Stateless, held requests</td>
+                                    <td>Stateful, unidirectional</td>
+                                </tr>
+                                <tr>
+                                    <td>Client → server data</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>No (on SSE channel)</td>
+                                </tr>
+                                <tr>
+                                    <td>Server → client data</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>Scalability</td>
+                                    <td>Difficult</td>
+                                    <td>Easy</td>
+                                    <td>Moderate</td>
+                                    <td>Moderate</td>
+                                </tr>
+                                <tr>
+                                    <td>Latency</td>
+                                    <td>Lowest</td>
+                                    <td>Higher</td>
+                                    <td>Moderate</td>
+                                    <td>Low</td>
+                                </tr>
+                                <tr>
+                                    <td>Complexity</td>
+                                    <td>High</td>
+                                    <td>Low</td>
+                                    <td>Moderate</td>
+                                    <td>Moderate</td>
+                                </tr>
+                                <tr>
+                                    <td>Use cases</td>
+                                    <td>Chat, collaboration</td>
+                                    <td>Frequent pull refresh</td>
+                                    <td>Notifications, near real-time</td>
+                                    <td>Live feeds, notifications</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Key Insights</h2>
+                    <ul>
+                        <li>Real-time UX needs more than one-shot HTTP request-response.</li>
+                        <li>WebSockets excel at two-way, low-latency streams but are harder to scale out.</li>
+                        <li>Polling trades some latency and load for simpler, stateless scaling.</li>
+                        <li>SSE covers server-to-client streaming with moderate complexity.</li>
+                        <li>Match <strong>direction of data flow</strong>, <strong>scale</strong>, and <strong>freshness</strong> to the mechanism you pick.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Conclusion</h2>
+                    <p>The material walks through why stale data happens after plain HTTP, then compares <strong>WebSockets</strong>, <strong>polling (short and long)</strong>, and <strong>Server-Sent Events</strong> with pros, cons, and typical use cases. Pick based on product needs, scale, and infrastructure rather than a single “best” technology.</p>
+                    <p style="margin-top: 12px; font-style: italic; color: #666;">Coding examples are optional follow-ups; the focus here is conceptual and architectural.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Keywords</h2>
+                    <p class="keywords">Real-time application, request-response cycle, stale data, WebSocket, full duplex, polling, short polling, long polling, server-sent events (SSE), scalability, load balancing, stateful vs stateless connection, stock market example, real-time updates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
