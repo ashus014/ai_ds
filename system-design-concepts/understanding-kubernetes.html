@@ -145,6 +145,14 @@
             font-size: 0.9em;
             font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
         }
+        kbd {
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #e8eaf6;
+            border: 1px solid #c5cae9;
+        }
         .callout {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
             border-radius: 8px;
@@ -164,6 +172,136 @@
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.88em;
+        }
+        .arch-figure {
+            margin: 20px 0 8px;
+            text-align: center;
+        }
+        .arch-figure h3 {
+            color: #764ba2;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: left;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .arch-expand-trigger {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: zoom-in;
+            border-radius: 8px;
+            position: relative;
+            text-align: center;
+        }
+        .arch-expand-trigger:focus {
+            outline: none;
+        }
+        .arch-expand-trigger:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 4px;
+        }
+        .arch-expand-trigger img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            vertical-align: middle;
+            transition: box-shadow 0.2s ease;
+        }
+        .arch-expand-trigger:hover img {
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+        }
+        .arch-expand-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 6px 14px;
+            font-size: 0.88em;
+            color: #667eea;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+        }
+        .arch-expand-trigger .arch-expand-hint {
+            pointer-events: none;
+        }
+        .arch-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .arch-lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+        .arch-lightbox.is-open {
+            display: flex;
+        }
+        .arch-lightbox-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            border: none;
+            cursor: pointer;
+        }
+        .arch-lightbox-inner {
+            position: relative;
+            z-index: 1;
+            max-width: min(96vw, 1400px);
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .arch-lightbox-inner img {
+            max-width: 100%;
+            max-height: calc(92vh - 48px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+            background: #fff;
+        }
+        .arch-lightbox-close {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .arch-lightbox-close:hover {
+            background: #fff;
+        }
+        .arch-lightbox-close:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+        body.arch-lightbox-open {
+            overflow: hidden;
         }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
@@ -324,6 +462,29 @@
                 </div>
 
                 <div class="section">
+                    <h2 class="no-icon">Kubernetes cluster architecture</h2>
+                    <p>Reference layouts: control plane, worker nodes, and cloud integration. <strong>Click any diagram</strong> (or use the hint below it) to open a full-size view; press <kbd>Esc</kbd> or click the backdrop to close.</p>
+
+                    <figure class="arch-figure">
+                        <h3>Overview (control plane &amp; nodes)</h3>
+                        <button type="button" class="arch-expand-trigger" data-arch-src="images/kubernetes-cluster-architecture.png" data-arch-alt="Kubernetes cluster diagram: Cloud provider API connects to cloud-controller-manager; control plane contains API server, etcd, scheduler, controller-manager; worker nodes run kubelet and kube-proxy, all communicating with the API server." aria-label="Expand overview architecture diagram">
+                            <img src="images/kubernetes-cluster-architecture.png" alt="Kubernetes cluster diagram: Cloud provider API connects to cloud-controller-manager; control plane contains API server, etcd, scheduler, controller-manager; worker nodes run kubelet and kube-proxy, all communicating with the API server." width="1024" height="491" loading="lazy">
+                            <span class="arch-expand-hint" aria-hidden="true">🔍 Click to expand</span>
+                        </button>
+                        <figcaption>Standard Kubernetes architecture — API server as the hub; <strong>etcd</strong> for state; <strong>scheduler</strong> and <strong>controller-manager</strong> via the API; <strong>cloud-controller-manager</strong> for provider integration; <strong>kubelet</strong> and <strong>kube-proxy</strong> on each node.</figcaption>
+                    </figure>
+
+                    <figure class="arch-figure">
+                        <h3>Cluster box: API server, nodes, CRI &amp; pods</h3>
+                        <button type="button" class="arch-expand-trigger" data-arch-src="images/kubernetes-cluster-detailed-architecture.png" data-arch-alt="Kubernetes CLUSTER diagram: CLOUD PROVIDER API outside the cluster; control plane with kube-api-server, etcd, scheduler, controller manager, cloud-controller-manager; Node 1 and Node 2 with kubelet, kube-proxy, and CRI running pods." aria-label="Expand detailed cluster architecture diagram">
+                            <img src="images/kubernetes-cluster-detailed-architecture.png" alt="Kubernetes CLUSTER diagram: CLOUD PROVIDER API outside the cluster; control plane with kube-api-server, etcd, scheduler, controller manager, cloud-controller-manager; Node 1 and Node 2 with kubelet, kube-proxy, and CRI running pods." width="1024" height="644" loading="lazy">
+                            <span class="arch-expand-hint" aria-hidden="true">🔍 Click to expand</span>
+                        </button>
+                        <figcaption>Labeled <strong>CLUSTER</strong> view: <strong>kube-api-server</strong> as the hub; <strong>etcd</strong>, <strong>scheduler</strong>, and <strong>controller manager</strong>; <strong>cloud-controller-manager</strong> bridging to the cloud provider API; each node shows <strong>kubelet</strong>, <strong>kube-proxy</strong>, and <strong>CRI</strong> with pods underneath.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="section">
                     <h2>How reconciliation works</h2>
                     <ol>
                         <li>You apply YAML (or an API call): “I want <strong>3</strong> replicas of this app.”</li>
@@ -415,5 +576,63 @@
             </div>
         </div>
     </div>
+
+    <div id="arch-lightbox" class="arch-lightbox" role="dialog" aria-modal="true" aria-label="Expanded architecture diagram" hidden>
+        <button type="button" class="arch-lightbox-backdrop" aria-label="Close expanded image"></button>
+        <div class="arch-lightbox-inner">
+            <button type="button" class="arch-lightbox-close" aria-label="Close">&times;</button>
+            <img id="arch-lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var lb = document.getElementById('arch-lightbox');
+            var lbImg = document.getElementById('arch-lightbox-img');
+            var backdrop = lb.querySelector('.arch-lightbox-backdrop');
+            var closeBtn = lb.querySelector('.arch-lightbox-close');
+            var triggers = document.querySelectorAll('.arch-expand-trigger');
+            var lastFocus = null;
+
+            function openLightbox(src, alt) {
+                lastFocus = document.activeElement;
+                lbImg.src = src;
+                lbImg.alt = alt || '';
+                lb.hidden = false;
+                lb.classList.add('is-open');
+                document.body.classList.add('arch-lightbox-open');
+                lb.setAttribute('aria-hidden', 'false');
+                closeBtn.focus();
+            }
+
+            function closeLightbox() {
+                lb.classList.remove('is-open');
+                lb.hidden = true;
+                document.body.classList.remove('arch-lightbox-open');
+                lb.setAttribute('aria-hidden', 'true');
+                lbImg.removeAttribute('src');
+                lbImg.alt = '';
+                if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+            }
+
+            triggers.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var src = btn.getAttribute('data-arch-src');
+                    var alt = btn.getAttribute('data-arch-alt') || '';
+                    if (src) openLightbox(src, alt);
+                });
+            });
+
+            backdrop.addEventListener('click', closeLightbox);
+            closeBtn.addEventListener('click', closeLightbox);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && lb.classList.contains('is-open')) {
+                    e.preventDefault();
+                    closeLightbox();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
