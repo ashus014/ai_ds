@@ -349,16 +349,31 @@ public void download(String url) {
         permits.release(); // ALWAYS runs, even if exception thrown
     }
 }</code></pre>
-                    <h3>Other tools</h3>
-                    <ul>
-                        <li><strong>Blocking queue as a pool:</strong> Hold real resources (e.g. DB connections) in a bounded queue; <code>take()</code> to borrow, <code>put()</code> to return — again use <code>try</code>/<code>finally</code> (or equivalent) so returns happen on errors.</li>
-                    </ul>
+                    <h3>Pooling stateful objects — not just a counter</h3>
+                    <p>Sometimes scarcity isn’t only “how many requests at once” — you are managing <strong>real objects that have state and cost</strong> (TCP handshakes, auth, memory). Example: <strong>database connections</strong>. Opening a new connection per call is slow and can exhaust the DB; instead you keep a fixed set (e.g. 10) <strong>open</strong> and <strong>reuse</strong> them.</p>
+                    <p>Pattern: put those live objects in a <strong>blocking queue</strong>. Threads <code>take()</code> a connection, run queries, then <code>put()</code> it back. If all connections are checked out, the next caller blocks on <code>take()</code> until someone returns one — same “finite resource” idea as a semaphore, but the queue holds the <strong>actual</strong> pooled instances.</p>
+<pre><code>// Initialize pool with connections (example API)
+BlockingQueue&lt;Connection&gt; pool = new LinkedBlockingQueue&lt;&gt;(1000);
+for (int i = 0; i &lt; 10; i++) {
+    pool.put(createConnection());
+}
+
+// Usage — borrow, use, always return
+public Result query(String sql) {
+    Connection conn = pool.take(); // blocks if pool is empty
+    try {
+        return conn.execute(sql);
+    } finally {
+        pool.put(conn); // ALWAYS return to pool, even on exception
+    }
+}</code></pre>
+                    <p><code>createConnection()</code> / <code>conn.execute</code> stand in for your driver APIs; production pools add health checks, timeouts, and max wait — the interview shape is <strong>take → try → finally put</strong>.</p>
                     <h3>APIs</h3>
                     <ul>
-                        <li><strong>Java:</strong> <code>java.util.concurrent.Semaphore</code> — <code>acquire()</code>, <code>release()</code></li>
-                        <li><strong>Python:</strong> <code>threading.Semaphore</code> or <code>asyncio.Semaphore</code> — same acquire/release idea</li>
+                        <li><strong>Java:</strong> <code>Semaphore</code> — <code>acquire()</code> / <code>release()</code>; pools — <code>BlockingQueue</code> + <code>take()</code> / <code>put()</code></li>
+                        <li><strong>Python:</strong> <code>threading.Semaphore</code> or <code>asyncio.Semaphore</code>; pools often use <code>queue.Queue</code> or a library pool</li>
                     </ul>
-                    <p><strong>Key insight:</strong> Scarcity = cap concurrent use of a limited resource. Semaphores model a permit count; <strong>exception-safe</strong> <code>release()</code> in <code>finally</code> prevents silent permit leaks and total stall.</p>
+                    <p><strong>Key insight:</strong> Scarcity = finite concurrency <em>or</em> finite expensive objects. <strong>Semaphores</strong> count permits; a <strong>blocking queue pool</strong> stores the real resources. Always <strong>return</strong> permits or connections in <code>finally</code> so nothing leaks.</p>
                 </div>
 
                 <div class="section">
@@ -366,7 +381,16 @@ public void download(String url) {
                     <ul>
                         <li><strong>Shared mutable state accessed by multiple threads?</strong> → Correctness (locks, atomics)</li>
                         <li><strong>Work flowing asynchronously (producer-consumer)?</strong> → Coordination (blocking queues, back pressure)</li>
-                        <li><strong>Fixed limit on resources threads must share?</strong> → Scarcity (semaphores, resource pools)</li>
+                        <li><strong>Fixed limit on resources threads must share?</strong> → Scarcity (semaphores, blocking queues for pools)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>In conclusion</h2>
+                    <ul>
+                        <li><strong>Correctness</strong> (shared state) — protect shared mutable state with <strong>locks</strong> (e.g. <code>synchronized</code>, explicit locks) and <strong>atomic variables</strong> when a single field’s update must be indivisible.</li>
+                        <li><strong>Coordination</strong> (work handoff) — hand off work between producers and consumers with <strong>blocking queues</strong> (block when empty, optionally block when full for back pressure).</li>
+                        <li><strong>Scarcity</strong> (limited resources) — cap concurrent use or pool expensive objects with <strong>semaphores</strong> (permits) and <strong>blocking queues</strong> (actual pooled resources like connections); always release / return in <code>finally</code>.</li>
                     </ul>
                 </div>
 
@@ -374,9 +398,9 @@ public void download(String url) {
                     <h2>Key Takeaways</h2>
                     <ul>
                         <li>Concurrency bugs stem from timing and ordering between threads</li>
-                        <li>Correctness: unsynchronized shared state → atomic operations</li>
-                        <li>Coordination: communication and task scheduling → blocking queues</li>
-                        <li>Scarcity: finite resources → semaphores; ensure proper release</li>
+                        <li>Correctness: unsynchronized shared state → <strong>locks</strong> + <strong>atomics</strong> (pick by how much state moves together)</li>
+                        <li>Coordination: producer–consumer and back pressure → <strong>blocking queues</strong></li>
+                        <li>Scarcity: finite slots or pooled objects → <strong>semaphores</strong> and <strong>blocking-queue pools</strong>; exception-safe release</li>
                         <li>Fundamental primitives: locks, atomics, blocking queues, semaphores</li>
                         <li>Consider exception safety for scarce resources and locks</li>
                     </ul>
