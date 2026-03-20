@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>LeetCode 75 Study Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 36px 28px 44px;
+        }
+        .main-container h1 {
+            color: #667eea;
+            font-size: 1.85em;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .sub {
+            text-align: center;
+            color: #555;
+            margin-bottom: 22px;
+            line-height: 1.5;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+            font-size: 0.9em;
+        }
+        thead th {
+            background: #667eea;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        tbody tr:hover td { background: #f8f9ff; }
+        tr.cat-row td {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.12) 100%);
+            font-weight: 700;
+            color: #4a3a6b;
+            padding: 14px 12px;
+            border-bottom: 2px solid #667eea;
+        }
+        td.slno {
+            font-weight: 700;
+            color: #764ba2;
+            width: 3.25rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td.stmt { font-weight: 500; min-width: 200px; }
+        td.muted {
+            color: #9e9e9e;
+            font-style: italic;
+        }
+        td.solution { min-width: 88px; white-space: nowrap; vertical-align: middle; }
+        td.solution a {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        td.solution a:hover { text-decoration: underline; }
+        td.hint {
+            max-width: 340px;
+            line-height: 1.45;
+            color: #444;
+            font-size: 0.92em;
+        }
+        td.hint.muted .hint-placeholder { color: #bdbdbd; }
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .diff-easy { background: #e8f5e9; color: #2e7d32; }
+        .diff-medium { background: #fff8e1; color: #f57f17; }
+        .diff-hard { background: #ffebee; color: #c62828; }
+        td.linkcell { white-space: nowrap; vertical-align: middle; }
+        td.linkcell a {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        td.linkcell a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; }
+            .main-container { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="main-container">
+            <h1>LeetCode 75 Study Plan</h1>
+            <p class="sub">Official LeetCode <strong>75</strong> curated path (<code>envId=leetcode-75</code>). <strong>Solution</strong> links to walkthrough video when available; <strong>Link</strong> opens your LeetCode submission or problem page; <strong>Hint</strong> holds quick notes.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">Problem statement</th>
+                            <th scope="col">Difficulty</th>
+                            <th scope="col">Solution</th>
+                            <th scope="col">Link</th>
+                            <th scope="col">Hint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="cat-row"><td colspan="6">Array / String</td></tr>
+                    <tr>
+                        <td class="slno">1</td>
+                        <td class="stmt">1657. Determine if Two Strings Are Close</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/merge-strings-alternately/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">2</td>
+                        <td class="stmt">1071. Greatest Common Divisor of Strings</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/greatest-common-divisor-of-strings/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">3</td>
+                        <td class="stmt">1431. Kids With the Greatest Number of Candies</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">4</td>
+                        <td class="stmt">605. Can Place Flowers</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/can-place-flowers/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">5</td>
+                        <td class="stmt">345. Reverse Vowels of a String</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/reverse-vowels-of-a-string/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">6</td>
+                        <td class="stmt">151. Reverse Words in a String</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/reverse-words-in-a-string/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">7</td>
+                        <td class="stmt">238. Product of Array Except Self</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/product-of-array-except-self/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Use two passes: one for the prefix product and one for the suffix product; the result is simply prefix[i] * suffix[i]</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">8</td>
+                        <td class="stmt">334. Increasing Triplet Subsequence</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=-tqUs4Qt9TU" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/increasing-triplet-subsequence/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">9</td>
+                        <td class="stmt">443. String Compression</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/string-compression/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Two Pointers</td></tr>
+                    <tr>
+                        <td class="slno">10</td>
+                        <td class="stmt">283. Move Zeroes</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/move-zeroes/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">11</td>
+                        <td class="stmt">392. Is Subsequence</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/is-subsequence/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">12</td>
+                        <td class="stmt">11. Container With Most Water</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/container-with-most-water/solutions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">left wall &amp; right wall; calculate area : width x height; keep track of max; decrease the weaker wall</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">13</td>
+                        <td class="stmt">1679. Max Number of K-Sum Pairs</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/max-number-of-k-sum-pairs/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">sort; one at start and end; look for target; increase or decrease pointer accordingly</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Sliding Window</td></tr>
+                    <tr>
+                        <td class="slno">14</td>
+                        <td class="stmt">643. Maximum Average Subarray I</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=d7sl7l7IWb4&amp;ab_channel=Pepcoding" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-average-subarray-i/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">find avg for first k set; add new right element &amp; remove old left element; check new avg is greater</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">15</td>
+                        <td class="stmt">1456. Maximum Number of Vowels in a Substring of Given Length</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=Q7gIQ-sP5jI&amp;ab_channel=Pepcoding" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">start with initial window and count vowels; add new char, if vowel increase and if leaving char is a vowel then decrease as well</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">16</td>
+                        <td class="stmt">1004. Max Consecutive Ones III</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=tqoi8-Msrjg&amp;ab_channel=Pepcoding" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/max-consecutive-ones-iii/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">acquire &amp; release; i (window end) and j (window start); Use var to track how many 0's are currently in your window; If the window becomes invalid (i.e., var &gt; k); Move j (shrink the window) until it's valid again</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">17</td>
+                        <td class="stmt">1493. Longest Subarray of 1's After Deleting One Element</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=C9QMdVwFvBo&amp;ab_channel=Pepcoding" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/longest-subarray-of-1s-after-deleting-one-element/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">acquire &amp; release; same approach as above</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Prefix Sum</td></tr>
+                    <tr>
+                        <td class="slno">18</td>
+                        <td class="stmt">1732. Find the Highest Altitude</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/find-the-highest-altitude/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">19</td>
+                        <td class="stmt">724. Find Pivot Index</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/find-pivot-index/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Hash Map / Set</td></tr>
+                    <tr>
+                        <td class="slno">20</td>
+                        <td class="stmt">2215. Find the Difference of Two Arrays</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/find-the-difference-of-two-arrays/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">21</td>
+                        <td class="stmt">1207. Unique Number of Occurrences</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/unique-number-of-occurrences/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">22</td>
+                        <td class="stmt">1657. Determine if Two Strings Are Close [solving via array]</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/determine-if-two-strings-are-close/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">23</td>
+                        <td class="stmt">2352. Equal Row and Column Pairs</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/equal-row-and-column-pairs/description/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Stack</td></tr>
+                    <tr>
+                        <td class="slno">24</td>
+                        <td class="stmt">2390. Removing Stars From a String</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/removing-stars-from-a-string/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">StringBuilder acts like a stack; use of append() &amp; deleteCharAt()</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">25</td>
+                        <td class="stmt">735. Asteroid Collision</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/asteroid-collision/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">stack.peek(), stack.pop(); Collisions Only Happen When Stack is not empty, The top of the stack is moving right, The current asteroid is moving left</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">26</td>
+                        <td class="stmt">394. Decode String</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/decode-string/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Queue</td></tr>
+                    <tr>
+                        <td class="slno">27</td>
+                        <td class="stmt">933. Number of Recent Calls</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/number-of-recent-calls/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">28</td>
+                        <td class="stmt">649. Dota2 Senate</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/dota2-senate/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Linked List</td></tr>
+                    <tr>
+                        <td class="slno">29</td>
+                        <td class="stmt">2095. Delete the Middle Node of a Linked List</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">30</td>
+                        <td class="stmt">328. Odd Even Linked List</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/odd-even-linked-list/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">separates odd-indexed and even-indexed nodes into two distinct linked lists, then concatenates the even list to the end of the odd list</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">31</td>
+                        <td class="stmt">206. Reverse Linked List</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/reverse-linked-list/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">32</td>
+                        <td class="stmt">2130. Maximum Twin Sum of a Linked List</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Binary Tree - DFS</td></tr>
+                    <tr>
+                        <td class="slno">33</td>
+                        <td class="stmt">104. Maximum Depth of Binary Tree</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">root is null (tree is empty) → The depth is 0; Otherwise → Ask the left and right child how deep they go (recursively); Use Math.max(left, right) and add 1 for yourself.</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">34</td>
+                        <td class="stmt">872. Leaf-Similar Trees</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/leaf-similar-trees/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">pre-order DFS; collect both nodes and compare</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">35</td>
+                        <td class="stmt">1448. Count Good Nodes in Binary Tree</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/count-good-nodes-in-binary-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">global val counter; At each node, you compare its value with max, which holds the maximum value seen so far on the current path; Recursive DFS Traversal;</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">36</td>
+                        <td class="stmt">437. Path Sum III</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/path-sum-iii/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">global val counter; every node is a starting point</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">37</td>
+                        <td class="stmt">1372. Longest ZigZag Path in a Binary Tree</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Zig Left, Zag Right</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">38</td>
+                        <td class="stmt">236. Lowest Common Ancestor of a Binary Tree</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">If the root is either p or q, return root ; Search the left subtree for p or q and store the result in left &amp; same for right; if(left != null &amp;&amp; right != null)  return root;; otherwise se ein left and right which is null and return other</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Binary Tree - BFS</td></tr>
+                    <tr>
+                        <td class="slno">39</td>
+                        <td class="stmt">199. Binary Tree Right Side View</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/binary-tree-right-side-view/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">use queue, offer() &amp; poll(); we need the last visible node in each level of the tree when viewed from the right.</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">40</td>
+                        <td class="stmt">1161. Maximum Level Sum of a Binary Tree</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Use a queue for BFS; Process nodes level by level; Keep track of the required info (sum, max, etc.)</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Binary Search Tree</td></tr>
+                    <tr>
+                        <td class="slno">41</td>
+                        <td class="stmt">700. Search in a Binary Search Tree</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/search-in-a-binary-search-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">return root.val &gt; val ? searchBST(root.left, val) : searchBST(root.right, val);</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">42</td>
+                        <td class="stmt">450. Delete Node in a BST</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=petKaikRiIA&amp;t=503s" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/delete-node-in-a-bst/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">special handling when node to delete has two children</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Graphs - DFS</td></tr>
+                    <tr>
+                        <td class="slno">43</td>
+                        <td class="stmt">841. Keys and Rooms</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/keys-and-rooms/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">44</td>
+                        <td class="stmt">547. Number of Provinces</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/number-of-provinces/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">45</td>
+                        <td class="stmt">1466. Reorder Routes to Make All Paths Lead to the City Zero</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">46</td>
+                        <td class="stmt">399. Evaluate Division</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/evaluate-division/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Graphs - BFS</td></tr>
+                    <tr>
+                        <td class="slno">47</td>
+                        <td class="stmt">1926. Nearest Exit from Entrance in Maze</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">48</td>
+                        <td class="stmt">994. Rotting Oranges</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/rotting-oranges/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Heap / Priority Queue</td></tr>
+                    <tr>
+                        <td class="slno">49</td>
+                        <td class="stmt">215. Kth Largest Element in an Array</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">50</td>
+                        <td class="stmt">2336. Smallest Number in Infinite Set</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/smallest-number-in-infinite-set/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">51</td>
+                        <td class="stmt">2542. Maximum Subsequence Score</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/maximum-subsequence-score/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">52</td>
+                        <td class="stmt">2462. Total Cost to Hire K Workers</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/total-cost-to-hire-k-workers/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Binary Search</td></tr>
+                    <tr>
+                        <td class="slno">53</td>
+                        <td class="stmt">374. Guess Number Higher or Lower</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/guess-number-higher-or-lower/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">54</td>
+                        <td class="stmt">2300. Successful Pairs of Spells and Potions</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/successful-pairs-of-spells-and-potions/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">55</td>
+                        <td class="stmt">162. Find Peak Element</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/find-peak-element/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">56</td>
+                        <td class="stmt">875. Koko Eating Bananas</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/koko-eating-bananas/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Backtracking</td></tr>
+                    <tr>
+                        <td class="slno">57</td>
+                        <td class="stmt">17. Letter Combinations of a Phone Number</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/letter-combinations-of-a-phone-number/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">58</td>
+                        <td class="stmt">216. Combination Sum III</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/combination-sum-iii/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Basic backtracking approach : Add and remove</td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">DP - 1D</td></tr>
+                    <tr>
+                        <td class="slno">59</td>
+                        <td class="stmt">1137. N-th Tribonacci Number</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/n-th-tribonacci-number/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">60</td>
+                        <td class="stmt">746. Min Cost Climbing Stairs</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/min-cost-climbing-stairs/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">61</td>
+                        <td class="stmt">198. House Robber</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=SI6Pm8AKqnQ&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/house-robber/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">62</td>
+                        <td class="stmt">790. Domino and Tromino Tiling</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=Iwmn-gFL3c0&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/domino-and-tromino-tiling/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">DP - Multidimensional</td></tr>
+                    <tr>
+                        <td class="slno">63</td>
+                        <td class="stmt">62. Unique Paths</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=QDVxAf_hqRQ&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/unique-paths/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">64</td>
+                        <td class="stmt">1143. Longest Common Subsequence</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=aJNu_DLyOxY&amp;t=1792s&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/longest-common-subsequence/description/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">65</td>
+                        <td class="stmt">714. Best Time to Buy and Sell Stock with Transaction Fee</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=yN5K5T3aw8M&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Cool down period video - https://www.youtube.com/watch?v=iTvEXpOAyHY | Leetcode - 309</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">66</td>
+                        <td class="stmt">72. Edit Distance</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=oqfqPEqrKo8&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/edit-distance/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Bit Manipulation</td></tr>
+                    <tr>
+                        <td class="slno">67</td>
+                        <td class="stmt">338. Counting Bits</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/counting-bits/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">Use of Integer.bitCount()</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">68</td>
+                        <td class="stmt">136. Single Number</td>
+                        <td><span class="pill diff-easy">Easy</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/single-number/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint">num ^ num = 0  | So unique is left</td>
+                    </tr>
+                    <tr>
+                        <td class="slno">69</td>
+                        <td class="stmt">1318. Minimum Flips to Make a OR b Equal to c</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=Gx4-uOkopMA&amp;ab_channel=codestorywithMIK" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/minimum-flips-to-make-a-or-b-equal-to-c/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Trie</td></tr>
+                    <tr>
+                        <td class="slno">70</td>
+                        <td class="stmt">208. Implement Trie (Prefix Tree)</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=YXefcFMpemo&amp;t=338s" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">71</td>
+                        <td class="stmt">1268. Search Suggestions System</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/search-suggestions-system/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Intervals</td></tr>
+                    <tr>
+                        <td class="slno">72</td>
+                        <td class="stmt">435. Non-overlapping Intervals</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=0TYKyTwGOAs" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/non-overlapping-intervals/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">73</td>
+                        <td class="stmt">452. Minimum Number of Arrows to Burst Balloons</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution muted">—</td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr class="cat-row"><td colspan="6">Monotonic Stack</td></tr>
+                    <tr>
+                        <td class="slno">74</td>
+                        <td class="stmt">739. Daily Temperatures</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=ZhZEmGv-sOY" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/daily-temperatures/description/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    <tr>
+                        <td class="slno">75</td>
+                        <td class="stmt">901. Online Stock Span</td>
+                        <td><span class="pill diff-medium">Medium</span></td>
+                        <td class="solution"><a href="https://www.youtube.com/watch?v=IDC1rnr3vus" target="_blank" rel="noopener noreferrer">Watch</a></td>
+                        <td class="linkcell"><a href="https://leetcode.com/problems/online-stock-span/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        <td class="hint muted"><span class="hint-placeholder">a</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
