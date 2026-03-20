@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Kubernetes — System Design Concepts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
+        .header p { font-size: 1.05em; opacity: 0.95; margin-bottom: 8px; max-width: 720px; margin-left: auto; margin-right: auto; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.55em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h2.no-icon::before { content: none; margin-right: 0; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p { line-height: 1.7; margin-bottom: 12px; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        ol {
+            margin: 12px 0 18px 8px;
+            padding-left: 28px;
+            line-height: 1.7;
+        }
+        ol li { margin-bottom: 10px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .callout {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dde1e8;
+            margin: 28px 0;
+        }
+        .keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .keywords span {
+            background: #e8eaf6;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.88em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.88em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../system-design-concepts.html" class="back-link">← Back to System Design Concepts</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Understanding Kubernetes</h1>
+                <p>From bare metal and VMs to containers and orchestration — written for students new to cloud and distributed systems.</p>
+                <span class="date-badge">📅 Notes — March 20, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2 class="no-icon">What this page is for</h2>
+                    <p>This is a structured summary of a Kubernetes introduction: why it exists, how deployment evolved, what containers are, and how a cluster is put together. If you have never touched Kubernetes, read in order — each section builds on the last.</p>
+                    <div class="callout">
+                        <strong>Prerequisite tip:</strong> Comfort with <strong>Docker</strong> (build an image, run a container) makes Kubernetes much easier, because Kubernetes <em>orchestrates</em> containers — it does not replace knowing what a container is.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Key topics covered</h2>
+                    <ul>
+                        <li>Traditional deployment challenges</li>
+                        <li>Cloud computing and cloud-native technologies</li>
+                        <li>Containerization and its advantages</li>
+                        <li>Container orchestration and Kubernetes</li>
+                        <li>Kubernetes architecture and main components</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>How we used to deploy software</h2>
+                    <p>Early on, teams built apps on laptops and deployed to <strong>physical servers</strong> (bare metal) with <strong>static IPs</strong> so the public internet could reach them. That worked, but:</p>
+                    <ul>
+                        <li>Hardware is expensive; you need space, power, cooling, and people to rack and replace machines.</li>
+                        <li><strong>Scaling</strong> meant buying bigger CPUs or more RAM — slow Capex, not something you do in minutes.</li>
+                        <li>There is no elastic “turn down capacity overnight” — you mostly pay for peak.</li>
+                    </ul>
+                    <p><strong>Cloud (e.g. AWS)</strong> changed the model: you rent <strong>virtual machines</strong> (VMs) by the hour. You stop managing physical boxes, and you can add instances when traffic spikes. Providers also added <strong>managed</strong> building blocks — databases, load balancers, CDNs — so you compose systems instead of operating every layer yourself.</p>
+                    <p><strong>Beginner snag:</strong> Even on cloud, “my laptop” and “the server” often differed in OS packages, library versions, and config — so <em>reproducing</em> production locally stayed painful until containers became mainstream.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Containers vs virtual machines</h2>
+                    <p>A <strong>VM image</strong> often bundles a <strong>full guest operating system</strong> per app. That is reliable isolation, but images are <strong>heavy</strong> (gigabytes), boot is slower, and you pay RAM/CPU for many duplicate OS kernels.</p>
+                    <p><strong>Containerization</strong> packages your <strong>app + dependencies</strong> into a <strong>lightweight image</strong>. At runtime, containers on the same host typically <strong>share the host’s Linux kernel</strong> but get isolated process, filesystem, and network views. Result: faster start, denser packing, and the same artifact runs in dev, staging, and prod if the kernel ABI is compatible.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Idea</th><th>Virtual machine</th><th>Container</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Isolation unit</td>
+                                <td>Full OS per VM</td>
+                                <td>Processes + namespaces/cgroups on one OS</td>
+                            </tr>
+                            <tr>
+                                <td>Typical image size</td>
+                                <td>Large (full OS)</td>
+                                <td>Smaller (app layers)</td>
+                            </tr>
+                            <tr>
+                                <td>“Works on my machine”</td>
+                                <td>Still config drift between envs</td>
+                                <td>Same image → more predictable</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Docker</strong> made building and running containers approachable; today you also hear <strong>containerd</strong>, <strong>CRI-O</strong>, etc. — runtimes that actually start containers while Kubernetes speaks to them through a standard interface.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Why orchestration exists</h2>
+                    <p>Each container must be <strong>started, stopped, restarted</strong>, placed on a machine with enough CPU/RAM, wired to the network, and observed (logs, health). When you have <strong>one</strong> container, scripts are fine. When you have <strong>dozens of services</strong> each scaled to <strong>many replicas</strong>, manual ops break down.</p>
+                    <div class="callout">
+                        <strong>Concrete scenario:</strong> Your API needs <strong>5 copies</strong> for traffic; a worker needs <strong>2</strong>; a cache sidecar rides next to the API. One VM dies — which processes move where? Who recreates them? Who attaches the same secrets and service DNS names? <strong>Orchestration</strong> automates those decisions.
+                    </div>
+                    <ul>
+                        <li>Scale replicas up/down with load or policy</li>
+                        <li>Replace crashed containers (<strong>self-healing</strong>)</li>
+                        <li>Roll out new versions with controlled updates</li>
+                        <li>Attach storage, secrets, and networking consistently</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Kubernetes: origin and role</h2>
+                    <p>Google ran internal workloads at huge scale with <strong>Borg</strong>. Lessons from Borg fed into <strong>Kubernetes</strong> (<strong>k8s</strong> — “k” + 8 letters + “s”), an open-source orchestrator designed from the ground up for the container era.</p>
+                    <p>In <strong>2014</strong>, Kubernetes was donated to the <strong>Cloud Native Computing Foundation (CNCF)</strong>, which helped grow a neutral ecosystem around it.</p>
+                    <p><strong>What Kubernetes does (one sentence):</strong> You declare a <strong>desired state</strong> (how many pods, what image, how exposed); the system continuously drives the <strong>actual state</strong> toward that goal.</p>
+                    <ul>
+                        <li>Groups containers into <strong>pods</strong> — the smallest deployable unit (often one main container; sometimes sidecars like log shippers or proxies).</li>
+                        <li>Is <strong>cloud-agnostic</strong>: same core ideas on AWS, GCP, Azure, or on-premises — reducing <strong>vendor lock-in</strong> for the orchestration layer (you still choose where nodes live).</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Architecture — control plane</h2>
+                    <p>The <strong>control plane</strong> is the “brain” — usually replicated for availability. It accepts API calls, stores intent, schedules work, and runs controllers that reconcile state.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Role (beginner view)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>API Server</strong></td>
+                                <td>Front door for the cluster. <code>kubectl</code> and controllers talk to it. Validates and persists objects (Pods, Services, etc.).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Controller Manager</strong></td>
+                                <td>Runs <strong>control loops</strong>: “should 3 replicas exist?” If a pod vanished, create another. Many small controllers, one binary in practice.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scheduler</strong></td>
+                                <td>Picks a <strong>worker node</strong> for each new pod based on resources, constraints, and policies.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>etcd</strong></td>
+                                <td>Distributed <strong>key-value store</strong> holding cluster state. Lose etcd carelessly and you lose the source of truth (it is backed up in real operations).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Architecture — worker nodes</h2>
+                    <p><strong>Worker nodes</strong> run your workloads. The control plane decides <em>what</em> should run; nodes make it real.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Role (beginner view)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Kubelet</strong></td>
+                                <td>Agent on each node. Talks to API Server, starts/stops containers via the runtime, reports health.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kube-proxy</strong></td>
+                                <td>Maintains network rules so <strong>Service</strong> IPs and ports reach the right pods (often via iptables/IPVS or dataplane-specific paths).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Container runtime (CRI)</strong></td>
+                                <td>Actually runs images — e.g. <strong>containerd</strong>, <strong>CRI-O</strong>. Kubernetes uses the <strong>Container Runtime Interface</strong> so the core stays runtime-neutral.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>How reconciliation works</h2>
+                    <ol>
+                        <li>You apply YAML (or an API call): “I want <strong>3</strong> replicas of this app.”</li>
+                        <li>API Server stores that in <strong>etcd</strong>.</li>
+                        <li><strong>Scheduler</strong> assigns pending pods to nodes.</li>
+                        <li><strong>Kubelet</strong> pulls the image if needed and starts containers.</li>
+                        <li>Controllers watch state: if a pod dies, a new one is created — <strong>self-healing</strong>.</li>
+                    </ol>
+                    <div class="callout">
+                        <strong>Analogy:</strong> A thermostat’s <em>desired</em> temperature vs the <em>current</em> room temperature. Kubernetes repeatedly closes the gap — not magic, just disciplined automation with clear APIs.
+                    </div>
+                    <p><strong>Kube-proxy</strong> (with Services) helps traffic reach pods even as pod IPs change during restarts — important for stable client access and later load balancer integration.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Cloud Controller Manager (CCM)</h2>
+                    <p>Kubernetes core stays generic; <strong>cloud-specific</strong> integrations (e.g. creating a cloud load balancer, attaching a disk from AWS/GCP) live in the <strong>Cloud Controller Manager</strong>. It calls provider APIs so your <code>Service</code> of type <code>LoadBalancer</code> can materialize an actual ELB/GCP LB — without baking AWS-only code into every cluster.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Why teams adopt Kubernetes</h2>
+                    <ul>
+                        <li><strong>Scale and availability:</strong> Spread work across nodes; replace failed pieces automatically.</li>
+                        <li><strong>Portability:</strong> Same workload descriptions across clouds and on-prem (with caveats for storage/LB integrations).</li>
+                        <li><strong>Ecosystem:</strong> Huge community, CNCF projects, tooling, and hiring market around k8s.</li>
+                    </ul>
+                    <p>Trade-off: operational complexity is real — you learn primitives (Pods, Deployments, Services, ConfigMaps, Ingress, etc.) and often need a platform team or managed offering (EKS, GKE, AKS) to run it safely in production.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Definitions and comparisons</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Term</th><th>Definition</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Container</strong></td>
+                                <td>Lightweight, portable package: app + dependencies; shares the host OS kernel.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pod</strong></td>
+                                <td>Smallest deployable unit in Kubernetes; one or more tightly coupled containers sharing network/storage namespaces in typical patterns.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRI</strong></td>
+                                <td>Interface between kubelet and the container runtime (containerd, CRI-O, …).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Container orchestration</strong></td>
+                                <td>Automated deploy, scale, heal, and operate containerized applications.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CCM</strong></td>
+                                <td>Integrates with cloud APIs for load balancers, routes, storage classes, etc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2 class="no-icon">Core keywords</h2>
+                    <div class="keywords">
+                        <span>Kubernetes (k8s)</span>
+                        <span>Containerization</span>
+                        <span>Pods</span>
+                        <span>Control plane</span>
+                        <span>Worker nodes</span>
+                        <span>API Server</span>
+                        <span>Scheduler</span>
+                        <span>etcd</span>
+                        <span>Kubelet</span>
+                        <span>Kube-proxy</span>
+                        <span>CRI</span>
+                        <span>CCM</span>
+                        <span>Cloud agnostic</span>
+                        <span>Self-healing</span>
+                        <span>Load balancer</span>
+                        <span>Vendor lock-in</span>
+                        <span>CNCF</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="no-icon">Closing summary</h2>
+                    <p>Kubernetes is the dominant <strong>open-source container orchestration</strong> platform. It tackles deployment, scaling, and reliability for distributed apps by keeping <strong>desired state</strong> in etcd and reconciling reality on worker nodes — with cloud hooks via CCM where needed.</p>
+                    <p>For a new engineer: learn <strong>containers first</strong>, then map each YAML resource to “which component enforces this?” (API Server, scheduler, kubelet, controllers). That mental model beats memorizing every flag.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
