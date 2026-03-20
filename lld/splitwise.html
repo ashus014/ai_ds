@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Splitwise — LLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .header-repo { margin-top: 20px; }
+        .header-repo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98em;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .header-repo a:hover {
+            background: rgba(255, 255, 255, 0.32);
+            transform: translateY(-1px);
+        }
+        .section a.repo-inline {
+            color: #5a67d8;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .section a.repo-inline:hover { color: #764ba2; }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p, .section li { line-height: 1.65; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #764ba2;
+            margin: 20px 0 8px;
+        }
+        pre.code-block {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            border: 1px solid #313244;
+        }
+        pre.code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        }
+        .callout {
+            background: #e8eaf6;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 0.98em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+            pre.code-block { font-size: 0.75em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../lld.html" class="back-link">← Back to LLD</a>
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Splitwise</h1>
+                <p>Low-Level Design — expense splitting, groups, and balances</p>
+                <span class="date-badge">20 March 2026</span>
+                <p class="header-repo">
+                    <a href="https://github.com/ashus014/system-design/tree/main/LLD/splitwise" target="_blank" rel="noopener noreferrer">GitHub — full source (LLD/splitwise)</a>
+                </p>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Model a bill-splitting app: friends, groups, expenses with equal / unequal / percentage splits, and per-user balance sheets. Expenses can be created from a group or directly between users; controllers orchestrate CRUD and delegate split validation to a strategy-style <code>ExpenseSplit</code> implementation from <code>SplitFactory</code>.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Step 1 — Requirement gathering</h2>
+                    <ul>
+                        <li>Add friends capability</li>
+                        <li>Add / manage group</li>
+                        <li>Add / manage friends inside a group</li>
+                        <li>Add / manage expense inside a group or without a group</li>
+                        <li>Split expense: equal, unequal, percentage</li>
+                        <li>Balance sheet per user (who owes whom, totals)</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Step 2 — Object modeling</h2>
+                    <ul>
+                        <li><code>Splitwise</code> — facade: wires controllers</li>
+                        <li><code>User</code></li>
+                        <li><code>Group</code></li>
+                        <li><code>Expense</code></li>
+                        <li><code>Split</code></li>
+                        <li><code>BalanceSheet</code> / <code>UserExpenseBalanceSheet</code> — per-user aggregates and friend-level balances</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Step 3 — Classes and attributes</h2>
+                    <h3><code>ExpenseSplitType</code> (enum)</h3>
+                    <p>Same role as “SplitType” in the sketch: drives which validator runs.</p>
+                    <table>
+                        <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>EQUAL</code></td><td>Divide total evenly across participants</td></tr>
+                            <tr><td><code>UNEQUAL</code></td><td>Explicit amount per participant</td></tr>
+                            <tr><td><code>PERCENTAGE</code></td><td>Percentages must sum to 100%</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3><code>Split</code></h3>
+                    <table>
+                        <thead><tr><th>Field</th><th>Type</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>user</code></td><td><code>User</code></td></tr>
+                            <tr><td><code>amount</code></td><td><code>Double</code></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3><code>Expense</code></h3>
+                    <table>
+                        <thead><tr><th>Field</th><th>Type</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>id</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>description</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>amount</code></td><td><code>Double</code></td></tr>
+                            <tr><td><code>paidBy</code></td><td><code>User</code></td></tr>
+                            <tr><td><code>splitType</code></td><td><code>ExpenseSplitType</code></td></tr>
+                            <tr><td><code>splitDetails</code></td><td><code>List&lt;Split&gt;</code></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3><code>User</code></h3>
+                    <table>
+                        <thead><tr><th>Field</th><th>Type</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>id</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>name</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>userExpenseBalanceSheet</code></td><td><code>UserExpenseBalanceSheet</code></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3><code>Group</code></h3>
+                    <table>
+                        <thead><tr><th>Field</th><th>Type</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>id</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>name</code></td><td><code>String</code></td></tr>
+                            <tr><td><code>users</code></td><td><code>List&lt;User&gt;</code></td></tr>
+                            <tr><td><code>expenses</code></td><td><code>List&lt;Expense&gt;</code></td></tr>
+                            <tr><td><code>expenseController</code></td><td><code>ExpenseController</code></td></tr>
+                        </tbody>
+                    </table>
+                    <p class="callout">Naming: plural <code>users</code> / <code>expenses</code> matches typical Java style; adjust to match your codebase if you prefer <code>user</code> / <code>expense</code> as in the original notes.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Step 4 — Methods and flow</h2>
+                    <div class="callout">
+                        <strong>Where expenses are created</strong><br>
+                        (1) From a <code>Group</code> — group’s <code>ExpenseController</code> (or group API) creates the expense and attaches it to the group.<br>
+                        (2) Directly between users — non-group path still uses <code>ExpenseController.createExpense(...)</code> with the same inputs.
+                    </div>
+                    <h3>Inputs to create an expense</h3>
+                    <ul>
+                        <li><code>amount</code></li>
+                        <li><code>paidBy</code></li>
+                        <li><code>splitType</code></li>
+                        <li><code>splits</code> (<code>List&lt;Split&gt;</code>)</li>
+                        <li><code>description</code></li>
+                    </ul>
+
+                    <h3><code>UserController</code></h3>
+                    <ul>
+                        <li><code>List&lt;User&gt; users</code></li>
+                        <li>CRUD for users</li>
+                    </ul>
+
+                    <h3><code>UserExpenseBalanceSheet</code></h3>
+                    <ul>
+                        <li><code>Map&lt;User, Balance&gt; friendBalance</code></li>
+                        <li><code>totalExpense</code>, <code>totalPayments</code>, <code>totalOwe</code>, <code>totalGetBack</code></li>
+                    </ul>
+
+                    <h3><code>Balance</code></h3>
+                    <ul>
+                        <li><code>amountOwe</code>, <code>amountGetBack</code></li>
+                    </ul>
+
+                    <h3><code>BalanceSheetController</code></h3>
+                    <ul>
+                        <li><code>updateUserExpenseBalanceSheet(...)</code> — after each expense, adjust payer vs split participants</li>
+                        <li><code>showBalanceSheetOfUser(User)</code></li>
+                    </ul>
+
+                    <h3><code>GroupController</code></h3>
+                    <ul>
+                        <li><code>List&lt;Group&gt; groups</code></li>
+                        <li>CRUD for groups</li>
+                    </ul>
+
+                    <h3><code>ExpenseController</code></h3>
+                    <ul>
+                        <li><code>createExpense(expenseId, description, expenseAmount, splitDetails, splitType, paidByUser)</code> — validate via <code>SplitFactory</code>, then persist and trigger balance update</li>
+                    </ul>
+
+                    <h3><code>SplitFactory</code></h3>
+                    <ul>
+                        <li><code>getSplitObject(ExpenseSplitType)</code> → <code>ExpenseSplit</code></li>
+                    </ul>
+
+                    <h3><code>ExpenseSplit</code> (interface)</h3>
+                    <ul>
+                        <li><code>validateRequest(List&lt;Split&gt; splitList, Double totalAmount)</code></li>
+                        <li>Implementations: equal / unequal / percentage rules</li>
+                    </ul>
+
+                    <h3><code>Splitwise</code></h3>
+                    <ul>
+                        <li><code>userController</code>, <code>groupController</code>, <code>expenseController</code></li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Reference implementation (Java skeleton)</h2>
+                    <p>Documented stubs aligned with the steps below. The canonical codebase is on GitHub: <a class="repo-inline" href="https://github.com/ashus014/system-design/tree/main/LLD/splitwise" target="_blank" rel="noopener noreferrer">github.com/ashus014/system-design — LLD/splitwise</a>.</p>
+
+                    <div class="code-label">ExpenseSplitType.java</div>
+                    <pre class="code-block"><code>/**
+ * How the expense total is divided among participants.
+ */
+public enum ExpenseSplitType {
+    EQUAL,
+    UNEQUAL,
+    PERCENTAGE
+}</code></pre>
+
+                    <div class="code-label">ExpenseSplit.java</div>
+                    <pre class="code-block"><code>import java.util.List;
+
+/**
+ * Strategy for validating split lines before an {@link Expense} is recorded.
+ */
+public interface ExpenseSplit {
+    void validateRequest(List&lt;Split&gt; splitList, double totalAmount);
+}</code></pre>
+
+                    <div class="code-label">SplitFactory.java</div>
+                    <pre class="code-block"><code>/**
+ * Returns the correct split validator for the requested type.
+ */
+public final class SplitFactory {
+
+    private SplitFactory() {}
+
+    public static ExpenseSplit getSplitObject(ExpenseSplitType splitType) {
+        return switch (splitType) {
+            case EQUAL -&gt; new EqualExpenseSplit();
+            case UNEQUAL -&gt; new UnequalExpenseSplit();
+            case PERCENTAGE -&gt; new PercentageExpenseSplit();
+        };
+    }
+}</code></pre>
+
+                    <div class="code-label">EqualExpenseSplit.java (example)</div>
+                    <pre class="code-block"><code>import java.util.List;
+
+public final class EqualExpenseSplit implements ExpenseSplit {
+    @Override
+    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
+        if (splitList == null || splitList.isEmpty()) {
+            throw new IllegalArgumentException("Splits required");
+        }
+        double share = totalAmount / splitList.size();
+        for (Split s : splitList) {
+            if (Math.abs(s.getAmount() - share) &gt; 1e-6) {
+                throw new IllegalArgumentException("Equal split: each share must be " + share);
+            }
+        }
+    }
+}</code></pre>
+
+                    <div class="code-label">Split.java</div>
+                    <pre class="code-block"><code>public class Split {
+    private final User user;
+    private double amount;
+
+    public Split(User user, double amount) {
+        this.user = user;
+        this.amount = amount;
+    }
+
+    public User getUser() { return user; }
+    public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
+}</code></pre>
+
+                    <div class="code-label">Expense.java</div>
+                    <pre class="code-block"><code>import java.util.List;
+
+public class Expense {
+    private final String id;
+    private final String description;
+    private final double amount;
+    private final User paidBy;
+    private final ExpenseSplitType splitType;
+    private final List&lt;Split&gt; splitDetails;
+
+    public Expense(String id, String description, double amount, User paidBy,
+                   ExpenseSplitType splitType, List&lt;Split&gt; splitDetails) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.paidBy = paidBy;
+        this.splitType = splitType;
+        this.splitDetails = splitDetails;
+    }
+
+    public String getId() { return id; }
+    public String getDescription() { return description; }
+    public double getAmount() { return amount; }
+    public User getPaidBy() { return paidBy; }
+    public ExpenseSplitType getSplitType() { return splitType; }
+    public List&lt;Split&gt; getSplitDetails() { return splitDetails; }
+}</code></pre>
+
+                    <div class="code-label">ExpenseController.java</div>
+                    <pre class="code-block"><code>import java.util.ArrayList;
+import java.util.List;
+
+public class ExpenseController {
+    private final List&lt;Expense&gt; expenses = new ArrayList&lt;&gt;();
+    private final BalanceSheetController balanceSheetController;
+
+    public ExpenseController(BalanceSheetController balanceSheetController) {
+        this.balanceSheetController = balanceSheetController;
+    }
+
+    /**
+     * Creates an expense (group or non-group). Validates splits, stores expense, updates balances.
+     */
+    public Expense createExpense(String expenseId, String description, double expenseAmount,
+                                 List&lt;Split&gt; splitDetails, ExpenseSplitType splitType,
+                                 User paidByUser) {
+        ExpenseSplit splitter = SplitFactory.getSplitObject(splitType);
+        splitter.validateRequest(splitDetails, expenseAmount);
+
+        Expense expense = new Expense(expenseId, description, expenseAmount,
+                paidByUser, splitType, splitDetails);
+        expenses.add(expense);
+        balanceSheetController.updateUserExpenseBalanceSheet(expense);
+        return expense;
+    }
+
+                    public List&lt;Expense&gt; getExpenses() {
+        return List.copyOf(expenses);
+    }
+}</code></pre>
+
+                    <div class="code-label">UnequalExpenseSplit.java</div>
+                    <pre class="code-block"><code>import java.util.List;
+
+/** Split amounts must sum to {@code totalAmount}. */
+public final class UnequalExpenseSplit implements ExpenseSplit {
+    @Override
+    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
+        double sum = splitList.stream().mapToDouble(Split::getAmount).sum();
+        if (Math.abs(sum - totalAmount) &gt; 1e-6) {
+            throw new IllegalArgumentException("Unequal splits must sum to total: " + totalAmount);
+        }
+    }
+}</code></pre>
+
+                    <div class="code-label">PercentageExpenseSplit.java</div>
+                    <pre class="code-block"><code>import java.util.List;
+
+/**
+ * {@link Split#getAmount()} holds percentage for each user; must sum to 100.
+ * You can convert to currency in the controller after validation.
+ */
+public final class PercentageExpenseSplit implements ExpenseSplit {
+    @Override
+    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
+        double pct = splitList.stream().mapToDouble(Split::getAmount).sum();
+        if (Math.abs(pct - 100.0) &gt; 1e-6) {
+            throw new IllegalArgumentException("Percentages must sum to 100");
+        }
+    }
+}</code></pre>
+
+                    <div class="code-label">Balance.java</div>
+                    <pre class="code-block"><code>public class Balance {
+    private double amountOwe;
+    private double amountGetBack;
+
+    public double getAmountOwe() { return amountOwe; }
+    public void addOwe(double v) { amountOwe += v; }
+    public double getAmountGetBack() { return amountGetBack; }
+    public void addGetBack(double v) { amountGetBack += v; }
+}</code></pre>
+
+                    <div class="code-label">UserExpenseBalanceSheet.java</div>
+                    <pre class="code-block"><code>import java.util.HashMap;
+import java.util.Map;
+
+public class UserExpenseBalanceSheet {
+    private final Map&lt;User, Balance&gt; friendBalance = new HashMap&lt;&gt;();
+    private double totalExpense;
+    private double totalPayments;
+    private double totalOwe;
+    private double totalGetBack;
+
+    public Map&lt;User, Balance&gt; getFriendBalance() { return friendBalance; }
+    public double getTotalExpense() { return totalExpense; }
+    public void addTotalExpense(double v) { totalExpense += v; }
+    public double getTotalPayments() { return totalPayments; }
+    public void addTotalPayments(double v) { totalPayments += v; }
+    public double getTotalOwe() { return totalOwe; }
+    public void addTotalOwe(double v) { totalOwe += v; }
+    public double getTotalGetBack() { return totalGetBack; }
+    public void addTotalGetBack(double v) { totalGetBack += v; }
+
+    private Balance balanceFor(User u) {
+        return friendBalance.computeIfAbsent(u, x -&gt; new Balance());
+    }
+
+    /** User {@code owes} paid {@code amount} toward {@code creditor}. */
+    public void owe(User creditor, double amount) {
+        balanceFor(creditor).addOwe(amount);
+        addTotalOwe(amount);
+    }
+
+    /** User is owed {@code amount} by {@code debtor}. */
+    public void getBack(User debtor, double amount) {
+        balanceFor(debtor).addGetBack(amount);
+        addTotalGetBack(amount);
+    }
+}</code></pre>
+
+                    <div class="code-label">User.java</div>
+                    <pre class="code-block"><code>public class User {
+    private final String id;
+    private final String name;
+    private final UserExpenseBalanceSheet userExpenseBalanceSheet;
+
+    public User(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.userExpenseBalanceSheet = new UserExpenseBalanceSheet();
+    }
+
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public UserExpenseBalanceSheet getUserExpenseBalanceSheet() {
+        return userExpenseBalanceSheet;
+    }
+}</code></pre>
+
+                    <div class="code-label">BalanceSheetController.java</div>
+                    <pre class="code-block"><code>/**
+ * For each expense: payer should "get back" others' shares; each non-payer "owes" their share to payer.
+ */
+public class BalanceSheetController {
+
+    public void updateUserExpenseBalanceSheet(Expense expense) {
+        User paidBy = expense.getPaidBy();
+        paidBy.getUserExpenseBalanceSheet().addTotalPayments(expense.getAmount());
+        paidBy.getUserExpenseBalanceSheet().addTotalExpense(expense.getAmount());
+
+        for (Split split : expense.getSplitDetails()) {
+            User participant = split.getUser();
+            double share = split.getAmount();
+            participant.getUserExpenseBalanceSheet().addTotalExpense(share);
+
+            if (participant.equals(paidBy)) {
+                continue;
+            }
+            participant.getUserExpenseBalanceSheet().owe(paidBy, share);
+            paidBy.getUserExpenseBalanceSheet().getBack(participant, share);
+        }
+    }
+
+    public void showBalanceSheetOfUser(User user) {
+        UserExpenseBalanceSheet sheet = user.getUserExpenseBalanceSheet();
+        System.out.println("--- Balance sheet: " + user.getName() + " ---");
+        System.out.println("Total paid (as payer): " + sheet.getTotalPayments());
+        System.out.println("Total expense (your share): " + sheet.getTotalExpense());
+        sheet.getFriendBalance().forEach((friend, bal) -&gt;
+                System.out.println(" vs " + friend.getName()
+                        + " | owe=" + bal.getAmountOwe()
+                        + " getBack=" + bal.getAmountGetBack()));
+    }
+}</code></pre>
+
+                    <div class="code-label">UserController.java</div>
+                    <pre class="code-block"><code>import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class UserController {
+    private final List&lt;User&gt; users = new ArrayList&lt;&gt;();
+
+    public User createUser(String id, String name) {
+        User u = new User(id, name);
+        users.add(u);
+        return u;
+    }
+
+    public Optional&lt;User&gt; getUser(String id) {
+        return users.stream().filter(u -&gt; u.getId().equals(id)).findFirst();
+    }
+
+    public List&lt;User&gt; listUsers() {
+        return List.copyOf(users);
+    }
+}</code></pre>
+
+                    <div class="code-label">Group.java</div>
+                    <pre class="code-block"><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Group {
+    private final String id;
+    private final String name;
+    private final List&lt;User&gt; users = new ArrayList&lt;&gt;();
+    private final List&lt;Expense&gt; expenses = new ArrayList&lt;&gt;();
+    private final ExpenseController expenseController;
+
+    public Group(String id, String name, ExpenseController expenseController) {
+        this.id = id;
+        this.name = name;
+        this.expenseController = expenseController;
+    }
+
+    public void addMember(User u) { users.add(u); }
+    public List&lt;User&gt; getUsers() { return List.copyOf(users); }
+    public List&lt;Expense&gt; getExpenses() { return List.copyOf(expenses); }
+    public ExpenseController getExpenseController() { return expenseController; }
+
+    public Expense addExpense(String expenseId, String description, double amount,
+                              List&lt;Split&gt; splits, ExpenseSplitType type, User paidBy) {
+        Expense e = expenseController.createExpense(expenseId, description, amount, splits, type, paidBy);
+        expenses.add(e);
+        return e;
+    }
+}</code></pre>
+
+                    <div class="code-label">GroupController.java</div>
+                    <pre class="code-block"><code>import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class GroupController {
+    private final List&lt;Group&gt; groups = new ArrayList&lt;&gt;();
+
+    public Group createGroup(String id, String name, ExpenseController expenseController) {
+        Group g = new Group(id, name, expenseController);
+        groups.add(g);
+        return g;
+    }
+
+    public Optional&lt;Group&gt; getGroup(String id) {
+        return groups.stream().filter(g -&gt; g.getId().equals(id)).findFirst();
+    }
+
+    public List&lt;Group&gt; listGroups() {
+        return List.copyOf(groups);
+    }
+}</code></pre>
+
+                    <div class="code-label">Splitwise.java (facade)</div>
+                    <pre class="code-block"><code>/**
+ * Top-level API: owns controllers used by the app / demo runner.
+ */
+public class Splitwise {
+    private final UserController userController;
+    private final GroupController groupController;
+    private final ExpenseController expenseController;
+    private final BalanceSheetController balanceSheetController;
+
+    public Splitwise() {
+        this.balanceSheetController = new BalanceSheetController();
+        this.expenseController = new ExpenseController(balanceSheetController);
+        this.userController = new UserController();
+        this.groupController = new GroupController();
+    }
+
+    public UserController getUserController() { return userController; }
+    public GroupController getGroupController() { return groupController; }
+    public ExpenseController getExpenseController() { return expenseController; }
+    public BalanceSheetController getBalanceSheetController() { return balanceSheetController; }
+}</code></pre>
+
+                    <p class="callout"><strong>Note:</strong> For <code>PERCENTAGE</code> splits, validate percentages in <code>PercentageExpenseSplit</code>, then convert each line to a rupee/dollar amount before calling <code>createExpense</code>, or perform conversion inside <code>ExpenseController</code> after validation. Thread-safety, persistence, and settlement (simplifying debts) are out of scope for this LLD sketch.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
