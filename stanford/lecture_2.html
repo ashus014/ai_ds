@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>CS229 — Lecture 2 Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .wrapper { width: 100%; max-width: 900px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-link { color: #667eea; text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+        .nav-link:hover { color: #764ba2; }
+        .article-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .article-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .article-header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; color: white; }
+        .article-header .subtitle {
+            font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; color: white;
+            max-width: 720px; margin-left: auto; margin-right: auto;
+        }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+            color: white;
+        }
+        .main-content { background: white; padding: 40px 40px 50px; }
+        .section { margin-bottom: 50px; }
+        .section h2 {
+            color: #764ba2; font-size: 1.8em; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 3px solid #667eea; padding-bottom: 10px;
+        }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+        .section-number {
+            background: #667eea; color: white; padding: 3px 8px;
+            border-radius: 4px; font-weight: 600; font-size: 0.9em;
+        }
+        .section h3 { color: #667eea; font-size: 1.3em; margin-top: 25px; margin-bottom: 15px; }
+        .section p { color: #333; line-height: 1.8; margin-bottom: 15px; font-size: 1.05em; }
+        .section ul { list-style: none; margin-left: 0; margin-bottom: 20px; }
+        .section li {
+            color: #333; line-height: 1.8; margin-bottom: 10px;
+            padding-left: 30px; position: relative; font-size: 1.05em;
+        }
+        .section li:before {
+            content: "→"; position: absolute; left: 0; color: #667eea; font-weight: bold;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px; border-radius: 8px; margin-bottom: 20px;
+        }
+        .highlight-box strong { color: #667eea; }
+        strong { color: #667eea; font-weight: 600; }
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            margin: 14px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        pre.pseudo {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 16px 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+            font-size: 0.88em;
+            line-height: 1.5;
+            margin: 14px 0;
+        }
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.98em;
+        }
+        table.summary-table th, table.summary-table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        table.summary-table th { background: #667eea; color: white; }
+        table.summary-table tr:nth-child(even) { background: #f8f9fa; }
+        ul.styled { list-style: none; margin: 0; padding: 0; margin-bottom: 15px; }
+        ul.styled li {
+            display: grid;
+            grid-template-columns: 28px 1fr;
+            gap: 12px;
+            align-items: start;
+            padding-left: 0;
+            margin-bottom: 10px;
+        }
+        ul.styled li::before {
+            content: '→';
+            color: #667eea;
+            font-weight: 700;
+            grid-column: 1;
+            padding-top: 4px;
+        }
+        ul.styled li .li-content { grid-column: 2; }
+        hr { border: none; border-top: 2px solid #667eea; margin: 48px 0; opacity: 0.3; }
+        .takeaway {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 28px 32px;
+            text-align: center;
+        }
+        .takeaway h3 { font-size: 1.5em; color: #764ba2; margin-bottom: 10px; font-weight: 600; }
+        .takeaway p { font-size: 1em; max-width: 640px; margin: 0 auto; color: #333; line-height: 1.8; }
+        @media (max-width: 768px) {
+            .main-content { padding: 30px 20px; }
+            .section h2 { font-size: 1.4em; }
+        }
+        .main-content { animation: fadeInUp 0.8s ease; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+    <nav class="navbar">
+        <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+        <ul style="display: flex; gap: 20px; list-style: none; flex-wrap: wrap;">
+            <li><a href="../stanford.html" class="nav-link">← Back to Stanford ML</a></li>
+            <li><a href="../index.html" class="nav-link">↑ Back to Home</a></li>
+        </ul>
+    </nav>
+
+    <div class="article-container">
+        <header class="article-header">
+            <h1>CS229 Lecture 2</h1>
+            <p class="subtitle">Stanford University · Andrew Ng — Linear Regression, Gradient Descent &amp; Normal Equations</p>
+            <span class="date-badge">📅 20 March 2026</span>
+        </header>
+        <div class="main-content">
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">00</span>
+                <h2>Quick Recap (from Lecture 1)</h2>
+            </div>
+            <div class="highlight-box">
+                <p>This lecture continues <strong>supervised learning</strong>: you give the algorithm data with correct answers, and it learns to make predictions.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>ALVINN — A Real-World Supervised Learning Example</h2>
+            </div>
+            <p>The lecture opens with <strong>ALVINN</strong> (Autonomous Land Vehicle In a Neural Network), from the late 1980s. A camera on a car captured the road ahead; a learning algorithm learned to steer by watching a human driver. It learned to predict: <em>given this image, what steering angle?</em></p>
+            <p>This was an early demonstration of learning to drive via supervised learning: many (image → steering angle) pairs, and the algorithm learns the pattern.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>Housing Prices — Notation</h2>
+            </div>
+            <p>Running example: predicting Portland house prices from size.</p>
+            <ul class="styled">
+                <li><div class="li-content"><strong>x</strong> — input / <em>feature</em> (e.g. size in sq ft).</div></li>
+                <li><div class="li-content"><strong>y</strong> — output / <em>target</em> (e.g. price).</div></li>
+                <li><div class="li-content">One pair <strong>(x, y)</strong> is a <strong>training example</strong>; the full set is the <strong>training set</strong>.</div></li>
+                <li><div class="li-content"><strong>n</strong> — number of training examples.</div></li>
+                <li><div class="li-content">Superscript <strong>(i)</strong> means the <em>i</em>-th example: x<sup>(i)</sup>, y<sup>(i)</sup> — not “to the power i”.</div></li>
+                <li><div class="li-content"><strong>h</strong> — <strong>hypothesis</strong>: the learned function mapping x → predicted y.</div></li>
+            </ul>
+            <p>Goal: learn h so h(x) predicts y well on new houses. If y is continuous, it is <strong>regression</strong>; if y is a small set of categories, <strong>classification</strong>.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Linear Regression</h2>
+            </div>
+            <p>With two features (size x<sub>1</sub>, bedrooms x<sub>2</sub>), approximate y as a linear function:</p>
+            <div class="math-block">
+                <strong>h(x) = θ<sub>0</sub> + θ<sub>1</sub>x<sub>1</sub> + θ<sub>2</sub>x<sub>2</sub></strong>
+            </div>
+            <p>The θ<sub>j</sub> are <strong>parameters</strong> / <strong>weights</strong> to learn. θ<sub>0</sub> is the <strong>intercept</strong>. Define x<sub>0</sub> = 1 so that:</p>
+            <div class="math-block">
+                <strong>h(x) = θ<sub>0</sub>x<sub>0</sub> + θ<sub>1</sub>x<sub>1</sub> + θ<sub>2</sub>x<sub>2</sub> = θ<sup>T</sup>x</strong>
+            </div>
+            <p>θ<sup>T</sup>x is the dot product of θ and x (vector form). <strong>Question:</strong> how do we choose θ?</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2>Cost Function J(θ)</h2>
+            </div>
+            <p>We want h(x) close to y on each example. The <strong>cost</strong> / <strong>loss</strong> (least squares):</p>
+            <div class="math-block">
+                <strong>J(θ) = ½ Σ<sub>i</sub> (h(x<sup>(i)</sup>) − y<sup>(i)</sup>)<sup>2</sup></strong>
+            </div>
+            <p>Square errors, sum them, multiply by ½ (convenient for derivatives). <strong>Goal:</strong> find θ that <strong>minimizes J(θ)</strong>.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2>Gradient Descent</h2>
+            </div>
+            <p>Start with an initial θ; repeatedly move θ in the direction that decreases J.</p>
+            <div class="math-block">
+                <strong>θ<sub>j</sub> := θ<sub>j</sub> − α · (∂J/∂θ<sub>j</sub>)</strong>
+            </div>
+            <ul class="styled">
+                <li><div class="li-content"><strong>:=</strong> means update (assignment).</div></li>
+                <li><div class="li-content"><strong>α</strong> — <strong>learning rate</strong> (step size).</div></li>
+                <li><div class="li-content"><strong>∂J/∂θ<sub>j</sub></strong> — partial derivative; move opposite to the gradient.</div></li>
+            </ul>
+            <p>For a single example, the update becomes the <strong>LMS</strong> (Least Mean Squares) / <strong>Widrow–Hoff</strong> rule:</p>
+            <div class="math-block">
+                <strong>θ<sub>j</sub> := θ<sub>j</sub> + α · (y<sup>(i)</sup> − h(x<sup>(i)</sup>)) · x<sub>j</sub><sup>(i)</sup></strong>
+            </div>
+            <p><strong>Intuition:</strong> update scales with error (y − h). Small error → small change; large error → larger correction.</p>
+            <p>Each step moves θ toward a minimum. Contour lines of J behave like a topographic map: you step downhill along the surface.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h2>Batch vs. Stochastic Gradient Descent</h2>
+            </div>
+            <h3>Batch gradient descent</h3>
+            <p>Use <strong>all n</strong> examples before each update.</p>
+            <pre class="pseudo">Repeat until convergence:
+    θⱼ := θⱼ + α · Σᵢ (y⁽ⁱ⁾ − h(x⁽ⁱ⁾)) · xⱼ⁽ⁱ⁾</pre>
+            <p><strong>Pros:</strong> smooth; for linear regression, J is convex → global minimum (with suitable α). <strong>Cons:</strong> expensive per step when n is huge.</p>
+            <h3>Stochastic gradient descent (SGD)</h3>
+            <p>Update after <strong>each</strong> single example.</p>
+            <pre class="pseudo">Loop:
+    for i = 1 to n:
+        θⱼ := θⱼ + α · (y⁽ⁱ⁾ − h(x⁽ⁱ⁾)) · xⱼ⁽ⁱ⁾</pre>
+            <p><strong>Pros:</strong> fast progress on large data. <strong>Cons:</strong> oscillates near the minimum rather than settling exactly — usually acceptable in practice.</p>
+            <p>For linear regression, J(θ) is a <strong>convex quadratic</strong> (one global minimum); batch GD finds it if α is not too large.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">07</span>
+                <h2>Normal Equations (Closed Form)</h2>
+            </div>
+            <p>Instead of iterating, set the gradient of J to zero and solve. Stack features into design matrix <strong>X</strong> (n × d, one row per example) and targets <strong>y</strong>.</p>
+            <div class="math-block">
+                <strong>J(θ) = ½ (Xθ − y)<sup>T</sup>(Xθ − y)</strong>
+            </div>
+            <p>Setting ∇J = 0 gives the <strong>normal equations</strong>:</p>
+            <div class="math-block">
+                <strong>X<sup>T</sup>X θ = X<sup>T</sup>y &nbsp;⇒&nbsp; θ = (X<sup>T</sup>X)<sup>−1</sup> X<sup>T</sup>y</strong>
+            </div>
+            <p><strong>When to use what:</strong> normal equations are fine for smaller problems; gradient descent scales better when n or d is very large (inverting X<sup>T</sup>X is costly).</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">08</span>
+                <h2>Overfitting &amp; Underfitting (preview)</h2>
+            </div>
+            <ul class="styled">
+                <li><div class="li-content"><strong>Underfitting</strong> — model too simple; misses real structure.</div></li>
+                <li><div class="li-content"><strong>Overfitting</strong> — model too complex; fits training noise, poor generalization.</div></li>
+            </ul>
+            <p>The course returns to this with learning theory in more depth.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">09</span>
+                <h2>Locally Weighted Linear Regression (LWR)</h2>
+            </div>
+            <p>Standard linear regression fits one global line. <strong>LWR</strong> reweights training points by distance to the query x: nearby points count more.</p>
+            <div class="math-block">
+                Minimize &nbsp;<strong>Σ<sub>i</sub> w<sup>(i)</sup> (y<sup>(i)</sup> − θ<sup>T</sup>x<sup>(i)</sup>)<sup>2</sup></strong>
+            </div>
+            <p>Example weights (Gaussian kernel):</p>
+            <div class="math-block">
+                <strong>w<sup>(i)</sup> = exp( −||x<sup>(i)</sup> − x||<sup>2</sup> / (2τ<sup>2</sup>) )</strong>
+            </div>
+            <p><strong>τ</strong> (bandwidth) controls how fast weights decay with distance. LWR is <strong>non-parametric</strong>: you keep all training data for each prediction. Ordinary linear regression is <strong>parametric</strong>: after learning θ, data can be discarded for prediction.</p>
+        </div>
+
+        <hr>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-number">10</span>
+                <h2>Summary — Key Concepts</h2>
+            </div>
+            <table class="summary-table">
+                <thead>
+                    <tr><th>Concept</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Training example (x<sup>(i)</sup>, y<sup>(i)</sup>)</td><td>One (input, correct output) pair</td></tr>
+                    <tr><td>Hypothesis h(x)</td><td>Learned prediction function</td></tr>
+                    <tr><td>Parameters θ</td><td>Weights the model learns</td></tr>
+                    <tr><td>Cost J(θ)</td><td>How wrong predictions are (least squares here)</td></tr>
+                    <tr><td>Gradient descent</td><td>Iteratively minimize J</td></tr>
+                    <tr><td>Learning rate α</td><td>Step size in gradient descent</td></tr>
+                    <tr><td>LMS rule</td><td>θ<sub>j</sub> += α(y − h(x))x<sub>j</sub></td></tr>
+                    <tr><td>Batch GD</td><td>All data per update</td></tr>
+                    <tr><td>Stochastic GD</td><td>One example per update</td></tr>
+                    <tr><td>Normal equations</td><td>θ = (X<sup>T</sup>X)<sup>−1</sup>X<sup>T</sup>y</td></tr>
+                    <tr><td>Underfitting</td><td>Too simple</td></tr>
+                    <tr><td>Overfitting</td><td>Too complex / memorizes training data</td></tr>
+                    <tr><td>LWR</td><td>Weight nearby points more</td></tr>
+                    <tr><td>Parametric</td><td>Fixed-size θ (standard linear regression)</td></tr>
+                    <tr><td>Non-parametric</td><td>Complexity grows with data (LWR)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="takeaway">
+            <h3>Why this lecture matters</h3>
+            <p>These ideas are the foundation of supervised learning. Gradient descent in particular appears throughout ML, including modern deep learning.</p>
+        </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
