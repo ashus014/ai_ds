@@ -165,6 +165,134 @@
             border-radius: 20px;
             font-size: 0.88em;
         }
+        .arch-figure {
+            margin: 20px 0 8px;
+            text-align: center;
+        }
+        .arch-figure h3 {
+            color: #764ba2;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: left;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .arch-expand-trigger {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: zoom-in;
+            border-radius: 8px;
+            position: relative;
+            text-align: center;
+        }
+        .arch-expand-trigger:focus { outline: none; }
+        .arch-expand-trigger:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 4px;
+        }
+        .arch-expand-trigger img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            vertical-align: middle;
+            transition: box-shadow 0.2s ease;
+        }
+        .arch-expand-trigger:hover img {
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+        }
+        .arch-expand-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 6px 14px;
+            font-size: 0.88em;
+            color: #667eea;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+        }
+        .arch-expand-trigger .arch-expand-hint { pointer-events: none; }
+        .arch-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.5;
+            text-align: left;
+        }
+        kbd {
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #e8eaf6;
+            border: 1px solid #c5cae9;
+        }
+        .arch-lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+        .arch-lightbox.is-open { display: flex; }
+        .arch-lightbox-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            border: none;
+            cursor: pointer;
+        }
+        .arch-lightbox-inner {
+            position: relative;
+            z-index: 1;
+            max-width: min(96vw, 1400px);
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .arch-lightbox-inner img {
+            max-width: 100%;
+            max-height: calc(92vh - 48px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+            background: #fff;
+        }
+        .arch-lightbox-close {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .arch-lightbox-close:hover { background: #fff; }
+        .arch-lightbox-close:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+        body.arch-lightbox-open { overflow: hidden; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.88em; }
@@ -193,7 +321,7 @@
 
                 <div class="section">
                     <h2>Key concepts and problems Kafka solves</h2>
-                    <p><strong>Kafka</strong> (काफ्का) shows up heavily in manufacturing, banking, insurance, telecom, and similar domains. Illustrative “Kafka usage intensity” from the course (out of 10 companies sampled in each vertical):</p>
+                    <p><strong>Kafka</strong> shows up heavily in manufacturing, banking, insurance, telecom, and similar domains. Illustrative “Kafka usage intensity” from the course (out of 10 companies sampled in each vertical):</p>
                     <table>
                         <thead>
                             <tr><th>Industry</th><th>Companies using Kafka (out of 10)</th></tr>
@@ -212,7 +340,7 @@
                         <li>Ride-booking platforms (Ola, Uber) streaming driver and trip updates.</li>
                     </ul>
                     <p>Traditional databases often hit <strong>throughput bottlenecks</strong> when write/read rates climb (hundreds or thousands of ops per second and beyond), risking failures or severe slowdowns.</p>
-                    <p><strong>Throughput</strong> (थ्रूपुट) means how many read/write operations per second a system can sustain. Kafka is built for <strong>very high throughput</strong>; typical databases trade that for durable storage, indexing, and rich querying.</p>
+                    <p><strong>Throughput</strong> means how many read/write operations per second a system can sustain. Kafka is built for <strong>very high throughput</strong>; typical databases trade that for durable storage, indexing, and rich querying.</p>
                     <div class="callout">
                         <strong>Not a database replacement:</strong> Kafka retains data for a <em>limited, configurable</em> window and streams events at scale. Databases excel at long-lived storage and query models — use both where each fits.
                     </div>
@@ -221,33 +349,42 @@
                 <div class="section">
                     <h2>Kafka architecture overview</h2>
                     <p>Kafka acts as a <strong>distributed message broker</strong>. Main pieces:</p>
+                    <p><strong>Click the diagram</strong> to open a full-size view; press <kbd>Esc</kbd> or click the dimmed backdrop to close.</p>
+                    <figure class="arch-figure">
+                        <h3>Apache Kafka architecture (reference)</h3>
+                        <button type="button" class="arch-expand-trigger" data-arch-src="images/kafka-architecture.png" data-arch-alt="Apache Kafka architecture: producers push messages into the Kafka cluster; brokers hold Topic A partitions; ZooKeeper coordinates the cluster; consumers pull messages." aria-label="Expand Kafka architecture diagram">
+                            <img src="images/kafka-architecture.png" alt="Apache Kafka architecture: producers push messages into the Kafka cluster; brokers hold Topic A partitions; ZooKeeper coordinates the cluster; consumers pull messages." width="667" height="400" loading="lazy">
+                            <span class="arch-expand-hint" aria-hidden="true">🔍 Click to expand</span>
+                        </button>
+                        <figcaption>Producers <strong>push</strong> into the cluster; multiple <strong>brokers</strong> host topic <strong>partitions</strong> (with replication across brokers); <strong>ZooKeeper</strong> coordinates cluster metadata; consumers <strong>pull</strong> (poll) messages at their own pace.</figcaption>
+                    </figure>
                     <table>
                         <thead>
                             <tr><th>Component</th><th>Description</th></tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Producer</strong> (प्रोड्यूसर)</td>
+                                <td><strong>Producer</strong></td>
                                 <td>Apps or services that publish messages to Kafka <strong>topics</strong>.</td>
                             </tr>
                             <tr>
-                                <td><strong>Topic</strong> (टॉपिक)</td>
+                                <td><strong>Topic</strong></td>
                                 <td>Logical channel or category producers write to.</td>
                             </tr>
                             <tr>
-                                <td><strong>Partition</strong> (पार्टीशन)</td>
+                                <td><strong>Partition</strong></td>
                                 <td>Topics are split into partitions for parallelism and scale.</td>
                             </tr>
                             <tr>
-                                <td><strong>Consumer</strong> (कंज्यूमर)</td>
+                                <td><strong>Consumer</strong></td>
                                 <td>Subscribers that read messages from topics.</td>
                             </tr>
                             <tr>
-                                <td><strong>Consumer group</strong> (कंज्यूमर ग्रुप)</td>
+                                <td><strong>Consumer group</strong></td>
                                 <td>Consumers that share partition assignment and split the read load.</td>
                             </tr>
                             <tr>
-                                <td><strong>Zookeeper</strong> (जूकीपर)</td>
+                                <td><strong>Zookeeper</strong></td>
                                 <td>Manages cluster metadata, partition assignments, and consumer group coordination internally.</td>
                             </tr>
                         </tbody>
@@ -374,5 +511,63 @@
             </div>
         </div>
     </div>
+
+    <div id="arch-lightbox" class="arch-lightbox" role="dialog" aria-modal="true" aria-label="Expanded architecture diagram" hidden>
+        <button type="button" class="arch-lightbox-backdrop" aria-label="Close expanded image"></button>
+        <div class="arch-lightbox-inner">
+            <button type="button" class="arch-lightbox-close" aria-label="Close">&times;</button>
+            <img id="arch-lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var lb = document.getElementById('arch-lightbox');
+            var lbImg = document.getElementById('arch-lightbox-img');
+            var backdrop = lb.querySelector('.arch-lightbox-backdrop');
+            var closeBtn = lb.querySelector('.arch-lightbox-close');
+            var triggers = document.querySelectorAll('.arch-expand-trigger');
+            var lastFocus = null;
+
+            function openLightbox(src, alt) {
+                lastFocus = document.activeElement;
+                lbImg.src = src;
+                lbImg.alt = alt || '';
+                lb.hidden = false;
+                lb.classList.add('is-open');
+                document.body.classList.add('arch-lightbox-open');
+                lb.setAttribute('aria-hidden', 'false');
+                closeBtn.focus();
+            }
+
+            function closeLightbox() {
+                lb.classList.remove('is-open');
+                lb.hidden = true;
+                document.body.classList.remove('arch-lightbox-open');
+                lb.setAttribute('aria-hidden', 'true');
+                lbImg.removeAttribute('src');
+                lbImg.alt = '';
+                if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+            }
+
+            triggers.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var src = btn.getAttribute('data-arch-src');
+                    var alt = btn.getAttribute('data-arch-alt') || '';
+                    if (src) openLightbox(src, alt);
+                });
+            });
+
+            backdrop.addEventListener('click', closeLightbox);
+            closeBtn.addEventListener('click', closeLightbox);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && lb.classList.contains('is-open')) {
+                    e.preventDefault();
+                    closeLightbox();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
