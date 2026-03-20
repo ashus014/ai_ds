@@ -262,25 +262,58 @@ public boolean bookSeat(String seatId, String visitorId) {
                     <h3>Definition</h3>
                     <p>Communication and synchronization between threads — passing work from producers to consumers.</p>
                     <h3>Scenario</h3>
-                    <p>Background task queue for sending emails asynchronously without blocking the main request thread.</p>
-                    <h3>Problems</h3>
+                    <p>Example: several <strong>API request threads</strong> enqueue background work (e.g. <code>sendEmail</code> tasks), and <strong>worker threads</strong> pull from a shared queue and process them — classic producer–consumer.</p>
+                    <h3>Design questions</h3>
                     <ul>
-                        <li><strong>Busy-waiting:</strong> Worker threads poll the queue inefficiently, wasting CPU</li>
-                        <li><strong>Unbounded growth:</strong> Work arrives faster than consumers process → memory overflow</li>
+                        <li><strong>How does a consumer know work arrived?</strong> If it spins checking the queue, it burns CPU. If it sleeps on a fixed interval, it adds latency and still isn’t ideal.</li>
+                        <li><strong>What if producers are faster than consumers?</strong> An unbounded queue can grow until you run out of memory — you need <strong>back pressure</strong> (e.g. a bounded queue that blocks producers when full).</li>
                     </ul>
-                    <h3>Naive Solutions</h3>
-                    <p>Busy-wait wastes CPU; adding sleep reduces waste but adds latency.</p>
-                    <h3>Proper Solution</h3>
+                    <h3>Approach 1 — busy-waiting (wastes CPU)</h3>
+                    <p>The worker loop never blocks: it keeps asking “is the queue empty?” as fast as the CPU allows. When there is no work, you get <strong>100% useless spinning</strong>.</p>
+<pre><code>// BAD: busy-waiting burns CPU
+while (true) {
+    if (!queue.isEmpty()) {
+        Task task = queue.poll();
+        process(task);
+    }
+    // spins forever when queue is empty
+}</code></pre>
+                    <h3>Approach 2 — sleep, then poll (saves CPU, adds latency)</h3>
+                    <p>Sleeping between checks avoids burning the core, but a task that arrives right after a check may wait up to the full sleep interval — you’ve traded CPU for <strong>artificial delay</strong>.</p>
+<pre><code>// ALSO BAD: sleep-polling adds latency
+while (true) {
+    if (!queue.isEmpty()) {
+        Task task = queue.poll();
+        process(task);
+    } else {
+        Thread.sleep(100); // e.g. up to ~100ms before noticing new work
+    }
+}</code></pre>
+                    <h3>What we want — block until work is there</h3>
+                    <p>Workers should <strong>sleep with zero busy CPU</strong> when the queue is empty and <strong>wake as soon as</strong> a producer adds a task. That is exactly what a <strong>blocking queue</strong> provides: blocking <code>take()</code> / <code>get()</code> on the consumer side, and blocking <code>put()</code> when the queue is full (bounded case). Most mainstream runtimes ship this — Java <code>java.util.concurrent.BlockingQueue</code>, Python <code>queue.Queue</code> (blocking <code>put</code>/<code>get</code>), C# <code>BlockingCollection</code>, Go channels, etc.</p>
+                    <h3>Proper solution — bounded <code>BlockingQueue</code> (Java)</h3>
+                    <p>Bounded capacity gives <strong>back pressure</strong>: if the queue is full, the producer blocks on <code>put()</code> instead of piling up unbounded work. The consumer blocks on <code>take()</code> when empty — no spin, no arbitrary sleep.</p>
+<pre><code>// Bounded queue — blocks when full (backpressure)
+BlockingQueue&lt;Task&gt; queue = new LinkedBlockingQueue&lt;&gt;(1000);
+
+// Producer — e.g. API handler
+public void handleSignup(User user) {
+    saveUser(user);
+    queue.put(new EmailTask(user));  // blocks if queue is full
+    return success();
+}
+
+// Consumer — worker thread
+while (true) {
+    Task task = queue.take();  // blocks if empty; thread parked, ~no busy CPU
+    process(task);
+}</code></pre>
+                    <h3>Implementation cheat sheet</h3>
                     <ul>
-                        <li><strong>Blocking queues:</strong> Consumers sleep when no work; wake when work arrives</li>
-                        <li><strong>Bounded blocking queues:</strong> Limit size; apply back pressure — block producers when full</li>
+                        <li><strong>Java:</strong> <code>BlockingQueue</code> — <code>put()</code>, <code>take()</code>; common impl <code>LinkedBlockingQueue</code></li>
+                        <li><strong>Python:</strong> <code>queue.Queue</code> — blocking <code>put()</code>, <code>get()</code> by default</li>
                     </ul>
-                    <h3>Implementation</h3>
-                    <ul>
-                        <li>Java: <code>BlockingQueue</code> — <code>put()</code>, <code>take()</code></li>
-                        <li>Python: <code>queue</code> module — blocking by default, <code>put()</code>, <code>get()</code></li>
-                    </ul>
-                    <p><strong>Key insight:</strong> Coordination = work handoff. Bounded blocking queues handle idle wait and overload.</p>
+                    <p><strong>Key insight:</strong> Coordination = work handoff. A <strong>blocking</strong> queue gives “sleep until work” and “wake on arrival”; a <strong>bounded</strong> blocking queue also answers “too much work” with back pressure instead of unbounded memory growth.</p>
                 </div>
 
                 <div class="section">
