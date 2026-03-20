@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <title>Vectorless RAG &amp; Page Index — Article</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 920px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-link { color: #667eea; text-decoration: none; font-weight: 500; }
+        .nav-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.05em; opacity: 0.95; }
+        .date-badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .content { padding: 36px 40px 48px; }
+        .section {
+            margin-bottom: 32px;
+            padding: 22px 24px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 14px;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 6px;
+        }
+        .section p { line-height: 1.75; margin-bottom: 12px; font-size: 1.03em; }
+        .section ul { margin: 10px 0 14px 22px; }
+        .section li { margin-bottom: 8px; line-height: 1.65; }
+        strong { color: #5a4fcf; font-weight: 600; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 0.95em;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 11px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td { padding: 10px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #fafafa; }
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .kw {
+            background: rgba(102, 126, 234, 0.12);
+            border: 1px solid #667eea;
+            color: #4a5568;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        @media (max-width: 768px) {
+            .content { padding: 24px 18px 36px; }
+            table { font-size: 0.85em; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;">
+                <a href="../mtech-articles.html" class="nav-link">← Back to Articles</a>
+                <a href="../mtech.html" class="nav-link">IIT Patna</a>
+            </div>
+        </nav>
+        <div class="container">
+            <header class="header">
+                <h1>Vectorless RAG &amp; Page Index</h1>
+                <p>Hierarchical, reasoning-based retrieval vs. traditional vector RAG</p>
+                <span class="date-badge">📅 20 March 2026</span>
+            </header>
+            <div class="content">
+
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>The video presents an in-depth explanation of <strong>Vectorless RAG (Retrieval-Augmented Generation)</strong>, a novel approach to document retrieval and question answering that contrasts with traditional vector-based RAG systems. The presenter outlines the challenges in existing vector RAG techniques and introduces <strong>Page Index</strong>, a vectorless reasoning-based alternative that leverages hierarchical data structures and large language models (LLMs) for improved document understanding and retrieval.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Core concepts and workflow</h2>
+
+                    <h3>Traditional RAG and its challenges</h3>
+                    <ul>
+                        <li><strong>RAG</strong> — <strong>Retrieval-Augmented Generation</strong>: many documents are chunked, embedded into vectors, stored in a vector database, and retrieved to ground generation.</li>
+                        <li>The user submits a query; the system answers by combining retrieved chunks and the query.</li>
+                    </ul>
+                    <p><strong>Problems with traditional vector RAG:</strong></p>
+                    <ul>
+                        <li><strong>Limited context window</strong> — LLMs have finite tokens; very large documents (e.g. 100+ pages) exceed practical windows.</li>
+                        <li><strong>Output quality degradation</strong> — stuffing too much context can cause hallucination or unfocused answers.</li>
+                        <li><strong>High cost</strong> — embeddings and long prompts increase compute and API cost.</li>
+                        <li><strong>Chunking issues</strong> — fixed-size chunks (e.g. 500 words) can split semantics arbitrarily.</li>
+                        <li><strong>Semantic matching dependency</strong> — retrieval depends on embedding similarity; vague or differently worded queries hurt recall.</li>
+                        <li><strong>Reference problems</strong> — legal and structured docs use cross-references; naive chunking can drop that structure.</li>
+                    </ul>
+
+                    <h3>Traditional vector RAG pipeline</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Step</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Indexing</strong></td>
+                                <td>Chunk documents (by page, paragraph, or fixed word count); embed with models such as OpenAI <code>text-embedding-3</code>; store in vector DBs (e.g. Pinecone, Chroma, PGVector).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Query</strong></td>
+                                <td>Embed the query; similarity search for relevant chunks; pass chunks + query to the LLM to generate the answer.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Vectorless RAG (Page Index)</h2>
+                    <ul>
+                        <li>Vectorless RAG <strong>does not use vector embeddings or vector similarity search</strong>.</li>
+                        <li>It builds a <strong>hierarchical tree (TOC-style)</strong> using LLM reasoning:
+                            <ul style="margin-top:8px;">
+                                <li>Parse the document into semantic nodes (chapters, sections, scenarios, plot points, etc.).</li>
+                                <li>Each node: <strong>title</strong>, <strong>unique ID</strong> (pointer into the source), <strong>summary</strong>, <strong>child nodes</strong>.</li>
+                            </ul>
+                        </li>
+                        <li>Mimics how people use a table of contents rather than linearly scanning every page.</li>
+                    </ul>
+
+                    <h3>Indexing phase (vectorless)</h3>
+                    <ul>
+                        <li>No chunking for embedding; no vector index.</li>
+                        <li>LLM identifies structure (e.g. for a film like <em>Sholay</em>: scenes, characters, transitions).</li>
+                        <li>Produces semantic segmentation, summaries, and a <strong>hierarchical index</strong>.</li>
+                        <li>Mitigates bad splits, weak chunk semantics, and lost cross-references when the tree preserves links.</li>
+                    </ul>
+
+                    <h3>Query phase (vectorless)</h3>
+                    <ul>
+                        <li>LLM traverses the TOC tree with <strong>reasoning</strong> (e.g. breadth-first exploration).</li>
+                        <li>Uses node summaries and metadata to keep relevant branches and prune irrelevant ones.</li>
+                        <li>Fetches only the needed summaries and linked spans from the original document.</li>
+                        <li>Passes focused context to the LLM for generation — less noise than dumping similar chunks only.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Vector RAG vs. vectorless (Page Index)</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Challenge</th><th>Vector RAG</th><th>Vectorless / Page Index</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Context window</td><td>Easily overwhelmed</td><td>Works off hierarchical summaries and nodes</td></tr>
+                            <tr><td>Chunking</td><td>Fixed-size, blind splits</td><td>Semantic, reasoning-based segmentation</td></tr>
+                            <tr><td>Cross-references</td><td>Often lost in chunks</td><td>Preserved via tree structure and links</td></tr>
+                            <tr><td>Query dependence</td><td>Embedding similarity to chunks</td><td>Reasoning over structure; less tied to exact wording</td></tr>
+                            <tr><td>Cost</td><td>Embeddings + long contexts</td><td>No embedding / ANN index; different cost profile</td></tr>
+                            <tr><td>Interpretability</td><td>Opaque vector space</td><td>TOC-like, human-navigable index</td></tr>
+                            <tr><td>Retrieval quality</td><td>Variable with query phrasing</td><td>Often more robust for complex docs when traversal works well</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Technical notes</h2>
+                    <ul>
+                        <li>Vector RAG: embedding models (e.g. OpenAI text-embedding-3 small/large) + stores such as Pinecone, Chroma, Milvus, PGVector.</li>
+                        <li>Vectorless RAG: relies on <strong>LLM reasoning</strong> to build and query the index.</li>
+                        <li>Tree nodes typically hold: title, node ID, summary, children.</li>
+                        <li>Answering = <strong>guided tree traversal</strong>, then grounded generation on selected spans.</li>
+                        <li>Aligned with human reading: jump to chapters/sections instead of uniform scanning.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Trade-offs and status</h2>
+                    <ul>
+                        <li>Vectorless approaches can <strong>trade speed for accuracy</strong>: multiple LLM steps for traversal and filtering are expensive.</li>
+                        <li>Still <strong>relatively new</strong>; promising for contracts, books, and other large, reference-heavy corpora.</li>
+                        <li>Speaker notes migration from vector RAG to vectorless in some projects; optional coding tutorials.</li>
+                        <li>Benefits from stronger <strong>LLM reasoning</strong> and document-understanding capabilities over time.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Key insights</h2>
+                    <ul>
+                        <li>Vectorless RAG avoids embedding + similarity search and some of their failure modes.</li>
+                        <li>Hierarchical semantic indexing (page index) supports focused, context-aware retrieval.</li>
+                        <li>Especially relevant for large documents with cross-references and semantic dependencies.</li>
+                        <li>Main downside: compute and latency from reasoning-heavy traversal.</li>
+                        <li>Conceptually close to how humans navigate structured texts.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Keywords</h2>
+                    <div class="keywords">
+                        <span class="kw">RAG</span>
+                        <span class="kw">Vector RAG</span>
+                        <span class="kw">Vectorless RAG</span>
+                        <span class="kw">Page Index</span>
+                        <span class="kw">Chunking</span>
+                        <span class="kw">Vector embeddings</span>
+                        <span class="kw">Pinecone · Chroma · PGVector</span>
+                        <span class="kw">LLMs</span>
+                        <span class="kw">Hierarchical indexing</span>
+                        <span class="kw">TOC tree</span>
+                        <span class="kw">Semantic segmentation</span>
+                        <span class="kw">Reasoning</span>
+                        <span class="kw">Context window</span>
+                        <span class="kw">Similarity search</span>
+                        <span class="kw">Legal documents</span>
+                        <span class="kw">Cross-references</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Conclusion</h2>
+                    <p>The video contrasts limitations of vector-based RAG with <strong>vectorless RAG</strong> as a <strong>reasoning-driven, hierarchical</strong> alternative. A semantic tree plus LLM-guided navigation addresses chunking noise, context limits, and brittle lexical/semantic retrieval. It costs more per query in reasoning steps but is a meaningful direction for complex, large-scale document QA.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
