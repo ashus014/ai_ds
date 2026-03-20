@@ -133,7 +133,20 @@
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
         }
+        pre {
+            background: #1e1e2e;
+            color: #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0 18px;
+            font-size: 0.88em;
+            line-height: 1.5;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -198,6 +211,23 @@
                         <li><strong>Check then Act:</strong> Thread checks a condition (e.g., seat available), then acts (books seat). Another thread can intervene between check and act.</li>
                         <li><strong>Read-Modify-Write:</strong> Read value, modify (e.g., increment), write back. Simultaneous updates can lose increments.</li>
                     </ul>
+                    <h3>Read-modify-write — without protection (the bug)</h3>
+                    <p><code>count++</code> looks like one step, but it is read → add 1 → write. Another thread can run between those steps, so updates can be lost.</p>
+<pre><code>// Java — THE BUG: read-modify-write without protection
+private int count = 0;
+
+public void increment() {
+    count++;  // Actually: read count, add 1, write count
+}</code></pre>
+                    <h3>Read-modify-write — fix with <code>AtomicInteger</code></h3>
+                    <p><code>incrementAndGet()</code> performs the update in one atomic step (compare-and-swap under the hood), so concurrent increments don’t corrupt the value.</p>
+<pre><code>// import java.util.concurrent.atomic.AtomicInteger;
+
+private AtomicInteger count = new AtomicInteger(10);
+
+public void increment() {
+    count.incrementAndGet();  // Hardware-level atomic operation
+}</code></pre>
                     <h3>Example</h3>
                     <p>Ticket booking: two threads book the same seat; one overwrites the other.</p>
                     <h3>Solutions</h3>
@@ -205,6 +235,25 @@
                         <li><strong>Locks:</strong> Java <code>synchronized</code>, Python <code>Lock</code> — make check and act atomic</li>
                         <li><strong>Atomic variables:</strong> Java <code>AtomicInteger</code> for single-variable updates (compare-and-swap). Python lacks built-in atomics; use locks.</li>
                     </ul>
+                    <h3>When to use atomics vs locks</h3>
+                    <p>Use the right tool for how much state must move together:</p>
+                    <ul>
+                        <li><strong>Atomic variables:</strong> Use when you are updating <strong>one</strong> shared value — a counter, flag, or single numeric field — and nothing else has to change in lockstep with it. The hardware/CAS makes that one update atomic.</li>
+                        <li><strong>Locks (<code>synchronized</code> / <code>Lock</code>):</strong> Use when you must update <strong>two or more</strong> pieces of state (or a structure plus an invariant) so they stay <strong>consistent with each other</strong>. No single atomic type can tie them together; one critical section ensures all observers see a valid intermediate-free snapshot.</li>
+                    </ul>
+                    <p><strong>Rule of thumb:</strong> one independent variable → atomics; multi-field or check-then-act on shared data → lock around the whole logical operation.</p>
+                    <h3>Code — lock covers check and act</h3>
+                    <p>The lock must wrap <em>both</em> the condition check and the state change so another thread cannot book the same seat between <code>isAvailable()</code> and <code>setOccupant()</code>. (<code>lock</code> and <code>seat</code> would be fields on the booking service / seat holder.)</p>
+<pre><code>// THE FIX: lock covers both check AND action
+public boolean bookSeat(String seatId, String visitorId) {
+    synchronized (lock) {
+        if (seat.isAvailable()) {
+            seat.setOccupant(visitorId);
+            return true;
+        }
+        return false;
+    }
+}</code></pre>
                     <p><strong>Key insight:</strong> Make the entire operation atomic to prevent interference.</p>
                 </div>
 
