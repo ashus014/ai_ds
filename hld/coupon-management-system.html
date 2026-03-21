@@ -44,6 +44,7 @@
             transition: color 0.3s ease;
         }
         .back-link:hover { color: #764ba2; }
+        .ref-link { color: #5c6bc0; word-break: break-all; }
         .container {
             background: white;
             border-radius: 12px;
@@ -90,12 +91,19 @@
         .section h3 {
             color: #764ba2;
             font-size: 1.2em;
-            margin-top: 20px;
+            margin-top: 22px;
             margin-bottom: 10px;
             border-bottom: 2px solid #667eea;
             padding-bottom: 8px;
         }
         .section h3:first-child { margin-top: 0; }
+        .section h4 {
+            color: #555;
+            font-size: 1.05em;
+            margin-top: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
         ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
         ul li {
             position: relative;
@@ -111,6 +119,18 @@
             font-weight: bold;
             font-size: 1.2em;
         }
+        .flow-ol {
+            list-style: decimal;
+            margin-left: 28px;
+            margin-bottom: 15px;
+            padding-left: 8px;
+        }
+        .flow-ol li {
+            margin-bottom: 12px;
+            line-height: 1.65;
+            padding-left: 8px;
+        }
+        .flow-ol li::before { display: none; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -126,7 +146,7 @@
             text-align: left;
             font-weight: 600;
         }
-        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
         table tr:last-child td { border-bottom: none; }
         table tr:hover { background: #f5f5f5; }
         code {
@@ -140,11 +160,36 @@
             color: #f8f8f2;
             padding: 12px 16px;
             border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.9em;
+            font-family: ui-monospace, monospace;
+            font-size: 0.85em;
             overflow-x: auto;
             margin: 10px 0;
+            line-height: 1.45;
+            white-space: pre-wrap;
         }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .section p { margin-bottom: 12px; line-height: 1.65; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -162,122 +207,283 @@
         <div class="container">
             <div class="header">
                 <h1>Coupon Management System</h1>
-                <p>Discount Coupon Generation &amp; Validation — HLD Notes</p>
-                <span class="date-badge">Completed: 08 January 2026</span>
+                <p>Discount coupon generation, search, lock, redeem — HLD notes</p>
+                <span class="date-badge">Updated: 21 March 2026</span>
             </div>
             <div class="content">
                 <div class="section">
+                    <h2>Reference</h2>
+                    <p>Discussion prompt / problem framing: <a class="ref-link" href="https://leetcode.com/discuss/post/6017121/coupon-management-system-system-design-i-ld1y/" target="_blank" rel="noopener">LeetCode — Coupon Management System (system design)</a></p>
+                </div>
+
+                <div class="section">
                     <h2>Problem Statement</h2>
-                    <ul>
-                        <li>Design a coupon generation system</li>
-                        <li>Allow users to create, manage, and validate discount coupons</li>
-                        <li>One user gets a single coupon per day</li>
-                        <li>User must buy within 5 minutes; otherwise coupon becomes available for others</li>
-                        <li>Coupons cannot be redeemed multiple times</li>
-                    </ul>
+                    <div class="pre-block">Design a coupon generation system.
+- System will allow users to create discount coupons, manage these coupons.
+- Also, system should be able to validate the coupons.
+- One user should get single coupn per day.
+- Once a user gets a coupon he/she has to buy something on the website with in 5 mins otherwise coupon will be availbale for other user.
+- Coupons should not redeemed multiple times.
+- System should focus on managing the coupons.</div>
                 </div>
 
                 <div class="section">
                     <h2>Functional Requirements</h2>
                     <ul>
-                        <li>Admin can create 100k coupons daily</li>
-                        <li>User can search coupons</li>
-                        <li>User can get and redeem coupons</li>
-                        <li>One user gets a single coupon per day</li>
-                        <li>User must use coupon within 5 minutes</li>
-                        <li>If not used in 5 min, coupon becomes available for others</li>
-                        <li>System validates coupons (no multiple redemption)</li>
+                        <li>Admin should be able to create 100k coupons daily.</li>
+                        <li>User should be able to search coupons.</li>
+                        <li>User should be able to get coupon and redeem it.</li>
+                        <li>One user should get single coupn per day.</li>
+                        <li>Once a user gets a coupon he/she has to buy something on the website with in 5 mins.</li>
+                        <li>If user did not use coupon 5 in minute then coupon will be availbale for other user.</li>
+                        <li>System should be able to validate the coupons (user can not be redeemed multiple times same coupon).</li>
                     </ul>
+                    <p><em>Clarified intent:</em> one coupon claim per user per day; unused lock expires after ~5 minutes so others can claim; a single-use coupon cannot be redeemed more than once.</p>
                 </div>
 
                 <div class="section">
                     <h2>Non-Functional Requirements</h2>
                     <ul>
-                        <li><strong>CAP:</strong> High availability for search/viewing; strong consistency for getting coupons</li>
-                        <li><strong>Latency:</strong> Low-latency search</li>
-                        <li><strong>Scale:</strong> 10M users for 100k coupons</li>
-                        <li><strong>Read heavy:</strong> 100:1 read/write ratio</li>
+                        <li>The system should have high availability for searching &amp; viewing coupons, but should be <strong>consistent</strong> for getting coupons (only one user should get a coupon).</li>
+                        <li>The system should have low latency search.</li>
+                        <li>The system should be scalable and able to handle high throughput in the form of popular coupons (10M users for 100k coupons).</li>
+                        <li>The system is read heavy, and thus needs to be able to support high read throughput (<strong>100:1</strong>).</li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>Core Entities</h2>
+                    <div class="pre-block">1. Coupon: This Entity store essential information about a coupon, including details like the date, description, type.
+It acts as the central point of information for each unique coupon.
+2. Redeem: Represents the essential information about redeem.
+3. User: Represents the individual interacting with the system.</div>
                     <ul>
-                        <li><strong>Coupon</strong> — couponId, category, description, date, type, status</li>
-                        <li><strong>Redeem</strong> — redeemId, couponId, userId, orderId, timestamp</li>
-                        <li><strong>User</strong> — userId, firstName, lastName, email, phone</li>
+                        <li><strong>Coupon</strong> — date, description, type, status, ids; central record per unique coupon.</li>
+                        <li><strong>Redeem</strong> — ties user, coupon, order, time.</li>
+                        <li><strong>User</strong> — search, lock, redeem.</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>API Design</h2>
-                    <h3>1. Create Coupon (Admin)</h3>
-                    <p><code>POST /coupons</code> — Returns couponId. Body: category, description, expiryDate, type (PERCENTAGE/FLAT)</p>
-                    <h3>2. Search Coupon</h3>
-                    <p><code>GET /coupons/search?search_term=&type=</code> — Returns list of coupons matching filters</p>
-                    <h3>3. Get (Lock) Coupon</h3>
-                    <p><code>POST /coupons/locked/{couponId}</code> — Locks coupon for user. Status → LOCKED; lockedByUser, lockExpiresAt set. Returns coupon.</p>
-                    <h3>4. Redeem Coupon</h3>
-                    <p><code>POST /coupons/redeem/{couponId}</code> — Body: userId, orderId. Validates, applies discount, marks REDEEMED.</p>
-                    <p><strong>Validations:</strong> Not expired, belongs to user (if personalized), not already redeemed, was locked (optional).</p>
+                    <h2>APIs</h2>
+
+                    <h3>1. Create coupon</h3>
+                    <p><code>POST /coupons</code> → returns <code>couponId</code>. Used by admin or merchant. Creates a new coupon.</p>
+                    <p><strong>Request body</strong></p>
+                    <div class="pre-block">POST /coupons
+{
+  "category": "electronics",
+  "description": "10% off",
+  "expiryDate": "2026-01-31",
+  "type": "PERCENTAGE"
+}</div>
+                    <p><strong>Response</strong></p>
+                    <div class="pre-block">201 Created
+{
+  "couponId": "COUP123"
+}</div>
+
+                    <h3>2. Search coupon</h3>
+                    <p><code>GET /coupons/search?search_term={search_term}&amp;type={type}</code> — Users browse available coupons; returns matches.</p>
+                    <p><strong>Example query</strong></p>
+                    <div class="pre-block">/coupons/search?search_term=laptop&amp;type=PERCENTAGE</div>
+                    <p><strong>Response</strong></p>
+                    <div class="pre-block">[
+  {
+    "couponId": "COUP123",
+    "description": "10% off laptops",
+    "type": "PERCENTAGE",
+    "category": "electronics"
+  }
+]</div>
+
+                    <h3>3. Get (lock) coupon</h3>
+                    <p><code>POST /coupons/locked/{couponId}</code> → returns coupon payload / status.</p>
+                    <p><strong>Locked coupon</strong> means: user selects a coupon, system reserves it temporarily, no one else can redeem it during the lock window.</p>
+                    <p><strong>Why POST instead of GET?</strong> Locking <em>changes state</em> (side effect), so POST is appropriate.</p>
+                    <p><strong>Flow:</strong> User clicks “use coupon”. Backend sets something like:</p>
+                    <div class="pre-block">status         = LOCKED
+lockedByUser   = USER123
+lockExpiresAt  = &lt;timestamp&gt;</div>
+                    <p><strong>Response</strong></p>
+                    <div class="pre-block">{
+  "couponId": "COUP123",
+  "status": "LOCKED"
+}</div>
+
+                    <h3>4. Redeem coupon</h3>
+                    <p><code>POST /coupons/redeem/{couponId}</code> — User applies coupon at checkout.</p>
+                    <p><strong>What happens:</strong> Validate coupon, verify lock (optional but good), mark <code>REDEEMED</code>, prevent reuse for single-use coupons, persist redemption record.</p>
+                    <p><strong>Request body</strong></p>
+                    <div class="pre-block">POST /coupons/redeem/COUP123
+{
+  "userId": "USER123",
+  "orderId": "ORDER999"
+}</div>
+                    <p><strong>Response</strong></p>
+                    <div class="pre-block">{
+  "status": "SUCCESS",
+  "discountApplied": 120,
+  "finalPrice": 880
+}</div>
+                    <p><strong>Important validations:</strong> coupon not expired; belongs to user if personalized; not already redeemed; optionally was locked by same user and lock still valid (lock may have expired before redeem attempt).</p>
                 </div>
 
                 <div class="section">
-                    <h2>Object Modeling</h2>
+                    <h2>High-level architecture (final draft)</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/coupon-management-hld-architecture.png" alt="Architecture: Admin and User to API Gateway; Search Service to Elasticsearch; Coupon Generation Service to Redis global counter, Database, and Elasticsearch; Coupon Redeem Service to Redis coupon lock, Database, and Elasticsearch">
+                        <figcaption>Single entry via <strong>API Gateway</strong> (authentication, rate limiting, routing). <strong>Search Service</strong> queries Elasticsearch (indexed on description, category, type). <strong>Coupon Generation Service</strong> uses Redis atomic counter for unique IDs, writes source of truth to the <strong>Database</strong>, and updates search via <strong>Elasticsearch</strong>. <strong>Coupon Redeem Service</strong> uses <strong>Redis (coupon lock)</strong> for 5-minute locks, coordinates with the <strong>Database</strong> for locked/redeemed state, and syncs Elasticsearch so search reflects availability.</figcaption>
+                    </figure>
+                    <h3>Component summary</h3>
+                    <ul>
+                        <li><strong>API Gateway</strong> — Auth, rate limiting, routing to microservices.</li>
+                        <li><strong>Search Service</strong> — Coupon discovery; reads from Elasticsearch for low-latency search (not full table scans on SQL).</li>
+                        <li><strong>Coupon Generation Service</strong> — Create coupons; <strong>Redis (global counter)</strong> with atomic <code>INCR</code> for unique <code>couponId</code>; persist to DB; index/update Elasticsearch.</li>
+                        <li><strong>Coupon Redeem Service</strong> — Lock and redeem; <strong>Redis (coupon lock)</strong> for TTL-based locks; DB for authoritative state; update Elasticsearch after redemption so coupons disappear or update in search.</li>
+                        <li><strong>Redis (global counter)</strong> — Sequence for IDs: service gets next number, builds id, stores row in DB.</li>
+                        <li><strong>Redis (coupon lock)</strong> — Per-coupon lock with expiry (e.g. 5 minutes); reduces races vs relying on DB alone under contention.</li>
+                        <li><strong>Database</strong> — Source of truth for coupons and redemptions.</li>
+                        <li><strong>Elasticsearch</strong> — Search index; kept in sync with DB (async indexer / events after commit).</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>High-level design — request flows</h2>
+
+                    <h3>1. Admin creates coupon</h3>
+                    <p>Admin calls <code>POST /coupons</code>. <strong>Coupon Generation Service</strong> validates the body, generates <code>couponId</code> (e.g. via Redis <code>INCR</code>), sets initial <code>status = ACTIVE</code>, saves to the database, then updates Elasticsearch so the coupon is searchable.</p>
+                    <p>After creation, a typical DB row includes:</p>
+                    <div class="pre-block">couponId = C123
+status   = ACTIVE</div>
+
+                    <h3>2. User searches coupon (naive vs optimized)</h3>
+                    <p>User searches by term and/or type. <strong>Search Service</strong> serves this traffic.</p>
+                    <p><strong>Naive approach:</strong> Query SQL directly, e.g.</p>
+                    <div class="pre-block">SELECT * FROM coupons WHERE category LIKE '%electronics%'</div>
+                    <p>This becomes slow at scale: large table, heavy LIKE scans, weak scaling for free text. Fine for a first HLD sketch; optimization = proper indexes, cache, or <strong>Elasticsearch</strong> as in the architecture diagram.</p>
+                    <p><strong>Optimized path:</strong> Search Service queries Elasticsearch (inverted index on description, category, type) for fast, filterable search while DB remains transactional source of truth.</p>
+
+                    <h3>3. User selects coupon → lock</h3>
+                    <p>After results are shown, user selects a coupon. App calls <code>POST /coupons/locked/{couponId}</code> (same intent as reserving the code).</p>
+                    <p>Backend should ensure only one user holds the reservation: e.g. Redis <code>SET coupon:lock:&lt;id&gt; &lt;userId&gt; NX EX 300</code>, then reflect <code>LOCKED</code> in DB if needed for auditing/reporting.</p>
+                    <div class="pre-block">status        = LOCKED
+lockedBy      = USER123
+lockExpiresAt = now + 5 minutes</div>
+                    <p>This blocks other users from redeeming the same coupon during the window and cuts race conditions on hot coupons.</p>
+
+                    <h3>4. Redeem within 5 minutes or release</h3>
+                    <p><strong>Case A — User redeems in time:</strong> <code>POST /coupons/redeem/{couponId}</code>. Verify lock (Redis and/or DB), same user, not expired; then <code>status = REDEEMED</code>, write <strong>Redeem</strong> row, delete Redis lock key, update Elasticsearch.</p>
+                    <p><strong>Case B — User abandons or payment fails:</strong> If using Redis with TTL, the lock key expires after 5 minutes — no scheduler strictly required for Redis. Optionally a background job reconciles DB rows still marked <code>LOCKED</code> past <code>lockExpiresAt</code> to <code>ACTIVE</code> if DB and cache ever diverge.</p>
+                    <div class="pre-block">status        = ACTIVE
+lockedBy      = null
+lockExpiresAt = null</div>
+                    <p><strong>Interview follow-ups:</strong> How is lock expiration implemented? Two users locking at once? DB row lock vs Redis? How is search kept consistent with DB?</p>
+                </div>
+
+                <div class="section">
+                    <h2>Object modeling</h2>
                     <h3>Coupons</h3>
-                    <p>couponId, category, description, dateCreated, type (PERCENTAGE/FLAT), status (ACTIVE/LOCKED/REDEEMED/EXPIRED), createdTimeStamp, lockedTimeStamp, userId</p>
+                    <ul>
+                        <li><code>couponId</code> (String)</li>
+                        <li><code>category</code> (String)</li>
+                        <li><code>description</code> (String)</li>
+                        <li><code>dateCreated</code> (Date)</li>
+                        <li><code>type</code> — Enum: <code>PERCENTAGE</code>, <code>FLAT</code></li>
+                        <li><code>status</code> — Enum: <code>ACTIVE</code>, <code>LOCKED</code>, <code>REDEEMED</code>, <code>EXPIRED</code></li>
+                        <li><code>createdTimeStamp</code> (DateTime)</li>
+                        <li><code>lockedTimeStamp</code> (DateTime)</li>
+                        <li><code>userId</code> / <code>lockedByUser</code> — who holds lock or owner if personalized</li>
+                        <li><code>lockExpiresAt</code> (DateTime) — aligns with 5-minute rule</li>
+                    </ul>
                     <h3>Redeem</h3>
-                    <p>redeemId, couponId, userId, orderId, redeemTimeStamp</p>
+                    <ul>
+                        <li><code>redeemId</code>, <code>couponId</code>, <code>userId</code>, <code>orderId</code>, <code>redeemTimeStamp</code></li>
+                    </ul>
                     <h3>Users</h3>
-                    <p>userId, firstName, lastName, email, phoneNumber</p>
+                    <ul>
+                        <li><code>userId</code>, <code>firstName</code>, <code>lastName</code>, <code>email</code>, <code>phoneNumber</code></li>
+                    </ul>
                 </div>
 
                 <div class="section">
-                    <h2>High-Level Design Flow</h2>
-                    <ol style="list-style: decimal; margin-left: 25px;">
-                        <li style="margin-bottom: 12px;"><strong>Admin creates coupon</strong> — POST /coupons → Coupon Generation Service → DB (status: ACTIVE)</li>
-                        <li style="margin-bottom: 12px;"><strong>User searches</strong> — Search Service queries DB (basic) or Elasticsearch (optimized)</li>
-                        <li style="margin-bottom: 12px;"><strong>User selects coupon</strong> — POST lock → status LOCKED, lockedBy, lockExpiresAt (5 min)</li>
-                        <li style="margin-bottom: 12px;"><strong>Redeem or release</strong> — If redeemed within 5 min: REDEEMED. Else: background job resets to ACTIVE</li>
-                    </ol>
-                </div>
+                    <h2>Deep dive — Redis for locking (and optional ID generation)</h2>
+                    <p>Coupon locks are <strong>temporary</strong> (5 minutes), must <strong>auto-expire</strong>, see <strong>high contention</strong> on popular coupons, must be <strong>fast</strong>, and must <strong>avoid races</strong>. Redis fits: TTL, atomic SET NX, O(1) operations.</p>
+                    <p><strong>Consistency with search:</strong> After the DB transaction commits, notify an indexer (async) to update Elasticsearch — don’t treat ES as the transactional store.</p>
 
-                <div class="section">
-                    <h2>Redis for Lock Mechanism</h2>
-                    <p>Redis fits coupon locking: temporary, auto-expire, high contention, fast, avoids race conditions.</p>
-                    <p><strong>Basic Redis lock:</strong></p>
+                    <h4>Basic Redis lock</h4>
                     <div class="pre-block">SET coupon:lock:C123 USER123 NX EX 300</div>
-                    <p>NX = set only if key does NOT exist; EX 300 = expire after 5 minutes. OK → lock acquired; null → already locked.</p>
-                    <h3>Flow with Redis</h3>
                     <ul>
-                        <li><strong>Lock:</strong> Try Redis lock → if success, proceed; if fail, reject. TTL 300s. No cron for expiry.</li>
-                        <li><strong>Redeem:</strong> Check Redis lock exists, user matches, apply discount, save Redeem record, mark REDEEMED, DEL lock</li>
-                        <li><strong>Abandon:</strong> Redis TTL expires automatically; coupon available again</li>
+                        <li><code>NX</code> — set only if the key does not exist (one winner).</li>
+                        <li><code>EX 300</code> — expire after 300 seconds (5 minutes).</li>
+                        <li>Return <code>OK</code> → lock acquired; null → someone else holds it.</li>
+                        <li>No cron job required purely for Redis key expiry.</li>
+                    </ul>
+
+                    <h4>End-to-end with Redis</h4>
+                    <p><strong>1) Lock</strong> — Coupon Redeem Service tries Redis; on success, optionally writes <code>LOCKED</code> to DB for visibility; Redis holds <code>coupon:lock:&lt;id&gt; = userId</code> with TTL.</p>
+                    <p><strong>2) Redeem</strong> — Check lock exists and user matches; apply business rules; insert Redeem row; set coupon <code>REDEEMED</code>; <code>DEL coupon:lock:&lt;id&gt;</code>; update ES.</p>
+                    <p><strong>3) Abandon checkout</strong> — TTL expires; key disappears; coupon becomes available again for others (reconcile DB if you mirror lock state there).</p>
+
+                    <h4>Unique coupon IDs (architecture diagram)</h4>
+                    <p>Coupon Generation Service can call Redis <strong>atomic INCR</strong> on a counter key, format the next sequence into <code>couponId</code>, then persist to the database — avoids collisions under concurrent admin uploads.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Deep dive — Elasticsearch for coupon search</h2>
+                    <p>At small scale, DB search can work. As data and read traffic grow (millions of coupons, 100:1 reads, free-text queries like “10% laptop discount”), SQL LIKE and heavy secondary indexes struggle: full scans, latency, expensive read replicas.</p>
+                    <p><strong>Rule:</strong> Database = source of truth. Elasticsearch = search-optimized projection only.</p>
+
+                    <h4>1) Index</h4>
+                    <p>E.g. <code>coupons_index</code> — a collection of documents optimized for query, not OLTP.</p>
+
+                    <h4>2) Document (example)</h4>
+                    <div class="pre-block">{
+  "couponId": "C123",
+  "category": "electronics",
+  "description": "10% off on laptops",
+  "type": "PERCENTAGE",
+  "status": "ACTIVE",
+  "expiryDate": "2026-02-10"
+}</div>
+
+                    <h4>3) Fields</h4>
+                    <p>Fields are analyzed and indexed — e.g. description tokenized, category filterable, <code>expiryDate</code> for ranges.</p>
+
+                    <h4>4) Inverted index</h4>
+                    <p>Instead of only “row → text”, ES builds <strong>term → document IDs</strong>, e.g. <code>laptop</code> → <code>[C123, C456, …]</code>. Queries intersect/rank these lists quickly.</p>
+
+                    <h4>5) Shards</h4>
+                    <p>Split the index across shards on multiple nodes; queries run in parallel for horizontal scale.</p>
+
+                    <h4>6) Replicas</h4>
+                    <p>Per-shard copies for failover and extra read throughput for search.</p>
+
+                    <h4>7) What Elasticsearch is not for</h4>
+                    <ul>
+                        <li>Not a system of record for financial/locking state.</li>
+                        <li>Weak at multi-row transactions, joins, strict immediate consistency, very chatty fine-grained updates.</li>
+                    </ul>
+                    <p>Generation and redeem services <strong>update Elasticsearch</strong> after DB changes so “available coupon” search stays eventually consistent with the primary store.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Cross-cutting rules</h2>
+                    <ul>
+                        <li><strong>One coupon per user per day</strong> — Enforce in application / API layer (e.g. check daily claim counter or ledger per user), in addition to per-coupon lock/redeem rules.</li>
+                        <li><strong>Single redemption</strong> — Enforced by DB uniqueness on <code>couponId</code> in redeem table or status transition guards, plus idempotent redeem API where appropriate.</li>
+                        <li><strong>CAP framing</strong> — Favor availability for search paths; favor correctness for allocate/lock/redeem paths (often backed by DB + Redis primitives).</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>Elasticsearch for Search</h2>
-                    <p>At scale: millions of coupons, high read traffic, free-text search. DB has full table scans, high latency.</p>
-                    <p><strong>Key concepts:</strong></p>
+                    <h2>Key insights</h2>
                     <ul>
-                        <li><strong>Index</strong> — Collection of documents (e.g., coupons_index)</li>
-                        <li><strong>Document</strong> — JSON per coupon (couponId, category, description, type, status, expiryDate)</li>
-                        <li><strong>Inverted Index</strong> — Word → list of documents (e.g., "laptop" → [C123, C456])</li>
-                        <li><strong>Shards</strong> — Index split for scale; parallel search</li>
-                        <li><strong>Replicas</strong> — Fault tolerance, read capacity</li>
-                    </ul>
-                    <p><strong>Rule:</strong> DB = source of truth; Elasticsearch = search only. DB not good for: transactions, joins, strict consistency, frequent updates.</p>
-                </div>
-
-                <div class="section">
-                    <h2>Key Insights</h2>
-                    <ul>
-                        <li>Redis TTL for locking — no cron jobs; auto-expiry</li>
-                        <li>Elasticsearch for low-latency search at scale</li>
-                        <li>5-minute lock prevents double allocation and race conditions</li>
-                        <li>One coupon per user per day enforced at application layer</li>
-                        <li>Strong consistency for get/lock; high availability for search</li>
+                        <li>Redis TTL locks avoid relying only on slow polling or heavy DB row locks for the 5-minute window.</li>
+                        <li>Redis <code>INCR</code> gives cheap, concurrent-safe unique IDs for high-volume coupon creation.</li>
+                        <li>Elasticsearch delivers low-latency search with inverted indexes; index description, category, and type.</li>
+                        <li>Async indexing after DB commit keeps search in sync without coupling write latency to ES.</li>
+                        <li>Read-heavy (100:1) workloads benefit from separating OLTP (DB) from search (ES) and caching hot paths where needed.</li>
                     </ul>
                 </div>
             </div>
