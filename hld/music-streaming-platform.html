@@ -129,6 +129,33 @@
         table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
         table tr:last-child td { border-bottom: none; }
         table tr:hover { background: #f5f5f5; }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+        .section code {
+            background: #eef0fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -203,53 +230,53 @@
 
                 <div class="section">
                     <h2>2. High-Level Architecture</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/spotify-high-level-architecture.png" alt="Diagram: Mobile app sends HTTP requests through a load balancer to a web/API layer with multiple API servers; API servers query SQL for metadata and generate signed URLs for blob storage audio files">
+                        <figcaption>Request path: client → load balancer → stateless API tier → SQL (metadata) and blob storage (signed URLs for audio).</figcaption>
+                    </figure>
                     <ul>
-                        <li><strong>User interface:</strong> Mobile/web app for playback, search, playlist management</li>
-                        <li><strong>Load Balancer:</strong> Distributes requests across stateless REST API servers (round-robin or least connections); performs health checks</li>
-                        <li><strong>API Layer:</strong> Authenticates using JWT tokens; queries metadata from SQL database</li>
-                        <li><strong>Storage:</strong>
-                            <ul>
-                                <li>Metadata in relational database (SQL)</li>
-                                <li>Audio files in blob/object storage (e.g., AWS S3) for durability, cost efficiency, scalability</li>
-                                <li>Signed URLs for secure, temporary access to audio files</li>
-                            </ul>
-                        </li>
-                        <li><strong>CDN:</strong> Optional caching close to users; cache invalidation for updates</li>
+                        <li><strong>Client layer:</strong> Mobile app (and web) sends HTTP requests for playback, search, and playlists</li>
+                        <li><strong>Load balancer:</strong> Spreads traffic across API servers for availability and capacity</li>
+                        <li><strong>Web/API layer:</strong> Stateless API servers — JWT authentication, business logic, orchestration</li>
+                        <li><strong>SQL database (metadata):</strong> Song titles, artists, albums, internal object keys/paths</li>
+                        <li><strong>Blob storage (audio):</strong> Large audio objects; APIs issue short-lived signed URLs so the client streams directly from storage</li>
+                        <li><strong>CDN (optional):</strong> Edge caching closer to users; invalidate on catalog updates</li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>3. System Workflows</h2>
+                    <p>Now that we’ve covered the high-level architecture, here’s how a typical read request flows through the system.</p>
+
+                    <h3>Read workflow</h3>
+                    <p>When the user plays a song:</p>
+                    <ul>
+                        <li><strong>User hits play</strong> → App sends <code>GET /songs/{id}</code>.</li>
+                        <li><strong>API authentication</strong> → API server validates the JWT.</li>
+                        <li><strong>Metadata lookup</strong> → API server queries the SQL database for song details (metadata).</li>
+                        <li><strong>URL generation</strong> → API server creates a signed URL for blob storage access.</li>
+                        <li><strong>Audio streaming</strong> → App fetches chunks of audio (HTTP range requests) directly from blob storage using adaptive streaming (HLS or DASH), enabling smooth playback, automatic bitrate switching, and broad device support.</li>
+                        <li><strong>Analytics</strong> → App periodically calls <code>POST /songs/{id}/play</code> to track plays and listening time.</li>
+                    </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/spotify-read-workflow-sequence.png" alt="Sequence diagram: play flow from user and mobile app through load balancer and API server to SQL and blob storage, including parallel streaming and analytics">
+                        <figcaption>Read workflow (sequence): JWT validation, metadata and signed URL, then parallel paths — range requests to blob storage for playback and <code>POST /songs/{id}/play</code> for analytics.</figcaption>
+                    </figure>
+
+                    <h3>Write workflow (upload song)</h3>
                     <table>
                         <thead>
-                            <tr><th>Workflow</th><th>Steps</th></tr>
+                            <tr><th>Step</th><th>Description</th></tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong>Read (Play Song)</strong></td>
-                                <td>
-                                    1. User hits play → GET /songs/{id} → load balancer routes to API server<br>
-                                    2. Validate JWT token<br>
-                                    3. Fetch song metadata from SQL<br>
-                                    4. Generate signed URL for audio file<br>
-                                    5. Return metadata + signed URL to client<br>
-                                    6. Client streams audio chunks from blob storage<br>
-                                    7. Track play analytics via POST /songs/{id}/play
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Write (Upload Song)</strong></td>
-                                <td>
-                                    1. Artist uploads via POST /songs with metadata<br>
-                                    2. Load balancer routes request<br>
-                                    3. Validate file size and format<br>
-                                    4. Store audio file in blob storage<br>
-                                    5. Extract and save metadata in SQL database<br>
-                                    6. Organize files hierarchically (artist/album/song)<br>
-                                    7. Invalidate CDN caches<br>
-                                    8. Respond with upload success
-                                </td>
-                            </tr>
+                            <tr><td>1</td><td>Artist uploads via <code>POST /songs</code> with metadata</td></tr>
+                            <tr><td>2</td><td>Load balancer routes the request</td></tr>
+                            <tr><td>3</td><td>Validate file size and format</td></tr>
+                            <tr><td>4</td><td>Store audio file in blob storage</td></tr>
+                            <tr><td>5</td><td>Extract and save metadata in SQL</td></tr>
+                            <tr><td>6</td><td>Organize objects hierarchically (e.g. artist/album/song)</td></tr>
+                            <tr><td>7</td><td>Invalidate CDN caches if applicable</td></tr>
+                            <tr><td>8</td><td>Respond with upload success</td></tr>
                         </tbody>
                     </table>
                 </div>
