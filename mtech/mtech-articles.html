@@ -82,6 +82,15 @@
         .note-date { color: #999; font-size: 0.9em; }
         .note-arrow { color: #667eea; font-size: 1.3em; margin-left: 15px; transition: transform 0.3s ease; }
         .note-card:hover .note-arrow { transform: translateX(5px); }
+        .subsection-title {
+            color: #764ba2;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin: 28px 0 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .subsection-title:first-of-type { margin-top: 0; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             .note-card { flex-direction: column; text-align: left; gap: 10px; }
@@ -99,6 +108,17 @@
         </nav>
         <div class="main-container">
             <h2>Articles</h2>
+            <h3 class="subsection-title">Large language model (LLM)</h3>
+            <div class="notes-grid">
+                <a href="articles/gpu-architecture-llm-foundations.html" class="note-card">
+                    <div class="note-info">
+                        <div class="note-title">GPU architecture vs CPU — Foundations for deep learning &amp; LLMs</div>
+                        <div class="note-date">Parallelism, VRAM, CUDA/Tensor cores, Flash Attention · Video notes</div>
+                    </div>
+                    <div class="note-arrow">→</div>
+                </a>
+            </div>
+            <h3 class="subsection-title">Retrieval &amp; RAG</h3>
             <div class="notes-grid">
                 <a href="articles/vectorless-rag-page-index.html" class="note-card">
                     <div class="note-info">

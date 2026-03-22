@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <title>GPU architecture vs CPU — Foundations for LLMs — Article</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 920px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-link { color: #667eea; text-decoration: none; font-weight: 500; }
+        .nav-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 10px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; }
+        .date-badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .content { padding: 36px 40px 48px; }
+        .section {
+            margin-bottom: 32px;
+            padding: 22px 24px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 14px;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 6px;
+        }
+        .section p { line-height: 1.75; margin-bottom: 12px; font-size: 1.03em; }
+        .section ul { margin: 10px 0 14px 22px; }
+        .section li { margin-bottom: 8px; line-height: 1.65; }
+        .section li ul { margin-top: 8px; }
+        strong { color: #5a4fcf; font-weight: 600; }
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 24px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 0.95em;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 11px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td { padding: 10px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #fafafa; }
+        @media (max-width: 768px) {
+            .content { padding: 24px 18px 36px; }
+            table { font-size: 0.82em; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;">
+                <a href="../mtech-articles.html" class="nav-link">← Back to Articles</a>
+                <a href="../mtech.html" class="nav-link">IIT Patna</a>
+            </div>
+        </nav>
+        <div class="container">
+            <header class="header">
+                <h1>GPU architecture vs CPU — Foundations for deep learning &amp; LLMs</h1>
+                <p>Video notes: parallelism, memory hierarchy, and why GPUs power modern AI</p>
+                <span class="date-badge">Large language models (LLM) · IIT Patna AI &amp; DS</span>
+            </header>
+            <div class="content">
+
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>This video provides an insightful overview of <strong>GPU architecture and its distinction from CPUs</strong>, emphasizing their critical role in modern computing tasks like video editing, deep learning, and training large language models (LLMs). The presenter aims to equip software engineers with foundational knowledge of GPUs, enabling them to better understand and build AI/ML models.</p>
+                </div>
+
+                <hr>
+
+                <div class="section">
+                    <h2>Key topics covered</h2>
+                    <ul>
+                        <li><strong>Comparison between CPUs and GPUs</strong></li>
+                        <li><strong>Evolution of GPU technology</strong></li>
+                        <li><strong>GPU components and memory hierarchy</strong></li>
+                        <li><strong>Parallel processing and throughput</strong></li>
+                        <li><strong>Applications in video editing and deep learning</strong></li>
+                        <li><strong>Memory optimization techniques like Flash Attention</strong></li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Core concepts and highlights</h2>
+
+                    <h3>CPU vs GPU architecture and design goals</h3>
+                    <p><strong>CPU:</strong></p>
+                    <ul>
+                        <li>Designed for <strong>sequential instruction execution</strong> with low latency.</li>
+                        <li>Emphasizes <strong>reducing instruction latency</strong> via large caches and control units.</li>
+                        <li>Contains a <strong>small number of powerful ALUs</strong> (Arithmetic Logic Units).</li>
+                        <li>Ideal for <strong>complex single tasks</strong> requiring precision.</li>
+                        <li>Cache hierarchy:
+                            <ul>
+                                <li><strong>L1 (fastest, smallest)</strong></li>
+                                <li><strong>L2 (larger, slower)</strong></li>
+                                <li><strong>L3 (largest, slowest)</strong> caches to minimize RAM access latency.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>GPU:</strong></p>
+                    <ul>
+                        <li>Designed for <strong>massive parallelism and high throughput</strong>.</li>
+                        <li>Contains <strong>many simpler ALUs</strong> (cores) optimized for repetitive, similar tasks.</li>
+                        <li>Uses <strong>small cache and control units</strong> to maximize chip space for cores.</li>
+                        <li>Excels in <strong>parallel processing</strong>, handling millions or billions of computations simultaneously.</li>
+                        <li>Specialized hardware like <strong>CUDA cores</strong> for general computation and <strong>Tensor cores</strong> for deep learning acceleration.</li>
+                        <li>Can tolerate <strong>higher instruction latency</strong> by switching between many threads, ensuring maximum utilization of compute units.</li>
+                    </ul>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>CPU</th>
+                                <th>GPU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Primary goal</strong></td>
+                                <td>Low instruction latency</td>
+                                <td>High throughput</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ALUs</strong></td>
+                                <td>Fewer, more powerful</td>
+                                <td>Many, simpler</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cache size</strong></td>
+                                <td>Large (L1, L2, L3 caches)</td>
+                                <td>Small caches</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Control units</strong></td>
+                                <td>Many</td>
+                                <td>Few</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Parallelism</strong></td>
+                                <td>Low (few cores)</td>
+                                <td>Very high (hundreds/thousands of cores)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Typical use case</strong></td>
+                                <td>Sequential, complex tasks</td>
+                                <td>Parallel, repetitive tasks</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Memory hierarchy and data flow</h3>
+                    <ul>
+                        <li>Data flows from <strong>storage devices</strong> (HDD/SSD) → <strong>RAM</strong> → <strong>CPU/GPU caches</strong> → <strong>cores</strong>.</li>
+                        <li>GPUs have dedicated memory called <strong>VRAM (Video RAM)</strong>, which stores data actively being processed.</li>
+                        <li>GPU memory hierarchy:
+                            <ul>
+                                <li><strong>VRAM</strong> (large capacity, e.g. 16GB or 40GB depending on model)</li>
+                                <li><strong>L2 cache</strong> (holds frequently used data from VRAM)</li>
+                                <li><strong>Streaming Multiprocessors (SMs)</strong> with their own <strong>L1 cache / Shared SRAM</strong></li>
+                            </ul>
+                        </li>
+                        <li>Specialized GPU components include CUDA cores and Tensor cores:
+                            <ul>
+                                <li><strong>CUDA cores:</strong> general-purpose calculations.</li>
+                                <li><strong>Tensor cores:</strong> optimized for deep learning matrix operations.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>GPU parallelism and latency tolerance</h3>
+                    <ul>
+                        <li>GPUs handle <strong>parallel workloads by scheduling thousands of threads</strong> simultaneously.</li>
+                        <li>When some threads wait for data (high latency), the GPU switches to others, maintaining high utilization.</li>
+                        <li>This thread-level parallelism allows GPUs to <strong>achieve high throughput despite higher instruction latency per thread</strong>.</li>
+                    </ul>
+
+                    <h3>Application in video editing and deep learning</h3>
+                    <ul>
+                        <li>GPUs accelerate <strong>complex video editing tasks</strong> such as applying filters and effects by processing many pixels or frames simultaneously.</li>
+                        <li>Their <strong>parallel processing power</strong> and <strong>specialized hardware</strong> make GPUs ideal for <strong>machine learning workloads</strong>, especially training deep neural networks.</li>
+                        <li>Tensor cores significantly <strong>speed up deep learning computations</strong> by optimizing matrix multiplications.</li>
+                        <li>GPUs use <strong>High Bandwidth Memory (HBM)</strong> to boost data transfer rates between memory and processors, improving training efficiency.</li>
+                    </ul>
+
+                    <h3>Advanced optimization: Flash Attention</h3>
+                    <ul>
+                        <li>Flash Attention is an optimization technique to <strong>maximize GPU memory utilization</strong>.</li>
+                        <li>It increases the speed of data movement between GPU memory layers like VRAM, L2 cache, and L1 cache/SRAM.</li>
+                        <li>Combines multiple small GPU tasks (kernels) into one larger task (<strong>kernel fusion</strong>), reducing overhead.</li>
+                        <li>This technique unlocks <strong>the full potential of GPU parallelism and memory efficiency</strong>, critical for training large language models.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Timeline of data flow in video editing (illustrative)</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Step</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Storage</strong></td>
+                                <td>Video stored on HDD/SSD (slow access but large capacity)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RAM</strong></td>
+                                <td>Portions of video loaded into RAM for faster access</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CPU cache</strong></td>
+                                <td>CPU checks L1 → L2 → L3 caches for data before accessing RAM</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CPU</strong></td>
+                                <td>Processes sequential tasks (e.g. applying filters)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPU</strong></td>
+                                <td>Used for parallel tasks (e.g. rendering effects) with VRAM and caches for fast data access</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key insights</h2>
+                    <ul>
+                        <li><strong>GPUs are optimized for throughput via parallelism</strong>, contrasting CPUs’ low-latency sequential execution.</li>
+                        <li>The large number of GPU cores and threads enable efficient handling of massive data simultaneously—<strong>a critical factor in AI and video rendering</strong>.</li>
+                        <li><strong>Memory hierarchy and specialized cores (CUDA and Tensor) are essential for GPU performance</strong> in both graphics and deep learning domains.</li>
+                        <li>Techniques like <strong>Flash Attention and kernel fusion</strong> are vital for optimizing GPU usage in training large AI models.</li>
+                        <li>Understanding these fundamentals provides a <strong>foundation for building efficient AI/ML models and leveraging GPU power effectively</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Conclusion</h2>
+                    <p>This video effectively demystifies GPU architecture, contrasting it with CPU design and highlighting why GPUs are indispensable for modern AI and video processing tasks. By grasping <strong>GPU parallelism, memory hierarchy, and specialized hardware</strong>, software engineers can better harness GPU capabilities in building scalable large language models and complex AI applications.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
