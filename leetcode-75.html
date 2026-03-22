@@ -77,6 +77,7 @@
             font-size: 0.9em;
         }
         /* Column widths: statement gets the most text space; hint is capped and wraps */
+        col.col-done { width: 3rem; }
         col.col-sl { width: 2.75rem; }
         col.col-stmt { width: 36%; }
         col.col-diff { width: 6.25rem; }
@@ -91,14 +92,15 @@
             font-weight: 600;
         }
         thead th:nth-child(1),
-        thead th:nth-child(4),
-        thead th:nth-child(5) { text-align: center; }
+        thead th:nth-child(2),
+        thead th:nth-child(5),
+        thead th:nth-child(6) { text-align: center; }
         tbody td {
             padding: 10px 12px;
             border-bottom: 1px solid #eee;
             vertical-align: top;
         }
-        tbody td:nth-child(3),
+        tbody td:nth-child(4),
         tbody td.solution,
         tbody td.linkcell { padding-top: 14px; }
         tbody td.slno { padding-top: 14px; }
@@ -161,13 +163,48 @@
             text-decoration: none;
         }
         td.linkcell a:hover { text-decoration: underline; }
+        #studyProgressMount { margin-bottom: 18px; }
+        .study-progress-summary { text-align: center; }
+        .study-progress-label {
+            font-weight: 600;
+            color: #4a3a6b;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        .study-progress-bar-wrap {
+            height: 10px;
+            background: #e8eaf6;
+            border-radius: 999px;
+            overflow: hidden;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .study-progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 999px;
+            width: 0%;
+            transition: width 0.25s ease;
+        }
+        th.col-done, td.done-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+        tbody td.done-cell { padding-top: 14px; }
+        td.done-cell input {
+            width: 1.15rem;
+            height: 1.15rem;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        tr.row-solved td.stmt { opacity: 0.78; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; }
             .main-container { padding: 24px 16px; }
         }
     </style>
 </head>
-<body>
+<body data-study-track="leetcode75">
     <div class="wrapper">
         <nav class="navbar">
             <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
@@ -176,6 +213,7 @@
         <div class="main-container">
             <h1>LeetCode 75 Study Plan</h1>
             <p class="sub">Official LeetCode <strong>75</strong> curated path (<code>envId=leetcode-75</code>). Use <strong>Solution</strong> for your own notes or links later; <strong>Link</strong> opens the problem or submission on LeetCode; <strong>Hint</strong> holds quick notes.</p>
+            <div id="studyProgressMount" aria-live="polite"></div>
             <div class="table-wrap">
                 <table>
                     <colgroup>
@@ -824,5 +862,6 @@
             </div>
         </div>
     </div>
+    <script src="study-tracker.js" defer></script>
 </body>
 </html>
