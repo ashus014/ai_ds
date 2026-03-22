@@ -197,7 +197,12 @@
             cursor: pointer;
             accent-color: #667eea;
         }
-        tr.row-solved td.stmt { opacity: 0.78; }
+        tbody tr.row-solved td {
+            background: #e8f5e9;
+        }
+        tbody tr.row-solved:hover td {
+            background: #dcedc8;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; }
             .main-container { padding: 24px 16px; }
