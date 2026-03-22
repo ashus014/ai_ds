@@ -116,10 +116,19 @@
             text-align: center;
         }
         .article-figure img {
-            max-width: 100%;
+            max-width: min(100%, 480px);
+            max-height: 260px;
+            width: auto;
             height: auto;
+            object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+            cursor: zoom-in;
+            vertical-align: middle;
+            transition: box-shadow 0.2s ease;
+        }
+        .article-figure img:hover {
+            box-shadow: 0 6px 28px rgba(102, 126, 234, 0.25);
         }
         .article-figure figcaption {
             margin-top: 12px;
@@ -131,10 +140,66 @@
             margin-left: auto;
             margin-right: auto;
         }
+        .figure-zoom-hint {
+            display: block;
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        .image-zoom-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px 20px;
+            cursor: zoom-out;
+        }
+        .image-zoom-backdrop.is-open {
+            display: flex;
+        }
+        .image-zoom-backdrop img {
+            max-width: 96vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: default;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+        }
+        .image-zoom-close {
+            position: fixed;
+            top: 12px;
+            right: 16px;
+            z-index: 10001;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1.75rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-zoom-close:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
         @media (max-width: 768px) {
             .content { padding: 24px 18px 36px; }
             table { font-size: 0.82em; }
             th, td { padding: 8px; }
+            .article-figure img {
+                max-height: 220px;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -193,6 +258,7 @@
                         </li>
                     </ul>
                     <figure class="article-figure">
+                        <span class="figure-zoom-hint">Click image to enlarge</span>
                         <img src="images/cpu-architecture-quad-core.png" width="998" height="910" alt="Quad-core CPU block diagram: four cores each with green compute, purple L1 cache, and yellow control logic; two shared L2 caches pairing cores; one wide shared L3 cache; DRAM at the bottom for main memory.">
                         <figcaption>Simplified multi-core <strong>CPU</strong> layout: few powerful cores, per-core L1, shared L2/L3, and off-chip DRAM—reflecting a deep cache hierarchy and substantial control logic per core for low-latency sequential work.</figcaption>
                     </figure>
@@ -206,6 +272,7 @@
                         <li>Can tolerate <strong>higher instruction latency</strong> by switching between many threads, ensuring maximum utilization of compute units.</li>
                     </ul>
                     <figure class="article-figure">
+                        <span class="figure-zoom-hint">Click image to enlarge</span>
                         <img src="images/gpu-architecture-block-diagram.png" width="1024" height="984" alt="GPU block diagram: a large grid of many small green cores with narrow control strips on the side, a wide shared L2 cache band below, and DRAM beneath—labeled GPU at the bottom.">
                         <figcaption>Simplified <strong>GPU</strong> layout: a sea of small cores for throughput, modest front-end/control relative to total compute, shared <strong>L2</strong>, and <strong>DRAM</strong>—the pattern behind fast parallel work such as deep learning and LLM training.</figcaption>
                     </figure>
@@ -254,6 +321,7 @@
 
                     <h3>Memory hierarchy and data flow</h3>
                     <figure class="article-figure">
+                        <span class="figure-zoom-hint">Click image to enlarge</span>
                         <img src="images/memory-hierarchy-gpu-diagram.png" width="1024" height="835" alt="Diagram of memory hierarchy: data flows from hard disk through RAM, L3 and L2 cache, then L1 cache and registers inside the CPU, toward the GPU. A &quot;Fastness&quot; scale on the left widens toward the bottom, showing that lower layers are faster.">
                         <figcaption>Illustrative memory stack: data moves from slower storage (disk, RAM, CPU caches) toward the GPU; the “Fastness” indicator emphasizes that components nearer the GPU are typically faster to access once data is resident.</figcaption>
                     </figure>
@@ -274,6 +342,11 @@
                             </ul>
                         </li>
                     </ul>
+                    <figure class="article-figure">
+                        <span class="figure-zoom-hint">Click image to enlarge</span>
+                        <img src="images/gpu-memory-architecture-sm.png" width="1024" height="1008" alt="GPU memory architecture diagram: SM-local register file, unified data cache with shared memory and L1, constant caches, chip-wide L2 cache, and global VRAM with texture and constant regions.">
+                        <figcaption><strong>GPU memory architecture</strong> (per <strong>Streaming Multiprocessor</strong>): fastest layers are local to the SM—registers, unified data cache (programmable shared memory plus hardware L1), and constant caches. <strong>L2</strong> is shared across SMs; <strong>global memory</strong> (VRAM) is the large pool. Arrows show how data moves between levels; sizes shown are illustrative for one chip class.</figcaption>
+                    </figure>
 
                     <h3>GPU parallelism and latency tolerance</h3>
                     <ul>
@@ -352,5 +425,60 @@
             </div>
         </div>
     </div>
+    <div id="image-zoom-backdrop" class="image-zoom-backdrop" role="dialog" aria-modal="true" aria-label="Enlarged figure">
+        <button type="button" class="image-zoom-close" aria-label="Close">&times;</button>
+        <img src="" alt="">
+    </div>
+    <script>
+(function () {
+  var backdrop = document.getElementById('image-zoom-backdrop');
+  if (!backdrop) return;
+  var modalImg = backdrop.querySelector('img');
+  var closeBtn = backdrop.querySelector('.image-zoom-close');
+
+  function openZoom(src, alt) {
+    modalImg.src = src;
+    modalImg.alt = alt || '';
+    backdrop.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function closeZoom() {
+    backdrop.classList.remove('is-open');
+    modalImg.removeAttribute('src');
+    modalImg.alt = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.article-figure img').forEach(function (img) {
+    img.setAttribute('title', 'Click to enlarge');
+    img.setAttribute('tabindex', '0');
+    img.addEventListener('click', function () {
+      openZoom(img.currentSrc || img.src, img.getAttribute('alt') || '');
+    });
+    img.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openZoom(img.currentSrc || img.src, img.getAttribute('alt') || '');
+      }
+    });
+  });
+
+  backdrop.addEventListener('click', function (e) {
+    if (e.target === backdrop) closeZoom();
+  });
+  closeBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    closeZoom();
+  });
+  modalImg.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeZoom();
+  });
+})();
+    </script>
 </body>
 </html>
