@@ -111,6 +111,26 @@
         td { padding: 10px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
         tr:last-child td { border-bottom: none; }
         tr:nth-child(even) { background: #fafafa; }
+        .article-figure {
+            margin: 20px 0 8px;
+            text-align: center;
+        }
+        .article-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+        }
+        .article-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.55;
+            text-align: left;
+            max-width: 42rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (max-width: 768px) {
             .content { padding: 24px 18px 36px; }
             table { font-size: 0.82em; }
@@ -172,6 +192,10 @@
                             </ul>
                         </li>
                     </ul>
+                    <figure class="article-figure">
+                        <img src="images/cpu-architecture-quad-core.png" width="998" height="910" alt="Quad-core CPU block diagram: four cores each with green compute, purple L1 cache, and yellow control logic; two shared L2 caches pairing cores; one wide shared L3 cache; DRAM at the bottom for main memory.">
+                        <figcaption>Simplified multi-core <strong>CPU</strong> layout: few powerful cores, per-core L1, shared L2/L3, and off-chip DRAM—reflecting a deep cache hierarchy and substantial control logic per core for low-latency sequential work.</figcaption>
+                    </figure>
                     <p><strong>GPU:</strong></p>
                     <ul>
                         <li>Designed for <strong>massive parallelism and high throughput</strong>.</li>
@@ -181,6 +205,10 @@
                         <li>Specialized hardware like <strong>CUDA cores</strong> for general computation and <strong>Tensor cores</strong> for deep learning acceleration.</li>
                         <li>Can tolerate <strong>higher instruction latency</strong> by switching between many threads, ensuring maximum utilization of compute units.</li>
                     </ul>
+                    <figure class="article-figure">
+                        <img src="images/gpu-architecture-block-diagram.png" width="1024" height="984" alt="GPU block diagram: a large grid of many small green cores with narrow control strips on the side, a wide shared L2 cache band below, and DRAM beneath—labeled GPU at the bottom.">
+                        <figcaption>Simplified <strong>GPU</strong> layout: a sea of small cores for throughput, modest front-end/control relative to total compute, shared <strong>L2</strong>, and <strong>DRAM</strong>—the pattern behind fast parallel work such as deep learning and LLM training.</figcaption>
+                    </figure>
 
                     <table>
                         <thead>
@@ -225,6 +253,10 @@
                     </table>
 
                     <h3>Memory hierarchy and data flow</h3>
+                    <figure class="article-figure">
+                        <img src="images/memory-hierarchy-gpu-diagram.png" width="1024" height="835" alt="Diagram of memory hierarchy: data flows from hard disk through RAM, L3 and L2 cache, then L1 cache and registers inside the CPU, toward the GPU. A &quot;Fastness&quot; scale on the left widens toward the bottom, showing that lower layers are faster.">
+                        <figcaption>Illustrative memory stack: data moves from slower storage (disk, RAM, CPU caches) toward the GPU; the “Fastness” indicator emphasizes that components nearer the GPU are typically faster to access once data is resident.</figcaption>
+                    </figure>
                     <ul>
                         <li>Data flows from <strong>storage devices</strong> (HDD/SSD) → <strong>RAM</strong> → <strong>CPU/GPU caches</strong> → <strong>cores</strong>.</li>
                         <li>GPUs have dedicated memory called <strong>VRAM (Video RAM)</strong>, which stores data actively being processed.</li>
