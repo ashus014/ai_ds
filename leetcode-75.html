@@ -197,11 +197,14 @@
             cursor: pointer;
             accent-color: #667eea;
         }
-        tbody tr.row-solved td {
-            background: #e8f5e9;
+        tbody tr.row-solved:not(.cat-row) td {
+            background-color: #c8e6c9 !important;
         }
-        tbody tr.row-solved:hover td {
-            background: #dcedc8;
+        tbody tr.row-solved:not(.cat-row) td:first-child {
+            box-shadow: inset 4px 0 0 #66bb6a;
+        }
+        tbody tr.row-solved:not(.cat-row):hover td {
+            background-color: #a5d6a7 !important;
         }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; }
