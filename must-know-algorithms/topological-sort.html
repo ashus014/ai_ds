@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Topological sort — Must Know Algorithms</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .section p { line-height: 1.7; margin-bottom: 12px; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        pre {
+            background: #1e1e2e;
+            color: #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0 0;
+            font-size: 0.88em;
+            line-height: 1.5;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+
+        /* Carbon-style code window (reference layout) */
+        .snippet-surface {
+            margin-top: 18px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../must-know-algorithms.html" class="back-link">← Back to Must Know Algorithms</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Topological sort</h1>
+                <p>DFS-based ordering for a directed acyclic graph (<code>DAG</code>)</p>
+                <span class="date-badge">📅 April 3, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Code</h2>
+                    <p>Java reference: build adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order.</p>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Code snippet">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">public</span> <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; <span class="sh-call">topoSort</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
+
+        <span class="sh-comment">// Step 1: Build adjacency list</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] edge : edges) {
+            <span class="sh-kw">int</span> u = edge[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> v = edge[<span class="sh-lit">1</span>];
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(v);
+        }
+
+        <span class="sh-comment">// Step 2: visited array + stack</span>
+        <span class="sh-kw">boolean</span>[] visited = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[V];
+        <span class="sh-type">Stack</span>&lt;<span class="sh-type">Integer</span>&gt; st = <span class="sh-kw">new</span> <span class="sh-type">Stack</span>&lt;&gt;();
+
+        <span class="sh-comment">// Step 3: DFS on all nodes</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            <span class="sh-kw">if</span> (!visited[i]) {
+                <span class="sh-call">dfs</span>(i, adj, visited, st);
+            }
+        }
+
+        <span class="sh-comment">// Step 4: pop stack to get topo order</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; result = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">while</span> (!st.<span class="sh-call">isEmpty</span>()) {
+            result.<span class="sh-call">add</span>(st.<span class="sh-call">pop</span>());
+        }
+
+        <span class="sh-kw">return</span> result;
+    }
+
+    <span class="sh-kw">void</span> <span class="sh-call">dfs</span>(<span class="sh-kw">int</span> u, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj, <span class="sh-kw">boolean</span>[] visited, <span class="sh-type">Stack</span>&lt;<span class="sh-type">Integer</span>&gt; st) {
+
+        visited[u] = <span class="sh-kw">true</span>;
+
+        <span class="sh-comment">// Children pushed first</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> v : adj.<span class="sh-call">get</span>(u)) {
+            <span class="sh-kw">if</span> (!visited[v]) {
+                <span class="sh-call">dfs</span>(v, adj, visited, st);
+            }
+        }
+
+        <span class="sh-comment">// then the parent</span>
+        st.<span class="sh-call">push</span>(u);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
