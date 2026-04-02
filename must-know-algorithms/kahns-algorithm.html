@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <title>Topological sort — Must Know Algorithms</title>
+    <title>Kahn's algorithm — Must Know Algorithms</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -90,20 +90,6 @@
             font-size: 0.9em;
             font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
         }
-        pre {
-            background: #1e1e2e;
-            color: #e2e8f0;
-            padding: 18px 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 15px 0 0;
-            font-size: 0.88em;
-            line-height: 1.5;
-            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
-        }
-        pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
-
-        /* Carbon-style code window (reference layout) */
         .snippet-surface {
             margin-top: 18px;
             padding: 20px;
@@ -191,16 +177,15 @@
         </nav>
         <div class="container">
             <div class="header">
-                <h1>Topological sort</h1>
-                <p>DFS-based ordering for a directed acyclic graph (<code>DAG</code>)</p>
+                <h1>Kahn's algorithm</h1>
+                <p>Topological sort done via BFS is Kahn's algorithm.</p>
                 <span class="date-badge">📅 April 3, 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Code</h2>
-                    <p>Build an adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order.</p>
                     <div class="snippet-surface">
-                        <div class="code-window" aria-label="Code snippet">
+                        <div class="code-window" aria-label="Kahn's algorithm code snippet">
                             <div class="code-window-titlebar">
                                 <div class="traffic-lights" aria-hidden="true">
                                     <span class="tl-red"></span>
@@ -215,51 +200,49 @@
 
     <span class="sh-kw">public</span> <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; <span class="sh-call">topoSort</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
 
-        <span class="sh-comment">// Step 1: Build adjacency list</span>
+        <span class="sh-comment">// Step 1: adjacency list</span>
         <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
             adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
         }
 
+        <span class="sh-comment">// Step 2: indegree array</span>
+        <span class="sh-kw">int</span>[] indegree = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] edge : edges) {
             <span class="sh-kw">int</span> u = edge[<span class="sh-lit">0</span>];
             <span class="sh-kw">int</span> v = edge[<span class="sh-lit">1</span>];
+
             adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(v);
+            indegree[v]++;  <span class="sh-comment">// important</span>
         }
 
-        <span class="sh-comment">// Step 2: visited array + stack</span>
-        <span class="sh-kw">boolean</span>[] visited = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[V];
-        <span class="sh-type">Stack</span>&lt;<span class="sh-type">Integer</span>&gt; st = <span class="sh-kw">new</span> <span class="sh-type">Stack</span>&lt;&gt;();
+        <span class="sh-comment">// Step 3: queue for BFS</span>
+        <span class="sh-type">Queue</span>&lt;<span class="sh-type">Integer</span>&gt; q = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
 
-        <span class="sh-comment">// Step 3: DFS on all nodes</span>
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
-            <span class="sh-kw">if</span> (!visited[i]) {
-                <span class="sh-call">dfs</span>(i, adj, visited, st);
+            <span class="sh-kw">if</span> (indegree[i] == <span class="sh-lit">0</span>) {
+                q.<span class="sh-call">offer</span>(i);
             }
         }
 
-        <span class="sh-comment">// Step 4: pop stack to get topo order</span>
+        <span class="sh-comment">// Step 4: BFS</span>
         <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; result = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
-        <span class="sh-kw">while</span> (!st.<span class="sh-call">isEmpty</span>()) {
-            result.<span class="sh-call">add</span>(st.<span class="sh-call">pop</span>());
+
+        <span class="sh-kw">while</span> (!q.<span class="sh-call">isEmpty</span>()) {
+            <span class="sh-kw">int</span> u = q.<span class="sh-call">poll</span>();
+            result.<span class="sh-call">add</span>(u);
+
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> v : adj.<span class="sh-call">get</span>(u)) {
+                indegree[v]--;
+
+                <span class="sh-kw">if</span> (indegree[v] == <span class="sh-lit">0</span>) {
+                    q.<span class="sh-call">offer</span>(v);
+                }
+            }
         }
 
         <span class="sh-kw">return</span> result;
-    }
-
-    <span class="sh-kw">void</span> <span class="sh-call">dfs</span>(<span class="sh-kw">int</span> u, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj, <span class="sh-kw">boolean</span>[] visited, <span class="sh-type">Stack</span>&lt;<span class="sh-type">Integer</span>&gt; st) {
-
-        visited[u] = <span class="sh-kw">true</span>;
-
-        <span class="sh-comment">// Children pushed first</span>
-        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> v : adj.<span class="sh-call">get</span>(u)) {
-            <span class="sh-kw">if</span> (!visited[v]) {
-                <span class="sh-call">dfs</span>(v, adj, visited, st);
-            }
-        }
-
-        <span class="sh-comment">// then the parent</span>
-        st.<span class="sh-call">push</span>(u);
     }
 }</code></pre>
                         </div>
