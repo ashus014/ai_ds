@@ -177,6 +177,11 @@
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
         .sh-lit { color: #f8f8f2; }
+        .section-date {
+            font-size: 0.92em;
+            color: #6b7280;
+            margin: -6px 0 14px;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -192,13 +197,14 @@
         <div class="container">
             <div class="header">
                 <h1>Topological sort</h1>
-                <p>DFS-based ordering for a directed acyclic graph (<code>DAG</code>)</p>
+                <p>DFS stack order and Kahn's BFS (<code>DAG</code>)</p>
                 <span class="date-badge">📅 April 3, 2026</span>
             </div>
             <div class="content">
                 <div class="section">
-                    <h2>Code</h2>
-                    <p>Java reference: build adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order.</p>
+                    <h2>DFS approach</h2>
+                    <p class="section-date">April 3, 2026</p>
+                    <p>Build an adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order.</p>
                     <div class="snippet-surface">
                         <div class="code-window" aria-label="Code snippet">
                             <div class="code-window-titlebar">
@@ -260,6 +266,75 @@
 
         <span class="sh-comment">// then the parent</span>
         st.<span class="sh-call">push</span>(u);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Kahn's algorithm</h2>
+                    <p class="section-date">April 3, 2026</p>
+                    <p>Topological sort done via BFS is Kahn's algorithm.</p>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Kahn's algorithm code snippet">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">public</span> <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; <span class="sh-call">topoSort</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
+
+        <span class="sh-comment">// Step 1: adjacency list</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-comment">// Step 2: indegree array</span>
+        <span class="sh-kw">int</span>[] indegree = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] edge : edges) {
+            <span class="sh-kw">int</span> u = edge[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> v = edge[<span class="sh-lit">1</span>];
+
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(v);
+            indegree[v]++;  <span class="sh-comment">// important</span>
+        }
+
+        <span class="sh-comment">// Step 3: queue for BFS</span>
+        <span class="sh-type">Queue</span>&lt;<span class="sh-type">Integer</span>&gt; q = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            <span class="sh-kw">if</span> (indegree[i] == <span class="sh-lit">0</span>) {
+                q.<span class="sh-call">offer</span>(i);
+            }
+        }
+
+        <span class="sh-comment">// Step 4: BFS</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; result = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+        <span class="sh-kw">while</span> (!q.<span class="sh-call">isEmpty</span>()) {
+            <span class="sh-kw">int</span> u = q.<span class="sh-call">poll</span>();
+            result.<span class="sh-call">add</span>(u);
+
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> v : adj.<span class="sh-call">get</span>(u)) {
+                indegree[v]--;
+
+                <span class="sh-kw">if</span> (indegree[v] == <span class="sh-lit">0</span>) {
+                    q.<span class="sh-call">offer</span>(v);
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> result;
     }
 }</code></pre>
                         </div>
