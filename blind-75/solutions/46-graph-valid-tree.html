@@ -81,7 +81,9 @@
             background: #f8f9fa;
             border-left: 5px solid #667eea;
             border-radius: 8px;
+            margin-bottom: 22px;
         }
+        .section:last-child { margin-bottom: 0; }
         .section h2 {
             color: #667eea;
             font-size: 1.45em;
@@ -218,6 +220,10 @@
                 <span class="meta">NeetCode / Blind 75</span>
             </div>
             <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>A graph is a valid tree if it is connected and has no cycles. I use BFS with parent tracking to detect cycles and ensure all nodes are visited.</p>
+                </div>
                 <div class="section">
                     <h2>Code</h2>
                     <p>Copy the full solution in one click from the window toolbar.</p>
