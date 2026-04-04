@@ -230,14 +230,14 @@
         <div class="container">
             <div class="header">
                 <h1><a class="header-title-link" href="https://www.geeksforgeeks.org/problems/bipartite-graph/1" target="_blank" rel="noopener noreferrer">Bipartite graph</a></h1>
-                <p><strong>DFS</strong> two-coloring: assign <code>0</code> / <code>1</code> along edges; if a neighbor already has the same color, the graph is not bipartite. Try every uncolored component.</p>
+                <p><strong>DFS</strong> or <strong>BFS</strong> two-coloring: assign <code>0</code> / <code>1</code> along edges; if a neighbor already has the same color as its parent, the graph is not bipartite. Try every uncolored component.</p>
                 <span class="date-badge">📅 April 4, 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>DFS approach</h2>
                     <p>Copy the full solution in one click from the window toolbar.</p>
-                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+                    <textarea id="copy-buffer-dfs" class="offscreen-copy" readonly aria-label="DFS Java source for copy">import java.util.*;
 
 class Solution {
     public boolean isBipartite(int V, int[][] edges) {
@@ -304,7 +304,7 @@ class Solution {
                                 </div>
                                 <span class="code-window-title">AshuSinghIN</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                    <button type="button" class="copy-all-btn" id="copy-all-dfs" title="Copy DFS solution">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
@@ -367,37 +367,186 @@ class Solution {
                         </div>
                     </div>
                 </div>
+                <div class="section">
+                    <h2>BFS approach</h2>
+                    <p>Same idea with a <strong>queue</strong>: process level by level, assign the opposite color when you first see an uncolored neighbor.</p>
+                    <textarea id="copy-buffer-bfs" class="offscreen-copy" readonly aria-label="BFS Java source for copy">import java.util.*;
+
+class Solution {
+    public boolean isBipartite(int V, int[][] edges) {
+        
+        // build adjacency list
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+        }
+        
+        int[] color = new int[V];
+        Arrays.fill(color, -1);
+        
+        for (int i = 0; i < V; i++) {
+            if (color[i] == -1) {
+                if (!checkBipartiteBFS(adj, i, color, 0)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    boolean checkBipartiteBFS(ArrayList<ArrayList<Integer>> adj, int start, int[] color, int currentColor) {
+        
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(start);
+        
+        color[start] = currentColor; // 🔥 now comes from outside
+        
+        while (!q.isEmpty()) {
+            int currentNode = q.poll();
+            
+            for (int neighbour : adj.get(currentNode)) {
+                
+                // conflict check
+                if (color[neighbour] == color[currentNode]) {
+                    return false;
+                }
+                
+                if (color[neighbour] == -1) {
+                    
+                    int colorOfNeighbour = 1 - color[currentNode];
+                    
+                    color[neighbour] = colorOfNeighbour;
+                    q.offer(neighbour);
+                }
+            }
+        }
+        
+        return true;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Bipartite graph BFS solution">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all-bfs" title="Copy BFS solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">isBipartite</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
+
+        <span class="sh-comment">// build adjacency list</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] edge : edges) {
+            <span class="sh-kw">int</span> u = edge[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> v = edge[<span class="sh-lit">1</span>];
+
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(v);
+            adj.<span class="sh-call">get</span>(v).<span class="sh-call">add</span>(u);
+        }
+
+        <span class="sh-kw">int</span>[] color = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+        <span class="sh-type">Arrays</span>.<span class="sh-call">fill</span>(color, -<span class="sh-lit">1</span>);
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            <span class="sh-kw">if</span> (color[i] == -<span class="sh-lit">1</span>) {
+                <span class="sh-kw">if</span> (!<span class="sh-call">checkBipartiteBFS</span>(adj, i, color, <span class="sh-lit">0</span>)) {
+                    <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+    }
+
+    <span class="sh-kw">boolean</span> <span class="sh-call">checkBipartiteBFS</span>(<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj, <span class="sh-kw">int</span> start, <span class="sh-kw">int</span>[] color, <span class="sh-kw">int</span> currentColor) {
+
+        <span class="sh-type">Queue</span>&lt;<span class="sh-type">Integer</span>&gt; q = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
+        q.<span class="sh-call">offer</span>(start);
+
+        color[start] = currentColor; <span class="sh-comment">// 🔥 now comes from outside</span>
+
+        <span class="sh-kw">while</span> (!q.<span class="sh-call">isEmpty</span>()) {
+            <span class="sh-kw">int</span> currentNode = q.<span class="sh-call">poll</span>();
+
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> neighbour : adj.<span class="sh-call">get</span>(currentNode)) {
+
+                <span class="sh-comment">// conflict check</span>
+                <span class="sh-kw">if</span> (color[neighbour] == color[currentNode]) {
+                    <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+                }
+
+                <span class="sh-kw">if</span> (color[neighbour] == -<span class="sh-lit">1</span>) {
+
+                    <span class="sh-kw">int</span> colorOfNeighbour = <span class="sh-lit">1</span> - color[currentNode];
+
+                    color[neighbour] = colorOfNeighbour;
+                    q.<span class="sh-call">offer</span>(neighbour);
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script>
         (function () {
-            var btn = document.getElementById('copy-all');
-            var ta = document.getElementById('copy-buffer');
-            if (!btn || !ta) return;
-            var label = 'Copy all';
-            btn.addEventListener('click', function () {
-                ta.select();
-                ta.setSelectionRange(0, ta.value.length);
-                var text = ta.value;
-                function ok() {
-                    btn.textContent = 'Copied!';
-                    setTimeout(function () { btn.textContent = label; }, 2000);
-                }
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+            function wireCopy(btnId, taId) {
+                var btn = document.getElementById(btnId);
+                var ta = document.getElementById(taId);
+                if (!btn || !ta) return;
+                var label = 'Copy all';
+                btn.addEventListener('click', function () {
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
                         try {
                             document.execCommand('copy');
                             ok();
                         } catch (e) {}
-                    });
-                } else {
-                    try {
-                        document.execCommand('copy');
-                        ok();
-                    } catch (e) {}
-                }
-            });
+                    }
+                });
+            }
+            wireCopy('copy-all-dfs', 'copy-buffer-dfs');
+            wireCopy('copy-all-bfs', 'copy-buffer-bfs');
         })();
     </script>
 </body>
