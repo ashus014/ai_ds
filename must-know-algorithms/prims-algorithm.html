@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <title>Prim's Algorithm for MST — Must Know Algorithms</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -100,6 +103,11 @@
             font-size: 1.5em;
             margin-bottom: 14px;
         }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin: 18px 0 10px;
+        }
         .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
         .section ul {
             margin: 0 0 8px 4px;
@@ -108,12 +116,110 @@
             line-height: 1.75;
         }
         .section ul li { margin-bottom: 10px; }
-        .section .muted {
-            color: #6b7280;
-            font-size: 0.95em;
-            font-style: italic;
-            margin-bottom: 0;
+        .snippet-surface {
+            margin-top: 12px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 18px 20px 20px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -143,10 +249,402 @@
                 </div>
                 <div class="section">
                     <h2>Code</h2>
-                    <p class="muted">Implementation snippet coming soon.</p>
+                    <p>Two styles: <strong>int[]</strong> in the priority queue, or a small <strong>P</strong> class. Copy either block from the toolbar.</p>
+
+                    <h3>PriorityQueue with <code>int[]</code> <code>{weight, node}</code></h3>
+                    <textarea id="copy-buffer-int" class="offscreen-copy" readonly aria-label="Prim int[] Java source">import java.util.*;
+
+class Solution {
+
+    // Function to find sum of weights of edges of the Minimum Spanning Tree.
+    int spanningTree(int V, int[][] edges) {
+
+        // Step 1: Create adjacency list
+        // adj.get(u) will contain pairs { neighbor, weight }
+        ArrayList<ArrayList<int[]>> adj = new ArrayList<>();
+
+        // Initialize empty list for each node
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        // Fill adjacency list from edges input
+        for (int[] e : edges) {
+            int u = e[0];       // source node
+            int v = e[1];       // destination node
+            int wt = e[2];      // edge weight
+
+            // Since graph is undirected, add both directions
+            adj.get(u).add(new int[]{v, wt});
+            adj.get(v).add(new int[]{u, wt});
+        }
+
+        // Step 2: Min heap — entries { weight, node }; smallest weight first
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+
+        // Start from node 0 with weight 0
+        pq.add(new int[]{0, 0});
+
+        // Track which nodes are already included in MST
+        boolean[] inMST = new boolean[V];
+
+        int sum = 0; // total weight of MST
+
+        // Step 3: Prim's Algorithm
+        while (!pq.isEmpty()) {
+
+            int[] p = pq.poll();
+
+            int wt = p[0];      // edge weight to reach this node
+            int node = p[1];    // current node
+
+            // If node already included, skip (avoid cycles)
+            if (inMST[node] == true)
+                continue;
+
+            // Include this node in MST
+            inMST[node] = true;
+
+            // Add its edge weight to total MST cost
+            sum += wt;
+
+            // Explore all neighbors of current node
+            for (int[] tmp : adj.get(node)) {
+
+                int neighbor = tmp[0];      // adjacent node
+                int neighbor_wt = tmp[1];   // weight of edge
+
+                // If neighbor not yet in MST, add to PQ
+                if (inMST[neighbor] == false) {
+                    pq.add(new int[]{neighbor_wt, neighbor});
+                }
+            }
+        }
+
+        // Return total weight of MST
+        return sum;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Prim int array PQ">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all-int" title="Copy this solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-comment">// Function to find sum of weights of edges of the Minimum Spanning Tree.</span>
+    <span class="sh-kw">int</span> <span class="sh-call">spanningTree</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
+
+        <span class="sh-comment">// Step 1: Create adjacency list</span>
+        <span class="sh-comment">// adj.get(u) will contain pairs { neighbor, weight }</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-kw">int</span>[]&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+        <span class="sh-comment">// Initialize empty list for each node</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-comment">// Fill adjacency list from edges input</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] e : edges) {
+            <span class="sh-kw">int</span> u = e[<span class="sh-lit">0</span>];       <span class="sh-comment">// source node</span>
+            <span class="sh-kw">int</span> v = e[<span class="sh-lit">1</span>];       <span class="sh-comment">// destination node</span>
+            <span class="sh-kw">int</span> wt = e[<span class="sh-lit">2</span>];      <span class="sh-comment">// edge weight</span>
+
+            <span class="sh-comment">// Since graph is undirected, add both directions</span>
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{v, wt});
+            adj.<span class="sh-call">get</span>(v).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{u, wt});
+        }
+
+        <span class="sh-comment">// Step 2: Min heap — entries { weight, node }; smallest weight first</span>
+        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-kw">int</span>[]&gt; pq = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;((a, b) -&gt; a[<span class="sh-lit">0</span>] - b[<span class="sh-lit">0</span>]);
+
+        <span class="sh-comment">// Start from node 0 with weight 0</span>
+        pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{<span class="sh-lit">0</span>, <span class="sh-lit">0</span>});
+
+        <span class="sh-comment">// Track which nodes are already included in MST</span>
+        <span class="sh-kw">boolean</span>[] inMST = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[V];
+
+        <span class="sh-kw">int</span> sum = <span class="sh-lit">0</span>; <span class="sh-comment">// total weight of MST</span>
+
+        <span class="sh-comment">// Step 3: Prim's Algorithm</span>
+        <span class="sh-kw">while</span> (!pq.<span class="sh-call">isEmpty</span>()) {
+
+            <span class="sh-kw">int</span>[] p = pq.<span class="sh-call">poll</span>();
+
+            <span class="sh-kw">int</span> wt = p[<span class="sh-lit">0</span>];      <span class="sh-comment">// edge weight to reach this node</span>
+            <span class="sh-kw">int</span> node = p[<span class="sh-lit">1</span>];    <span class="sh-comment">// current node</span>
+
+            <span class="sh-comment">// If node already included, skip (avoid cycles)</span>
+            <span class="sh-kw">if</span> (inMST[node] == <span class="sh-kw">true</span>)
+                <span class="sh-kw">continue</span>;
+
+            <span class="sh-comment">// Include this node in MST</span>
+            inMST[node] = <span class="sh-kw">true</span>;
+
+            <span class="sh-comment">// Add its edge weight to total MST cost</span>
+            sum += wt;
+
+            <span class="sh-comment">// Explore all neighbors of current node</span>
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] tmp : adj.<span class="sh-call">get</span>(node)) {
+
+                <span class="sh-kw">int</span> neighbor = tmp[<span class="sh-lit">0</span>];      <span class="sh-comment">// adjacent node</span>
+                <span class="sh-kw">int</span> neighbor_wt = tmp[<span class="sh-lit">1</span>];   <span class="sh-comment">// weight of edge</span>
+
+                <span class="sh-comment">// If neighbor not yet in MST, add to PQ</span>
+                <span class="sh-kw">if</span> (inMST[neighbor] == <span class="sh-kw">false</span>) {
+                    pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{neighbor_wt, neighbor});
+                }
+            }
+        }
+
+        <span class="sh-comment">// Return total weight of MST</span>
+        <span class="sh-kw">return</span> sum;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Pair class <code>P</code> in the priority queue</h3>
+                    <textarea id="copy-buffer-p" class="offscreen-copy" readonly aria-label="Prim P class Java source">import java.util.*;
+
+class Solution {
+
+    // Pair class -> stores {weight, node}
+    static class P {
+        int weight;
+        int node;
+
+        P(int weight, int node) {
+            this.weight = weight;
+            this.node = node;
+        }
+    }
+
+    public int spanningTree(int V, int[][] edges) {
+
+        // Step 1: Create adjacency list
+        // adj.get(u) will contain {v, weight}
+        List<List<int[]>> adj = new ArrayList<>();
+
+        // Initialize empty list for each node
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        // Fill adjacency list from edges input
+        for (int[] edge : edges) {
+
+            int u = edge[0];       // source node
+            int v = edge[1];       // destination node
+            int weight = edge[2];  // edge weight
+
+            // Since graph is undirected, add both directions
+            adj.get(u).add(new int[]{v, weight});
+            adj.get(v).add(new int[]{u, weight});
+        }
+
+        // Step 2: Min Heap (PriorityQueue)
+        // It will always give the smallest weight edge first
+        PriorityQueue<P> pq = new PriorityQueue<>(
+            (a, b) -> a.weight - b.weight
+        );
+
+        // Start from node 0 with weight 0
+        pq.add(new P(0, 0));
+
+        // Track which nodes are already included in MST
+        boolean[] inMST = new boolean[V];
+
+        int totalWeight = 0; // final answer
+
+        // Step 3: Prim's Algorithm
+        while (!pq.isEmpty()) {
+
+            // Get the edge with minimum weight
+            P current = pq.poll();
+
+            int weight = current.weight;
+            int node = current.node;
+
+            // If node already included, skip (avoid cycles)
+            if (inMST[node]) {
+                continue;
+            }
+
+            // Include this node in MST
+            inMST[node] = true;
+
+            // Add its edge weight to total MST cost
+            totalWeight += weight;
+
+            // Explore all neighbors of current node
+            for (int[] neighborData : adj.get(node)) {
+
+                int neighbor = neighborData[0];     // adjacent node
+                int edgeWeight = neighborData[1];   // weight of edge
+
+                // If neighbor not yet in MST, add to PQ
+                if (!inMST[neighbor]) {
+                    pq.add(new P(edgeWeight, neighbor));
+                }
+            }
+        }
+
+        // Return total weight of MST
+        return totalWeight;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Prim P class PQ">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all-p" title="Copy this solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-comment">// Pair class -&gt; stores {weight, node}</span>
+    <span class="sh-kw">static</span> <span class="sh-kw">class</span> <span class="sh-type">P</span> {
+        <span class="sh-kw">int</span> weight;
+        <span class="sh-kw">int</span> node;
+
+        <span class="sh-type">P</span>(<span class="sh-kw">int</span> weight, <span class="sh-kw">int</span> node) {
+            <span class="sh-kw">this</span>.weight = weight;
+            <span class="sh-kw">this</span>.node = node;
+        }
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">spanningTree</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges) {
+
+        <span class="sh-comment">// Step 1: Create adjacency list</span>
+        <span class="sh-comment">// adj.get(u) will contain {v, weight}</span>
+        <span class="sh-type">List</span>&lt;<span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+        <span class="sh-comment">// Initialize empty list for each node</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-comment">// Fill adjacency list from edges input</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] edge : edges) {
+
+            <span class="sh-kw">int</span> u = edge[<span class="sh-lit">0</span>];       <span class="sh-comment">// source node</span>
+            <span class="sh-kw">int</span> v = edge[<span class="sh-lit">1</span>];       <span class="sh-comment">// destination node</span>
+            <span class="sh-kw">int</span> weight = edge[<span class="sh-lit">2</span>];  <span class="sh-comment">// edge weight</span>
+
+            <span class="sh-comment">// Since graph is undirected, add both directions</span>
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{v, weight});
+            adj.<span class="sh-call">get</span>(v).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{u, weight});
+        }
+
+        <span class="sh-comment">// Step 2: Min Heap (PriorityQueue)</span>
+        <span class="sh-comment">// It will always give the smallest weight edge first</span>
+        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-type">P</span>&gt; pq = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;(
+            (a, b) -&gt; a.weight - b.weight
+        );
+
+        <span class="sh-comment">// Start from node 0 with weight 0</span>
+        pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">P</span>(<span class="sh-lit">0</span>, <span class="sh-lit">0</span>));
+
+        <span class="sh-comment">// Track which nodes are already included in MST</span>
+        <span class="sh-kw">boolean</span>[] inMST = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[V];
+
+        <span class="sh-kw">int</span> totalWeight = <span class="sh-lit">0</span>; <span class="sh-comment">// final answer</span>
+
+        <span class="sh-comment">// Step 3: Prim's Algorithm</span>
+        <span class="sh-kw">while</span> (!pq.<span class="sh-call">isEmpty</span>()) {
+
+            <span class="sh-comment">// Get the edge with minimum weight</span>
+            <span class="sh-type">P</span> current = pq.<span class="sh-call">poll</span>();
+
+            <span class="sh-kw">int</span> weight = current.weight;
+            <span class="sh-kw">int</span> node = current.node;
+
+            <span class="sh-comment">// If node already included, skip (avoid cycles)</span>
+            <span class="sh-kw">if</span> (inMST[node]) {
+                <span class="sh-kw">continue</span>;
+            }
+
+            <span class="sh-comment">// Include this node in MST</span>
+            inMST[node] = <span class="sh-kw">true</span>;
+
+            <span class="sh-comment">// Add its edge weight to total MST cost</span>
+            totalWeight += weight;
+
+            <span class="sh-comment">// Explore all neighbors of current node</span>
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] neighborData : adj.<span class="sh-call">get</span>(node)) {
+
+                <span class="sh-kw">int</span> neighbor = neighborData[<span class="sh-lit">0</span>];     <span class="sh-comment">// adjacent node</span>
+                <span class="sh-kw">int</span> edgeWeight = neighborData[<span class="sh-lit">1</span>];   <span class="sh-comment">// weight of edge</span>
+
+                <span class="sh-comment">// If neighbor not yet in MST, add to PQ</span>
+                <span class="sh-kw">if</span> (!inMST[neighbor]) {
+                    pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">P</span>(edgeWeight, neighbor));
+                }
+            }
+        }
+
+        <span class="sh-comment">// Return total weight of MST</span>
+        <span class="sh-kw">return</span> totalWeight;
+    }
+}</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            function wireCopy(btnId, taId) {
+                var btn = document.getElementById(btnId);
+                var ta = document.getElementById(taId);
+                if (!btn || !ta) return;
+                var label = 'Copy all';
+                btn.addEventListener('click', function () {
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            }
+            wireCopy('copy-all-int', 'copy-buffer-int');
+            wireCopy('copy-all-p', 'copy-buffer-p');
+        })();
+    </script>
 </body>
 </html>
