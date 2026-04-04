@@ -141,6 +141,37 @@
             pointer-events: none;
             white-space: nowrap;
         }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
         .code-window-body {
             margin: 0;
             padding: 20px 22px 22px;
@@ -184,6 +215,58 @@
             <div class="content">
                 <div class="section">
                     <h2>Code</h2>
+                    <p>Copy the full solution in one click from the window toolbar.</p>
+                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+
+class Solution {
+
+    public ArrayList<Integer> topoSort(int V, int[][] edges) {
+
+        // Step 1: adjacency list
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        // Step 2: indegree array
+        int[] indegree = new int[V];
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+
+            adj.get(u).add(v);
+            indegree[v]++;  // important
+        }
+
+        // Step 3: queue for BFS
+        Queue<Integer> q = new LinkedList<>();
+
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0) {
+                q.offer(i);
+            }
+        }
+
+        // Step 4: BFS
+        ArrayList<Integer> result = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            result.add(u);
+
+            for (int v : adj.get(u)) {
+                indegree[v]--;
+
+                if (indegree[v] == 0) {
+                    q.offer(v);
+                }
+            }
+        }
+
+        return result;
+    }
+}</textarea>
                     <div class="snippet-surface">
                         <div class="code-window" aria-label="Kahn's algorithm code snippet">
                             <div class="code-window-titlebar">
@@ -193,6 +276,9 @@
                                     <span class="tl-green"></span>
                                 </div>
                                 <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
 
@@ -251,5 +337,35 @@
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            var btn = document.getElementById('copy-all');
+            var ta = document.getElementById('copy-buffer');
+            if (!btn || !ta) return;
+            var label = 'Copy all';
+            btn.addEventListener('click', function () {
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var text = ta.value;
+                function ok() {
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.textContent = label; }, 2000);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        document.execCommand('copy');
+                        ok();
+                    } catch (e) {}
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
