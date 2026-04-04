@@ -61,6 +61,13 @@
         }
         .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
         .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
         .date-badge {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
@@ -155,6 +162,37 @@
             pointer-events: none;
             white-space: nowrap;
         }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
         .code-window-body {
             margin: 0;
             padding: 20px 22px 22px;
@@ -198,7 +236,60 @@
             <div class="content">
                 <div class="section">
                     <h2>Code</h2>
-                    <p>Build an adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order.</p>
+                    <p>Build an adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order. Copy the full solution from the window toolbar.</p>
+                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+
+class Solution {
+
+    public ArrayList<Integer> topoSort(int V, int[][] edges) {
+
+        // Step 1: Build adjacency list
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj.get(u).add(v);
+        }
+
+        // Step 2: visited array + stack
+        boolean[] visited = new boolean[V];
+        Stack<Integer> st = new Stack<>();
+
+        // Step 3: DFS on all nodes
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfs(i, adj, visited, st);
+            }
+        }
+
+        // Step 4: pop stack to get topo order
+        ArrayList<Integer> result = new ArrayList<>();
+        while (!st.isEmpty()) {
+            result.add(st.pop());
+        }
+
+        return result;
+    }
+
+    void dfs(int u, ArrayList<ArrayList<Integer>> adj, boolean[] visited, Stack<Integer> st) {
+
+        visited[u] = true;
+
+        // Children pushed first
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                dfs(v, adj, visited, st);
+            }
+        }
+
+        // then the parent
+        st.push(u);
+    }
+}</textarea>
                     <div class="snippet-surface">
                         <div class="code-window" aria-label="Code snippet">
                             <div class="code-window-titlebar">
@@ -208,6 +299,9 @@
                                     <span class="tl-green"></span>
                                 </div>
                                 <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
 
@@ -268,5 +362,35 @@
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            var btn = document.getElementById('copy-all');
+            var ta = document.getElementById('copy-buffer');
+            if (!btn || !ta) return;
+            var label = 'Copy all';
+            btn.addEventListener('click', function () {
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var text = ta.value;
+                function ok() {
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.textContent = label; }, 2000);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        document.execCommand('copy');
+                        ok();
+                    } catch (e) {}
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

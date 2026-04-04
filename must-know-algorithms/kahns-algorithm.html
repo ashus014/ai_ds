@@ -61,6 +61,13 @@
         }
         .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
         .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
         .date-badge {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
@@ -209,7 +216,7 @@
         <div class="container">
             <div class="header">
                 <h1>Kahn's algorithm</h1>
-                <p>Topological sort done via BFS is Kahn's algorithm.</p>
+                <p><strong>BFS-based</strong> ordering for a directed acyclic graph (<code>DAG</code>). Topological sort done via BFS is Kahn's algorithm.</p>
                 <span class="date-badge">📅 April 3, 2026</span>
             </div>
             <div class="content">
