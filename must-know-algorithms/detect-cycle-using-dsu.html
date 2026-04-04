@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Detect Cycle using DSU — Must Know Algorithms</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.75em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header h1 a.header-title-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header h1 a.header-title-link:hover {
+            text-decoration: underline;
+            text-underline-offset: 5px;
+        }
+        .header h1 a.header-title-link:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.95);
+            outline-offset: 6px;
+            border-radius: 4px;
+        }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 680px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 28px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 14px;
+        }
+        .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
+        .section .muted {
+            color: #6b7280;
+            font-size: 0.95em;
+            font-style: italic;
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../must-know-algorithms.html" class="back-link">← Back to Must Know Algorithms</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1><a class="header-title-link" href="https://www.geeksforgeeks.org/problems/detect-cycle-using-dsu/1" target="_blank" rel="noopener noreferrer">Detect Cycle in Graph using Disjoint Set Union (DSU)</a></h1>
+                <p>Use <strong>union–find</strong> while adding edges: if two endpoints are already in the same set, adding this edge closes a cycle.</p>
+                <span class="date-badge">📅 April 5, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Context</h2>
+                    <p>For an <strong>undirected</strong> graph, we already know how to detect a cycle with <strong>BFS</strong> or <strong>DFS</strong> (e.g. visiting a node that is not the parent). <strong>DSU</strong> (Disjoint Set Union) is another clean way to solve the same problem: process edges and merge components; a <strong>union</strong> of two vertices that are already connected reveals a cycle.</p>
+                </div>
+                <div class="section">
+                    <h2>Code</h2>
+                    <p class="muted">Implementation snippet coming soon.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
