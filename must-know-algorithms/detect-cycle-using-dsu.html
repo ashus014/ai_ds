@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <title>Detect Cycle using DSU — Must Know Algorithms</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -101,12 +104,110 @@
             margin-bottom: 14px;
         }
         .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
-        .section .muted {
-            color: #6b7280;
-            font-size: 0.95em;
-            font-style: italic;
-            margin-bottom: 0;
+        .snippet-surface {
+            margin-top: 12px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 18px 20px 20px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -132,10 +233,190 @@
                 </div>
                 <div class="section">
                     <h2>Code</h2>
-                    <p class="muted">Implementation snippet coming soon.</p>
+                    <p><strong>find</strong> (with path compression) and <strong>union</strong> (by rank) are the core pieces — if you are working with DSU, you almost always implement both.</p>
+                    <p>Copy the full solution in one click from the window toolbar.</p>
+                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+
+class Solution {
+
+    int[] parent;
+    int[] rank;
+
+    // Find with Path Compression
+    public int find(int x) {
+        if (x == parent[x]) {
+            return x;
+        }
+        return parent[x] = find(parent[x]); // compress path
+    }
+
+    // Union by Rank
+    public void union(int x, int y) {
+        int xParent = find(x);
+        int yParent = find(y);
+
+        // already in same set → cycle condition (we'll use this later)
+        if (xParent == yParent) return;
+
+        if (rank[xParent] > rank[yParent]) {
+            parent[yParent] = xParent;
+        } else if (rank[xParent] < rank[yParent]) {
+            parent[xParent] = yParent;
+        } else {
+            parent[xParent] = yParent;
+            rank[yParent]++;
+        }
+    }
+    // Function to detect cycle using DSU in an undirected graph.
+    public int detectCycle(int V, ArrayList<ArrayList<Integer>> adj) {
+        parent = new int[V];
+        rank = new int[V];
+
+        // initialize DSU
+        for (int i = 0; i < V; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+
+        // traverse edges
+        for (int u = 0; u < V; u++) {
+            for (int v : adj.get(u)) {
+
+                // IMPORTANT: avoid duplicate edges in undirected graph
+                if (u < v) {
+
+                    int parentU = find(u);
+                    int parentV = find(v);
+
+                    // cycle detected
+                    if (parentU == parentV) {
+                        return 1;
+                    }
+
+                    // merge sets
+                    union(u, v);
+                }
+            }
+        }
+
+        return 0; // no cycle
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="DSU cycle detection">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span>[] parent;
+    <span class="sh-kw">int</span>[] rank;
+
+    <span class="sh-comment">// Find with Path Compression</span>
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">find</span>(<span class="sh-kw">int</span> x) {
+        <span class="sh-kw">if</span> (x == parent[x]) {
+            <span class="sh-kw">return</span> x;
+        }
+        <span class="sh-kw">return</span> parent[x] = <span class="sh-call">find</span>(parent[x]); <span class="sh-comment">// compress path</span>
+    }
+
+    <span class="sh-comment">// Union by Rank</span>
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">union</span>(<span class="sh-kw">int</span> x, <span class="sh-kw">int</span> y) {
+        <span class="sh-kw">int</span> xParent = <span class="sh-call">find</span>(x);
+        <span class="sh-kw">int</span> yParent = <span class="sh-call">find</span>(y);
+
+        <span class="sh-comment">// already in same set → cycle condition (we'll use this later)</span>
+        <span class="sh-kw">if</span> (xParent == yParent) <span class="sh-kw">return</span>;
+
+        <span class="sh-kw">if</span> (rank[xParent] &gt; rank[yParent]) {
+            parent[yParent] = xParent;
+        } <span class="sh-kw">else</span> <span class="sh-kw">if</span> (rank[xParent] &lt; rank[yParent]) {
+            parent[xParent] = yParent;
+        } <span class="sh-kw">else</span> {
+            parent[xParent] = yParent;
+            rank[yParent]++;
+        }
+    }
+    <span class="sh-comment">// Function to detect cycle using DSU in an undirected graph.</span>
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">detectCycle</span>(<span class="sh-kw">int</span> V, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj) {
+        parent = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+        rank = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+
+        <span class="sh-comment">// initialize DSU</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            parent[i] = i;
+            rank[i] = <span class="sh-lit">0</span>;
+        }
+
+        <span class="sh-comment">// traverse edges</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> u = <span class="sh-lit">0</span>; u &lt; V; u++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> v : adj.<span class="sh-call">get</span>(u)) {
+
+                <span class="sh-comment">// IMPORTANT: avoid duplicate edges in undirected graph</span>
+                <span class="sh-kw">if</span> (u &lt; v) {
+
+                    <span class="sh-kw">int</span> parentU = <span class="sh-call">find</span>(u);
+                    <span class="sh-kw">int</span> parentV = <span class="sh-call">find</span>(v);
+
+                    <span class="sh-comment">// cycle detected</span>
+                    <span class="sh-kw">if</span> (parentU == parentV) {
+                        <span class="sh-kw">return</span> <span class="sh-lit">1</span>;
+                    }
+
+                    <span class="sh-comment">// merge sets</span>
+                    <span class="sh-call">union</span>(u, v);
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-lit">0</span>; <span class="sh-comment">// no cycle</span>
+    }
+}</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            var btn = document.getElementById('copy-all');
+            var ta = document.getElementById('copy-buffer');
+            if (!btn || !ta) return;
+            var label = 'Copy all';
+            btn.addEventListener('click', function () {
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var text = ta.value;
+                function ok() {
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.textContent = label; }, 2000);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        document.execCommand('copy');
+                        ok();
+                    } catch (e) {}
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
