@@ -220,6 +220,27 @@
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
         .sh-lit { color: #f8f8f2; }
+        .prims-figure {
+            margin: 18px 0 8px;
+            text-align: center;
+        }
+        .prims-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .prims-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.95em;
+            color: #6b7280;
+            line-height: 1.5;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -241,11 +262,17 @@
             <div class="content">
                 <div class="section">
                     <h2>Prim's algorithm</h2>
-                    <ul>
-                        <li>Start from any node and treat it as part of the tree.</li>
-                        <li>At each step, pick the <strong>cheapest edge</strong> connecting the tree to a <strong>new</strong> node.</li>
-                        <li>Keep expanding until all nodes are connected (<strong>no cycles</strong>, <strong>minimum total cost</strong>).</li>
-                    </ul>
+                    <p>Prim's algorithm is a <strong>greedy</strong> algorithm, in the same spirit as <a href="kruskals-algorithm-mst.html">Kruskal's algorithm</a>. It always starts from a <strong>single node</strong> and repeatedly moves through adjacent nodes to explore the edges along the way.</p>
+                    <p>The algorithm begins with an <strong>empty spanning tree</strong>. The idea is to maintain <strong>two sets</strong> of vertices: one contains vertices already included in the MST, and the other contains vertices not yet included.</p>
+                    <p>At every step, consider every edge that connects the two sets and pick the <strong>minimum-weight</strong> edge among them. After taking that edge, move its other endpoint into the set that already forms the MST, and repeat until all vertices are included.</p>
+                    <figure class="prims-figure">
+                        <img src="images/prims-example-full-graph.png" width="720" alt="Weighted undirected graph with nine vertices 0–8 and fourteen edges (classic Prim's example)" loading="lazy" decoding="async">
+                        <figcaption>Example weighted graph (vertices <code>0</code>–<code>8</code>): Prim's grows the MST by choosing the cheapest edge from the tree to a vertex outside it.</figcaption>
+                    </figure>
+                    <figure class="prims-figure">
+                        <img src="images/prims-example-mst.png" width="720" alt="Minimum spanning tree of the same nine vertices with eight edges selected by Prim's" loading="lazy" decoding="async">
+                        <figcaption>One minimum spanning tree for that graph: <code>n − 1</code> edges, no cycles, minimum total weight.</figcaption>
+                    </figure>
                 </div>
                 <div class="section">
                     <h2>Code</h2>

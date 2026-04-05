@@ -104,6 +104,12 @@
             margin-bottom: 14px;
         }
         .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
+        .section ul.dsu-ops {
+            margin: 8px 0 14px 1.25em;
+            line-height: 1.75;
+            color: #444;
+        }
+        .section ul.dsu-ops li { margin-bottom: 10px; }
         .snippet-surface {
             margin-top: 12px;
             padding: 20px;
@@ -228,8 +234,17 @@
             </div>
             <div class="content">
                 <div class="section">
+                    <h2>Disjoint Set Union</h2>
+                    <p>Two sets are <strong>disjoint</strong> if they have <strong>no element in common</strong>. The <strong>disjoint set</strong> data structure stores a partition of elements into such sets. It supports the following operations:</p>
+                    <ul class="dsu-ops">
+                        <li><strong>Union</strong> — merge two disjoint sets into a single set.</li>
+                        <li><strong>Find</strong> — get the <strong>representative</strong> (root) of the set containing a given element.</li>
+                        <li><strong>Same set?</strong> — to test whether two elements belong to the same set, <strong>find</strong> the representative of each; if both representatives are equal, they are in the same set.</li>
+                    </ul>
+                </div>
+                <div class="section">
                     <h2>Context</h2>
-                    <p>For an <strong>undirected</strong> graph, we already know how to detect a cycle with <strong>BFS</strong> or <strong>DFS</strong> (e.g. visiting a node that is not the parent). <strong>DSU</strong> (Disjoint Set Union) is another clean way to solve the same problem: process edges and merge components; a <strong>union</strong> of two vertices that are already connected reveals a cycle.</p>
+                    <p>For an <strong>undirected</strong> graph, we already know how to detect a cycle with <strong>BFS</strong> or <strong>DFS</strong> (e.g. visiting a node that is not the parent). <strong>DSU</strong> is another clean way: process edges and merge components; if two endpoints are already in the same set, adding that edge would form a <strong>cycle</strong>.</p>
                 </div>
                 <div class="section">
                     <h2>Code</h2>

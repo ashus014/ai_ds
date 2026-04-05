@@ -208,6 +208,34 @@
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
         .sh-lit { color: #f8f8f2; }
+        .section ol.kruskal-steps {
+            margin: 8px 0 14px 0;
+            padding-left: 1.35em;
+            color: #444;
+            line-height: 1.75;
+        }
+        .section ol.kruskal-steps li { margin-bottom: 10px; }
+        .kruskal-figure {
+            margin: 18px 0 8px;
+            text-align: center;
+        }
+        .kruskal-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .kruskal-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.95em;
+            color: #6b7280;
+            line-height: 1.5;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -229,7 +257,22 @@
             <div class="content">
                 <div class="section">
                     <h2>Context</h2>
-                    <p><strong>Kruskal's</strong> is an edge-centric greedy MST algorithm: after sorting all edges by weight, each edge joins two components if they are not already connected. That is exactly what <strong>union–find</strong> tracks. It pairs naturally with <a href="prims-algorithm.html">Prim's</a> (vertex-centric, priority queue): same problem, different view of the graph.</p>
+                    <p>A <strong>minimum spanning tree (MST)</strong> for a weighted, connected, undirected graph is a spanning tree (no cycles, connects every vertex) whose total edge weight is as small as possible. The weight of a spanning tree is the <strong>sum</strong> of its edge weights.</p>
+                    <p><strong>Steps to find an MST with Kruskal's algorithm:</strong></p>
+                    <ol class="kruskal-steps">
+                        <li>Sort all edges in <strong>non-decreasing</strong> order of weight.</li>
+                        <li>Consider edges in that order. Take the smallest edge next: if adding it would <strong>not</strong> form a cycle with edges chosen so far, include it; otherwise skip it. Cycle detection uses <strong>disjoint sets</strong> (<a href="detect-cycle-using-dsu.html">union–find / DSU</a>).</li>
+                        <li>Repeat until the tree has exactly <strong>(V − 1)</strong> edges (a spanning tree on <code>V</code> vertices).</li>
+                    </ol>
+                    <p><strong>Kruskal's</strong> is edge-centric: sort first, then merge components. That matches what <strong>union–find</strong> tracks. For contrast, <a href="prims-algorithm.html">Prim's</a> grows from one vertex with a priority queue — same MST problem, different view of the graph.</p>
+                    <figure class="kruskal-figure">
+                        <img src="images/kruskals-example-input-graph.png" width="720" alt="Input weighted undirected graph with nine vertices and fourteen edges" loading="lazy" decoding="async">
+                        <figcaption>Input graph (vertices <code>0</code>–<code>8</code>): Kruskal's processes edges lightest-first.</figcaption>
+                    </figure>
+                    <figure class="kruskal-figure">
+                        <img src="images/kruskals-example-mst.png" width="720" alt="Final MST with eight edges and total weight 37" loading="lazy" decoding="async">
+                        <figcaption>Resulting MST: <code>V − 1 = 8</code> edges; total weight <code>4 + 8 + 1 + 2 + 4 + 2 + 7 + 9 = 37</code>.</figcaption>
+                    </figure>
                 </div>
                 <div class="section">
                     <h2>Code</h2>
