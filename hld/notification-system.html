@@ -135,12 +135,34 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
             table th, table td { padding: 8px; }
         }
     </style>
+    <link rel="stylesheet" href="diagram-zoom.css">
 </head>
 <body>
     <div class="wrapper">
@@ -159,6 +181,15 @@
                 <div class="section">
                     <h2>Summary</h2>
                     <p>Detailed walkthrough of designing a scalable notification system for modern applications (e.g., social media). Focuses on engineering challenges, architectural improvements, and design patterns to handle emails, in-app notifications, and push notifications efficiently.</p>
+                </div>
+
+                <div class="section">
+                    <h2>High-Level Architecture</h2>
+                    <p>Users hit a load balancer, which fans out to application servers. Each server enqueues work to channel-specific queues (SQS): email, in-app, and push. Dedicated workers (e.g., on EC2) poll their queue and call the right provider—SES for email (with exponential backoff and DLQ on max retries), an in-app service, or Firebase for push. This sketch highlights coupling at the app layer; a pub/sub fan-out model can loosen that coupling.</p>
+                    <figure class="diagram-figure">
+                        <img src="assets/notification-system-hld.png" alt="High-level diagram: users through load balancer to application servers, then SQS queues for email, in-app, and push; EC2 workers deliver to SES, in-app service, and Firebase; email path shows retry loop and dead-letter queue">
+                        <figcaption>Queue-based dispatch: separate paths per channel, with retries and DLQ on the email worker when SES is unavailable (max retries = 10).</figcaption>
+                    </figure>
                 </div>
 
                 <div class="section">
@@ -303,5 +334,6 @@
             </div>
         </div>
     </div>
+    <script src="diagram-zoom.js" defer></script>
 </body>
 </html>
