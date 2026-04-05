@@ -215,6 +215,33 @@
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
         .sh-lit { color: #f8f8f2; }
+        .section ul.bipartite-def {
+            margin: 12px 0 0 1.25em;
+            line-height: 1.75;
+            color: #444;
+        }
+        .section ul.bipartite-def li { margin-bottom: 8px; }
+        .bipartite-figure {
+            margin: 18px 0 8px;
+            text-align: center;
+        }
+        .bipartite-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .bipartite-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.95em;
+            color: #6b7280;
+            line-height: 1.5;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -234,6 +261,18 @@
                 <span class="date-badge">📅 April 4, 2026</span>
             </div>
             <div class="content">
+                <div class="section">
+                    <h2>Context</h2>
+                    <p>A bipartite graph can be colored with two colors such that no two adjacent vertices share the same color. That means we can divide the graph’s vertices into two distinct sets where:</p>
+                    <ul class="bipartite-def">
+                        <li>All edges connect vertices from one set to vertices in the other set.</li>
+                        <li>No edges exist between vertices within the same set.</li>
+                    </ul>
+                    <figure class="bipartite-figure">
+                        <img src="images/bipartite-cycles-example.png" width="720" alt="Four cycle graphs: odd cycles (triangle, pentagon) are not bipartite; even cycles (square, hexagon) are bipartite when 2-colored" loading="lazy" decoding="async">
+                        <figcaption>Odd-length cycles cannot be 2-colored without a conflict; even-length cycles can alternate colors around the ring.</figcaption>
+                    </figure>
+                </div>
                 <div class="section">
                     <h2>DFS approach</h2>
                     <p>Copy the full solution in one click from the window toolbar.</p>

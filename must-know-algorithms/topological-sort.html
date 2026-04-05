@@ -228,6 +228,24 @@
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
         .sh-lit { color: #f8f8f2; }
+        .topo-dag-figure {
+            margin: 18px 0 8px;
+            text-align: center;
+        }
+        .topo-dag-figure img {
+            max-width: min(100%, 420px);
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .topo-dag-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.95em;
+            color: #6b7280;
+            line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -247,6 +265,16 @@
                 <span class="date-badge">📅 April 3, 2026</span>
             </div>
             <div class="content">
+                <div class="section">
+                    <h2>Context</h2>
+                    <p>Topological sort is about <strong>all possible orderings</strong> that satisfy one rule: if there is a directed edge <code>u → v</code>, then <code>u</code> must come <strong>before</strong> <code>v</code> in the sequence. Any ordering that satisfies this for every edge <code>(u → v)</code> is valid.</p>
+                    <p><strong>Example — valid topological orderings for this DAG:</strong></p>
+                    <figure class="topo-dag-figure">
+                        <img src="images/topo-sort-dag-example.png" width="420" alt="Directed acyclic graph: edges 5 to 3, 4 to 3, and 3 to 1" loading="lazy" decoding="async">
+                        <figcaption>Edges: <code>5 → 3</code>, <code>4 → 3</code>, <code>3 → 1</code>. Vertices <code>4</code> and <code>5</code> are not ordered relative to each other.</figcaption>
+                    </figure>
+                    <p>For the graph above, <code>4 → 5 → 3 → 1</code> and <code>5 → 4 → 3 → 1</code> are both valid topological orders — each respects every edge.</p>
+                </div>
                 <div class="section">
                     <h2>Code</h2>
                     <p>Build an adjacency list, run DFS, push nodes to a stack after visiting descendants, then pop to get topological order. Copy the full solution from the window toolbar.</p>
