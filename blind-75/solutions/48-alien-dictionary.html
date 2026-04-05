@@ -222,7 +222,7 @@
             <div class="content">
                 <div class="section">
                     <h2>Hint</h2>
-                    <p>Compare each pair of consecutive words only until the first mismatch; that single constraint is enough. If a longer word is a prefix of a shorter earlier word, the order is impossible. Deduplicate edges before Kahn.</p>
+                    <p>Compare adjacent words → first different character gives edge → build graph → apply Kahn's topo sort</p>
                 </div>
                 <div class="section">
                     <h2>Code</h2>
