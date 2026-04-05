@@ -286,31 +286,51 @@ Explanation:  Shortest Paths:
                     <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
 
 class Solution {
+    public int[] dijkstra(int V, int[][] edges, int src) {
 
-    public int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int src) {
+        // Step 1: Build adjacency list
+        ArrayList<ArrayList<int[]>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
 
+        // edges: [u, v, weight]
+        for (int[] e : edges) {
+            int u = e[0];
+            int v = e[1];
+            int weight = e[2];
+
+            adj.get(u).add(new int[]{v, weight});
+            adj.get(v).add(new int[]{u, weight});
+        }
+
+        // Step 2: Distance array
         int[] dist = new int[V];
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[src] = 0;
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
-        pq.offer(new int[]{0, src});
+        // Step 3: Min Heap -> [node, distance]
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> a[1] - b[1]
+        );
 
+        pq.add(new int[]{src, 0});
+
+        // Step 4: Dijkstra logic
         while (!pq.isEmpty()) {
-            int[] cur = pq.poll();
-            int d = cur[0];
-            int u = cur[1];
+            int[] current = pq.poll();
+            int currentNode = current[0];
+            int currentDistance = current[1];
 
-            if (d > dist[u]) {
-                continue;
-            }
+            // Explore neighbors
+            for (int[] neighbor : adj.get(currentNode)) {
+                int nextNode = neighbor[0];
+                int edgeWeight = neighbor[1];
 
-            for (ArrayList<Integer> edge : adj.get(u)) {
-                int v = edge.get(0);
-                int w = edge.get(1);
-                if (dist[u] != Integer.MAX_VALUE && dist[u] + w < dist[v]) {
-                    dist[v] = dist[u] + w;
-                    pq.offer(new int[]{dist[v], v});
+                // Relaxation
+                if (currentDistance + edgeWeight < dist[nextNode]) {
+                    dist[nextNode] = currentDistance + edgeWeight;
+                    pq.add(new int[]{nextNode, dist[nextNode]});
                 }
             }
         }
@@ -334,31 +354,51 @@ class Solution {
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
 
 <span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span>[] <span class="sh-call">dijkstra</span>(<span class="sh-kw">int</span> V, <span class="sh-kw">int</span>[][] edges, <span class="sh-kw">int</span> src) {
 
-    <span class="sh-kw">public</span> <span class="sh-kw">int</span>[] <span class="sh-call">dijkstra</span>(<span class="sh-kw">int</span> V, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt;&gt; adj, <span class="sh-kw">int</span> src) {
+        <span class="sh-comment">// Step 1: Build adjacency list</span>
+        <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-kw">int</span>[]&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; V; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
 
+        <span class="sh-comment">// edges: [u, v, weight]</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] e : edges) {
+            <span class="sh-kw">int</span> u = e[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> v = e[<span class="sh-lit">1</span>];
+            <span class="sh-kw">int</span> weight = e[<span class="sh-lit">2</span>];
+
+            adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{v, weight});
+            adj.<span class="sh-call">get</span>(v).<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{u, weight});
+        }
+
+        <span class="sh-comment">// Step 2: Distance array</span>
         <span class="sh-kw">int</span>[] dist = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
         <span class="sh-type">Arrays</span>.<span class="sh-call">fill</span>(dist, <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span>);
         dist[src] = <span class="sh-lit">0</span>;
 
-        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-kw">int</span>[]&gt; pq = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;((a, b) -&gt; <span class="sh-type">Integer</span>.<span class="sh-call">compare</span>(a[<span class="sh-lit">0</span>], b[<span class="sh-lit">0</span>]));
-        pq.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{<span class="sh-lit">0</span>, src});
+        <span class="sh-comment">// Step 3: Min Heap -&gt; [node, distance]</span>
+        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-kw">int</span>[]&gt; pq = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;(
+            (a, b) -&gt; a[<span class="sh-lit">1</span>] - b[<span class="sh-lit">1</span>]
+        );
 
+        pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{src, <span class="sh-lit">0</span>});
+
+        <span class="sh-comment">// Step 4: Dijkstra logic</span>
         <span class="sh-kw">while</span> (!pq.<span class="sh-call">isEmpty</span>()) {
-            <span class="sh-kw">int</span>[] cur = pq.<span class="sh-call">poll</span>();
-            <span class="sh-kw">int</span> d = cur[<span class="sh-lit">0</span>];
-            <span class="sh-kw">int</span> u = cur[<span class="sh-lit">1</span>];
+            <span class="sh-kw">int</span>[] current = pq.<span class="sh-call">poll</span>();
+            <span class="sh-kw">int</span> currentNode = current[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> currentDistance = current[<span class="sh-lit">1</span>];
 
-            <span class="sh-kw">if</span> (d &gt; dist[u]) {
-                <span class="sh-kw">continue</span>;
-            }
+            <span class="sh-comment">// Explore neighbors</span>
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] neighbor : adj.<span class="sh-call">get</span>(currentNode)) {
+                <span class="sh-kw">int</span> nextNode = neighbor[<span class="sh-lit">0</span>];
+                <span class="sh-kw">int</span> edgeWeight = neighbor[<span class="sh-lit">1</span>];
 
-            <span class="sh-kw">for</span> (<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; edge : adj.<span class="sh-call">get</span>(u)) {
-                <span class="sh-kw">int</span> v = edge.<span class="sh-call">get</span>(<span class="sh-lit">0</span>);
-                <span class="sh-kw">int</span> w = edge.<span class="sh-call">get</span>(<span class="sh-lit">1</span>);
-                <span class="sh-kw">if</span> (dist[u] != <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span> &amp;&amp; dist[u] + w &lt; dist[v]) {
-                    dist[v] = dist[u] + w;
-                    pq.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{dist[v], v});
+                <span class="sh-comment">// Relaxation</span>
+                <span class="sh-kw">if</span> (currentDistance + edgeWeight &lt; dist[nextNode]) {
+                    dist[nextNode] = currentDistance + edgeWeight;
+                    pq.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{nextNode, dist[nextNode]});
                 }
             }
         }
