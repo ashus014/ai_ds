@@ -103,18 +103,7 @@
             font-size: 1.5em;
             margin-bottom: 14px;
         }
-        .section h3 {
-            color: #764ba2;
-            font-size: 1.1em;
-            margin: 16px 0 10px;
-        }
         .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
-        .section ul.explain-list {
-            margin: 8px 0 0 1.25em;
-            line-height: 1.75;
-            color: #444;
-        }
-        .section ul.explain-list li { margin-bottom: 8px; }
         .example-block {
             margin-top: 12px;
             padding: 16px 18px;
@@ -126,6 +115,7 @@
             line-height: 1.55;
             overflow-x: auto;
             color: #1f2937;
+            white-space: pre-wrap;
         }
         .algo-figure {
             margin: 18px 0 8px;
@@ -264,44 +254,38 @@
         <div class="container">
             <div class="header">
                 <h1><a class="header-title-link" href="https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1" target="_blank" rel="noopener noreferrer">Dijkstra's Algorithm</a></h1>
-                <p>Single-source <strong>shortest paths</strong> on a weighted graph with <strong>non-negative</strong> edges — greedy relaxation with a min-heap.</p>
                 <span class="date-badge">📅 April 5, 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Problem</h2>
-                    <p>Given a <strong>weighted undirected</strong> graph and a source vertex <code>src</code>, compute the <strong>shortest path distance</strong> from <code>src</code> to every other vertex. The graph has <strong>no negative edge weights</strong> (standard Dijkstra requirement).</p>
                     <figure class="algo-figure">
-                        <img src="images/dijkstra-example-graph.png" width="560" alt="Five vertices 0 to 4, source 0, edges with weights as in the example" loading="lazy" decoding="async">
-                        <figcaption>Example graph: source <code>0</code>; edge weights as labeled.</figcaption>
+                        <img src="images/dijkstra-example-graph.png" width="560" alt="" loading="lazy" decoding="async">
                     </figure>
                 </div>
                 <div class="section">
                     <h2>Example</h2>
-                    <p><code>src = 0</code>, adjacency list <code>adj</code> (each entry is <code>[neighbor, weight]</code>):</p>
-                    <div class="example-block">adj[0] = [[1, 4], [2, 8]]
-adj[1] = [[0, 4], [2, 3], [4, 6]]
-adj[2] = [[0, 8], [1, 3], [3, 2]]
-adj[3] = [[2, 2], [4, 10]]
-adj[4] = [[1, 6], [3, 10]]</div>
-                    <p><strong>Output:</strong> <code>[0, 4, 7, 9, 10]</code></p>
-                    <h3>Shortest paths from 0</h3>
-                    <ul class="explain-list">
-                        <li><code>0 → 0</code>: distance <strong>0</strong> (source).</li>
-                        <li><code>0 → 1</code>: direct edge <strong>4</strong>.</li>
-                        <li><code>0 → 2</code>: <code>0 → 1 → 2</code> gives <code>4 + 3 = 7</code> (better than direct <code>8</code>).</li>
-                        <li><code>0 → 3</code>: <code>0 → 1 → 2 → 3</code> gives <code>4 + 3 + 2 = 9</code>.</li>
-                        <li><code>0 → 4</code>: <code>0 → 1 → 4</code> gives <code>4 + 6 = 10</code>.</li>
-                    </ul>
+                    <pre class="example-block">Input: src = 0, adj[][] = [[[1, 4], [2, 8]],         
+                                            [[0, 4], [4, 6], [2,3]], 
+                                            [[0, 8], [3, 2], [1,3]], 
+                                            [[2, 2], [4, 10]], 
+                                            [[1, 6], [3, 10]]]
+
+
+Output:  [0, 4, 7, 9, 10]
+Explanation:  Shortest Paths:  
+0 -> 0 = 0: Source node itself, so distance is 0.
+0 -> 1 = 4: Direct edge from node 0 to 1 gives shortest distance 4.
+0 -> 2 = 7: Path 0 → 1 → 2 gives total cost 4 + 3 = 7, which is smaller than direct edge 8.
+0 -> 3 = 9: Path 0 → 1 → 2 → 3 gives total cost 4 + 3 + 2 = 9.
+0 -> 4 = 10: Path 0 → 1 → 4 gives total cost 4 + 6 = 10.</pre>
                 </div>
                 <div class="section">
                     <h2>Code</h2>
-                    <p>Min-heap stores <code>(distance, vertex)</code>; relax neighbors when a shorter path is found. Copy the full snippet from the toolbar.</p>
                     <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
 
 class Solution {
 
-    // adj.get(u) is list of [v, weight]; graph is undirected, non-negative weights
     public int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int src) {
 
         int[] dist = new int[V];
@@ -350,7 +334,6 @@ class Solution {
 
 <span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
 
-    <span class="sh-comment">// adj.get(u) is list of [v, weight]; graph is undirected, non-negative weights</span>
     <span class="sh-kw">public</span> <span class="sh-kw">int</span>[] <span class="sh-call">dijkstra</span>(<span class="sh-kw">int</span> V, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt;&gt; adj, <span class="sh-kw">int</span> src) {
 
         <span class="sh-kw">int</span>[] dist = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
