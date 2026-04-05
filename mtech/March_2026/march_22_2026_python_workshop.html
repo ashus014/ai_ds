@@ -67,6 +67,42 @@
             margin-top: 14px;
         }
         .content { padding: 28px 32px 36px; }
+        .notes-section {
+            margin-bottom: 32px;
+            padding-bottom: 28px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .notes-section h2 {
+            color: #667eea;
+            font-size: 1.35em;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .notes-intro {
+            color: #444;
+            line-height: 1.65;
+            margin-bottom: 16px;
+            font-size: 0.98em;
+        }
+        .notes-list {
+            margin: 0 0 14px 0;
+            padding-left: 1.35em;
+            line-height: 1.55;
+        }
+        .notes-list li { margin-bottom: 10px; }
+        .notes-list li strong { color: #4a5568; }
+        .notes-footnote {
+            color: #666;
+            font-size: 0.92em;
+            line-height: 1.55;
+            margin: 0;
+        }
+        .pdf-section-title {
+            color: #667eea;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
         .pdf-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -131,6 +167,20 @@
                 <div class="date-badge">📅 March 22, 2026</div>
             </div>
             <div class="content">
+                <section class="notes-section" aria-labelledby="notes-heading">
+                    <h2 id="notes-heading">Notes</h2>
+                    <p class="notes-intro">Structured notes from the session led by <strong>Prof. Anjit Ranjan Sha</strong>. They cover the main topics from the lecture; extended Q&amp;A tangents are omitted.</p>
+                    <ul class="notes-list">
+                        <li><strong>Why Python</strong> — strengths and typical applications</li>
+                        <li><strong>History</strong> — from the 1980s through Python 3</li>
+                        <li><strong>How Python works</strong> — interpreted vs compiled (with comparison to C)</li>
+                        <li><strong>Core syntax</strong> — variables, printing, type conversion, naming rules</li>
+                        <li><strong>Data types</strong> — including list, tuple, set, and dictionary and how they differ</li>
+                        <li><strong>Key libraries</strong> and career paths</li>
+                    </ul>
+                    <p class="notes-footnote">Focus is on core concepts; informal digressions from class discussion are not repeated here.</p>
+                </section>
+                <h3 class="pdf-section-title">Slides (PDF)</h3>
                 <div class="pdf-toolbar">
                     <p>Scroll inside the viewer below to read the full deck. If it does not load in your browser, use the button to open the PDF directly.</p>
                     <a class="pdf-link" href="Python_Workshop_1.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
