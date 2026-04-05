@@ -184,11 +184,20 @@
                 </div>
 
                 <div class="section">
-                    <h2>High-Level Architecture</h2>
-                    <p>Users hit a load balancer, which fans out to application servers. Each server enqueues work to channel-specific queues (SQS): email, in-app, and push. Dedicated workers (e.g., on EC2) poll their queue and call the right provider—SES for email (with exponential backoff and DLQ on max retries), an in-app service, or Firebase for push. This sketch highlights coupling at the app layer; a pub/sub fan-out model can loosen that coupling.</p>
+                    <h2>Naive Architecture (Coupled)</h2>
+                    <p>An early shape of the system: users hit a load balancer, application servers enqueue work directly to channel-specific <strong>SQS</strong> queues (email, in-app, push). <strong>EC2</strong> workers poll each queue and call <strong>SES</strong>, the in-app service, or <strong>Firebase</strong>. The email path uses exponential backoff when SES is down (max retries = 10) and a <strong>dead-letter queue</strong> after the limit. This layout keeps queue choices and routing in the app tier—higher coupling than a dedicated event bus.</p>
                     <figure class="diagram-figure">
-                        <img src="assets/notification-system-hld.png" alt="High-level diagram: users through load balancer to application servers, then SQS queues for email, in-app, and push; EC2 workers deliver to SES, in-app service, and Firebase; email path shows retry loop and dead-letter queue">
-                        <figcaption>Queue-based dispatch: separate paths per channel, with retries and DLQ on the email worker when SES is unavailable (max retries = 10).</figcaption>
+                        <img src="assets/notification-system-hld.png" alt="Naive diagram: users through load balancer to application servers, then separate SQS queues for email, in-app, and push; EC2 workers deliver to SES, in-app service, and Firebase; email path shows retry loop and dead-letter queue">
+                        <figcaption>Direct enqueue from app servers to per-channel queues (tighter coupling at the application layer).</figcaption>
+                    </figure>
+                </div>
+
+                <div class="section">
+                    <h2>Final Architecture</h2>
+                    <p>Application servers publish domain events to an <strong>AWS SNS</strong> topic; <strong>SQS</strong> queues subscribe to that topic so SNS can <strong>fan out</strong> each event to email, in-app, and push channels without the API layer choosing queues directly. Per-channel <strong>EC2</strong> workers poll their queue and deliver to <strong>SES</strong>, the in-app service, or <strong>Firebase</strong>. The email path uses exponential backoff when SES is down (max retries = 10) and a <strong>dead-letter queue</strong> after the limit. An ingestion layer can suppress redundant notifications—for example, skip email when the user is already online, using <strong>Redis</strong> to track last login or presence.</p>
+                    <figure class="diagram-figure">
+                        <img src="assets/notification-system-final-architecture.png" alt="Final architecture: users to load balancer and app servers publishing to SNS; SNS fans out to three SQS queues (email, in-app, push); EC2 workers consume with SES retries and DLQ on email, in-app delivery, and Firebase for push; notes on fan-out, SQS subscription to SNS, and Redis for ingestion">
+                        <figcaption>Event-driven fan-out: SNS → subscribed SQS queues → workers → SES, in-app, or Firebase.</figcaption>
                     </figure>
                 </div>
 
