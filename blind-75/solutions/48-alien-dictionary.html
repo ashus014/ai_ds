@@ -232,19 +232,22 @@
 class Solution {
     public String foreignDictionary(String[] words) {
 
-        int K = 26;
+        int K = 26; // max possible chars
 
+        // Step 1: adjacency list
         ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
         for (int i = 0; i < K; i++) {
             adj.add(new ArrayList<>());
         }
 
-        // Avoid duplicate edges: same u -> v from multiple adjacent pairs
-        boolean[][] hasEdge = new boolean[K][K];
-
+        // Step 2: indegree
         int[] indegree = new int[K];
 
+        // Step 3: mark which chars exist
         boolean[] exists = new boolean[K];
+
+        // Same u -> v must be added once only (duplicate edges inflate indegree)
+        boolean[][] hasEdge = new boolean[K][K];
 
         for (String word : words) {
             for (char c : word.toCharArray()) {
@@ -252,11 +255,13 @@ class Solution {
             }
         }
 
+        // Step 4: build edges (IMPORTANT PART)
         for (int i = 0; i < words.length - 1; i++) {
 
             String s1 = words[i];
             String s2 = words[i + 1];
 
+            // invalid case: longer word before shorter prefix (impossible in sorted order)
             if (s1.length() > s2.length() && s1.startsWith(s2)) {
                 return "";
             }
@@ -276,11 +281,12 @@ class Solution {
                         adj.get(u).add(v);
                         indegree[v]++;
                     }
-                    break;
+                    break; // only first diff matters
                 }
             }
         }
 
+        // Step 5: Kahn's algo (YOUR TEMPLATE — topological order)
         Queue<Integer> q = new LinkedList<>();
 
         for (int i = 0; i < K; i++) {
@@ -304,6 +310,7 @@ class Solution {
             }
         }
 
+        // Step 6: cycle check (all existing letters must appear in the order)
         int count = 0;
         for (boolean e : exists) if (e) count++;
 
@@ -332,19 +339,22 @@ class Solution {
 <span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
     <span class="sh-kw">public</span> <span class="sh-type">String</span> <span class="sh-call">foreignDictionary</span>(<span class="sh-type">String</span>[] words) {
 
-        <span class="sh-kw">int</span> K = <span class="sh-lit">26</span>;
+        <span class="sh-kw">int</span> K = <span class="sh-lit">26</span>; <span class="sh-comment">// max possible chars</span>
 
+        <span class="sh-comment">// Step 1: adjacency list</span>
         <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; K; i++) {
             adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
         }
 
-        <span class="sh-comment">// Avoid duplicate edges: same u -&gt; v from multiple adjacent pairs</span>
-        <span class="sh-kw">boolean</span>[][] hasEdge = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[K][K];
-
+        <span class="sh-comment">// Step 2: indegree</span>
         <span class="sh-kw">int</span>[] indegree = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[K];
 
+        <span class="sh-comment">// Step 3: mark which chars exist</span>
         <span class="sh-kw">boolean</span>[] exists = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[K];
+
+        <span class="sh-comment">// Same u -&gt; v must be added once only (duplicate edges inflate indegree)</span>
+        <span class="sh-kw">boolean</span>[][] hasEdge = <span class="sh-kw">new</span> <span class="sh-kw">boolean</span>[K][K];
 
         <span class="sh-kw">for</span> (<span class="sh-type">String</span> word : words) {
             <span class="sh-kw">for</span> (<span class="sh-kw">char</span> c : word.<span class="sh-call">toCharArray</span>()) {
@@ -352,11 +362,13 @@ class Solution {
             }
         }
 
+        <span class="sh-comment">// Step 4: build edges (IMPORTANT PART)</span>
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; words.<span class="sh-call">length</span> - <span class="sh-lit">1</span>; i++) {
 
             <span class="sh-type">String</span> s1 = words[i];
             <span class="sh-type">String</span> s2 = words[i + <span class="sh-lit">1</span>];
 
+            <span class="sh-comment">// invalid case: longer word before shorter prefix (impossible in sorted order)</span>
             <span class="sh-kw">if</span> (s1.<span class="sh-call">length</span>() &gt; s2.<span class="sh-call">length</span>() &amp;&amp; s1.<span class="sh-call">startsWith</span>(s2)) {
                 <span class="sh-kw">return</span> <span class="sh-lit">""</span>;
             }
@@ -376,11 +388,12 @@ class Solution {
                         adj.<span class="sh-call">get</span>(u).<span class="sh-call">add</span>(v);
                         indegree[v]++;
                     }
-                    <span class="sh-kw">break</span>;
+                    <span class="sh-kw">break</span>; <span class="sh-comment">// only first diff matters</span>
                 }
             }
         }
 
+        <span class="sh-comment">// Step 5: Kahn's algo (YOUR TEMPLATE — topological order)</span>
         <span class="sh-type">Queue</span>&lt;<span class="sh-type">Integer</span>&gt; q = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
 
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; K; i++) {
@@ -404,6 +417,7 @@ class Solution {
             }
         }
 
+        <span class="sh-comment">// Step 6: cycle check (all existing letters must appear in the order)</span>
         <span class="sh-kw">int</span> count = <span class="sh-lit">0</span>;
         <span class="sh-kw">for</span> (<span class="sh-kw">boolean</span> e : exists) <span class="sh-kw">if</span> (e) count++;
 
