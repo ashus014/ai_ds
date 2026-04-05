@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <title>Python Workshop 3 | April 5, 2026 | IIT Patna M.Tech</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.1em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.05em; opacity: 0.95; margin-bottom: 6px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 14px;
+        }
+        .content { padding: 28px 32px 36px; }
+        .notes-section {
+            margin-bottom: 32px;
+            padding-bottom: 28px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .notes-article { color: #333; }
+        .notes-doc-title {
+            font-size: 1.45em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+        .notes-meta {
+            color: #4a5568;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+        .notes-divider {
+            border: none;
+            border-top: 2px solid #e8eaf6;
+            margin: 22px 0 24px;
+        }
+        .notes-article h3 {
+            color: #667eea;
+            font-size: 1.22em;
+            font-weight: 700;
+            margin: 1.35em 0 0.6em;
+            line-height: 1.3;
+        }
+        .notes-article h3:first-of-type { margin-top: 0; }
+        .notes-article h4 {
+            color: #764ba2;
+            font-size: 1.05em;
+            font-weight: 600;
+            margin: 1em 0 0.45em;
+        }
+        .notes-article p {
+            color: #444;
+            line-height: 1.65;
+            margin-bottom: 0.85em;
+            font-size: 0.98em;
+        }
+        .notes-article ul {
+            margin: 0.4em 0 1em 1.35em;
+            line-height: 1.55;
+            color: #444;
+            font-size: 0.98em;
+        }
+        .notes-article ul li { margin-bottom: 0.45em; }
+        .notes-article ul li strong { color: #2d3748; }
+        .notes-article code {
+            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+            font-size: 0.9em;
+            background: #eef0f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .notes-pre {
+            background: #f4f5f9;
+            border: 1px solid #e0e3ee;
+            border-radius: 8px;
+            padding: 12px 14px;
+            overflow-x: auto;
+            font-size: 0.86em;
+            line-height: 1.5;
+            margin: 0.65em 0 1em;
+            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+        }
+        .notes-table-wrap {
+            overflow-x: auto;
+            margin: 0.65em 0 1.15em;
+            border-radius: 8px;
+            border: 1px solid #e0e3ee;
+        }
+        table.notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .notes-table th,
+        .notes-table td {
+            border: 1px solid #dde0ee;
+            padding: 9px 11px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .notes-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .notes-table tbody tr:nth-child(even) { background: #f8f9fc; }
+        .notes-keywords {
+            font-size: 0.92em;
+            color: #4a5568;
+            line-height: 1.55;
+        }
+        .notes-attribution {
+            margin-top: 1.75em;
+            padding-top: 1.1em;
+            border-top: 1px solid #e8eaf6;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        .pdf-section-title {
+            color: #667eea;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .pdf-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .pdf-toolbar p { color: #666; font-size: 0.95em; max-width: 520px; line-height: 1.5; }
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            white-space: nowrap;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .pdf-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.45);
+        }
+        .pdf-viewer {
+            width: 100%;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #2d2d2d;
+            min-height: 70vh;
+        }
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 85vh;
+            min-height: 500px;
+            border: none;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; text-align: center; }
+            .pdf-viewer iframe { height: 75vh; min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../mtech-lectures.html" class="back-link">← Back to Lectures</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Python Workshop 3</h1>
+                <p>IIT Patna — AI &amp; Data Science (M.Tech)</p>
+                <div class="date-badge">📅 April 5, 2026</div>
+            </div>
+            <div class="content">
+                <section class="notes-section" aria-labelledby="notes-doc-title">
+                    <article class="notes-article">
+                        <h2 id="notes-doc-title" class="notes-doc-title">Python Input, Output, and Formatting — Video Notes</h2>
+                        <p class="notes-meta">This session covers <code>print()</code> and <code>input()</code>, integer caching, string formatting (especially f-strings), type casting, and reading multiple values from one line. The emphasis is on how Python simplifies I/O compared with languages like C, C++, and Java.</p>
+                        <hr class="notes-divider">
+
+                        <h3>Print function</h3>
+                        <ul>
+                            <li><code>print()</code> can output strings, numbers (int/float), booleans, and expressions.</li>
+                            <li>String literals may use <strong>single</strong> <code>'...'</code> or <strong>double</strong> <code>"..."</code> quotes; do not mix quote styles inside one string.</li>
+                        </ul>
+
+                        <h3>Integer caching</h3>
+                        <ul>
+                            <li>CPython caches small integers in the range <strong>−5 through 256</strong> for memory and speed.</li>
+                            <li>Names bound to the same cached value can share the same object: <code>id(x) == id(y)</code> may be <code>True</code> for e.g. <code>x = 100</code> and <code>y = 100</code>.</li>
+                            <li>Outside that range, or for floats, you generally get distinct objects — do not rely on <code>is</code> for value equality.</li>
+                        </ul>
+
+                        <h3>Input and type casting</h3>
+                        <ul>
+                            <li><code>input()</code> always returns a <strong>str</strong>.</li>
+                            <li>Cast before arithmetic: <code>age = int(input("Enter age: "))</code>, <code>weight = float(input("Enter weight: "))</code>.</li>
+                            <li>Skipping casts causes type errors when you add or multiply with numbers.</li>
+                        </ul>
+
+                        <h3>Multiple inputs and splitting</h3>
+                        <ul>
+                            <li>Read one line (e.g. comma-separated), then <code>.split(",")</code> or <code>.split()</code> (whitespace).</li>
+                            <li>Use <code>.strip()</code> on each piece to remove surrounding spaces.</li>
+                            <li>Convert numeric fields with <code>int()</code> / <code>float()</code>.</li>
+                        </ul>
+
+                        <h3>Printing multiple values</h3>
+                        <ul>
+                            <li>Multiple arguments: <code>print(a, b, c)</code> — default <code>sep=" "</code> (space).</li>
+                            <li><code>sep</code> customises the delimiter between items.</li>
+                            <li><code>end</code> defaults to newline <code>"\n"</code>; use e.g. <code>end=""</code> or <code>end="..."</code> to continue on the same line.</li>
+                        </ul>
+
+                        <h3>F-strings (formatted string literals)</h3>
+                        <ul>
+                            <li>Preferred modern style: <code>print(f"My name is {name}, age is {age}")</code>.</li>
+                            <li>Expressions inside <code>{ }</code> are evaluated and inserted.</li>
+                            <li>Common format specs: <code>{x:.2f}</code> (float precision), <code>{n:,}</code> (thousands separators), alignment <code>&lt;</code> / <code>&gt;</code> / <code>^</code> with width, <code>{n:05d}</code> (zero-pad integers), <code>{x:e}</code> (scientific notation).</li>
+                        </ul>
+
+                        <h3>Other formatting styles</h3>
+                        <ul>
+                            <li><code>"{} {}".format(a, b)</code> — <code>.format()</code> with placeholders.</li>
+                            <li><code>"%s %d" % (s, n)</code> — C-style <code>%</code> formatting (legacy).</li>
+                        </ul>
+
+                        <h3>Type conversion functions</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Function</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><code>int()</code></td><td>Convert to integer</td></tr>
+                                    <tr><td><code>float()</code></td><td>Convert to floating-point</td></tr>
+                                    <tr><td><code>str()</code></td><td>Convert to string</td></tr>
+                                    <tr><td><code>bool()</code></td><td>Convert to boolean</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><code>bool()</code>: <code>0</code>, empty containers, empty strings, and <code>None</code> are falsy; most other values are truthy.</p>
+
+                        <h3>Strings and string methods</h3>
+                        <ul>
+                            <li>Strings are <strong>immutable</strong>; methods return new strings.</li>
+                            <li><code>.strip()</code> — trim leading/trailing whitespace.</li>
+                            <li><code>.lower()</code> / <code>.upper()</code> / <code>.title()</code>.</li>
+                            <li>Length: <code>len(s)</code> (built-in, not a method).</li>
+                            <li>Concatenation with <code>+</code> or, preferably, f-strings.</li>
+                        </ul>
+
+                        <h3>Procedural vs object-oriented view</h3>
+                        <ul>
+                            <li>Python supports a <strong>hybrid</strong> style: procedural scripts and OOP together.</li>
+                            <li><strong>Methods</strong> are functions tied to objects (e.g. <code>str.upper</code>).</li>
+                            <li><strong>Built-ins</strong> like <code>print()</code> and <code>len()</code> are not methods on a particular class instance in the usual sense.</li>
+                        </ul>
+
+                        <h3>Timeline (video)</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Topic</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>00:00–02:30</td><td><code>print()</code> and quoting rules</td></tr>
+                                    <tr><td>02:30–06:30</td><td>Integer caching (−5…256) and <code>id()</code></td></tr>
+                                    <tr><td>06:30–11:30</td><td>Multiple arguments, <code>sep</code>, <code>end</code></td></tr>
+                                    <tr><td>11:30–19:30</td><td>F-strings and format specifiers</td></tr>
+                                    <tr><td>19:30–26:00</td><td><code>.format()</code> and <code>%</code> formatting</td></tr>
+                                    <tr><td>26:00–34:00</td><td><code>input()</code>, casting, avoiding errors</td></tr>
+                                    <tr><td>34:00–40:30</td><td>Splitting lines and casting multiple fields</td></tr>
+                                    <tr><td>40:30–48:30</td><td>Example: several integers, increment each</td></tr>
+                                    <tr><td>48:30–51:30</td><td>Built-in converters and API-style data</td></tr>
+                                    <tr><td>51:30–58:00</td><td>Immutability, string methods, concatenation</td></tr>
+                                    <tr><td>58:00–1:01:30</td><td>Python&apos;s OOP model and wrap-up</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Code examples</h3>
+                        <h4>Print: multiple arguments and <code>sep</code></h4>
+                        <pre class="notes-pre"><code>print("Name:", "Alice", "Age:", 25)       # default space between items
+print("Alice", "Bob", "Charlie", sep=", ")  # comma+space between items</code></pre>
+
+                        <h4>Print: custom <code>end</code></h4>
+                        <pre class="notes-pre"><code>print("Loading", end="...")
+print("Done")   # → Loading...Done (same line)</code></pre>
+
+                        <h4>F-string with formatting</h4>
+                        <pre class="notes-pre"><code>name = "Alice"
+age = 28
+salary = 87500
+print(f"My name is {name}, age is {age}, salary is ${salary:,}")</code></pre>
+
+                        <h4>Input and cast</h4>
+                        <pre class="notes-pre"><code>age = int(input("Enter your age: "))
+print(age + 1)</code></pre>
+
+                        <h4>Split comma-separated input</h4>
+                        <pre class="notes-pre"><code>raw = input("Enter name, age, city: ")
+parts = raw.split(",")
+name = parts[0].strip()
+age = int(parts[1].strip())
+city = parts[2].strip()
+print(f"Name: {name}, Age: {age}, City: {city}")</code></pre>
+
+                        <h4>Several numbers on one line</h4>
+                        <pre class="notes-pre"><code>numbers = input("Enter three numbers: ").split()
+print(int(numbers[0]) + 1, int(numbers[1]) + 1, int(numbers[2]) + 1)</code></pre>
+
+                        <h3>F-string specifiers (cheat sheet)</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Specifier</th>
+                                        <th>Description</th>
+                                        <th>Example idea</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><code>:.2f</code></td><td>Float, 2 decimal places</td><td><code>3.14</code></td></tr>
+                                    <tr><td><code>:,</code></td><td>Thousands separators</td><td><code>87,500</code></td></tr>
+                                    <tr><td><code>:05d</code></td><td>Integer zero-padded to width 5</td><td><code>00042</code></td></tr>
+                                    <tr><td><code>:&lt;10</code></td><td>Left-align in width 10</td><td>text padded on the right</td></tr>
+                                    <tr><td><code>:&gt;10</code></td><td>Right-align in width 10</td><td>text padded on the left</td></tr>
+                                    <tr><td><code>:^10</code></td><td>Center in width 10</td><td>text centred</td></tr>
+                                    <tr><td><code>:.1%</code></td><td>Percentage, 1 decimal</td><td><code>92.4%</code></td></tr>
+                                    <tr><td><code>:e</code></td><td>Scientific notation</td><td><code>1.234500e+04</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Keywords</h3>
+                        <p class="notes-keywords"><code>print()</code>, <code>input()</code>, type casting, f-string, string formatting, integer caching, <code>split()</code>, <code>strip()</code>, immutable strings, built-in functions, truthy, falsy, object-oriented programming, method, base function</p>
+
+                        <h3>Conclusion</h3>
+                        <p>The lecture ties together basic I/O: flexible printing, the small-integer cache, f-strings for readable output, disciplined casting for <code>input()</code>, and string methods for cleaning user data. Python&apos;s mix of procedural and OO styles keeps simple scripts short while scaling to larger programs.</p>
+
+                        <p class="notes-attribution">Notes summarised from the course video on Python input, output, and formatting.</p>
+                    </article>
+                </section>
+                <h3 class="pdf-section-title">Slides (PDF)</h3>
+                <div class="pdf-toolbar">
+                    <p>Scroll inside the viewer below to read the full deck. If it does not load in your browser, use the button to open the PDF directly.</p>
+                    <a class="pdf-link" href="Python_Workshop_3.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
+                </div>
+                <div class="pdf-viewer">
+                    <iframe
+                        src="Python_Workshop_3.pdf"
+                        title="Python Workshop 3 — PDF"
+                    ></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

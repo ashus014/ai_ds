@@ -171,6 +171,11 @@
             color: #444;
         }
         .notes-callout strong { color: #2d3748; }
+        .notes-keywords {
+            font-size: 0.92em;
+            color: #4a5568;
+            line-height: 1.55;
+        }
         .notes-attribution {
             margin-top: 1.75em;
             padding-top: 1.1em;
@@ -251,51 +256,74 @@
             <div class="content">
                 <section class="notes-section" aria-labelledby="notes-doc-title">
                     <article class="notes-article">
-                        <h2 id="notes-doc-title" class="notes-doc-title">Introduction to Python Programming</h2>
-                        <p class="notes-meta"><strong>Lecturer:</strong> Asst. Prof. Anjit Ranjan Sha (Mathematics &amp; CS Dept)</p>
-                        <p class="notes-meta"><strong>Class:</strong> Preparatory class for MBA / M1 students</p>
+                        <h2 id="notes-doc-title" class="notes-doc-title">Python Programming Lecture — Summary Notes</h2>
+                        <p class="notes-meta">Lecture by <strong>Anjit Ranjan Sha</strong> (Assistant Professor, Mathematics; CS background). Overview of Python for beginners, with terminology and concepts for further study.</p>
                         <hr class="notes-divider">
 
-                        <h3>Why Python?</h3>
-                        <p>Python is used almost everywhere — especially in ML, AI, and deep learning. Every model like ChatGPT&apos;s GPT (a transformer) is built using Python code.</p>
-                        <p><strong>Areas where Python is used:</strong></p>
+                        <h3>Speaker introduction and context</h3>
                         <ul>
-                            <li>Machine Learning &amp; Deep Learning</li>
-                            <li>Data Science &amp; Scientific Computing</li>
-                            <li>Web Development</li>
-                            <li>Computer Vision</li>
-                            <li>Image Processing</li>
-                            <li>Automation</li>
-                            <li>Research &amp; Education</li>
+                            <li>Specialises in <strong>ML</strong>, <strong>deep learning</strong>, and <strong>AI</strong>.</li>
+                            <li>Teaches CS topics including databases, networks, and Python.</li>
+                            <li>Session aimed at newcomers: core ideas and vocabulary before deeper topics.</li>
                         </ul>
 
-                        <h3>Brief History</h3>
+                        <h3>1. Motivation for learning Python</h3>
                         <ul>
-                            <li>Started in <strong>1980</strong>, first version (0.90) released in <strong>1991</strong></li>
-                            <li>Python 2 was popular but officially discontinued around <strong>2020</strong></li>
-                            <li>Today only <strong>Python 3</strong> is actively maintained (latest: 3.14+)</li>
-                            <li>Recent versions (3.14/3.16) are adding stronger focus on <strong>security</strong></li>
+                            <li>Central in <strong>AI, ML, and DL</strong>; many models are built with Python.</li>
+                            <li>Systems like <strong>ChatGPT</strong> rest on deep learning stacks that are largely implemented in Python.</li>
+                            <li>Broad use in <strong>education, industry, and research</strong>.</li>
+                            <li>Versatile: web development, automation, data science, computer vision, image processing, and more.</li>
                         </ul>
 
-                        <h3>How Python Works — Compiled vs Interpreted</h3>
-                        <h4>C (Compiled)</h4>
+                        <h3>2. Python history and versions</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Year / era</th>
+                                        <th>Version / feature</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1980</td>
+                                        <td>Development started</td>
+                                        <td>Implemented in <strong>C</strong>; foundational runtime layer is C.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1991</td>
+                                        <td>Python 0.90 released</td>
+                                        <td>Initial public version.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Early 2000s</td>
+                                        <td>Python 2</td>
+                                        <td>Very popular; now <strong>deprecated</strong> (support ended ~2020).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Post-2020</td>
+                                        <td>Python 3.x</td>
+                                        <td>Dominant line; ongoing releases (e.g. 3.14, 3.16) emphasise <strong>security</strong> among other improvements.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <ul>
-                            <li>You write the full program first</li>
-                            <li>Compiler converts everything to binary <strong>all at once</strong></li>
-                            <li>Any error = entire program fails to compile</li>
-                            <li>Faster execution</li>
+                            <li>Python is <strong>open source</strong> and free.</li>
+                            <li>Code is run by an <strong>interpreter</strong>, not compiled as one monolithic binary step like typical C workflows.</li>
                         </ul>
-                        <h4>Python (Interpreted)</h4>
-                        <ul>
-                            <li>Executes <strong>line by line</strong></li>
-                            <li>Interpreter converts one line → runs it → moves to next line</li>
-                            <li>Error stops execution at that line; earlier lines already ran</li>
-                            <li>Slower, but far easier to debug and write</li>
-                        </ul>
-                        <h4>Under the hood</h4>
-                        <p>Python is written in C. When Python code runs, it internally goes:<br><strong>Python → C-equivalent → binary</strong><br>This multi-step process is why Python is slower than C, but the developer experience is much simpler.</p>
 
-                        <h3>Python vs C — Key Differences</h3>
+                        <h3>3. Execution model: interpreter vs compiler</h3>
+                        <ul>
+                            <li><strong>C:</strong> compiler turns the <em>whole</em> program into machine code before run.</li>
+                            <li><strong>Python:</strong> interpreter runs <strong>line by line</strong>, translating and executing incrementally.</li>
+                            <li>Easier debugging: failures surface at the line where they occur; earlier lines may already have run.</li>
+                            <li>CPython is built on C; execution paths may involve translation toward C-level work — abstracted for everyday coding.</li>
+                            <li><strong>Trade-off:</strong> Python is typically slower than C, but faster to write, test, and maintain.</li>
+                        </ul>
+
+                        <h3>4. Python vs C: key differences</h3>
                         <div class="notes-table-wrap">
                             <table class="notes-table">
                                 <thead>
@@ -307,162 +335,131 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Speed</td>
-                                        <td>Slower (multi-step translation)</td>
-                                        <td>Faster</td>
+                                        <td>Language type</td>
+                                        <td>Interpreted; dynamically typed</td>
+                                        <td>Compiled; statically typed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Syntax</td>
+                                        <td>Close to English; beginner-friendly</td>
+                                        <td>Lower-level, more verbose</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Object orientation</td>
+                                        <td>Supports OOP</td>
+                                        <td>Procedural focus (no native OOP like Python&apos;s classes)</td>
                                     </tr>
                                     <tr>
                                         <td>Pointers</td>
-                                        <td>Handled implicitly (no headache)</td>
+                                        <td>Not exposed; managed implicitly</td>
                                         <td>Explicit pointers</td>
                                     </tr>
                                     <tr>
                                         <td>Typing</td>
-                                        <td>Dynamic — type inferred, can change</td>
-                                        <td>Static — declare once, fixed</td>
+                                        <td>Weakly typed, dynamic type inference (as presented in lecture)</td>
+                                        <td>Strongly typed, fixed types after declaration</td>
                                     </tr>
                                     <tr>
-                                        <td>OOP</td>
-                                        <td>Supported</td>
-                                        <td>Not supported (procedural only)</td>
+                                        <td>Variables</td>
+                                        <td>Can rebind to different types</td>
+                                        <td>Type fixed after declaration</td>
                                     </tr>
                                     <tr>
                                         <td>Memory</td>
-                                        <td>Managed automatically</td>
-                                        <td>Manual control</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Portability</td>
-                                        <td>Cross-platform</td>
-                                        <td>Cross-platform</td>
+                                        <td>Automatic management</td>
+                                        <td>Manual; pointer discipline required</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <h3>Core Syntax Basics</h3>
-                        <h4>Printing output</h4>
-                        <pre class="notes-pre"><code>print("Hello World")</code></pre>
-
-                        <h4>Variables — no type declaration needed</h4>
-                        <pre class="notes-pre"><code>month = "May"   # string — Python decides the type
-age = 18        # integer
-price = 99.5    # float</code></pre>
-                        <p>Python infers the type from the assigned value. The same variable can be reassigned a different type later (dynamic typing).</p>
-
-                        <h4>Multiple assignment in one line</h4>
-                        <pre class="notes-pre"><code>a = b = c = 10              # same value for all
-x, y, z = 1, 2, "python"   # different values</code></pre>
-
-                        <h4>Checking type</h4>
-                        <pre class="notes-pre"><code>type(month)  # &lt;class 'str'&gt;
-type(age)    # &lt;class 'int'&gt;
-type(price)  # &lt;class 'float'&gt;</code></pre>
-
-                        <h4>Type conversion</h4>
-                        <pre class="notes-pre"><code>int(3.9)    # → 3       (decimal part removed, NOT rounded)
-float(10)   # → 10.0
-str(25)     # → "25"</code></pre>
-                        <div class="notes-callout">
-                            <strong>Note:</strong> Converting <code>"3.9"</code> (string) directly to <code>int</code> raises a ValueError.<br>
-                            Do it in two steps: <code>int(float("3.9"))</code> → <code>3</code>
-                        </div>
-
-                        <h3>Naming Rules</h3>
+                        <h3>5. Python language features and syntax</h3>
                         <ul>
-                            <li>Can contain <strong>letters</strong>, <strong>digits</strong>, and <strong>underscores</strong></li>
-                            <li><strong>Cannot start with a digit</strong> (e.g. <code>9x</code> is invalid)</li>
-                            <li>No special characters except underscore</li>
-                            <li><strong>Case-sensitive</strong> — <code>x</code> and <code>X</code> are two different variables</li>
+                            <li>Interpreted, interactive, portable across <strong>Linux, Windows</strong>, and other platforms.</li>
+                            <li>Supports <strong>procedural</strong>, <strong>object-oriented</strong>, and <strong>functional</strong> styles.</li>
+                            <li>No separate type declarations — types are inferred at runtime.</li>
+                            <li>Dynamic rebinding (e.g. <code>month = "May"</code> then <code>month = 9</code>).</li>
+                            <li><strong>Case-sensitive</strong> names (<code>x</code> vs <code>X</code>).</li>
+                            <li>Identifiers: letters, digits, underscore; <strong>must not start with a digit</strong>.</li>
+                            <li>Multiple assignment in one line, e.g. <code>a, b, c = 1, 2, "Python"</code>.</li>
                         </ul>
 
-                        <h3>Data Types in Python</h3>
-                        <h4>Numeric types</h4>
-                        <ul>
-                            <li><code>int</code> — integers (e.g. <code>10</code>, <code>18</code>)</li>
-                            <li><code>float</code> — decimal numbers (e.g. <code>99.5</code>, <code>10.0</code>)</li>
-                            <li><code>complex</code> — complex numbers</li>
-                            <li><code>bool</code> — <code>True</code> / <code>False</code></li>
-                        </ul>
-
-                        <h4>Collection / Sequence types</h4>
-                        <p><strong>List</strong> — ordered, mutable, allows mixed types and duplicates</p>
-                        <pre class="notes-pre"><code>my_list = [1, 2, "hello", 10.0]
-my_list[2] = 99   # you can change values</code></pre>
-
-                        <p><strong>Tuple</strong> — like a list but immutable (values cannot be changed after creation)</p>
-                        <pre class="notes-pre"><code>my_tuple = (1, 2, 3)
-my_tuple[0] = 99  # ❌ raises TypeError</code></pre>
-
-                        <p><strong>Set</strong> — unordered, only unique elements (duplicates auto-removed)</p>
-                        <pre class="notes-pre"><code>my_set = {1, 2, 2, 3}  # → {1, 2, 3}</code></pre>
-
-                        <p><strong>Dictionary</strong> — key-value pairs; access value by key</p>
-                        <pre class="notes-pre"><code>d = {"name": "Zon", "age": 20}
-d["name"]   # → "Zon"
-d["age"]    # → 20
-d.keys()    # → dict_keys(['name', 'age'])</code></pre>
-
-                        <h3>Key Libraries</h3>
+                        <h3>6. Data types and collections</h3>
                         <div class="notes-table-wrap">
                             <table class="notes-table">
                                 <thead>
                                     <tr>
-                                        <th>Library</th>
-                                        <th>Purpose</th>
+                                        <th>Category</th>
+                                        <th>Examples &amp; description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><code>numpy</code></td>
-                                        <td>Scientific computing — matrix/vector operations</td>
+                                        <td>Numeric</td>
+                                        <td>Integer, float, complex, boolean</td>
                                     </tr>
                                     <tr>
-                                        <td><code>pandas</code></td>
-                                        <td>Data manipulation — reading CSV, dataframes</td>
+                                        <td>Sequences</td>
+                                        <td><strong>Strings</strong>; <strong>lists</strong> (mutable, mixed types); <strong>tuples</strong> (immutable sequences)</td>
                                     </tr>
                                     <tr>
-                                        <td><code>matplotlib</code></td>
-                                        <td>Plotting and visualisation</td>
+                                        <td>Sets</td>
+                                        <td>Unordered; <strong>unique</strong> elements only (duplicates dropped)</td>
                                     </tr>
                                     <tr>
-                                        <td><code>tensorflow</code></td>
-                                        <td>Deep learning framework (Google)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>keras</code></td>
-                                        <td>High-level deep learning API</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>pytorch</code></td>
-                                        <td>Deep learning framework (Meta)</td>
+                                        <td>Dictionaries</td>
+                                        <td>Key–value maps; keys unique; values any type — fast lookup, e.g. <code>d['name'] = "Zone"</code></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
-                        <h3>Key Features of Python</h3>
                         <ul>
-                            <li>Easy to read, write, and debug</li>
-                            <li>Open source and free</li>
-                            <li>Beginner-friendly syntax (close to English)</li>
-                            <li>Supports object-oriented programming</li>
-                            <li>Dynamically typed</li>
-                            <li>Large standard library + thousands of third-party packages</li>
-                            <li>Portable across Linux, Windows, macOS</li>
+                            <li>Lists allow mixed element types.</li>
+                            <li>Tuples behave like fixed lists (immutable).</li>
+                            <li>Sets enforce uniqueness automatically.</li>
                         </ul>
 
-                        <h3>Career Paths with Python</h3>
+                        <h3>7. Type conversion and dynamic typing</h3>
                         <ul>
-                            <li>Data Scientist</li>
-                            <li>Machine Learning Engineer</li>
-                            <li>Software Developer</li>
-                            <li>Computer Vision Engineer</li>
-                            <li>Data Engineer</li>
-                            <li>AI / Research Scientist</li>
+                            <li>Implicit and explicit conversions both arise in practice.</li>
+                            <li><code>int()</code> — truncates toward zero (not “round”).</li>
+                            <li><code>float()</code>, <code>str()</code> — common explicit casts.</li>
+                            <li>String → float → int chains must be staged; direct invalid paths raise errors.</li>
+                            <li>Important in ML/AI pipelines where data is often normalised to floats for numerics.</li>
                         </ul>
 
-                        <p class="notes-attribution">Notes compiled from lecture by Prof. Anjit Ranjan Sha</p>
+                        <h3>8. Use cases, careers, and ecosystem</h3>
+                        <ul>
+                            <li><strong>Data science</strong> and scientific computing.</li>
+                            <li>Frameworks: <strong>TensorFlow</strong>, <strong>PyTorch</strong>, <strong>Keras</strong>.</li>
+                            <li><strong>Computer vision</strong> (e.g. perception stacks in autonomous systems).</li>
+                            <li>Web development and automation.</li>
+                            <li>Roles: developer, data scientist, ML engineer, and related paths.</li>
+                            <li>Libraries such as <strong>NumPy</strong> (arrays/linear algebra), <strong>Pandas</strong> (tables/ETL), <strong>Matplotlib</strong> (plotting) extend the core language.</li>
+                        </ul>
+
+                        <h3>Core concepts and insights</h3>
+                        <ul>
+                            <li>Line-by-line interpretation supports rapid iteration and debugging.</li>
+                            <li>Dynamic typing and readable syntax help beginners and prototypes.</li>
+                            <li>Speed vs C is offset by development velocity and ecosystem depth.</li>
+                            <li>Hiding pointers reduces low-level mistakes.</li>
+                            <li>Strong presence in AI/ML makes Python a practical career foundation.</li>
+                            <li>Collections and conversions show up constantly in real code.</li>
+                        </ul>
+
+                        <h3>Additional notes (from session)</h3>
+                        <ul>
+                            <li>Fundamentals stressed as the base for advanced AI/ML.</li>
+                            <li>Students encouraged to use extra materials and the lecturer&apos;s YouTube channel.</li>
+                            <li>Q&amp;A on runtime and execution vs Java/C.</li>
+                            <li>Platform independence and OS-specific installers discussed.</li>
+                        </ul>
+
+                        <h3>Keywords</h3>
+                        <p class="notes-keywords">Python programming · interpreter vs compiler · dynamic typing · data types (list, tuple, set, dictionary) · type conversion · machine learning, deep learning, AI · ChatGPT · ecosystem (NumPy, Pandas, TensorFlow, PyTorch, Matplotlib) · memory management · object-oriented programming · platform independence</p>
+
+                        <p class="notes-attribution">Summary of the lecture by Anjit Ranjan Sha, aligned with the session transcript (no extra claims beyond that material).</p>
                     </article>
                 </section>
                 <h3 class="pdf-section-title">Slides (PDF)</h3>
