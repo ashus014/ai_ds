@@ -72,30 +72,112 @@
             padding-bottom: 28px;
             border-bottom: 2px solid #e8eaf6;
         }
-        .notes-section h2 {
-            color: #667eea;
-            font-size: 1.35em;
+        .notes-article { color: #333; }
+        .notes-doc-title {
+            font-size: 1.45em;
             font-weight: 700;
+            color: #2d3748;
             margin-bottom: 14px;
+            line-height: 1.3;
         }
-        .notes-intro {
+        .notes-meta {
+            color: #4a5568;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+        .notes-divider {
+            border: none;
+            border-top: 2px solid #e8eaf6;
+            margin: 22px 0 24px;
+        }
+        .notes-article h3 {
+            color: #667eea;
+            font-size: 1.22em;
+            font-weight: 700;
+            margin: 1.35em 0 0.6em;
+            line-height: 1.3;
+        }
+        .notes-article h3:first-of-type { margin-top: 0; }
+        .notes-article h4 {
+            color: #764ba2;
+            font-size: 1.05em;
+            font-weight: 600;
+            margin: 1em 0 0.45em;
+        }
+        .notes-article p {
             color: #444;
             line-height: 1.65;
-            margin-bottom: 16px;
+            margin-bottom: 0.85em;
             font-size: 0.98em;
         }
-        .notes-list {
-            margin: 0 0 14px 0;
-            padding-left: 1.35em;
+        .notes-article ul {
+            margin: 0.4em 0 1em 1.35em;
             line-height: 1.55;
+            color: #444;
+            font-size: 0.98em;
         }
-        .notes-list li { margin-bottom: 10px; }
-        .notes-list li strong { color: #4a5568; }
-        .notes-footnote {
-            color: #666;
-            font-size: 0.92em;
+        .notes-article ul li { margin-bottom: 0.45em; }
+        .notes-article ul li strong { color: #2d3748; }
+        .notes-article code {
+            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+            font-size: 0.9em;
+            background: #eef0f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .notes-pre {
+            background: #f4f5f9;
+            border: 1px solid #e0e3ee;
+            border-radius: 8px;
+            padding: 12px 14px;
+            overflow-x: auto;
+            font-size: 0.86em;
+            line-height: 1.5;
+            margin: 0.65em 0 1em;
+            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+        }
+        .notes-table-wrap {
+            overflow-x: auto;
+            margin: 0.65em 0 1.15em;
+            border-radius: 8px;
+            border: 1px solid #e0e3ee;
+        }
+        table.notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .notes-table th,
+        .notes-table td {
+            border: 1px solid #dde0ee;
+            padding: 9px 11px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .notes-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .notes-table tbody tr:nth-child(even) { background: #f8f9fc; }
+        .notes-callout {
+            border-left: 4px solid #764ba2;
+            padding: 10px 14px;
+            margin: 0.65em 0 1em;
+            background: #faf9fc;
+            font-size: 0.95em;
             line-height: 1.55;
-            margin: 0;
+            color: #444;
+        }
+        .notes-callout strong { color: #2d3748; }
+        .notes-attribution {
+            margin-top: 1.75em;
+            padding-top: 1.1em;
+            border-top: 1px solid #e8eaf6;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
         }
         .pdf-section-title {
             color: #667eea;
@@ -167,18 +249,221 @@
                 <div class="date-badge">📅 March 22, 2026</div>
             </div>
             <div class="content">
-                <section class="notes-section" aria-labelledby="notes-heading">
-                    <h2 id="notes-heading">Notes</h2>
-                    <p class="notes-intro">Structured notes from the session led by <strong>Prof. Anjit Ranjan Sha</strong>. They cover the main topics from the lecture; extended Q&amp;A tangents are omitted.</p>
-                    <ul class="notes-list">
-                        <li><strong>Why Python</strong> — strengths and typical applications</li>
-                        <li><strong>History</strong> — from the 1980s through Python 3</li>
-                        <li><strong>How Python works</strong> — interpreted vs compiled (with comparison to C)</li>
-                        <li><strong>Core syntax</strong> — variables, printing, type conversion, naming rules</li>
-                        <li><strong>Data types</strong> — including list, tuple, set, and dictionary and how they differ</li>
-                        <li><strong>Key libraries</strong> and career paths</li>
-                    </ul>
-                    <p class="notes-footnote">Focus is on core concepts; informal digressions from class discussion are not repeated here.</p>
+                <section class="notes-section" aria-labelledby="notes-doc-title">
+                    <article class="notes-article">
+                        <h2 id="notes-doc-title" class="notes-doc-title">Introduction to Python Programming</h2>
+                        <p class="notes-meta"><strong>Lecturer:</strong> Asst. Prof. Anjit Ranjan Sha (Mathematics &amp; CS Dept)</p>
+                        <p class="notes-meta"><strong>Class:</strong> Preparatory class for MBA / M1 students</p>
+                        <hr class="notes-divider">
+
+                        <h3>Why Python?</h3>
+                        <p>Python is used almost everywhere — especially in ML, AI, and deep learning. Every model like ChatGPT&apos;s GPT (a transformer) is built using Python code.</p>
+                        <p><strong>Areas where Python is used:</strong></p>
+                        <ul>
+                            <li>Machine Learning &amp; Deep Learning</li>
+                            <li>Data Science &amp; Scientific Computing</li>
+                            <li>Web Development</li>
+                            <li>Computer Vision</li>
+                            <li>Image Processing</li>
+                            <li>Automation</li>
+                            <li>Research &amp; Education</li>
+                        </ul>
+
+                        <h3>Brief History</h3>
+                        <ul>
+                            <li>Started in <strong>1980</strong>, first version (0.90) released in <strong>1991</strong></li>
+                            <li>Python 2 was popular but officially discontinued around <strong>2020</strong></li>
+                            <li>Today only <strong>Python 3</strong> is actively maintained (latest: 3.14+)</li>
+                            <li>Recent versions (3.14/3.16) are adding stronger focus on <strong>security</strong></li>
+                        </ul>
+
+                        <h3>How Python Works — Compiled vs Interpreted</h3>
+                        <h4>C (Compiled)</h4>
+                        <ul>
+                            <li>You write the full program first</li>
+                            <li>Compiler converts everything to binary <strong>all at once</strong></li>
+                            <li>Any error = entire program fails to compile</li>
+                            <li>Faster execution</li>
+                        </ul>
+                        <h4>Python (Interpreted)</h4>
+                        <ul>
+                            <li>Executes <strong>line by line</strong></li>
+                            <li>Interpreter converts one line → runs it → moves to next line</li>
+                            <li>Error stops execution at that line; earlier lines already ran</li>
+                            <li>Slower, but far easier to debug and write</li>
+                        </ul>
+                        <h4>Under the hood</h4>
+                        <p>Python is written in C. When Python code runs, it internally goes:<br><strong>Python → C-equivalent → binary</strong><br>This multi-step process is why Python is slower than C, but the developer experience is much simpler.</p>
+
+                        <h3>Python vs C — Key Differences</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Python</th>
+                                        <th>C</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Speed</td>
+                                        <td>Slower (multi-step translation)</td>
+                                        <td>Faster</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pointers</td>
+                                        <td>Handled implicitly (no headache)</td>
+                                        <td>Explicit pointers</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Typing</td>
+                                        <td>Dynamic — type inferred, can change</td>
+                                        <td>Static — declare once, fixed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OOP</td>
+                                        <td>Supported</td>
+                                        <td>Not supported (procedural only)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Memory</td>
+                                        <td>Managed automatically</td>
+                                        <td>Manual control</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Portability</td>
+                                        <td>Cross-platform</td>
+                                        <td>Cross-platform</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Core Syntax Basics</h3>
+                        <h4>Printing output</h4>
+                        <pre class="notes-pre"><code>print("Hello World")</code></pre>
+
+                        <h4>Variables — no type declaration needed</h4>
+                        <pre class="notes-pre"><code>month = "May"   # string — Python decides the type
+age = 18        # integer
+price = 99.5    # float</code></pre>
+                        <p>Python infers the type from the assigned value. The same variable can be reassigned a different type later (dynamic typing).</p>
+
+                        <h4>Multiple assignment in one line</h4>
+                        <pre class="notes-pre"><code>a = b = c = 10              # same value for all
+x, y, z = 1, 2, "python"   # different values</code></pre>
+
+                        <h4>Checking type</h4>
+                        <pre class="notes-pre"><code>type(month)  # &lt;class 'str'&gt;
+type(age)    # &lt;class 'int'&gt;
+type(price)  # &lt;class 'float'&gt;</code></pre>
+
+                        <h4>Type conversion</h4>
+                        <pre class="notes-pre"><code>int(3.9)    # → 3       (decimal part removed, NOT rounded)
+float(10)   # → 10.0
+str(25)     # → "25"</code></pre>
+                        <div class="notes-callout">
+                            <strong>Note:</strong> Converting <code>"3.9"</code> (string) directly to <code>int</code> raises a ValueError.<br>
+                            Do it in two steps: <code>int(float("3.9"))</code> → <code>3</code>
+                        </div>
+
+                        <h3>Naming Rules</h3>
+                        <ul>
+                            <li>Can contain <strong>letters</strong>, <strong>digits</strong>, and <strong>underscores</strong></li>
+                            <li><strong>Cannot start with a digit</strong> (e.g. <code>9x</code> is invalid)</li>
+                            <li>No special characters except underscore</li>
+                            <li><strong>Case-sensitive</strong> — <code>x</code> and <code>X</code> are two different variables</li>
+                        </ul>
+
+                        <h3>Data Types in Python</h3>
+                        <h4>Numeric types</h4>
+                        <ul>
+                            <li><code>int</code> — integers (e.g. <code>10</code>, <code>18</code>)</li>
+                            <li><code>float</code> — decimal numbers (e.g. <code>99.5</code>, <code>10.0</code>)</li>
+                            <li><code>complex</code> — complex numbers</li>
+                            <li><code>bool</code> — <code>True</code> / <code>False</code></li>
+                        </ul>
+
+                        <h4>Collection / Sequence types</h4>
+                        <p><strong>List</strong> — ordered, mutable, allows mixed types and duplicates</p>
+                        <pre class="notes-pre"><code>my_list = [1, 2, "hello", 10.0]
+my_list[2] = 99   # you can change values</code></pre>
+
+                        <p><strong>Tuple</strong> — like a list but immutable (values cannot be changed after creation)</p>
+                        <pre class="notes-pre"><code>my_tuple = (1, 2, 3)
+my_tuple[0] = 99  # ❌ raises TypeError</code></pre>
+
+                        <p><strong>Set</strong> — unordered, only unique elements (duplicates auto-removed)</p>
+                        <pre class="notes-pre"><code>my_set = {1, 2, 2, 3}  # → {1, 2, 3}</code></pre>
+
+                        <p><strong>Dictionary</strong> — key-value pairs; access value by key</p>
+                        <pre class="notes-pre"><code>d = {"name": "Zon", "age": 20}
+d["name"]   # → "Zon"
+d["age"]    # → 20
+d.keys()    # → dict_keys(['name', 'age'])</code></pre>
+
+                        <h3>Key Libraries</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Library</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>numpy</code></td>
+                                        <td>Scientific computing — matrix/vector operations</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>pandas</code></td>
+                                        <td>Data manipulation — reading CSV, dataframes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>matplotlib</code></td>
+                                        <td>Plotting and visualisation</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>tensorflow</code></td>
+                                        <td>Deep learning framework (Google)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>keras</code></td>
+                                        <td>High-level deep learning API</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>pytorch</code></td>
+                                        <td>Deep learning framework (Meta)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Key Features of Python</h3>
+                        <ul>
+                            <li>Easy to read, write, and debug</li>
+                            <li>Open source and free</li>
+                            <li>Beginner-friendly syntax (close to English)</li>
+                            <li>Supports object-oriented programming</li>
+                            <li>Dynamically typed</li>
+                            <li>Large standard library + thousands of third-party packages</li>
+                            <li>Portable across Linux, Windows, macOS</li>
+                        </ul>
+
+                        <h3>Career Paths with Python</h3>
+                        <ul>
+                            <li>Data Scientist</li>
+                            <li>Machine Learning Engineer</li>
+                            <li>Software Developer</li>
+                            <li>Computer Vision Engineer</li>
+                            <li>Data Engineer</li>
+                            <li>AI / Research Scientist</li>
+                        </ul>
+
+                        <p class="notes-attribution">Notes compiled from lecture by Prof. Anjit Ranjan Sha</p>
+                    </article>
                 </section>
                 <h3 class="pdf-section-title">Slides (PDF)</h3>
                 <div class="pdf-toolbar">
