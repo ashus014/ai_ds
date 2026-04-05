@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Dijkstra's Algorithm — Must Know Algorithms</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.75em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header h1 a.header-title-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header h1 a.header-title-link:hover {
+            text-decoration: underline;
+            text-underline-offset: 5px;
+        }
+        .header h1 a.header-title-link:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.95);
+            outline-offset: 6px;
+            border-radius: 4px;
+        }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 680px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 28px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 14px;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.1em;
+            margin: 16px 0 10px;
+        }
+        .section p { line-height: 1.7; margin-bottom: 14px; color: #444; }
+        .section ul.explain-list {
+            margin: 8px 0 0 1.25em;
+            line-height: 1.75;
+            color: #444;
+        }
+        .section ul.explain-list li { margin-bottom: 8px; }
+        .example-block {
+            margin-top: 12px;
+            padding: 16px 18px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            line-height: 1.55;
+            overflow-x: auto;
+            color: #1f2937;
+        }
+        .algo-figure {
+            margin: 18px 0 8px;
+            text-align: center;
+        }
+        .algo-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .algo-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.95em;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        .snippet-surface {
+            margin-top: 12px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 18px 20px 20px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../must-know-algorithms.html" class="back-link">← Back to Must Know Algorithms</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1><a class="header-title-link" href="https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1" target="_blank" rel="noopener noreferrer">Dijkstra's Algorithm</a></h1>
+                <p>Single-source <strong>shortest paths</strong> on a weighted graph with <strong>non-negative</strong> edges — greedy relaxation with a min-heap.</p>
+                <span class="date-badge">📅 April 5, 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Problem</h2>
+                    <p>Given a <strong>weighted undirected</strong> graph and a source vertex <code>src</code>, compute the <strong>shortest path distance</strong> from <code>src</code> to every other vertex. The graph has <strong>no negative edge weights</strong> (standard Dijkstra requirement).</p>
+                    <figure class="algo-figure">
+                        <img src="images/dijkstra-example-graph.png" width="560" alt="Five vertices 0 to 4, source 0, edges with weights as in the example" loading="lazy" decoding="async">
+                        <figcaption>Example graph: source <code>0</code>; edge weights as labeled.</figcaption>
+                    </figure>
+                </div>
+                <div class="section">
+                    <h2>Example</h2>
+                    <p><code>src = 0</code>, adjacency list <code>adj</code> (each entry is <code>[neighbor, weight]</code>):</p>
+                    <div class="example-block">adj[0] = [[1, 4], [2, 8]]
+adj[1] = [[0, 4], [2, 3], [4, 6]]
+adj[2] = [[0, 8], [1, 3], [3, 2]]
+adj[3] = [[2, 2], [4, 10]]
+adj[4] = [[1, 6], [3, 10]]</div>
+                    <p><strong>Output:</strong> <code>[0, 4, 7, 9, 10]</code></p>
+                    <h3>Shortest paths from 0</h3>
+                    <ul class="explain-list">
+                        <li><code>0 → 0</code>: distance <strong>0</strong> (source).</li>
+                        <li><code>0 → 1</code>: direct edge <strong>4</strong>.</li>
+                        <li><code>0 → 2</code>: <code>0 → 1 → 2</code> gives <code>4 + 3 = 7</code> (better than direct <code>8</code>).</li>
+                        <li><code>0 → 3</code>: <code>0 → 1 → 2 → 3</code> gives <code>4 + 3 + 2 = 9</code>.</li>
+                        <li><code>0 → 4</code>: <code>0 → 1 → 4</code> gives <code>4 + 6 = 10</code>.</li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Code</h2>
+                    <p>Min-heap stores <code>(distance, vertex)</code>; relax neighbors when a shorter path is found. Copy the full snippet from the toolbar.</p>
+                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+
+class Solution {
+
+    // adj.get(u) is list of [v, weight]; graph is undirected, non-negative weights
+    public int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int src) {
+
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        pq.offer(new int[]{0, src});
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int d = cur[0];
+            int u = cur[1];
+
+            if (d > dist[u]) {
+                continue;
+            }
+
+            for (ArrayList<Integer> edge : adj.get(u)) {
+                int v = edge.get(0);
+                int w = edge.get(1);
+                if (dist[u] != Integer.MAX_VALUE && dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    pq.offer(new int[]{dist[v], v});
+                }
+            }
+        }
+
+        return dist;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Dijkstra Java solution">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-comment">// adj.get(u) is list of [v, weight]; graph is undirected, non-negative weights</span>
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span>[] <span class="sh-call">dijkstra</span>(<span class="sh-kw">int</span> V, <span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt;&gt;&gt; adj, <span class="sh-kw">int</span> src) {
+
+        <span class="sh-kw">int</span>[] dist = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[V];
+        <span class="sh-type">Arrays</span>.<span class="sh-call">fill</span>(dist, <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span>);
+        dist[src] = <span class="sh-lit">0</span>;
+
+        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-kw">int</span>[]&gt; pq = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;((a, b) -&gt; <span class="sh-type">Integer</span>.<span class="sh-call">compare</span>(a[<span class="sh-lit">0</span>], b[<span class="sh-lit">0</span>]));
+        pq.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{<span class="sh-lit">0</span>, src});
+
+        <span class="sh-kw">while</span> (!pq.<span class="sh-call">isEmpty</span>()) {
+            <span class="sh-kw">int</span>[] cur = pq.<span class="sh-call">poll</span>();
+            <span class="sh-kw">int</span> d = cur[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> u = cur[<span class="sh-lit">1</span>];
+
+            <span class="sh-kw">if</span> (d &gt; dist[u]) {
+                <span class="sh-kw">continue</span>;
+            }
+
+            <span class="sh-kw">for</span> (<span class="sh-type">ArrayList</span>&lt;<span class="sh-type">Integer</span>&gt; edge : adj.<span class="sh-call">get</span>(u)) {
+                <span class="sh-kw">int</span> v = edge.<span class="sh-call">get</span>(<span class="sh-lit">0</span>);
+                <span class="sh-kw">int</span> w = edge.<span class="sh-call">get</span>(<span class="sh-lit">1</span>);
+                <span class="sh-kw">if</span> (dist[u] != <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span> &amp;&amp; dist[u] + w &lt; dist[v]) {
+                    dist[v] = dist[u] + w;
+                    pq.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{dist[v], v});
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> dist;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var btn = document.getElementById('copy-all');
+            var ta = document.getElementById('copy-buffer');
+            if (!btn || !ta) return;
+            var label = 'Copy all';
+            btn.addEventListener('click', function () {
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var text = ta.value;
+                function ok() {
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.textContent = label; }, 2000);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        document.execCommand('copy');
+                        ok();
+                    } catch (e) {}
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
