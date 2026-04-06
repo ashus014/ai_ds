@@ -350,37 +350,158 @@
                         </div>
                     </div>
                 </div>
+                <div class="section">
+                    <h2>Alternative style</h2>
+                    <p>If you prefer not to use a <code>directions</code> array and a <code>for</code>-loop inside DFS, recurse in the four compass directions and OR the results with <code>||</code>. Always restore the cell after exploring all branches.</p>
+                    <textarea id="copy-buffer-alt" class="offscreen-copy" readonly aria-label="Alternative Java source for copy">class Solution {
+
+    int m, n;
+
+    public boolean exist(char[][] board, String word) {
+
+        m = board.length;
+        n = board[0].length;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+
+                if (board[i][j] == word.charAt(0) && find(board, i, j, 0, word)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean find(char[][] board, int i, int j, int idx, String word) {
+
+        // ✅ all chars matched
+        if (idx == word.length()) return true;
+
+        // ❌ boundary / visited
+        if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] == '$') {
+            return false;
+        }
+
+        // ❌ mismatch
+        if (board[i][j] != word.charAt(idx)) return false;
+
+        char temp = board[i][j];
+        board[i][j] = '$';
+
+        // 👇 your clean DFS style
+        boolean found =
+                find(board, i + 1, j, idx + 1, word) ||
+                find(board, i - 1, j, idx + 1, word) ||
+                find(board, i, j + 1, idx + 1, word) ||
+                find(board, i, j - 1, idx + 1, word);
+
+        board[i][j] = temp; // ✅ ALWAYS restore
+
+        return found;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Word Search Java solution — four explicit calls">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">AshuSinghIN</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all-alt" title="Copy entire solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span> m, n;
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">exist</span>(<span class="sh-kw">char</span>[][] board, <span class="sh-type">String</span> word) {
+
+        m = board.length;
+        n = board[<span class="sh-lit">0</span>].length;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; m; i++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = <span class="sh-lit">0</span>; j &lt; n; j++) {
+
+                <span class="sh-kw">if</span> (board[i][j] == word.<span class="sh-call">charAt</span>(<span class="sh-lit">0</span>) &amp;&amp; <span class="sh-call">find</span>(board, i, j, <span class="sh-lit">0</span>, word)) {
+                    <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">find</span>(<span class="sh-kw">char</span>[][] board, <span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j, <span class="sh-kw">int</span> idx, <span class="sh-type">String</span> word) {
+
+        <span class="sh-comment">// ✅ all chars matched</span>
+        <span class="sh-kw">if</span> (idx == word.<span class="sh-call">length</span>()) <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+
+        <span class="sh-comment">// ❌ boundary / visited</span>
+        <span class="sh-kw">if</span> (i &lt; <span class="sh-lit">0</span> || j &lt; <span class="sh-lit">0</span> || i &gt;= m || j &gt;= n || board[i][j] == <span class="sh-ch">'$'</span>) {
+            <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+        }
+
+        <span class="sh-comment">// ❌ mismatch</span>
+        <span class="sh-kw">if</span> (board[i][j] != word.<span class="sh-call">charAt</span>(idx)) <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+
+        <span class="sh-kw">char</span> temp = board[i][j];
+        board[i][j] = <span class="sh-ch">'$'</span>;
+
+        <span class="sh-comment">// 👇 your clean DFS style</span>
+        <span class="sh-kw">boolean</span> found =
+                <span class="sh-call">find</span>(board, i + <span class="sh-lit">1</span>, j, idx + <span class="sh-lit">1</span>, word) ||
+                <span class="sh-call">find</span>(board, i - <span class="sh-lit">1</span>, j, idx + <span class="sh-lit">1</span>, word) ||
+                <span class="sh-call">find</span>(board, i, j + <span class="sh-lit">1</span>, idx + <span class="sh-lit">1</span>, word) ||
+                <span class="sh-call">find</span>(board, i, j - <span class="sh-lit">1</span>, idx + <span class="sh-lit">1</span>, word);
+
+        board[i][j] = temp; <span class="sh-comment">// ✅ ALWAYS restore</span>
+
+        <span class="sh-kw">return</span> found;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script>
         (function () {
-            var btn = document.getElementById('copy-all');
-            var ta = document.getElementById('copy-buffer');
-            if (!btn || !ta) return;
-            var label = 'Copy all';
-            btn.addEventListener('click', function () {
-                ta.select();
-                ta.setSelectionRange(0, ta.value.length);
-                var text = ta.value;
-                function ok() {
-                    btn.textContent = 'Copied!';
-                    setTimeout(function () { btn.textContent = label; }, 2000);
-                }
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+            function wireCopy(btnId, taId) {
+                var btn = document.getElementById(btnId);
+                var ta = document.getElementById(taId);
+                if (!btn || !ta) return;
+                var label = 'Copy all';
+                btn.addEventListener('click', function () {
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
                         try {
                             document.execCommand('copy');
                             ok();
                         } catch (e) {}
-                    });
-                } else {
-                    try {
-                        document.execCommand('copy');
-                        ok();
-                    } catch (e) {}
-                }
-            });
+                    }
+                });
+            }
+            wireCopy('copy-all', 'copy-buffer');
+            wireCopy('copy-all-alt', 'copy-buffer-alt');
         })();
     </script>
 </body>
