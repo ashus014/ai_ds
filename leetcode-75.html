@@ -145,6 +145,65 @@
             max-width: 0;
         }
         td.hint.muted .hint-placeholder { color: #bdbdbd; }
+        td.hint-tooltip-cell {
+            text-align: center;
+            vertical-align: middle;
+            max-width: none;
+        }
+        .hint-dot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            font-style: normal;
+            line-height: 1;
+            cursor: help;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.45);
+            position: relative;
+            outline: none;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
+        .hint-dot:hover,
+        .hint-dot:focus-visible {
+            box-shadow: 0 4px 14px rgba(118, 75, 162, 0.55);
+            transform: scale(1.06);
+        }
+        .hint-dot:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+        .lc75-hint-flyout {
+            position: fixed;
+            z-index: 99999;
+            box-sizing: border-box;
+            max-width: min(320px, calc(100vw - 24px));
+            padding: 12px 14px;
+            background: #1e1b4b;
+            color: #f5f5ff;
+            font-size: 0.82rem;
+            font-weight: 500;
+            line-height: 1.45;
+            text-align: left;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+        }
+        .lc75-hint-flyout.is-open {
+            visibility: visible;
+            opacity: 1;
+        }
         .pill {
             display: inline-block;
             padding: 4px 10px;
@@ -169,7 +228,6 @@
             text-decoration: none;
         }
         td.solution a.sol-link:hover { text-decoration: underline; }
-        td.hint[title] { cursor: help; }
         #studyProgressMount { margin-bottom: 18px; }
         .study-progress-summary { text-align: center; }
         .study-progress-label {
@@ -258,7 +316,14 @@
                         <td><span class="pill diff-easy">Easy</span></td>
                         <td class="solution"><a class="sol-link" href="leetcode-75/solutions/01-merge-strings-alternately.html">Sol</a></td>
                         <td class="linkcell"><a href="https://leetcode.com/problems/merge-strings-alternately/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
-                        <td class="hint muted" title="Pick from A, then B, then A, then B…"><span class="hint-placeholder">⋯</span></td>
+                        <td class="hint hint-tooltip-cell">
+                            <button
+                                type="button"
+                                class="hint-dot"
+                                aria-label="Show hint"
+                                data-hint="Pick from A, then B, then A, then B…"
+                            >?</button>
+                        </td>
                     </tr>
                     <tr>
                         <td class="slno">2</td>
@@ -878,6 +943,86 @@
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            var fly = document.createElement('div');
+            fly.className = 'lc75-hint-flyout';
+            fly.setAttribute('role', 'tooltip');
+            document.body.appendChild(fly);
+
+            var activeBtn = null;
+            var hideTimer = null;
+
+            function measureAndPlace(btn) {
+                var text = btn.getAttribute('data-hint');
+                if (!text) return;
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var maxW = Math.min(320, vw - 24);
+                var pad = 10;
+
+                fly.classList.remove('is-open');
+                fly.textContent = text;
+                fly.style.maxWidth = maxW + 'px';
+                fly.style.visibility = 'visible';
+                fly.style.left = '-9999px';
+                fly.style.top = '0';
+
+                var fw = fly.offsetWidth;
+                var fh = fly.offsetHeight;
+                var r = btn.getBoundingClientRect();
+                var left = r.left + r.width / 2 - fw / 2;
+                var top = r.top - fh - pad;
+
+                left = Math.max(12, Math.min(left, vw - fw - 12));
+                if (top < 12) {
+                    top = r.bottom + pad;
+                }
+                if (top + fh > vh - 12) {
+                    top = Math.max(12, vh - fh - 12);
+                }
+
+                fly.style.left = left + 'px';
+                fly.style.top = top + 'px';
+                fly.classList.add('is-open');
+            }
+
+            function show(btn) {
+                clearTimeout(hideTimer);
+                activeBtn = btn;
+                measureAndPlace(btn);
+            }
+
+            function scheduleHide() {
+                hideTimer = setTimeout(function () {
+                    fly.classList.remove('is-open');
+                    fly.style.visibility = 'hidden';
+                    activeBtn = null;
+                }, 80);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.hint-dot[data-hint]').forEach(function (btn) {
+                    btn.addEventListener('mouseenter', function () { show(btn); });
+                    btn.addEventListener('mouseleave', scheduleHide);
+                    btn.addEventListener('focus', function () { show(btn); });
+                    btn.addEventListener('blur', scheduleHide);
+                });
+            });
+
+            window.addEventListener('scroll', function () {
+                if (activeBtn && fly.classList.contains('is-open')) {
+                    measureAndPlace(activeBtn);
+                }
+            }, true);
+
+            window.addEventListener('resize', function () {
+                if (activeBtn && fly.classList.contains('is-open')) {
+                    measureAndPlace(activeBtn);
+                }
+            });
+        })();
+    </script>
     <script src="study-tracker.js" defer></script>
 </body>
 </html>
