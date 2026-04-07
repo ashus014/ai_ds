@@ -14,7 +14,7 @@
             padding: 20px;
             color: #333;
         }
-        .wrapper { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -72,18 +72,9 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
-            min-width: 900px;
-            font-size: 0.9em;
+            min-width: 720px;
+            font-size: 0.92em;
         }
-        /* Column widths: statement gets the most text space; hint is capped and wraps */
-        col.col-done { width: 3rem; }
-        col.col-sl { width: 2.75rem; }
-        col.col-stmt { width: 36%; }
-        col.col-diff { width: 6.25rem; }
-        col.col-sol { width: 4rem; }
-        col.col-link { width: 4.25rem; }
-        col.col-hint { width: 22%; }
         thead th {
             background: #667eea;
             color: white;
@@ -91,12 +82,15 @@
             text-align: left;
             font-weight: 600;
         }
+        /* nth-last-child so Link/Hint stay correct after study-tracker prepends Done column */
         thead th:nth-child(1),
         thead th:nth-child(2),
-        thead th:nth-child(5),
-        thead th:nth-child(6) { text-align: center; }
+        thead th:nth-last-child(2),
+        thead th:last-child { text-align: center; }
+        thead th:nth-last-child(2) { padding-right: 4px; }
+        thead th:last-child { padding-left: 4px; }
         tbody td {
-            padding: 10px 12px;
+            padding: 10px;
             border-bottom: 1px solid #eee;
             vertical-align: top;
         }
@@ -109,7 +103,7 @@
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.12) 100%);
             font-weight: 700;
             color: #4a3a6b;
-            padding: 14px 12px;
+            padding: 14px 10px;
             border-bottom: 2px solid #667eea;
         }
         td.slno {
@@ -133,21 +127,23 @@
         td.solution {
             text-align: center;
             white-space: nowrap;
+            min-width: 4.5rem;
         }
+        /* Shrink hint column (like Blind 75) so ? sits next to Link, not in a wide empty band */
         td.hint {
             line-height: 1.45;
             color: #444;
             font-size: 0.92em;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
-            max-width: 0;
+            width: 1%;
+            min-width: 2.75rem;
+            max-width: 6rem;
+            white-space: nowrap;
+            padding-left: 4px;
+            vertical-align: middle;
         }
         td.hint-tooltip-cell {
             text-align: center;
             vertical-align: middle;
-            max-width: none;
         }
         .hint-dot {
             display: inline-flex;
@@ -214,7 +210,11 @@
         .diff-easy { background: #e8f5e9; color: #2e7d32; }
         .diff-medium { background: #fff8e1; color: #f57f17; }
         .diff-hard { background: #ffebee; color: #c62828; }
-        td.linkcell { white-space: nowrap; text-align: center; }
+        td.linkcell {
+            white-space: nowrap;
+            text-align: center;
+            padding-right: 4px;
+        }
         td.linkcell a {
             color: #667eea;
             font-weight: 600;
@@ -289,14 +289,6 @@
             <div id="studyProgressMount" aria-live="polite"></div>
             <div class="table-wrap">
                 <table>
-                    <colgroup>
-                        <col class="col-sl">
-                        <col class="col-stmt">
-                        <col class="col-diff">
-                        <col class="col-sol">
-                        <col class="col-link">
-                        <col class="col-hint">
-                    </colgroup>
                     <thead>
                         <tr>
                             <th scope="col">Sl No</th>
