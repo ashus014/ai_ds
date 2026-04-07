@@ -20,6 +20,17 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   }
 
+  if (!document.getElementById('study-tracker-styles')) {
+    var st = document.createElement('style');
+    st.id = 'study-tracker-styles';
+    st.textContent =
+      '.study-clear-wrap{text-align:center;margin-top:12px;}' +
+      '.study-clear-done-btn{font:inherit;font-size:0.9em;font-weight:600;color:#5c6bc0;background:#fff;border:1px solid #c5cae9;border-radius:8px;padding:6px 16px;cursor:pointer;}' +
+      '.study-clear-done-btn:hover{background:#e8eaf6;color:#3949ab;border-color:#9fa8da;}' +
+      '.study-clear-done-btn:focus-visible{outline:2px solid #667eea;outline-offset:2px;}';
+    document.head.appendChild(st);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var mount = document.getElementById('studyProgressMount');
     var table = document.querySelector('.main-container .table-wrap table');
@@ -96,6 +107,39 @@
       var pct = total ? Math.round((n / total) * 100) : 0;
       bar.style.width = pct + '%';
     }
+
+    var clearWrap = document.createElement('div');
+    clearWrap.className = 'study-clear-wrap';
+    var clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'study-clear-done-btn';
+    clearBtn.textContent = 'Clear all done ticks';
+    clearBtn.setAttribute(
+      'aria-label',
+      'Deselect all done checkboxes for this problem list'
+    );
+    clearBtn.addEventListener('click', function () {
+      if (
+        !window.confirm(
+          'Clear every done tick for this list? Your progress is only stored in this browser.'
+        )
+      ) {
+        return;
+      }
+      solved.clear();
+      saveSolvedIndices(solved);
+      checkboxes.forEach(function (cb) {
+        cb.checked = false;
+      });
+      Array.prototype.forEach.call(tbody.querySelectorAll('tr'), function (tr) {
+        if (!tr.classList.contains('cat-row')) {
+          tr.classList.remove('row-solved');
+        }
+      });
+      updateSummary();
+    });
+    clearWrap.appendChild(clearBtn);
+    mount.appendChild(clearWrap);
 
     updateSummary();
   });
