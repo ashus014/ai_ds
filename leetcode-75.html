@@ -878,14 +878,14 @@
                         <td class="slno">41</td>
                         <td class="stmt">700. Search in a Binary Search Tree</td>
                         <td><span class="pill diff-easy">Easy</span></td>
-                        <td class="solution muted">—</td>
+                        <td class="solution"><a class="sol-link" href="leetcode-75/solutions/41-search-in-a-binary-search-tree.html">Sol</a></td>
                         <td class="linkcell"><a href="https://leetcode.com/problems/search-in-a-binary-search-tree/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
                         <td class="hint hint-tooltip-cell">
                             <button
                                 type="button"
                                 class="hint-dot"
                                 aria-label="Show hint"
-                                data-hint="return root.val > val ? searchBST(root.left, val) : searchBST(root.right, val);"
+                                data-hint="BST walk: null or val matches root → return root; val smaller → left; larger → right"
                             >?</button>
                         </td>
                     </tr>
@@ -893,14 +893,14 @@
                         <td class="slno">42</td>
                         <td class="stmt">450. Delete Node in a BST</td>
                         <td><span class="pill diff-medium">Medium</span></td>
-                        <td class="solution muted">—</td>
+                        <td class="solution"><a class="sol-link" href="leetcode-75/solutions/42-delete-node-in-a-bst.html">Sol</a></td>
                         <td class="linkcell"><a href="https://leetcode.com/problems/delete-node-in-a-bst/submissions/?envType=study-plan-v2&amp;envId=leetcode-75" target="_blank" rel="noopener noreferrer">Open</a></td>
                         <td class="hint hint-tooltip-cell">
                             <button
                                 type="button"
                                 class="hint-dot"
                                 aria-label="Show hint"
-                                data-hint="special handling when node to delete has two children"
+                                data-hint="BST recurse to key; 0 kids → null; 1 kid → promote; 2 kids → min on right, copy val, delete successor from right"
                             >?</button>
                         </td>
                     </tr>
