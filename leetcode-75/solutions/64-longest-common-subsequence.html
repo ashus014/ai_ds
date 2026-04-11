@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>1143 — Longest Common Subsequence — LeetCode 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .callout {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .snippet-surface + .callout { margin-top: 0; }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../leetcode-75.html" class="back-link">← Back to LeetCode 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>1143. Longest Common Subsequence</h1>
+                <p>LeetCode 75 #64 — Given two strings, return the length of their longest common subsequence. From indices <code>(i, j)</code>: if <code>text1.charAt(i) == text2.charAt(j)</code>, extend with <code>1 + solve(i+1, j+1)</code>; else take <code>max(solve(i+1,j), solve(i,j+1))</code>.</p>
+                <span class="meta">LeetCode 75 / DP — Multidimensional</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>End of either string → LCS length <code>0</code>. Only <code>O(|text1|·|text2|)</code> distinct <code>(i,j)</code> states—memoize.</p>
+                </div>
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Naive recursion</h3>
+                    <p>Try match / skip on each axis without storing subproblems.</p>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Naive LCS Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Naive — reference only</span>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">longestCommonSubsequence</span>(<span class="sh-type">String</span> text1, <span class="sh-type">String</span> text2) {
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(text1, text2, <span class="sh-lit">0</span>, <span class="sh-lit">0</span>);
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">solve</span>(<span class="sh-type">String</span> s1, <span class="sh-type">String</span> s2, <span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j) {
+        <span class="sh-kw">if</span>(i &gt;= s1.<span class="sh-call">length</span>() || j &gt;= s2.<span class="sh-call">length</span>()) {
+            <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+        }
+
+        <span class="sh-kw">if</span>(s1.<span class="sh-call">charAt</span>(i) == s2.<span class="sh-call">charAt</span>(j)) {
+            <span class="sh-kw">return</span> <span class="sh-lit">1</span> + <span class="sh-call">solve</span>(s1, s2, i + <span class="sh-lit">1</span>, j + <span class="sh-lit">1</span>);
+        }
+
+        <span class="sh-kw">int</span> skipS1 = <span class="sh-call">solve</span>(s1, s2, i + <span class="sh-lit">1</span>, j);
+        <span class="sh-kw">int</span> skipS2 = <span class="sh-call">solve</span>(s1, s2, i, j + <span class="sh-lit">1</span>);
+
+        <span class="sh-kw">return</span> <span class="sh-type">Math</span>.<span class="sh-call">max</span>(skipS1, skipS2);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Naive approach.</strong> Subproblem <code>(i, j)</code> is recomputed from many different recursion paths, so time is exponential in the string lengths. A 2D memo (or bottom-up DP table) fixes that.
+                    </div>
+
+                    <h3 class="spaced">✅ Memoization (top-down DP)</h3>
+                    <p>Store the LCS length for each suffix pair <code>(i, j)</code> in <code>memo[i][j]</code>.</p>
+                    <textarea id="copy-buffer-memo" class="offscreen-copy" readonly aria-label="Memoized Java source for copy">class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int [][] memo = new int[text1.length()][text2.length()];
+        for(int[] arr : memo) {
+            Arrays.fill(arr, -1);
+        }
+        return solve(text1, text2, 0, 0, memo);
+    }
+
+    private int solve(String s1, String s2, int i, int j, int[][] memo) {
+        if(i >= s1.length() || j >= s2.length()) {
+            return 0;
+        }
+
+        if(memo[i][j] != -1) {
+            return memo[i][j];
+        }
+
+        if(s1.charAt(i) == s2.charAt(j)) {
+            memo[i][j] =  1 + solve(s1, s2, i + 1, j + 1, memo);
+        } else {
+            memo[i][j] =  Math.max(solve(s1, s2, i + 1, j, memo), solve(s1, s2, i, j + 1, memo));
+        }
+
+        return memo[i][j];
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Memoized LCS Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — memoization</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-memo" title="Copy memoized solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">longestCommonSubsequence</span>(<span class="sh-type">String</span> text1, <span class="sh-type">String</span> text2) {
+        <span class="sh-kw">int</span> [][] memo = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[text1.<span class="sh-call">length</span>()][text2.<span class="sh-call">length</span>()];
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span>[] arr : memo) {
+            <span class="sh-type">Arrays</span>.<span class="sh-call">fill</span>(arr, <span class="sh-lit">-1</span>);
+        }
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(text1, text2, <span class="sh-lit">0</span>, <span class="sh-lit">0</span>, memo);
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">solve</span>(<span class="sh-type">String</span> s1, <span class="sh-type">String</span> s2, <span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j, <span class="sh-kw">int</span>[][] memo) {
+        <span class="sh-kw">if</span>(i &gt;= s1.<span class="sh-call">length</span>() || j &gt;= s2.<span class="sh-call">length</span>()) {
+            <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+        }
+
+        <span class="sh-kw">if</span>(memo[i][j] != <span class="sh-lit">-1</span>) {
+            <span class="sh-kw">return</span> memo[i][j];
+        }
+
+        <span class="sh-kw">if</span>(s1.<span class="sh-call">charAt</span>(i) == s2.<span class="sh-call">charAt</span>(j)) {
+            memo[i][j] = <span class="sh-lit">1</span> + <span class="sh-call">solve</span>(s1, s2, i + <span class="sh-lit">1</span>, j + <span class="sh-lit">1</span>, memo);
+        } <span class="sh-kw">else</span> {
+            memo[i][j] = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(<span class="sh-call">solve</span>(s1, s2, i + <span class="sh-lit">1</span>, j, memo), <span class="sh-call">solve</span>(s1, s2, i, j + <span class="sh-lit">1</span>, memo));
+        }
+
+        <span class="sh-kw">return</span> memo[i][j];
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="spaced">Tabulation (bottom-up)</h3>
+                    <p><code>dp[i][j]</code> is the LCS length of prefixes <code>text1[0 … i−1]</code> and <code>text2[0 … j−1]</code>. Extra row/column of zeros handles empty prefixes. Same transitions as recursion, filled in increasing <code>i, j</code>; answer is <code>dp[m][n]</code>.</p>
+                    <textarea id="copy-buffer-tab" class="offscreen-copy" readonly aria-label="Tabulated Java source for copy">class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        
+        // DP table: dp[i][j] represents the LCS length for text1[0...i-1] and text2[0...j-1]
+        int[][] dp = new int[m + 1][n + 1];
+        
+        // Fill the DP table
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Tabulated LCS Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — tabulation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-tab" title="Copy tabulated solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">longestCommonSubsequence</span>(<span class="sh-type">String</span> text1, <span class="sh-type">String</span> text2) {
+        <span class="sh-kw">int</span> m = text1.<span class="sh-call">length</span>();
+        <span class="sh-kw">int</span> n = text2.<span class="sh-call">length</span>();
+        
+        <span class="sh-comment">// DP table: dp[i][j] represents the LCS length for text1[0...i-1] and text2[0...j-1]</span>
+        <span class="sh-kw">int</span>[][] dp = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[m + <span class="sh-lit">1</span>][n + <span class="sh-lit">1</span>];
+        
+        <span class="sh-comment">// Fill the DP table</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt;= m; i++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = <span class="sh-lit">1</span>; j &lt;= n; j++) {
+                <span class="sh-kw">if</span> (text1.<span class="sh-call">charAt</span>(i - <span class="sh-lit">1</span>) == text2.<span class="sh-call">charAt</span>(j - <span class="sh-lit">1</span>)) {
+                    dp[i][j] = <span class="sh-lit">1</span> + dp[i - <span class="sh-lit">1</span>][j - <span class="sh-lit">1</span>];
+                } <span class="sh-kw">else</span> {
+                    dp[i][j] = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(dp[i - <span class="sh-lit">1</span>][j], dp[i][j - <span class="sh-lit">1</span>]);
+                }
+            }
+        }
+        
+        <span class="sh-kw">return</span> dp[m][n];
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
