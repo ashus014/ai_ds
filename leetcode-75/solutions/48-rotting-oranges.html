@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>994 — Rotting Oranges — LeetCode 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
+        .sh-ch { color: #f1fa8c; }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../leetcode-75.html" class="back-link">← Back to LeetCode 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>994. Rotting Oranges</h1>
+                <p>LeetCode 75 #48 — Multi-source BFS: enqueue every rotten orange (<code>2</code>), count fresh (<code>1</code>). Each level of BFS rots adjacent fresh cells, decrements <code>fresh</code>, and pushes new rotten cells. Stop when the queue is empty or no fresh remain. Minutes = levels processed; return <code>-1</code> if any fresh is left.</p>
+                <span class="meta">LeetCode 75 / Graphs — BFS</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>Count <code>fresh</code> and seed <code>Queue</code> with all <code>2</code> cells. <code>while (!q.isEmpty() &amp;&amp; fresh &gt; 0)</code>: process <code>size</code> nodes per minute, 4-neighbor spread, set cell to <code>2</code>. Answer <code>fresh == 0 ? time : -1</code>.</p>
+                </div>
+                <div class="section">
+                    <h2>Code</h2>
+                    <p>Copy the full solution in one click from the window toolbar.</p>
+                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">class Solution {
+    public int orangesRotting(int[][] grid) {
+        Queue<int[]> q = new LinkedList<>();
+        int time = 0;
+        int fresh = 0;
+
+        int ROWS = grid.length;
+        int COLS = grid[0].length;
+
+        // Count fresh oranges and add rotten oranges to the queue
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                if (grid[r][c] == 1) {
+                    fresh++;
+                } else if (grid[r][c] == 2) {
+                    q.offer(new int[]{r, c});
+                }
+            }
+        }
+
+        // Define the four directions
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        // BFS to rot oranges
+        while (!q.isEmpty() && fresh > 0) {
+            int size = q.size();
+
+            // Process all rotten oranges at the current time
+            for (int i = 0; i < size; i++) {
+
+                int[] pos = q.poll();
+
+                // Check all four directions
+                for (int[] dir : directions) {
+                    int row = pos[0] + dir[0];
+                    int col = pos[1] + dir[1];
+
+                    // If out of bound or not fresh, continue
+                    if (row < 0 || row == ROWS || col < 0 || col == COLS || grid[row][col] != 1) {
+                        continue;
+                    }
+
+                    // Now, make the oranges rotten
+                    grid[row][col] = 2;
+                    q.offer(new int[]{row, col});
+                    fresh--;
+                }
+            }
+            // increment the time
+            time++;
+        }
+
+        return fresh == 0 ? time : -1;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Rotting oranges Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">orangesRotting</span>(<span class="sh-kw">int</span>[][] grid) {
+        <span class="sh-type">Queue</span>&lt;<span class="sh-kw">int</span>[]&gt; q = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
+        <span class="sh-kw">int</span> time = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> fresh = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">int</span> ROWS = grid.length;
+        <span class="sh-kw">int</span> COLS = grid[<span class="sh-lit">0</span>].length;
+
+        <span class="sh-comment">// Count fresh oranges and add rotten oranges to the queue</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> r = <span class="sh-lit">0</span>; r &lt; ROWS; r++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> c = <span class="sh-lit">0</span>; c &lt; COLS; c++) {
+                <span class="sh-kw">if</span> (grid[r][c] == <span class="sh-lit">1</span>) {
+                    fresh++;
+                } <span class="sh-kw">else</span> <span class="sh-kw">if</span> (grid[r][c] == <span class="sh-lit">2</span>) {
+                    q.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{r, c});
+                }
+            }
+        }
+
+        <span class="sh-comment">// Define the four directions</span>
+        <span class="sh-kw">int</span>[][] directions = {{<span class="sh-lit">0</span>, <span class="sh-lit">1</span>}, {<span class="sh-lit">0</span>, -<span class="sh-lit">1</span>}, {<span class="sh-lit">1</span>, <span class="sh-lit">0</span>}, {-<span class="sh-lit">1</span>, <span class="sh-lit">0</span>}};
+
+        <span class="sh-comment">// BFS to rot oranges</span>
+        <span class="sh-kw">while</span> (!q.<span class="sh-call">isEmpty</span>() &amp;&amp; fresh &gt; <span class="sh-lit">0</span>) {
+            <span class="sh-kw">int</span> size = q.<span class="sh-call">size</span>();
+
+            <span class="sh-comment">// Process all rotten oranges at the current time</span>
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; size; i++) {
+
+                <span class="sh-kw">int</span>[] pos = q.<span class="sh-call">poll</span>();
+
+                <span class="sh-comment">// Check all four directions</span>
+                <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] dir : directions) {
+                    <span class="sh-kw">int</span> row = pos[<span class="sh-lit">0</span>] + dir[<span class="sh-lit">0</span>];
+                    <span class="sh-kw">int</span> col = pos[<span class="sh-lit">1</span>] + dir[<span class="sh-lit">1</span>];
+
+                    <span class="sh-comment">// If out of bound or not fresh, continue</span>
+                    <span class="sh-kw">if</span> (row &lt; <span class="sh-lit">0</span> || row == ROWS || col &lt; <span class="sh-lit">0</span> || col == COLS || grid[row][col] != <span class="sh-lit">1</span>) {
+                        <span class="sh-kw">continue</span>;
+                    }
+
+                    <span class="sh-comment">// Now, make the oranges rotten</span>
+                    grid[row][col] = <span class="sh-lit">2</span>;
+                    q.<span class="sh-call">offer</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{row, col});
+                    fresh--;
+                }
+            }
+            <span class="sh-comment">// increment the time</span>
+            time++;
+        }
+
+        <span class="sh-kw">return</span> fresh == <span class="sh-lit">0</span> ? time : -<span class="sh-lit">1</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var btn = document.getElementById('copy-all');
+            var ta = document.getElementById('copy-buffer');
+            if (!btn || !ta) return;
+            var label = 'Copy all';
+            btn.addEventListener('click', function () {
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var text = ta.value;
+                function ok() {
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.textContent = label; }, 2000);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        document.execCommand('copy');
+                        ok();
+                    } catch (e) {}
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
