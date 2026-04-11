@@ -360,6 +360,70 @@
 }</code></pre>
                         </div>
                     </div>
+
+                    <h3 class="spaced">Tabulation (bottom-up)</h3>
+                    <p><code>t[i][j]</code> = number of paths from <code>(0,0)</code> to <code>(i,j)</code> moving only right/down. First row and column are all <code>1</code>; inner cells sum from top and left. Answer <code>t[m−1][n−1]</code>.</p>
+                    <textarea id="copy-buffer-tab" class="offscreen-copy" readonly aria-label="Tabulated Java source for copy">class Solution {
+    public int uniquePaths(int m, int n) {
+        int[][] t = new int[m][n]; 
+        t[0][0] = 1;
+
+        for(int col = 1; col < n; col++) {
+           t[0][col] = 1;
+        }
+
+        for(int row = 1; row < m; row++) {
+            t[row][0] = 1;
+        }
+
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                t[i][j] = t[i-1][j] + t[i][j-1];
+            }
+        }
+
+        return t[m-1][n-1];
+
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Tabulated unique paths Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — tabulation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-tab" title="Copy tabulated solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">uniquePaths</span>(<span class="sh-kw">int</span> m, <span class="sh-kw">int</span> n) {
+        <span class="sh-kw">int</span>[][] t = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[m][n];
+        t[<span class="sh-lit">0</span>][<span class="sh-lit">0</span>] = <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span> col = <span class="sh-lit">1</span>; col &lt; n; col++) {
+           t[<span class="sh-lit">0</span>][col] = <span class="sh-lit">1</span>;
+        }
+
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span> row = <span class="sh-lit">1</span>; row &lt; m; row++) {
+            t[row][<span class="sh-lit">0</span>] = <span class="sh-lit">1</span>;
+        }
+
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; m; i++) {
+            <span class="sh-kw">for</span>(<span class="sh-kw">int</span> j = <span class="sh-lit">1</span>; j &lt; n; j++) {
+                t[i][j] = t[i-<span class="sh-lit">1</span>][j] + t[i][j-<span class="sh-lit">1</span>];
+            }
+        }
+
+        <span class="sh-kw">return</span> t[m-<span class="sh-lit">1</span>][n-<span class="sh-lit">1</span>];
+
+    }
+}</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
