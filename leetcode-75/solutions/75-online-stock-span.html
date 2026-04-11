@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>901 — Online Stock Span — LeetCode 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.45em; margin-bottom: 12px; font-weight: 700; line-height: 1.3; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .callout {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .snippet-surface + .callout { margin-top: 0; }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .explain-deep {
+            margin-top: 22px;
+            padding: 22px;
+            background: #fefcff;
+            border: 1px solid #e8e0f5;
+            border-radius: 10px;
+            font-size: 0.98em;
+            line-height: 1.65;
+            color: #333;
+        }
+        .explain-deep h3 {
+            margin: 0 0 14px;
+            color: #4c1d95;
+            font-size: 1.18em;
+            line-height: 1.35;
+        }
+        .explain-deep h4 {
+            margin: 18px 0 8px;
+            color: #667eea;
+            font-size: 1.05em;
+        }
+        .explain-deep p { margin: 0 0 12px; }
+        .explain-deep ul { margin: 6px 0 12px 22px; }
+        .explain-deep li { margin-bottom: 6px; }
+        .explain-deep pre {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1e2e;
+            color: #e8e8ef;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+        .explain-deep pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../leetcode-75.html" class="back-link">← Back to LeetCode 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>901. Online Stock Span</h1>
+                <p>LeetCode 75 #75 — On each <code>next(price)</code>, return the span of consecutive days (including today) with price <code>&lt;=</code> today’s price ending at today. A list plus backward scan is simple but quadratic overall; a stack of <code>[price, span]</code> merges “dominated” days in amortized constant time per call.</p>
+                <span class="meta">LeetCode 75 / Monotonic Stack</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p><strong>Brute:</strong> append the price, walk backward while previous prices are <code>&lt;=</code> current. <strong>Stack:</strong> while top price <code>&lt;=</code> current, absorb its <code>span</code> into yours and pop; then push <code>{price, span}</code>.</p>
+                </div>
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Brute force (list + backward scan)</h3>
+                    <p>Keep every price in an <code>ArrayList</code>, then count backward from yesterday.</p>
+                    <textarea id="copy-buffer-brute" class="offscreen-copy" readonly aria-label="Stock span brute Java for copy">class StockSpanner {
+
+    // Store all prices seen so far
+    private List<Integer> prices;
+
+    public StockSpanner() {
+        prices = new ArrayList<>();
+    }
+    
+    public int next(int price) {
+
+        // Add current price
+        prices.add(price);
+
+        int span = 1;
+
+        // Start from previous day and go backwards
+        int i = prices.size() - 2;
+
+        while(i >= 0 && prices.get(i) <= price) {
+            span++;
+            i--;
+        }
+
+        return span;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Stock span brute Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">StockSpanner.java — brute force</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-brute" title="Copy brute force">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">StockSpanner</span> {
+
+    <span class="sh-comment">// Store all prices seen so far</span>
+    <span class="sh-kw">private</span> <span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt; prices;
+
+    <span class="sh-kw">public</span> <span class="sh-type">StockSpanner</span>() {
+        prices = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+    }
+    
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">next</span>(<span class="sh-kw">int</span> price) {
+
+        <span class="sh-comment">// Add current price</span>
+        prices.<span class="sh-call">add</span>(price);
+
+        <span class="sh-kw">int</span> span = <span class="sh-lit">1</span>;
+
+        <span class="sh-comment">// Start from previous day and go backwards</span>
+        <span class="sh-kw">int</span> i = prices.<span class="sh-call">size</span>() - <span class="sh-lit">2</span>;
+
+        <span class="sh-kw">while</span>(i &gt;= <span class="sh-lit">0</span> &amp;&amp; prices.<span class="sh-call">get</span>(i) &lt;= price) {
+            span++;
+            i--;
+        }
+
+        <span class="sh-kw">return</span> span;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Complexity.</strong> Day <code>k</code> may scan <code>k</code> older entries, so over <code>n</code> days the total work is on the order of <code>1 + 2 + … + n = O(n²)</code>. Add <code>import java.util.List;</code> and <code>import java.util.ArrayList;</code> in a full Java file.
+                    </div>
+
+                    <h3 class="spaced">✅ Stack (<code>price</code>, <code>span</code>)</h3>
+                    <p>Each stack entry summarizes a contiguous block of days that are already “covered” by a single span at that price. Popping merges strictly lower-or-equal prices into the current span.</p>
+                    <textarea id="copy-buffer-stack" class="offscreen-copy" readonly aria-label="Stock span stack Java for copy">class StockSpanner {
+
+    private Stack<int[]> stack;
+
+    public StockSpanner() {
+        stack = new Stack<>();    
+    }
+    
+    public int next(int price) {
+        int span = 1;
+        while(!stack.isEmpty() && stack.peek()[0] <= price) {
+            span += stack.pop()[1];
+        }
+
+        stack.push(new int[]{price, span});
+        return span;
+    }
+}
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner obj = new StockSpanner();
+ * int param_1 = obj.next(price);
+ */</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Stock span stack Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">StockSpanner.java — monotonic stack</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-stack" title="Copy stack solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">StockSpanner</span> {
+
+    <span class="sh-kw">private</span> <span class="sh-type">Stack</span>&lt;<span class="sh-kw">int</span>[]&gt; stack;
+
+    <span class="sh-kw">public</span> <span class="sh-type">StockSpanner</span>() {
+        stack = <span class="sh-kw">new</span> <span class="sh-type">Stack</span>&lt;&gt;();    
+    }
+    
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">next</span>(<span class="sh-kw">int</span> price) {
+        <span class="sh-kw">int</span> span = <span class="sh-lit">1</span>;
+        <span class="sh-kw">while</span>(!stack.<span class="sh-call">isEmpty</span>() &amp;&amp; stack.<span class="sh-call">peek</span>()[<span class="sh-lit">0</span>] &lt;= price) {
+            span += stack.<span class="sh-call">pop</span>()[<span class="sh-lit">1</span>];
+        }
+
+        stack.<span class="sh-call">push</span>(<span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{price, span});
+        <span class="sh-kw">return</span> span;
+    }
+}
+
+<span class="sh-comment">/**</span>
+<span class="sh-comment"> * Your StockSpanner object will be instantiated and called as such:</span>
+<span class="sh-comment"> * StockSpanner obj = new StockSpanner();</span>
+<span class="sh-comment"> * int param_1 = obj.next(price);</span>
+<span class="sh-comment"> */</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Java imports.</strong> Add <code>import java.util.Stack;</code> (and optionally drop unused imports). Each <code>int[]</code> holds <code>[price, span]</code> for a compressed group of days.
+                    </div>
+
+                    <div class="explain-deep">
+                        <h3>Why the stack solution is <code>O(1)</code> amortized per <code>next</code></h3>
+                        <h4>What you might think</h4>
+                        <p>That inner <code>while</code> can look scary: “many pops in one call → isn’t that <code>O(n)</code> every time?” Here is the loop:</p>
+                        <pre><code>while (!stack.isEmpty() &amp;&amp; stack.peek()[0] &lt;= price) {
+    span += stack.pop()[1];
+}</code></pre>
+                        <p>That loop can run many times on one call, so it feels like <strong><code>O(n)</code> per <code>next</code></strong>, and over <code>n</code> calls maybe <strong><code>O(n²)</code></strong>? That worst case for a <em>single</em> call can indeed be linear in stack size — but the story over the <strong>whole stream</strong> is different.</p>
+
+                        <h4>Actual picture: amortized <code>O(1)</code> total work</h4>
+                        <p><strong>Key observation.</strong> Each stored pair is <strong>pushed once</strong> and <strong>popped at most once</strong>. When something is popped, it never comes back — it cannot be part of a later <code>while</code> again.</p>
+                        <p><strong>Total work over <code>n</code> prices.</strong></p>
+                        <ul>
+                            <li><strong>Pushes:</strong> at most <code>n</code> (one new <code>[price, span]</code> per <code>next</code>).</li>
+                            <li><strong>Pops:</strong> at most <code>n</code> total across the entire run (each pop discards one distinct entry forever).</li>
+                        </ul>
+                        <pre><code>Push  → at most n
+Pop   → at most n
+-------------------
+Total → 2n  →  O(n) overall</code></pre>
+                        <p><strong>Per operation (amortized).</strong> Spread that <code>O(n)</code> total work across <code>n</code> calls: <code>O(n) / n = O(1)</code> <strong>amortized</strong> per <code>next</code>. “Amortized” means the average cost over the full sequence is constant, even though one isolated call might still pop many items.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
