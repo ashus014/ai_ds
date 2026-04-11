@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>790 — Domino and Tromino Tiling — LeetCode 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section > p, .section .theory p {
+            line-height: 1.7;
+            margin-bottom: 14px;
+            color: #444;
+        }
+        .theory .formula {
+            margin: 14px 0;
+            padding: 12px 16px;
+            background: #ede9fe;
+            border-radius: 8px;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.95em;
+            color: #312e81;
+            text-align: center;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../leetcode-75.html" class="back-link">← Back to LeetCode 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>790. Domino and Tromino Tiling</h1>
+                <p>LeetCode 75 #62 — Count tilings of a <code>2 × n</code> grid with <code>2 × 1</code> dominoes and L-shaped trominoes, modulo <code>10<sup>9</sup>+7</code>. This problem is <strong>formula-driven</strong>: once you know the linear recurrence, implementation is memoization or tabulation.</p>
+                <span class="meta">LeetCode 75 / DP — 1D</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>Let <code>f(n)</code> be the number of complete tilings of width <code>n</code>. Small <code>n</code> can be counted by hand to seed DP; for larger <code>n</code>, use the closed recurrence below and take everything mod <code>M</code>.</p>
+                </div>
+
+                <div class="section theory">
+                    <h2>Theory — from expanded form to <code>f(n) = 2f(n−1) + f(n−3)</code></h2>
+                    <p>Let <code>f(n)</code> denote the number of tilings of a <code>2 × n</code> board. If you break the problem down by how the right boundary is finished, combinatorics on partial fronts often produces a relation that still <em>couples</em> <code>f(n)</code> to several earlier widths at once.</p>
+                    <p>A fuller “expanded” picture (before any collapsing) looks symbolically like building <code>f(n)</code> from <code>f(n−1)</code>, <code>f(n−2)</code>, and then a tail of terms such as <code>2f(n−3)</code>, <code>2f(n−4)</code>, …—the same pattern shifted appears inside <code>f(n−1)</code> when you write it the same way. So you are in the situation you sketched: something in the spirit of <code>f(n) = f(n−1) + f(n−2) + 2f(n−3) + 2f(n−4) + …</code>, with similar tails for <code>f(n−1)</code>, <code>f(n−2)</code>, etc.</p>
+                    <p>The key step is to <strong>subtract</strong> the appropriately scaled equation for <code>f(n−1)</code> from the equation for <code>f(n)</code>. The long tail of <code>f(n−4)</code>, <code>f(n−5)</code>, … appears in <em>both</em> expanded expressions with matching coefficients, so those pieces <strong>cancel</strong> (telescoping) instead of being carried forever in code.</p>
+                    <p>What survives is a short linear recurrence with constant coefficients:</p>
+                    <div class="formula">f(n) = 2·f(n − 1) + f(n − 3)&nbsp;&nbsp;&nbsp;(for n ≥ 4)</div>
+                    <p>So the whole board count depends only on the previous width and the width three steps back. The factor <code>2</code> comes from how the two dominant extensions of a width-<code>(n−1)</code> tiling interact with domino/tromino endings; the <code>f(n−3)</code> term is the part of the geometry that does not fold into that <code>2f(n−1)</code> lump and must be carried explicitly.</p>
+                    <p><strong>Base cases</strong> (by enumerating small boards): <code>f(1) = 1</code>, <code>f(2) = 2</code>, <code>f(3) = 5</code>. The recurrence applies from <code>n = 4</code> onward. Every sum and product should be reduced modulo <code>M = 1_000_000_007</code> to match the statement.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>✅ Memoization (top-down)</h3>
+                    <p>Translate the formula directly: cache <code>solve(n)</code> in <code>t[n]</code>.</p>
+                    <textarea id="copy-buffer-memo" class="offscreen-copy" readonly aria-label="Memoized Java source for copy">class Solution {
+    int[] t;
+    int M = 1000000007;
+    public int numTilings(int n) {
+        t = new int[n + 1];
+        Arrays.fill(t, -1);
+        return solve(n);
+    }
+
+    private int solve(int n) {
+        if(n == 1 || n ==2) {
+            return n;
+        }
+
+          if(n == 3) {
+            return 5;
+        }
+
+        if(t[n] != -1) {
+            return t[n];
+        }
+      
+        return t[n] = (2 * solve(n - 1) % M + solve(n - 3) % M) % M;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Memoized domino tromino tiling Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — memoization</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-memo" title="Copy memoized solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">int</span>[] t;
+    <span class="sh-kw">int</span> M = <span class="sh-lit">1000000007</span>;
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">numTilings</span>(<span class="sh-kw">int</span> n) {
+        t = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[n + <span class="sh-lit">1</span>];
+        <span class="sh-type">Arrays</span>.<span class="sh-call">fill</span>(t, <span class="sh-lit">-1</span>);
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(n);
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">solve</span>(<span class="sh-kw">int</span> n) {
+        <span class="sh-kw">if</span>(n == <span class="sh-lit">1</span> || n == <span class="sh-lit">2</span>) {
+            <span class="sh-kw">return</span> n;
+        }
+
+          <span class="sh-kw">if</span>(n == <span class="sh-lit">3</span>) {
+            <span class="sh-kw">return</span> <span class="sh-lit">5</span>;
+        }
+
+        <span class="sh-kw">if</span>(t[n] != <span class="sh-lit">-1</span>) {
+            <span class="sh-kw">return</span> t[n];
+        }
+      
+        <span class="sh-kw">return</span> t[n] = (<span class="sh-lit">2</span> * <span class="sh-call">solve</span>(n - <span class="sh-lit">1</span>) % M + <span class="sh-call">solve</span>(n - <span class="sh-lit">3</span>) % M) % M;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="spaced">Tabulation (bottom-up)</h3>
+                    <p>Same recurrence, filled iteratively from the bases—no recursion stack.</p>
+                    <textarea id="copy-buffer-tab" class="offscreen-copy" readonly aria-label="Tabulated Java source for copy">class Solution {
+
+    int M = 1000000007;
+    public int numTilings(int n) {
+
+        if(n == 1 || n == 2)
+            return n;
+
+        int[] dp = new int[n+1];
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 5;
+
+        for(int i = 4; i <=n; i++) {
+            dp[i] = (2 * dp[i - 1]%M + dp[i - 3]%M)%M;
+        }
+
+        return dp[n];
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Tabulated domino tromino tiling Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — tabulation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-tab" title="Copy tabulated solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span> M = <span class="sh-lit">1000000007</span>;
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">numTilings</span>(<span class="sh-kw">int</span> n) {
+
+        <span class="sh-kw">if</span>(n == <span class="sh-lit">1</span> || n == <span class="sh-lit">2</span>)
+            <span class="sh-kw">return</span> n;
+
+        <span class="sh-kw">int</span>[] dp = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[n+<span class="sh-lit">1</span>];
+        dp[<span class="sh-lit">1</span>] = <span class="sh-lit">1</span>;
+        dp[<span class="sh-lit">2</span>] = <span class="sh-lit">2</span>;
+        dp[<span class="sh-lit">3</span>] = <span class="sh-lit">5</span>;
+
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span> i = <span class="sh-lit">4</span>; i &lt;=n; i++) {
+            dp[i] = (<span class="sh-lit">2</span> * dp[i - <span class="sh-lit">1</span>]%M + dp[i - <span class="sh-lit">3</span>]%M)%M;
+        }
+
+        <span class="sh-kw">return</span> dp[n];
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
