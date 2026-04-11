@@ -249,21 +249,25 @@
                     <p>No explicit trie: sorting plus binary search on the growing prefix is enough for the constraints.</p>
                     <textarea id="copy-buffer-suggest" class="offscreen-copy" readonly aria-label="Search suggestions Java for copy">class Solution {
     public List<List<String>> suggestedProducts(String[] products, String searchWord) {
+        // Sorted lexicographically: every product that starts with a fixed prefix sits in one contiguous range.
         Arrays.sort(products);
         List<List<String>> result = new ArrayList<>();
         String prefix = "";
         for (char c : searchWord.toCharArray()) {
-            prefix += c;
+            prefix += c; // one more character of the user's search string
             List<String> suggestions = new ArrayList<>();
+            // If prefix exists as a whole product, index >= 0; otherwise we need the insertion point.
             int index = Arrays.binarySearch(products, prefix);
             if (index < 0) {
-                index = -index - 1; // Adjust to insertion point
+                // Java contract: -(insertionPoint) - 1 → first index i with products[i] >= prefix.
+                index = -index - 1;
             }
+            // Problem asks for at most three suggestions; sorted array lets us break early.
             for (int i = index; i < Math.min(index + 3, products.length); i++) {
                 if (products[i].startsWith(prefix)) {
                     suggestions.add(products[i]);
                 } else {
-                    break;
+                    break; // later strings are larger and will not match this prefix either
                 }
             }
             result.add(suggestions);
@@ -286,21 +290,25 @@
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
     <span class="sh-kw">public</span> <span class="sh-type">List</span>&lt;<span class="sh-type">List</span>&lt;<span class="sh-type">String</span>&gt;&gt; <span class="sh-call">suggestedProducts</span>(<span class="sh-type">String</span>[] products, <span class="sh-type">String</span> searchWord) {
+        <span class="sh-comment">// Sorted lexicographically: every product that starts with a fixed prefix sits in one contiguous range.</span>
         <span class="sh-type">Arrays</span>.<span class="sh-call">sort</span>(products);
         <span class="sh-type">List</span>&lt;<span class="sh-type">List</span>&lt;<span class="sh-type">String</span>&gt;&gt; result = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
         <span class="sh-type">String</span> prefix = <span class="sh-lit">""</span>;
         <span class="sh-kw">for</span> (<span class="sh-kw">char</span> c : searchWord.<span class="sh-call">toCharArray</span>()) {
-            prefix += c;
+            prefix += c; <span class="sh-comment">// one more character of the user's search string</span>
             <span class="sh-type">List</span>&lt;<span class="sh-type">String</span>&gt; suggestions = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+            <span class="sh-comment">// If prefix exists as a whole product, index &gt;= 0; otherwise we need the insertion point.</span>
             <span class="sh-kw">int</span> index = <span class="sh-type">Arrays</span>.<span class="sh-call">binarySearch</span>(products, prefix);
             <span class="sh-kw">if</span> (index &lt; <span class="sh-lit">0</span>) {
-                index = -index - <span class="sh-lit">1</span>; <span class="sh-comment">// Adjust to insertion point</span>
+                <span class="sh-comment">// Java contract: -(insertionPoint) - 1 → first index i with products[i] &gt;= prefix.</span>
+                index = -index - <span class="sh-lit">1</span>;
             }
+            <span class="sh-comment">// At most three suggestions; sorted array lets us break early.</span>
             <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = index; i &lt; <span class="sh-type">Math</span>.<span class="sh-call">min</span>(index + <span class="sh-lit">3</span>, products.<span class="sh-call">length</span>); i++) {
                 <span class="sh-kw">if</span> (products[i].<span class="sh-call">startsWith</span>(prefix)) {
                     suggestions.<span class="sh-call">add</span>(products[i]);
                 } <span class="sh-kw">else</span> {
-                    <span class="sh-kw">break</span>;
+                    <span class="sh-kw">break</span>; <span class="sh-comment">// later strings are larger and will not match this prefix either</span>
                 }
             }
             result.<span class="sh-call">add</span>(suggestions);
