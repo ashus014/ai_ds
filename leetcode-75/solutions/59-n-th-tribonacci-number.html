@@ -356,8 +356,59 @@
                         </div>
                     </div>
 
-                    <h3 class="spaced">Tabulation (bottom-up)</h3>
-                    <p>You can also compute tribonacci <strong>iteratively</strong>: fill a table from the base indices upward (<code>0 … n</code>), each cell using the three previous values. That is classic <strong>tabulation</strong>—same recurrence as recursion, but no call stack and predictable <code>O(n)</code> time. Space can stay <code>O(n)</code> with an array, or drop to <code>O(1)</code> by keeping only the last three numbers. No tabulation code on this page yet; it can be added next to mirror the memo version.</p>
+                    <h3 class="spaced">✅ Tabulation (bottom-up)</h3>
+                    <p>Fill <code>dp[0…n]</code> from the base cases: each <code>dp[i]</code> is the sum of the three prior entries. <code>O(n)</code> time and <code>O(n)</code> extra space for the array (you can later rewrite to three variables for <code>O(1)</code> space).</p>
+                    <textarea id="copy-buffer-tab" class="offscreen-copy" readonly aria-label="Tabulated Java source for copy">class Solution {
+    public int tribonacci(int n) {
+        if(n == 0) return 0;
+        if(n == 1 || n == 2) return 1;
+
+        int[] dp = new int[n + 1];
+
+        dp[0] = 0;
+        dp[1] = 1;
+        dp[2] = 1;
+
+        for(int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+        }
+
+        return dp[n];
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Tabulated tribonacci Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — tabulation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-tab" title="Copy tabulated solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">tribonacci</span>(<span class="sh-kw">int</span> n) {
+        <span class="sh-kw">if</span>(n == <span class="sh-lit">0</span>) <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+        <span class="sh-kw">if</span>(n == <span class="sh-lit">1</span> || n == <span class="sh-lit">2</span>) <span class="sh-kw">return</span> <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">int</span>[] dp = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[n + <span class="sh-lit">1</span>];
+
+        dp[<span class="sh-lit">0</span>] = <span class="sh-lit">0</span>;
+        dp[<span class="sh-lit">1</span>] = <span class="sh-lit">1</span>;
+        dp[<span class="sh-lit">2</span>] = <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">for</span>(<span class="sh-kw">int</span> i = <span class="sh-lit">3</span>; i &lt;= n; i++) {
+            dp[i] = dp[i - <span class="sh-lit">1</span>] + dp[i - <span class="sh-lit">2</span>] + dp[i - <span class="sh-lit">3</span>];
+        }
+
+        <span class="sh-kw">return</span> dp[n];
+    }
+}</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
