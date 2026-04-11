@@ -95,6 +95,7 @@
             margin: 0 0 10px;
             font-weight: 700;
         }
+        .section h3.spaced { margin-top: 22px; }
         .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
         .callout {
             margin-top: 12px;
@@ -219,6 +220,13 @@
             white-space: pre;
             border: 0;
         }
+        ul.concept-list {
+            margin: 12px 0 14px 22px;
+            padding: 0;
+            line-height: 1.65;
+            color: #444;
+        }
+        ul.concept-list li { margin-bottom: 8px; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
         }
@@ -234,18 +242,88 @@
         <div class="container">
             <div class="header">
                 <h1>739. Daily Temperatures</h1>
-                <p>LeetCode 75 #74 — For each day, count how many days you must wait until a <strong>warmer</strong> temperature. Scanning <strong>right to left</strong> with a stack of indices keeps a decreasing-temperature chain so the next warmer day is always on the stack top after pops.</p>
+                <p>LeetCode 75 #74 — For each day, count how many days you must wait until a <strong>warmer</strong> temperature. A double loop checks every future day (<code>O(n²)</code>); the usual interview answer scans <strong>right to left</strong> with a monotonic stack of indices in <code>O(n)</code>.</p>
                 <span class="meta">LeetCode 75 / Monotonic Stack</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Hint</h2>
-                    <p>Pop indices whose temperature is <code>&lt;=</code> the current day; they cannot be the “next warmer” for anything to the left. Then the stack top (if any) is the next warmer index.</p>
+                    <p><strong>Brute force:</strong> for each <code>i</code>, scan <code>j &gt; i</code> until you find <code>temperatures[j] &gt; temperatures[i]</code>. <strong>Stack:</strong> pop indices whose temperature is <code>&lt;=</code> the current day; the stack top (if any) is the next warmer index.</p>
+                </div>
+                <div class="section">
+                    <h2>What is a monotonic stack?</h2>
+                    <p>The usual name is <strong>monotonic</strong> stack (people sometimes say “monotonic order on a stack”). It is still a normal stack (<code>push</code> / <code>pop</code> / <code>peek</code>), but you use it so that the <strong>entries from bottom to top</strong> stay in <strong>one direction</strong> only: either <strong>non-decreasing</strong> or <strong>non-increasing</strong> (strict versions drop ties when the problem requires it).</p>
+                    <p><strong>Why bother?</strong> Before you push a new value, you repeatedly pop anything that can <em>never</em> help answer “nearest element on this side with a larger/smaller value” for future positions. That keeps each index pushed and popped at most once, so many linear scans become <code>O(n)</code> overall instead of nested loops.</p>
+                    <p>Same pattern shows up under different names:</p>
+                    <ul class="concept-list">
+                        <li><strong>Next greater element (NGE)</strong> — first larger value to the right (Daily Temperatures is this, with index distance).</li>
+                        <li><strong>Next smaller element (NSE)</strong> — first smaller value to the right.</li>
+                        <li><strong>Previous greater element (PGE)</strong> — first larger value to the left.</li>
+                        <li><strong>Previous smaller element (PSE)</strong> — first smaller value to the left.</li>
+                    </ul>
+                    <p>Direction of scan (left-to-right vs right-to-left) and whether you compare <code>&gt;</code> or <code>&lt;</code> only change which monotone you keep and which “neighbor” you read off the stack top.</p>
                 </div>
                 <div class="section">
                     <h2>Answers</h2>
 
-                    <h3>✅ Monotonic stack (right to left)</h3>
+                    <h3>Brute force (two nested loops)</h3>
+                    <p>For each day <code>i</code>, walk forward until the first strictly warmer day; distance is <code>j - i</code>, or <code>0</code> if none exists.</p>
+                    <textarea id="copy-buffer-brute" class="offscreen-copy" readonly aria-label="Daily temperatures brute force Java for copy">class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] answer = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            // Scan every future day for the first warmer temperature
+            for (int j = i + 1; j < n; j++) {
+                if (temperatures[j] > temperatures[i]) {
+                    answer[i] = j - i;
+                    break;
+                }
+            }
+        }
+
+        return answer;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Daily temperatures brute force Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Brute force — reference only</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-brute" title="Copy brute force">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span>[] <span class="sh-call">dailyTemperatures</span>(<span class="sh-kw">int</span>[] temperatures) {
+        <span class="sh-kw">int</span> n = temperatures.<span class="sh-call">length</span>;
+        <span class="sh-kw">int</span>[] answer = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[n];
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; n; i++) {
+            <span class="sh-comment">// Scan every future day for the first warmer temperature</span>
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = i + <span class="sh-lit">1</span>; j &lt; n; j++) {
+                <span class="sh-kw">if</span> (temperatures[j] &gt; temperatures[i]) {
+                    answer[i] = j - i;
+                    <span class="sh-kw">break</span>;
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> answer;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Time complexity.</strong> Roughly <code>n + (n-1) + … + 1 = O(n²)</code> comparisons. LeetCode’s largest inputs will time out; use it only to reason about correctness before optimizing.
+                    </div>
+
+                    <h3 class="spaced">✅ Monotonic stack (right to left)</h3>
                     <p>Stack stores indices in decreasing order of <code>temperatures[index]</code> for the suffix already processed.</p>
                     <textarea id="copy-buffer-daily" class="offscreen-copy" readonly aria-label="Daily temperatures Java for copy">class Solution {
     public int[] dailyTemperatures(int[] temperatures) {
