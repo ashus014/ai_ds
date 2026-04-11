@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>208 — Implement Trie — LeetCode 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.45em; margin-bottom: 12px; font-weight: 700; line-height: 1.3; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .callout {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .snippet-surface + .callout { margin-top: 0; }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 18px 20px 20px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../leetcode-75.html" class="back-link">← Back to LeetCode 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>208. Implement Trie (Prefix Tree)</h1>
+                <p>LeetCode 75 #70 — A trie stores characters on edges implicitly via a fixed array of length 26 per node. <code>insert</code> walks and allocates; <code>search</code> requires the path to exist and the terminal node to be marked as a whole word; <code>startsWith</code> only checks that the prefix path exists.</p>
+                <span class="meta">LeetCode 75 / Trie</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>Share <code>searchPrefix</code> between <code>search</code> and <code>startsWith</code>: return <code>null</code> if any character is missing, otherwise the node after the last character. Use <code>isEndOfWord</code> only for full-word queries.</p>
+                </div>
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>✅ TrieNode + Trie</h3>
+                    <p>Encapsulate links in the node (<code>containsKey</code>, <code>get</code>, <code>put</code>) so the trie reads cleanly.</p>
+                    <textarea id="copy-buffer-trie" class="offscreen-copy" readonly aria-label="Trie Java for copy">class TrieNode{
+
+    private TrieNode[] children;
+    private boolean isEndOfWord;
+
+    public TrieNode() {
+        children = new TrieNode[26];
+        isEndOfWord = false;
+    }
+
+    public boolean containsKey(char ch) {
+        return children[ch - 'a'] != null;
+    }
+
+    public TrieNode get(char ch) {
+         return children[ch - 'a'];
+    }
+
+     public void put(char ch, TrieNode node) {
+        children[ch - 'a'] = node;
+    }
+
+    public void setEnd() {
+        isEndOfWord = true;
+    }
+
+    public boolean isEnd() {
+        return isEndOfWord;
+    }
+
+}
+
+class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            if (!node.containsKey(ch)) {
+                node.put(ch, new TrieNode());
+            }
+            node = node.get(ch);
+        }
+        node.setEnd();
+    }
+    
+    public boolean search(String word) {
+        TrieNode node = searchPrefix(word);
+        return node != null && node.isEnd();
+    }
+    
+    public boolean startsWith(String prefix) {
+        TrieNode node = searchPrefix(prefix);
+        return node != null;
+    }
+
+    private TrieNode searchPrefix(String prefix) {
+        TrieNode node = root;
+        for (char ch : prefix.toCharArray()) {
+            if (!node.containsKey(ch)) {
+                return null;
+            }
+            node = node.get(ch);
+        }
+        return node;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Implement Trie Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Trie.java + TrieNode.java</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-trie" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">TrieNode</span>{
+
+    <span class="sh-kw">private</span> <span class="sh-type">TrieNode</span>[] children;
+    <span class="sh-kw">private</span> <span class="sh-kw">boolean</span> isEndOfWord;
+
+    <span class="sh-kw">public</span> <span class="sh-type">TrieNode</span>() {
+        children = <span class="sh-kw">new</span> <span class="sh-type">TrieNode</span>[<span class="sh-lit">26</span>];
+        isEndOfWord = <span class="sh-kw">false</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">containsKey</span>(<span class="sh-kw">char</span> ch) {
+        <span class="sh-kw">return</span> children[ch - <span class="sh-lit">'a'</span>] != <span class="sh-kw">null</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-type">TrieNode</span> <span class="sh-call">get</span>(<span class="sh-kw">char</span> ch) {
+         <span class="sh-kw">return</span> children[ch - <span class="sh-lit">'a'</span>];
+    }
+
+     <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">char</span> ch, <span class="sh-type">TrieNode</span> node) {
+        children[ch - <span class="sh-lit">'a'</span>] = node;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">setEnd</span>() {
+        isEndOfWord = <span class="sh-kw">true</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">isEnd</span>() {
+        <span class="sh-kw">return</span> isEndOfWord;
+    }
+
+}
+
+<span class="sh-kw">class</span> <span class="sh-type">Trie</span> {
+    <span class="sh-kw">private</span> <span class="sh-type">TrieNode</span> root;
+
+    <span class="sh-kw">public</span> <span class="sh-type">Trie</span>() {
+        root = <span class="sh-kw">new</span> <span class="sh-type">TrieNode</span>();
+    }
+    
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">insert</span>(<span class="sh-type">String</span> word) {
+        <span class="sh-type">TrieNode</span> node = root;
+        <span class="sh-kw">for</span> (<span class="sh-kw">char</span> ch : word.<span class="sh-call">toCharArray</span>()) {
+            <span class="sh-kw">if</span> (!node.<span class="sh-call">containsKey</span>(ch)) {
+                node.<span class="sh-call">put</span>(ch, <span class="sh-kw">new</span> <span class="sh-type">TrieNode</span>());
+            }
+            node = node.<span class="sh-call">get</span>(ch);
+        }
+        node.<span class="sh-call">setEnd</span>();
+    }
+    
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">search</span>(<span class="sh-type">String</span> word) {
+        <span class="sh-type">TrieNode</span> node = <span class="sh-call">searchPrefix</span>(word);
+        <span class="sh-kw">return</span> node != <span class="sh-kw">null</span> &amp;&amp; node.<span class="sh-call">isEnd</span>();
+    }
+    
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">startsWith</span>(<span class="sh-type">String</span> prefix) {
+        <span class="sh-type">TrieNode</span> node = <span class="sh-call">searchPrefix</span>(prefix);
+        <span class="sh-kw">return</span> node != <span class="sh-kw">null</span>;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-type">TrieNode</span> <span class="sh-call">searchPrefix</span>(<span class="sh-type">String</span> prefix) {
+        <span class="sh-type">TrieNode</span> node = root;
+        <span class="sh-kw">for</span> (<span class="sh-kw">char</span> ch : prefix.<span class="sh-call">toCharArray</span>()) {
+            <span class="sh-kw">if</span> (!node.<span class="sh-call">containsKey</span>(ch)) {
+                <span class="sh-kw">return</span> <span class="sh-kw">null</span>;
+            }
+            node = node.<span class="sh-call">get</span>(ch);
+        }
+        <span class="sh-kw">return</span> node;
+    }
+}
+
+<span class="sh-comment">/**</span>
+<span class="sh-comment"> * Your Trie object will be instantiated and called as such:</span>
+<span class="sh-comment"> * Trie obj = new Trie();</span>
+<span class="sh-comment"> * obj.insert(word);</span>
+<span class="sh-comment"> * boolean param_2 = obj.search(word);</span>
+<span class="sh-comment"> * boolean param_3 = obj.startsWith(prefix);</span>
+<span class="sh-comment"> */</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Search vs startsWith.</strong> A prefix may end on a node that is not marked as a full inserted word; <code>search</code> must still return <code>false</code> in that case, which is why <code>isEnd()</code> matters only for <code>search</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
