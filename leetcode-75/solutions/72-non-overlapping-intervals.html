@@ -250,24 +250,48 @@
                     <p>Order by <code>a[0]</code> vs <code>b[0]</code>, then walk while maintaining <code>previousInterval</code>.</p>
                     <textarea id="copy-buffer-start" class="offscreen-copy" readonly aria-label="Non-overlapping intervals sort by start Java for copy">class Solution {
     public int eraseOverlapIntervals(int[][] intervals) {
+
+        // Sort intervals based on START time
+        // So we process them in chronological order
         Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
         int removeCount = 0;
+
+        // Keep track of the "previous interval" we are considering
         int[] previousInterval = intervals[0];
+
         for(int i = 1; i < intervals.length; i++) {
+
             int currentStart = intervals[i][0];
             int currentEnd = intervals[i][1];
 
             int previousEnd = previousInterval[1];
 
+            // ✅ Case 1: No overlap
+            // Current starts AFTER or exactly when previous ends
             if(currentStart >= previousEnd) {
+
+                // Safe → move forward
                 previousInterval = intervals[i];
-            } else if(currentEnd >= previousEnd) {
+            } 
+            
+            // ❌ Overlap exists
+            else if(currentEnd >= previousEnd) {
+
+                // Current interval ends later → worse choice
+                // So REMOVE current interval
                 removeCount++;
-            } else {
+            } 
+            
+            else {
+
+                // Current interval ends earlier → better choice
+                // So REMOVE previous interval and keep current
                 previousInterval = intervals[i];
                 removeCount++;
             }
         }
+
         return removeCount;
     }
 }</textarea>
@@ -286,31 +310,55 @@
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
     <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">eraseOverlapIntervals</span>(<span class="sh-kw">int</span>[][] intervals) {
+
+        <span class="sh-comment">// Sort intervals based on START time</span>
+        <span class="sh-comment">// So we process them in chronological order</span>
         <span class="sh-type">Arrays</span>.<span class="sh-call">sort</span>(intervals, (a, b) -&gt; <span class="sh-type">Integer</span>.<span class="sh-call">compare</span>(a[<span class="sh-lit">0</span>], b[<span class="sh-lit">0</span>]));
+
         <span class="sh-kw">int</span> removeCount = <span class="sh-lit">0</span>;
+
+        <span class="sh-comment">// Keep track of the "previous interval" we are considering</span>
         <span class="sh-kw">int</span>[] previousInterval = intervals[<span class="sh-lit">0</span>];
+
         <span class="sh-kw">for</span>(<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; intervals.<span class="sh-call">length</span>; i++) {
+
             <span class="sh-kw">int</span> currentStart = intervals[i][<span class="sh-lit">0</span>];
             <span class="sh-kw">int</span> currentEnd = intervals[i][<span class="sh-lit">1</span>];
 
             <span class="sh-kw">int</span> previousEnd = previousInterval[<span class="sh-lit">1</span>];
 
+            <span class="sh-comment">// ✅ Case 1: No overlap</span>
+            <span class="sh-comment">// Current starts AFTER or exactly when previous ends</span>
             <span class="sh-kw">if</span>(currentStart &gt;= previousEnd) {
+
+                <span class="sh-comment">// Safe → move forward</span>
                 previousInterval = intervals[i];
-            } <span class="sh-kw">else</span> <span class="sh-kw">if</span>(currentEnd &gt;= previousEnd) {
+            } 
+            
+            <span class="sh-comment">// ❌ Overlap exists</span>
+            <span class="sh-kw">else</span> <span class="sh-kw">if</span>(currentEnd &gt;= previousEnd) {
+
+                <span class="sh-comment">// Current interval ends later → worse choice</span>
+                <span class="sh-comment">// So REMOVE current interval</span>
                 removeCount++;
-            } <span class="sh-kw">else</span> {
+            } 
+            
+            <span class="sh-kw">else</span> {
+
+                <span class="sh-comment">// Current interval ends earlier → better choice</span>
+                <span class="sh-comment">// So REMOVE previous interval and keep current</span>
                 previousInterval = intervals[i];
                 removeCount++;
             }
         }
+
         <span class="sh-kw">return</span> removeCount;
     }
 }</code></pre>
                         </div>
                     </div>
                     <div class="callout" role="note">
-                        <strong>Overlap branch.</strong> If <code>currentStart &lt; previousEnd</code>, the two intervals clash. If the current ends later, drop the current (<code>removeCount++</code> only). If the current ends earlier, keep the current as the new chain head and still count removing the previous representative.
+                        <strong>Three cases.</strong> No overlap when <code>currentStart &gt;= previousEnd</code> (advance <code>previousInterval</code>). If they overlap and the current ends later, remove the current only. If they overlap and the current ends sooner, switch to the current interval and count one removal for the discarded previous chain head.
                     </div>
 
                     <h3 class="spaced">Sort by end time</h3>
