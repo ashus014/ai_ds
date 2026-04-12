@@ -330,7 +330,6 @@
 
                     <h3>2. Counter-Based Approach</h3>
                     <ul>
-                        <li>Maintain a <strong>global counter</strong> that increments for each new URL; return the counter value (converted to base62) as the short URL.</li>
                         <li>We are using a counter, and the encryption logic is in our hands—with this approach <strong>each and every request is unique</strong> (no collision from truncating a hash).</li>
                         <li>We save a lot of time <strong>not</strong> calling the database on every create to check if the key already exists.</li>
                         <li>Latency can drop compared to the hash-and-check path—for example from <strong>~16ms</strong> down to <strong>~6ms</strong>.</li>
