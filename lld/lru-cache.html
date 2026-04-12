@@ -250,13 +250,13 @@
         <div class="container">
             <div class="header">
                 <h1>LRU Cache</h1>
-                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. ⚠️ <strong>Naive</strong> uses a list and linear key search; ✅ <strong>Optimised</strong> uses a <code>HashMap</code> from key → doubly-linked list node for <code>O(1)</code> <code>get</code> and <code>put</code>.</p>
+                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. ⚠️ <strong>Naive</strong> scans a list; ℹ️ <strong>Map-assisted</strong> adds <code>HashMap</code> key → list index; ✅ <strong>O(1) LRU</strong> uses <code>HashMap</code> key → doubly-linked list node.</p>
                 <span class="meta">LLD / Java — 12 April 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>Store key–value pairs with cap <code>n</code>. <code>get</code> marks an entry as most recent (next to the head sentinel). <code>put</code> updates or inserts; when over capacity, evict the node before the tail sentinel. A <code>HashMap</code> plus doubly linked list gives constant-time lookup and splice without shifting an array.</p>
+                    <p>Store key–value pairs with cap <code>n</code>. <code>get</code> / <code>put</code> promote the entry to most-recent. Start from a plain list (scan every time), add a map from key → index (skip the scan, still pay for list shifts), then use a map from key → DLL node for true <code>O(1)</code> splice and eviction.</p>
                 </div>
 
                 <div class="section">
@@ -395,13 +395,142 @@ class LRUCache {
                         <strong>⚠️ Naive.</strong> Every <code>get</code> / <code>put</code> scans the whole list for the key — <code>O(n)</code> time plus list remove/insert. Fine for learning; not for production-scale caches.
                     </div>
 
+                    <h3 class="spaced">ℹ️ Optimised (map + list)</h3>
+                    <p><code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index</strong> in the list. After <code>remove</code> / <code>add(0, …)</code>, call <code>updateMap()</code> to refresh every index. On eviction, remove the tail pair and <code>map.remove(removedKey)</code>.</p>
+                    <ul>
+                        <li><code>O(1)</code> key lookup in the map; list shifts and <code>updateMap()</code> remain <code>O(n)</code> overall.</li>
+                        <li>Good stepping-stone before a full DLL + hash <code>O(1)</code> design.</li>
+                    </ul>
+                    <textarea id="copy-buffer-map-assisted" class="offscreen-copy" readonly aria-label="Map-assisted LRU Java source for copy">import java.util.*;
+
+class LRUCache {
+
+    List&lt;int[]&gt; cache;
+    Map&lt;Integer, Integer&gt; map; // key -&gt; index
+    int n;
+
+    public LRUCache(int capacity) {
+        this.n = capacity;
+        this.cache = new ArrayList&lt;&gt;();
+        this.map = new HashMap&lt;&gt;();
+    }
+
+    public int get(int key) {
+
+        if (!map.containsKey(key)) return -1;
+
+        int index = map.get(key);
+        int value = cache.get(index)[1];
+
+        cache.remove(index);
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+
+        return value;
+    }
+
+    public void put(int key, int value) {
+
+        if (map.containsKey(key)) {
+            int index = map.get(key);
+            cache.remove(index);
+        }
+        else if (cache.size() == n) {
+            int removedKey = cache.get(cache.size() - 1)[0];
+            cache.remove(cache.size() - 1);
+            map.remove(removedKey);
+        }
+
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+    }
+
+    private void updateMap() {
+        for (int i = 0; i &lt; cache.size(); i++) {
+            map.put(cache.get(i)[0], i);
+        }
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java map-assisted">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">ℹ️ LRUCache.java — map + list</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-map-assisted" title="Copy map-assisted implementation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt; cache;
+    <span class="sh-type">Map</span>&lt;<span class="sh-type">Integer</span>, <span class="sh-type">Integer</span>&gt; map; <span class="sh-comment">// key → index</span>
+    <span class="sh-kw">int</span> n;
+
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.n = capacity;
+        <span class="sh-kw">this</span>.cache = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">this</span>.map = <span class="sh-kw">new</span> <span class="sh-type">HashMap</span>&lt;&gt;();
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
+
+        <span class="sh-kw">if</span> (!map.<span class="sh-call">containsKey</span>(key)) <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
+
+        <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+        <span class="sh-kw">int</span> value = cache.<span class="sh-call">get</span>(index)[<span class="sh-lit">1</span>];
+
+        cache.<span class="sh-call">remove</span>(index);
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+
+        <span class="sh-kw">return</span> value;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
+
+        <span class="sh-kw">if</span> (map.<span class="sh-call">containsKey</span>(key)) {
+            <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+            cache.<span class="sh-call">remove</span>(index);
+        }
+        <span class="sh-kw">else if</span> (cache.<span class="sh-call">size</span>() == n) {
+            <span class="sh-kw">int</span> removedKey = cache.<span class="sh-call">get</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>)[<span class="sh-lit">0</span>];
+            cache.<span class="sh-call">remove</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+            map.<span class="sh-call">remove</span>(removedKey);
+        }
+
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">updateMap</span>() {
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            map.<span class="sh-call">put</span>(cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>], i);
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>ℹ️ Map-assisted.</strong> You skip the linear <strong>search</strong> for the key, but <code>remove(index)</code>, insert at <code>0</code>, and <code>updateMap()</code> still scale linearly with capacity — same asymptotic class as naive, with a better leading constant on lookup.
+                    </div>
+
                     <h3 class="spaced">✅ Optimised (HashMap + doubly linked list)</h3>
                     <p><code>Map&lt;Integer, Node&gt;</code> maps each key to its list node. Sentinel <code>head</code> / <code>tail</code> dummy nodes bound the list so <code>remove</code> / <code>insert</code> never touch <code>null</code>. After <code>get</code> or <code>put</code>, move the node next to <code>head</code> (MRU); evict <code>tail.prev</code> when <code>map.size() &gt; capacity</code>.</p>
                     <ul>
                         <li><code>get</code> / <code>put</code>: <code>O(1)</code> expected — hash lookup plus constant-time splices.</li>
                         <li>Space: <code>O(capacity)</code> for the map and one node per cached entry.</li>
                     </ul>
-                    <textarea id="copy-buffer-optimised" class="offscreen-copy" readonly aria-label="Optimised LRU Java source for copy">import java.util.*;
+                    <textarea id="copy-buffer-optimised-dll" class="offscreen-copy" readonly aria-label="DLL optimised LRU Java source for copy">import java.util.*;
 
 class LRUCache {
 
@@ -484,9 +613,9 @@ class LRUCache {
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">✅ LRUCache.java — optimised</span>
+                                <span class="code-window-title">✅ LRUCache.java — HashMap + DLL</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-optimised" title="Copy optimised implementation">Copy all</button>
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-optimised-dll" title="Copy HashMap + DLL implementation">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
@@ -578,7 +707,12 @@ class LRUCache {
                         <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(n)</code> for scan + list ops.</li>
                         <li>Space: <code>O(capacity)</code>.</li>
                     </ul>
-                    <h3 class="spaced">✅ Optimised (HashMap + DLL)</h3>
+                    <h3 class="spaced">ℹ️ Map-assisted</h3>
+                    <ul>
+                        <li>Map lookup <code>O(1)</code>; list + <code>updateMap()</code> dominate — still <code>O(n)</code> per operation worst case.</li>
+                        <li>Space: <code>O(capacity)</code> for list + map.</li>
+                    </ul>
+                    <h3 class="spaced">✅ HashMap + DLL</h3>
                     <ul>
                         <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(1)</code> average — map lookup and constant pointer updates.</li>
                         <li>Space: <code>O(capacity)</code> for map plus one <code>Node</code> per entry (plus two sentinels).</li>
