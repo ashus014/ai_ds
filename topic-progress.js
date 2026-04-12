@@ -37,36 +37,12 @@
         var mount = document.getElementById('studyProgressMount');
         if (!mount) return;
 
-        var items = [];
-        document.querySelectorAll('.courses-list .course-item').forEach(function (li) {
-            var ul = li.closest('ul');
-            if (ul && ul.classList.contains('courses-list-no-progress')) return;
-            var a = li.querySelector(':scope > a[href$=".html"]');
-            if (!a) return;
-            var href = (a.getAttribute('href') || '').trim();
-            if (!href || href.indexOf('http') === 0 || href.indexOf('//') === 0) return;
-            if (href.indexOf('hld/') !== 0 && href.indexOf('lld/') !== 0) return;
-            items.push({ li: li, a: a, id: href });
-        });
-
-        if (!items.length) return;
-
-        var summary = document.createElement('div');
-        summary.className = 'study-progress-summary';
-        var label = document.createElement('p');
-        label.className = 'study-progress-label';
-        var barWrap = document.createElement('div');
-        barWrap.className = 'study-progress-bar-wrap';
-        var bar = document.createElement('div');
-        bar.className = 'study-progress-bar-fill';
-        barWrap.appendChild(bar);
-        summary.appendChild(label);
-        summary.appendChild(barWrap);
-        mount.appendChild(summary);
-
         var checkboxes = [];
+        var label;
+        var bar;
 
         function updateSummary() {
+            if (!label || !bar) return;
             var n = checkboxes.filter(function (cb) {
                 return cb.checked;
             }).length;
@@ -75,34 +51,70 @@
             bar.style.width = total ? Math.round((n / total) * 100) + '%' : '0%';
         }
 
-        items.forEach(function (it) {
-            var li = it.li;
-            if (li.querySelector(':scope > .done-cell input')) return;
+        var lists = document.querySelectorAll('.courses-list:not(.courses-list-no-progress)');
 
-            var td = document.createElement('span');
-            td.className = 'done-cell';
-            var inp = document.createElement('input');
-            inp.type = 'checkbox';
-            inp.setAttribute('aria-label', 'Mark as done');
-            if (isDone(it.id)) {
-                inp.checked = true;
-                li.classList.add('row-solved');
-            }
-            inp.addEventListener('change', function () {
-                if (inp.checked) {
-                    setDone(it.id, true);
-                    li.classList.add('row-solved');
-                } else {
-                    setDone(it.id, false);
-                    li.classList.remove('row-solved');
-                }
-                updateSummary();
+        lists.forEach(function (ul) {
+            var rows = [];
+            ul.querySelectorAll(':scope > .course-item').forEach(function (li) {
+                var a = li.querySelector(':scope > a[href$=".html"]');
+                if (!a) return;
+                var href = (a.getAttribute('href') || '').trim();
+                if (!href || href.indexOf('http') === 0 || href.indexOf('//') === 0) return;
+                if (href.indexOf('hld/') !== 0 && href.indexOf('lld/') !== 0) return;
+                rows.push({ li: li, a: a, id: href });
             });
-            td.appendChild(inp);
-            li.classList.add('topic-progress-enhanced');
-            li.insertBefore(td, li.firstChild);
-            checkboxes.push(inp);
+
+            rows.forEach(function (it, idx) {
+                var li = it.li;
+                if (li.querySelector(':scope > .done-cell input')) return;
+
+                var slno = idx + 1;
+                var td = document.createElement('span');
+                td.className = 'done-cell';
+                var inp = document.createElement('input');
+                inp.type = 'checkbox';
+                inp.setAttribute('aria-label', 'Mark as done');
+                if (isDone(it.id)) {
+                    inp.checked = true;
+                    li.classList.add('row-solved');
+                }
+                inp.addEventListener('change', function () {
+                    if (inp.checked) {
+                        setDone(it.id, true);
+                        li.classList.add('row-solved');
+                    } else {
+                        setDone(it.id, false);
+                        li.classList.remove('row-solved');
+                    }
+                    updateSummary();
+                });
+                td.appendChild(inp);
+
+                var num = document.createElement('span');
+                num.className = 'topic-slno';
+                num.textContent = String(slno);
+
+                li.classList.add('topic-progress-enhanced');
+                li.insertBefore(td, li.firstChild);
+                li.insertBefore(num, it.a);
+                checkboxes.push(inp);
+            });
         });
+
+        if (!checkboxes.length) return;
+
+        var summary = document.createElement('div');
+        summary.className = 'study-progress-summary';
+        label = document.createElement('p');
+        label.className = 'study-progress-label';
+        var barWrap = document.createElement('div');
+        barWrap.className = 'study-progress-bar-wrap';
+        bar = document.createElement('div');
+        bar.className = 'study-progress-bar-fill';
+        barWrap.appendChild(bar);
+        summary.appendChild(label);
+        summary.appendChild(barWrap);
+        mount.appendChild(summary);
 
         updateSummary();
     }
