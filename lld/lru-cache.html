@@ -109,32 +109,78 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
-        .code-label {
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #764ba2;
-            margin: 20px 0 8px;
+        .snippet-surface {
+            margin-top: 8px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
-        pre.code-block {
-            background: #1e1e2e;
-            color: #cdd6f4;
-            padding: 18px 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 0.82em;
-            line-height: 1.5;
-            margin-bottom: 12px;
-            border: 1px solid #313244;
-        }
-        pre.code-block code {
-            background: transparent;
-            padding: 0;
-            color: inherit;
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
             font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
         }
+        .code-window-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
+        .sh-ch { color: #f1fa8c; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
-            pre.code-block { font-size: 0.75em; }
+            .code-window-body { font-size: 11.5px; }
         }
     </style>
 </head>
@@ -172,61 +218,72 @@
 
                 <div class="section">
                     <h2>Java Code</h2>
-                    <div class="code-label">LRUCache.java (naive approach)</div>
-                    <pre class="code-block"><code>import java.util.*;
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java naive implementation">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">LRUCache.java (naive approach)</span>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
 
-class LRUCache {
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
 
-    List&lt;int[]&gt; cache;
-    int n;
+    <span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt; cache;
+    <span class="sh-kw">int</span> n;
 
-    public LRUCache(int capacity) {
-        this.n = capacity;
-        this.cache = new ArrayList&lt;&gt;();
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.n = capacity;
+        <span class="sh-kw">this</span>.cache = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
     }
 
-    public int get(int key) {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
 
-        for (int i = 0; i &lt; cache.size(); i++) {
-            if (cache.get(i)[0] == key) {
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            <span class="sh-kw">if</span> (cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>] == key) {
 
-                int value = cache.get(i)[1];
+                <span class="sh-kw">int</span> value = cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">1</span>];
 
-                // 🔥 move to front (most recent)
-                cache.remove(i);
-                cache.add(0, new int[]{key, value});
+                <span class="sh-comment">// move to front (most recent)</span>
+                cache.<span class="sh-call">remove</span>(i);
+                cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
 
-                return value;
+                <span class="sh-kw">return</span> value;
             }
         }
 
-        return -1;
+        <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
     }
 
-    public void put(int key, int value) {
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
 
-        // 🔥 check if key already exists
-        for (int i = 0; i &lt; cache.size(); i++) {
-            if (cache.get(i)[0] == key) {
+        <span class="sh-comment">// check if key already exists</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            <span class="sh-kw">if</span> (cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>] == key) {
 
-                // remove old position
-                cache.remove(i);
+                <span class="sh-comment">// remove old position</span>
+                cache.<span class="sh-call">remove</span>(i);
 
-                // insert at front (most recent)
-                cache.add(0, new int[]{key, value});
-                return;
+                <span class="sh-comment">// insert at front (most recent)</span>
+                cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+                <span class="sh-kw">return</span>;
             }
         }
 
-        // 🔥 if capacity full → remove least recently used (last element)
-        if (cache.size() == n) {
-            cache.remove(cache.size() - 1);
+        <span class="sh-comment">// if capacity full → remove least recently used (last element)</span>
+        <span class="sh-kw">if</span> (cache.<span class="sh-call">size</span>() == n) {
+            cache.<span class="sh-call">remove</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
         }
 
-        // insert new at front
-        cache.add(0, new int[]{key, value});
+        <span class="sh-comment">// insert new at front</span>
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
     }
 }</code></pre>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="section">
