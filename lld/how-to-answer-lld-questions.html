@@ -108,6 +108,9 @@
         }
         .block p { margin-bottom: 0; }
         .block p + p { margin-top: 8px; }
+        .section > p + ul {
+            margin-top: 16px;
+        }
         .content ul:not(.toc ul) {
             list-style: none;
             margin-left: 20px;
@@ -334,72 +337,63 @@
                     <h2>How to answer an LLD interview</h2>
                     <p>In LLD interviews, you are given a real-world problem and expected to come up with a solution using object-oriented programming.</p>
 
-                    <div class="block">
-                        <p class="label">Clarify requirements and core use cases</p>
-                        <p>Ask questions to understand what we need to do and the core use cases we need to support.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Identify the entities or objects</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Translate entities into classes and come up with a list of attributes</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Identify core methods</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Define relationships between classes</p>
-                        <p>Draw UML diagrams to represent relationships.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Implement necessary methods</p>
-                        <p>No need to implement all methods — check with the interviewer to understand which methods are important.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Exception handling</p>
-                        <p>Handle errors and edge cases.</p>
-                    </div>
+                    <ul>
+                        <li>
+                            <strong>Clarify requirements and core use cases</strong>
+                            <p>Ask questions to understand what we need to do and the core use cases we need to support.</p>
+                        </li>
+                        <li>
+                            <strong>Identify the entities or objects</strong>
+                        </li>
+                        <li>
+                            <strong>Translate entities into classes and come up with a list of attributes</strong>
+                        </li>
+                        <li>
+                            <strong>Identify core methods</strong>
+                        </li>
+                        <li>
+                            <strong>Define relationships between classes</strong>
+                            <p>Draw UML diagrams to represent relationships.</p>
+                        </li>
+                        <li>
+                            <strong>Implement necessary methods</strong>
+                            <p>No need to implement all methods — check with the interviewer to understand which methods are important.</p>
+                        </li>
+                        <li>
+                            <strong>Exception handling</strong>
+                            <p>Handle errors and edge cases.</p>
+                        </li>
+                    </ul>
                 </section>
 
                 <section class="section" id="best-lld-coding-practices">
                     <h2>Best LLD coding practices</h2>
-
-                    <div class="block">
-                        <p class="label">Use meaningful names</p>
-                        <p>Class names, method names, and variable names.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Focus on simplicity and readability</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Favor composition over inheritance</p>
-                        <p>Promote flexibility and loose coupling.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Use interfaces to define contracts</p>
-                        <p>Enable loose coupling between components.</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Strive for modularity and separation of concerns</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Apply design patterns and design principles</p>
-                    </div>
-
-                    <div class="block">
-                        <p class="label">Make it scalable</p>
-                    </div>
+                    <ul>
+                        <li>
+                            <strong>Use meaningful names</strong>
+                            <p>Class names, method names, and variable names.</p>
+                        </li>
+                        <li>
+                            <strong>Focus on simplicity and readability</strong>
+                        </li>
+                        <li>
+                            <strong>Favor composition over inheritance</strong>
+                            <p>Promote flexibility and loose coupling.</p>
+                        </li>
+                        <li>
+                            <strong>Use interfaces to define contracts</strong>
+                            <p>Enable loose coupling between components.</p>
+                        </li>
+                        <li>
+                            <strong>Strive for modularity and separation of concerns</strong>
+                        </li>
+                        <li>
+                            <strong>Apply design patterns and design principles</strong>
+                        </li>
+                        <li>
+                            <strong>Make it scalable</strong>
+                        </li>
+                    </ul>
                 </section>
             </div>
         </div>
