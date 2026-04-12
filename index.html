@@ -269,6 +269,21 @@
             flex: 1;
         }
 
+        .note-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .note-title-row .note-title {
+            margin-bottom: 0;
+        }
+        .note-card-logo {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            object-fit: contain;
+        }
         .note-title {
             font-weight: 600;
             color: #333;
@@ -557,6 +572,26 @@
                         <div class="note-info">
                             <div class="note-title">Must Know Algorithms</div>
                             <div class="note-date">Core algorithms with annotated code</div>
+                        </div>
+                        <div class="note-arrow">→</div>
+                    </a>
+                    <a href="top-microsoft-questions.html" class="note-card">
+                        <div class="note-info">
+                            <div class="note-title-row">
+                                <img class="note-card-logo" src="assets/brand-microsoft.svg" width="28" height="28" alt="" decoding="async">
+                                <div class="note-title">Top Microsoft Questions</div>
+                            </div>
+                            <div class="note-date">Interview-style problems &amp; notes — Microsoft</div>
+                        </div>
+                        <div class="note-arrow">→</div>
+                    </a>
+                    <a href="top-amazon-questions.html" class="note-card">
+                        <div class="note-info">
+                            <div class="note-title-row">
+                                <img class="note-card-logo" src="assets/brand-amazon.svg" width="28" height="28" alt="" decoding="async">
+                                <div class="note-title">Top Amazon Questions</div>
+                            </div>
+                            <div class="note-date">Interview-style problems &amp; notes — Amazon</div>
                         </div>
                         <div class="note-arrow">→</div>
                     </a>
