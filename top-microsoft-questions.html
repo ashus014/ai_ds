@@ -11,19 +11,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+            color: #333;
         }
-        .wrapper { width: 100%; max-width: 900px; }
+        .wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 15px 30px;
             border-radius: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,59 +41,205 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
         }
         .back-link:hover { color: #764ba2; }
         .main-container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 50px 40px;
+            padding: 36px 28px 44px;
         }
         .page-title-row {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
         .page-title-row img { width: 36px; height: 36px; object-fit: contain; }
-        .main-container h2 {
+        .main-container h1 {
             color: #667eea;
-            font-size: 2em;
+            font-size: 1.85em;
             margin: 0;
             text-align: center;
         }
-        .lede {
+        .sub {
             text-align: center;
             color: #555;
-            line-height: 1.65;
-            max-width: 640px;
-            margin: 0 auto 28px;
-            font-size: 1.02em;
+            margin-bottom: 22px;
+            line-height: 1.5;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .courses-title {
-            color: #764ba2;
-            font-size: 1.3em;
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+            font-size: 0.92em;
+        }
+        thead th {
+            background: #667eea;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
             font-weight: 600;
-            margin-bottom: 15px;
+        }
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        tbody tr:hover td { background: #f8f9ff; }
+        tr.cat-row td {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.12) 100%);
+            font-weight: 700;
+            color: #4a3a6b;
+            padding: 14px 12px;
             border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
         }
-        .courses-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .course-item {
-            padding: 12px 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-left: 4px solid #667eea;
-            border-radius: 6px;
-            color: #666;
-            font-size: 0.98em;
+        td.slno {
+            font-weight: 700;
+            color: #764ba2;
+            width: 3.25rem;
+            text-align: center;
         }
-        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
+        td.stmt { font-weight: 500; }
+        td.solution { min-width: 100px; }
+        td.hint { min-width: 100px; }
+        td.hint-tooltip-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .hint-dot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            font-style: normal;
+            line-height: 1;
+            cursor: help;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.45);
+            position: relative;
+            outline: none;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
+        .hint-dot:hover,
+        .hint-dot:focus-visible {
+            box-shadow: 0 4px 14px rgba(118, 75, 162, 0.55);
+            transform: scale(1.06);
+        }
+        .hint-dot:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+        .lc75-hint-flyout {
+            position: fixed;
+            z-index: 99999;
+            box-sizing: border-box;
+            max-width: min(320px, calc(100vw - 24px));
+            padding: 12px 14px;
+            background: #1e1b4b;
+            color: #f5f5ff;
+            font-size: 0.82rem;
+            font-weight: 500;
+            line-height: 1.45;
+            white-space: pre-line;
+            text-align: left;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+        }
+        .lc75-hint-flyout.is-open {
+            visibility: visible;
+            opacity: 1;
+        }
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+        }
+        .diff-easy { background: #e8f5e9; color: #2e7d32; }
+        .diff-medium { background: #fff8e1; color: #f57f17; }
+        .diff-hard { background: #ffebee; color: #c62828; }
+        td.linkcell a,
+        td.solution a.sol-link {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        td.linkcell a:hover,
+        td.solution a.sol-link:hover { text-decoration: underline; }
+        #studyProgressMount { margin-bottom: 18px; }
+        .study-progress-summary { text-align: center; }
+        .study-progress-label {
+            font-weight: 600;
+            color: #4a3a6b;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        .study-progress-bar-wrap {
+            height: 10px;
+            background: #e8eaf6;
+            border-radius: 999px;
+            overflow: hidden;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .study-progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 999px;
+            width: 0%;
+            transition: width 0.25s ease;
+        }
+        th.col-done, td.done-cell {
+            width: 3rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td.done-cell input {
+            width: 1.15rem;
+            height: 1.15rem;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        tbody tr.row-solved:not(.cat-row) td {
+            background-color: #c8e6c9 !important;
+        }
+        tbody tr.row-solved:not(.cat-row) td:first-child {
+            box-shadow: inset 4px 0 0 #66bb6a;
+        }
+        tbody tr.row-solved:not(.cat-row):hover td {
+            background-color: #a5d6a7 !important;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; }
+            .main-container { padding: 24px 16px; }
+        }
     </style>
 </head>
-<body>
+<body data-study-track="microsoftTop">
     <div class="wrapper">
         <nav class="navbar">
             <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
@@ -104,14 +248,124 @@
         <div class="main-container">
             <div class="page-title-row">
                 <img src="assets/brand-microsoft.svg" width="36" height="36" alt="" decoding="async">
-                <h2>Top Microsoft Questions</h2>
+                <h1>Top Microsoft Questions</h1>
             </div>
-            <p class="lede">Curated coding and design problems commonly seen in Microsoft interviews. Annotated solutions and links will be added here over time.</p>
-            <div class="courses-title">Topics</div>
-            <ul class="courses-list">
-                <li class="course-item">More questions and write-ups coming soon.</li>
-            </ul>
+            <p class="sub">Curated problems with <strong>Solution</strong> write-ups. <strong>Link</strong> opens LeetCode. Tick <strong>Done</strong> when you finish a row (saved in the browser like LeetCode 75). <strong>Hint (opt.)</strong> — hover <strong>?</strong> for a DFS / path-max nudge.</p>
+            <div id="studyProgressMount" aria-live="polite"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">Problem statement</th>
+                            <th scope="col">Difficulty</th>
+                            <th scope="col">Solution</th>
+                            <th scope="col">Link</th>
+                            <th scope="col" title="Flyout hints the optimised approach only">Hint (opt.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="cat-row"><td colspan="6">Microsoft list</td></tr>
+                        <tr>
+                            <td class="slno">1</td>
+                            <td class="stmt">1448. Count Good Nodes in Binary Tree</td>
+                            <td><span class="pill diff-medium">Medium</span></td>
+                            <td class="solution"><a class="sol-link" href="microsoft/solutions/1448-count-good-nodes-in-binary-tree.html">Sol</a></td>
+                            <td class="linkcell"><a href="https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/?envType=problem-list-v2&amp;envId=55vr69d7" target="_blank" rel="noopener noreferrer">Open</a></td>
+                            <td class="hint hint-tooltip-cell">
+                                <button
+                                    type="button"
+                                    class="hint-dot"
+                                    aria-label="Show hint"
+                                    data-hint="DFS from root while tracking the maximum value on the path from root to the current node. If node.val &gt;= that path max, it is a good node — increment count and set path max to node.val before recursing left and right. O(n) time, O(h) stack space."
+                                >?</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <script>
+        (function () {
+            var fly = document.createElement('div');
+            fly.className = 'lc75-hint-flyout';
+            fly.setAttribute('role', 'tooltip');
+            document.body.appendChild(fly);
+
+            var activeBtn = null;
+            var hideTimer = null;
+
+            function measureAndPlace(btn) {
+                var text = btn.getAttribute('data-hint');
+                if (!text) return;
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var maxW = Math.min(320, vw - 24);
+                var pad = 10;
+
+                fly.classList.remove('is-open');
+                fly.textContent = text;
+                fly.style.maxWidth = maxW + 'px';
+                fly.style.visibility = 'visible';
+                fly.style.left = '-9999px';
+                fly.style.top = '0';
+
+                var fw = fly.offsetWidth;
+                var fh = fly.offsetHeight;
+                var r = btn.getBoundingClientRect();
+                var left = r.left + r.width / 2 - fw / 2;
+                var top = r.top - fh - pad;
+
+                left = Math.max(12, Math.min(left, vw - fw - 12));
+                if (top < 12) {
+                    top = r.bottom + pad;
+                }
+                if (top + fh > vh - 12) {
+                    top = Math.max(12, vh - fh - 12);
+                }
+
+                fly.style.left = left + 'px';
+                fly.style.top = top + 'px';
+                fly.classList.add('is-open');
+            }
+
+            function show(btn) {
+                clearTimeout(hideTimer);
+                activeBtn = btn;
+                measureAndPlace(btn);
+            }
+
+            function scheduleHide() {
+                hideTimer = setTimeout(function () {
+                    fly.classList.remove('is-open');
+                    fly.style.visibility = 'hidden';
+                    activeBtn = null;
+                }, 80);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.hint-dot[data-hint]').forEach(function (btn) {
+                    btn.addEventListener('mouseenter', function () { show(btn); });
+                    btn.addEventListener('mouseleave', scheduleHide);
+                    btn.addEventListener('focus', function () { show(btn); });
+                    btn.addEventListener('blur', scheduleHide);
+                });
+            });
+
+            window.addEventListener('scroll', function () {
+                if (activeBtn && fly.classList.contains('is-open')) {
+                    measureAndPlace(activeBtn);
+                }
+            }, true);
+
+            window.addEventListener('resize', function () {
+                if (activeBtn && fly.classList.contains('is-open')) {
+                    measureAndPlace(activeBtn);
+                }
+            });
+        })();
+    </script>
+    <script src="study-tracker.js" defer></script>
 </body>
 </html>
