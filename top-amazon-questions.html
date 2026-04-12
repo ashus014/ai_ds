@@ -190,13 +190,56 @@
         }
         td.linkcell a:hover,
         td.solution a.sol-link:hover { text-decoration: underline; }
+        #studyProgressMount { margin-bottom: 18px; }
+        .study-progress-summary { text-align: center; }
+        .study-progress-label {
+            font-weight: 600;
+            color: #4a3a6b;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        .study-progress-bar-wrap {
+            height: 10px;
+            background: #e8eaf6;
+            border-radius: 999px;
+            overflow: hidden;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .study-progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 999px;
+            width: 0%;
+            transition: width 0.25s ease;
+        }
+        th.col-done, td.done-cell {
+            width: 3rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td.done-cell input {
+            width: 1.15rem;
+            height: 1.15rem;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        tbody tr.row-solved:not(.cat-row) td {
+            background-color: #c8e6c9 !important;
+        }
+        tbody tr.row-solved:not(.cat-row) td:first-child {
+            box-shadow: inset 4px 0 0 #66bb6a;
+        }
+        tbody tr.row-solved:not(.cat-row):hover td {
+            background-color: #a5d6a7 !important;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; }
             .main-container { padding: 24px 16px; }
         }
     </style>
 </head>
-<body>
+<body data-study-track="amazonTop">
     <div class="wrapper">
         <nav class="navbar">
             <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
@@ -207,7 +250,8 @@
                 <img src="assets/brand-amazon.svg" width="36" height="36" alt="" decoding="async">
                 <h1>Top Amazon Questions</h1>
             </div>
-            <p class="sub">Curated problems with <strong>Solution</strong> write-ups (naive + optimised where it helps). <strong>Link</strong> opens LeetCode; hover the <strong>?</strong> in <strong>Hint</strong> for a quick nudge (same flyout style as LeetCode 75).</p>
+            <p class="sub">Curated problems with <strong>Solution</strong> write-ups (naive + optimised where it helps). <strong>Link</strong> opens LeetCode. Tick <strong>Done</strong> when you finish a row (saved in the browser like LeetCode 75). <strong>Hint</strong> nudges the <strong>optimised</strong> idea only — hover <strong>?</strong>.</p>
+            <div id="studyProgressMount" aria-live="polite"></div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -217,7 +261,7 @@
                             <th scope="col">Difficulty</th>
                             <th scope="col">Solution</th>
                             <th scope="col">Link</th>
-                            <th scope="col">Hint</th>
+                            <th scope="col" title="Flyout hints the optimised approach only">Hint (opt.)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -233,7 +277,7 @@
                                     type="button"
                                     class="hint-dot"
                                     aria-label="Show hint"
-                                    data-hint="Each step subtracts the smallest positive still in the array — that peels one &quot;layer&quot;. The number of layers equals how many different positive values ever appear. Try counting distinct nums[i] where nums[i] &gt; 0."
+                                    data-hint="Optimised approach: no simulation. Every distinct positive value in nums is one subtraction wave, so answer = count of unique nums[i] with nums[i] &gt; 0. Use a HashSet, add positives, return set.size(). O(n) time, O(n) space."
                                 >?</button>
                             </td>
                         </tr>
@@ -322,5 +366,6 @@
             });
         })();
     </script>
+    <script src="study-tracker.js" defer></script>
 </body>
 </html>

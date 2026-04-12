@@ -31,6 +31,7 @@
     th.className = 'col-done';
     th.textContent = 'Done';
     theadRow.insertBefore(th, theadRow.firstChild);
+    var headerColCount = theadRow.querySelectorAll('th').length;
 
     var cg = table.querySelector('colgroup');
     if (cg) {
@@ -47,7 +48,7 @@
     Array.prototype.forEach.call(tbody.querySelectorAll('tr'), function (tr) {
       if (tr.classList.contains('cat-row')) {
         var cell = tr.querySelector('td');
-        if (cell) cell.setAttribute('colspan', '7');
+        if (cell) cell.setAttribute('colspan', String(headerColCount));
         return;
       }
       var idx = checkboxes.length;
