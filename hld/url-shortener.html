@@ -96,6 +96,13 @@
             padding-bottom: 8px;
         }
         .section h3:first-child { margin-top: 0; }
+        .section h4 {
+            color: #764ba2;
+            font-size: 1.05em;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
         ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
         ul li {
             position: relative;
@@ -334,16 +341,22 @@
                         <li>We save a lot of time <strong>not</strong> calling the database on every create to check if the key already exists.</li>
                         <li>Latency can drop compared to the hash-and-check path—for example from <strong>~16ms</strong> down to <strong>~6ms</strong>.</li>
                         <li><strong>Issue:</strong> The main logic lives in the backend. If we <strong>scale</strong> the service, we end up with <strong>multiple pods</strong>, and <strong>each service can keep its own local copy of the counter</strong>. Then two instances can hand out the same value → <strong>duplicates</strong>.</li>
-                        <li><strong>Mitigations / follow-ups:</strong>
-                            <ul>
-                                <li>Use a <strong>centralized counter</strong> (atomic increment in one place—e.g. Redis) so every pod reads the next ID from shared state, not from RAM alone.</li>
-                                <li>Or partition IDs (per-pod ranges, Snowflake-style worker IDs, etc.) so local counters cannot collide across replicas.</li>
-                                <li>Trade-offs: a single Redis (or similar) can become a hot spot or SPOF; clustering adds ops complexity.</li>
-                            </ul>
-                        </li>
                     </ul>
                     <figure class="diagram-figure">
                         <img src="assets/url-shortener-approach2-counter-issue.png" alt="" width="1024" height="481" decoding="async">
+                        <figcaption></figcaption>
+                    </figure>
+
+                    <h4>Approach 2 (upgraded): counter in Redis</h4>
+                    <ul>
+                        <li>Instead of keeping a <strong>counter copy inside each microservice</strong>, we <strong>move the counter to Redis</strong>.</li>
+                        <li>Accessing that value in Redis is very fast—about <strong>~2–3ms</strong>.</li>
+                        <li>Because Redis processes commands in a <strong>single-threaded</strong> way, counter updates are effectively <strong>atomic</strong>.</li>
+                        <li><strong>Issue:</strong> Redis is now a <strong>single point of failure</strong>. If Redis goes down, <strong>the entire architecture</strong> for issuing new IDs can fail.</li>
+                        <li>We often need a <strong>Redis cluster</strong> for resilience—but then a <strong>similar problem</strong> can show up: <strong>each Redis instance can hold its own counter state</strong>. If one node fails and we read from another, <strong>counters may not line up</strong> → risk of <strong>duplicates</strong> unless we design the counter carefully for clustering (single logical counter, fencing, or pre-allocated ID ranges).</li>
+                    </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-approach2-redis-counter.png" alt="" width="1024" height="493" decoding="async">
                         <figcaption></figcaption>
                     </figure>
 
