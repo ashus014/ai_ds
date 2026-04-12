@@ -122,23 +122,125 @@
             border-radius: 4px;
         }
 
-        .section pre {
-            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
-            background: #f4f5f9;
-            border: 1px solid #e0e3ee;
-            border-left: 4px solid #2196F3;
-            border-radius: 8px;
-            padding: 14px 16px;
-            overflow-x: auto;
-            margin: 12px 0 16px;
-            font-size: 0.86em;
-            line-height: 1.5;
+        .snippet-surface {
+            margin-top: 10px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
-
-        .section pre code {
-            background: transparent;
+        .snippet-surface-stack {
+            margin-top: 14px;
+        }
+        .snippet-surface-stack .code-example-block {
+            margin-bottom: 18px;
+        }
+        .snippet-surface-stack .code-example-block:last-child {
+            margin-bottom: 0;
+        }
+        .snippet-surface-stack .section-h4-snippet {
+            margin: 0 0 8px;
+            color: #4c1d95;
+            font-size: 1.02em;
+            font-weight: 600;
+        }
+        .snippet-surface-stack .section-h4-snippet:not(:first-child) {
+            margin-top: 6px;
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 55%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
             padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none !important;
+            padding: 0 !important;
+            font-family: inherit;
             font-size: inherit;
+            color: inherit;
         }
 
         .meta-lead {
@@ -264,6 +366,10 @@
             .navbar {
                 flex-direction: column;
                 text-align: center;
+            }
+
+            .code-window-body {
+                font-size: 11.5px;
             }
         }
 
@@ -488,30 +594,123 @@
 
                 <div class="section print-friendly">
                     <h2>Code examples</h2>
-                    <h4>Print: multiple arguments and <code>sep</code></h4>
-                    <pre><code>print("Name:", "Alice", "Age:", 25)       # default space between items
+                    <p>Copy each snippet from its window toolbar (same style as other notes).</p>
+
+                    <div class="snippet-surface snippet-surface-stack">
+                        <h4 class="section-h4-snippet">Print: multiple arguments and <code>sep</code></h4>
+                        <textarea id="copy-py-ex1" class="offscreen-copy" readonly aria-label="Python snippet 1">print("Name:", "Alice", "Age:", 25)       # default space between items
+print("Alice", "Bob", "Charlie", sep=", ")  # comma+space between items</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="print sep example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_print_sep.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn1" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>print("Name:", "Alice", "Age:", 25)       # default space between items
 print("Alice", "Bob", "Charlie", sep=", ")  # comma+space between items</code></pre>
-                    <h4>Print: custom <code>end</code></h4>
-                    <pre><code>print("Loading", end="...")
+                            </div>
+                        </div>
+
+                        <h4 class="section-h4-snippet">Print: custom <code>end</code></h4>
+                        <textarea id="copy-py-ex2" class="offscreen-copy" readonly aria-label="Python snippet 2">print("Loading", end="...")
+print("Done")   # → Loading...Done (same line)</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="print end example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_print_end.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn2" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>print("Loading", end="...")
 print("Done")   # → Loading...Done (same line)</code></pre>
-                    <h4>F-string with formatting</h4>
-                    <pre><code>name = "Alice"
+                            </div>
+                        </div>
+
+                        <h4 class="section-h4-snippet">F-string with formatting</h4>
+                        <textarea id="copy-py-ex3" class="offscreen-copy" readonly aria-label="Python snippet 3">name = "Alice"
+age = 28
+salary = 87500
+print(f"My name is {name}, age is {age}, salary is ${salary:,}")</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="f-string example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_fstring.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn3" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>name = "Alice"
 age = 28
 salary = 87500
 print(f"My name is {name}, age is {age}, salary is ${salary:,}")</code></pre>
-                    <h4>Input and cast</h4>
-                    <pre><code>age = int(input("Enter your age: "))
+                            </div>
+                        </div>
+
+                        <h4 class="section-h4-snippet">Input and cast</h4>
+                        <textarea id="copy-py-ex4" class="offscreen-copy" readonly aria-label="Python snippet 4">age = int(input("Enter your age: "))
+print(age + 1)</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="input cast example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_input_cast.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn4" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>age = int(input("Enter your age: "))
 print(age + 1)</code></pre>
-                    <h4>Split comma-separated input</h4>
-                    <pre><code>raw = input("Enter name, age, city: ")
+                            </div>
+                        </div>
+
+                        <h4 class="section-h4-snippet">Split comma-separated input</h4>
+                        <textarea id="copy-py-ex5" class="offscreen-copy" readonly aria-label="Python snippet 5">raw = input("Enter name, age, city: ")
+parts = raw.split(",")
+name = parts[0].strip()
+age = int(parts[1].strip())
+city = parts[2].strip()
+print(f"Name: {name}, Age: {age}, City: {city}")</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="split csv example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_split_csv.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn5" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>raw = input("Enter name, age, city: ")
 parts = raw.split(",")
 name = parts[0].strip()
 age = int(parts[1].strip())
 city = parts[2].strip()
 print(f"Name: {name}, Age: {age}, City: {city}")</code></pre>
-                    <h4>Several numbers on one line</h4>
-                    <pre><code>numbers = input("Enter three numbers: ").split()
+                            </div>
+                        </div>
+
+                        <h4 class="section-h4-snippet">Several numbers on one line</h4>
+                        <textarea id="copy-py-ex6" class="offscreen-copy" readonly aria-label="Python snippet 6">numbers = input("Enter three numbers: ").split()
+print(int(numbers[0]) + 1, int(numbers[1]) + 1, int(numbers[2]) + 1)</textarea>
+                        <div class="code-example-block">
+                            <div class="code-window" aria-label="split ints example">
+                                <div class="code-window-titlebar">
+                                    <div class="traffic-lights" aria-hidden="true"><span class="tl-red"></span><span class="tl-yellow"></span><span class="tl-green"></span></div>
+                                    <span class="code-window-title">example_split_numbers.py</span>
+                                    <div class="code-window-actions">
+                                        <button type="button" class="copy-all-btn" id="copy-py-btn6" title="Copy snippet">Copy all</button>
+                                    </div>
+                                </div>
+                                <pre class="code-window-body"><code>numbers = input("Enter three numbers: ").split()
 print(int(numbers[0]) + 1, int(numbers[1]) + 1, int(numbers[2]) + 1)</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="section print-friendly">
@@ -554,5 +753,43 @@ print(int(numbers[0]) + 1, int(numbers[1]) + 1, int(numbers[2]) + 1)</code></pre
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            function bindCopy(btnId, taId) {
+                var btn = document.getElementById(btnId);
+                var ta = document.getElementById(taId);
+                if (!btn || !ta) return;
+                var label = 'Copy all';
+                btn.addEventListener('click', function () {
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            }
+            bindCopy('copy-py-btn1', 'copy-py-ex1');
+            bindCopy('copy-py-btn2', 'copy-py-ex2');
+            bindCopy('copy-py-btn3', 'copy-py-ex3');
+            bindCopy('copy-py-btn4', 'copy-py-ex4');
+            bindCopy('copy-py-btn5', 'copy-py-ex5');
+            bindCopy('copy-py-btn6', 'copy-py-ex6');
+        })();
+    </script>
 </body>
 </html>

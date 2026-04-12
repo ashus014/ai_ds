@@ -88,6 +88,10 @@
             align-items: center;
         }
         .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h2:not(:first-of-type) {
+            margin-top: 26px;
+            margin-bottom: 12px;
+        }
         .section h3 {
             color: #764ba2;
             font-size: 1.15em;
@@ -257,9 +261,7 @@
                         <li>For <code>put(key, value)</code>, update existing key by moving to front, or insert new key at front.</li>
                         <li>If capacity is full, remove the last element (least recently used).</li>
                     </ul>
-                </div>
 
-                <div class="section">
                     <h2>Java — naive ⚠️</h2>
                     <p>Copy the full listing from the code window toolbar.</p>
                     <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Naive LRU Java source for copy">import java.util.*;
@@ -395,9 +397,7 @@ class LRUCache {
                         <li>On eviction at capacity, remove the tail entry and drop its key from the map.</li>
                         <li>Still an intermediate design: <code>ArrayList</code> remove/insert at arbitrary positions and full map refresh are linear; true <code>O(1)</code> LRU usually uses doubly linked list + hash map.</li>
                     </ul>
-                </div>
 
-                <div class="section">
                     <h2>Java — optimised ℹ️</h2>
                     <p>Copy the full listing from the code window toolbar.</p>
                     <textarea id="copy-buffer-optimised" class="offscreen-copy" readonly aria-label="Optimised LRU Java source for copy">import java.util.*;
