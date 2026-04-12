@@ -33,21 +33,6 @@
         return store;
     }
 
-    function getCurrentTopicId() {
-        var path = (typeof location !== 'undefined' && location.pathname) ? location.pathname.replace(/\\/g, '/') : '';
-        var m = path.match(/((?:hld|lld)\/[^/]+\.html)$/i);
-        return m ? m[1].replace(/\\/g, '/') : null;
-    }
-
-    /** No hub tick / no topic-page “Done” for guide or concept-only pages (same idea as LLD guide). */
-    function isExcludedFromTopicProgress(topicId) {
-        if (!topicId) return true;
-        if (topicId === 'lld/how-to-answer-lld-questions.html') return true;
-        if (topicId === 'hld/proximity-search.html') return true;
-        if (topicId === 'hld/real-time-applications.html') return true;
-        return false;
-    }
-
     function initHub() {
         var mount = document.getElementById('studyProgressMount');
         if (!mount) return;
@@ -122,45 +107,10 @@
         updateSummary();
     }
 
-    function initTopicPage() {
-        var topicId = getCurrentTopicId();
-        if (!topicId || isExcludedFromTopicProgress(topicId)) return;
-
-        var nav = document.querySelector('.navbar');
-        if (!nav || nav.querySelector('.topic-progress-page-wrap')) return;
-
-        var wrap = document.createElement('div');
-        wrap.className = 'topic-progress-page-wrap';
-
-        var cell = document.createElement('span');
-        cell.className = 'done-cell';
-
-        var inp = document.createElement('input');
-        inp.type = 'checkbox';
-        inp.id = 'topicProgressPageDone';
-        inp.setAttribute('aria-label', 'Mark this topic as done');
-        if (isDone(topicId)) inp.checked = true;
-
-        var lbl = document.createElement('label');
-        lbl.className = 'topic-progress-page-label';
-        lbl.setAttribute('for', 'topicProgressPageDone');
-        lbl.textContent = 'Done';
-
-        inp.addEventListener('change', function () {
-            setDone(topicId, inp.checked);
-        });
-
-        cell.appendChild(inp);
-        wrap.appendChild(cell);
-        wrap.appendChild(lbl);
-        nav.appendChild(wrap);
-    }
-
     function run() {
         if (document.getElementById('studyProgressMount')) {
             initHub();
         }
-        initTopicPage();
     }
 
     if (document.readyState === 'loading') {

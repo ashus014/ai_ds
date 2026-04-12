@@ -1,4 +1,4 @@
-/* HLD / LLD topic progress — mirrors LeetCode 75 Study Plan (study-tracker.js + leetcode-75.html) */
+/* HLD / LLD hub list — LeetCode 75–style checkbox in front of each tracked topic */
 
 #studyProgressMount {
     margin-bottom: 18px;
@@ -32,22 +32,26 @@
     transition: width 0.25s ease;
 }
 
-/* “Done” column: same checkbox sizing as LeetCode 75 table */
+/* Checkbox first; purple bar sits on the link block (not covering the checkbox) */
 .course-item.topic-progress-enhanced {
     display: flex;
-    align-items: center;
-    gap: 0;
-    padding-left: 8px;
+    align-items: stretch;
+    gap: 10px;
+    padding-left: 10px;
+    border-left: none;
+}
+
+.course-item.topic-progress-enhanced:hover {
+    padding-left: 10px;
 }
 
 .course-item.topic-progress-enhanced .done-cell {
-    width: 3rem;
+    width: 2.75rem;
     flex-shrink: 0;
-    text-align: center;
-    vertical-align: middle;
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
 }
 
 .course-item.topic-progress-enhanced .done-cell input {
@@ -60,16 +64,22 @@
 .course-item.topic-progress-enhanced > a {
     flex: 1;
     min-width: 0;
-    padding-left: 4px;
+    border-left: 4px solid #667eea;
+    padding-left: 12px;
+    border-radius: 0 6px 6px 0;
 }
 
-/* Same green “solved” row treatment as LeetCode 75 / Blind 75 */
+.course-item.topic-progress-enhanced:hover > a {
+    border-left-color: #764ba2;
+}
+
+/* Same green “solved” row treatment as LeetCode 75 */
 .course-item.row-solved.topic-progress-enhanced {
     background-color: #c8e6c9 !important;
-    border-left-color: #66bb6a;
 }
 
-.course-item.row-solved.topic-progress-enhanced .done-cell {
+.course-item.row-solved.topic-progress-enhanced > a {
+    border-left-color: #66bb6a;
     box-shadow: inset 4px 0 0 #66bb6a;
 }
 
@@ -77,36 +87,8 @@
     background-color: #a5d6a7 !important;
 }
 
-/* Topic note page — Done control in navbar (checkbox + label) */
-.topic-progress-page-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.topic-progress-page-wrap .done-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.topic-progress-page-wrap .done-cell input {
-    width: 1.15rem;
-    height: 1.15rem;
-    cursor: pointer;
-    accent-color: #667eea;
-}
-
-.topic-progress-page-label {
-    font-size: 0.95em;
-    font-weight: 600;
-    color: #4a3a6b;
-    user-select: none;
-}
-
 @media (max-width: 768px) {
     .course-item.topic-progress-enhanced {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 }
