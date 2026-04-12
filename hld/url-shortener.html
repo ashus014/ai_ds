@@ -172,16 +172,19 @@
                         <li style="padding-left: 5px; margin-bottom: 8px;">Low-Level Design</li>
                     </ol>
                     <h3>Problem Statement</h3>
-                    <p>Design a system that converts long URLs into short, easy-to-share URLs. <strong>One-to-one mapping</strong> between short and long URLs. Users provide a long URL; system returns shortened version. When short URL is accessed, system redirects to original long URL.</p>
+                    <p>Design a system that converts long URLs into short, easy-to-share URLs. <strong>One-to-one mapping</strong> between each active short key and a long URL. Users provide a long URL; the system returns a shortened form. When the short URL is accessed, the user is redirected to the original long URL. Optional capabilities (custom short keys, expiration) can be layered on top of this core flow.</p>
                 </div>
 
                 <div class="section">
                     <h2>Functional Requirements</h2>
                     <ul>
-                        <li>Generate short URL for a given long URL</li>
-                        <li>Redirect short URL to corresponding long URL</li>
-                        <li>Support for <strong>custom short URLs</strong> (premium feature)</li>
-                        <li>Support for URL <strong>expiration dates</strong> (default 90 days, customizable for premium users)</li>
+                        <li><strong>Create a short URL from a long URL</strong>
+                            <ul style="margin-top: 8px; margin-bottom: 0;">
+                                <li><em>Optional:</em> support a <strong>custom</strong> short URL (user-chosen slug)</li>
+                                <li><em>Optional:</em> support an <strong>expiration</strong> date (short link stops redirecting after that time)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Redirect</strong> — given a short URL, the user is sent to the <strong>original</strong> long URL</li>
                     </ul>
                 </div>
 
@@ -308,7 +311,7 @@
                         <li>Daily cron job to clean expired URLs from DB and cache</li>
                     </ul>
                     <h3>Custom URLs</h3>
-                    <p>Check uniqueness in DB before allowing user-defined short URLs (premium feature).</p>
+                    <p>When custom slugs are supported, check uniqueness in the DB (and reserved-word policy) before accepting a user-defined short key.</p>
                     <h3>HTTP Redirect Status Codes</h3>
                     <ul>
                         <li><strong>301 (Permanent Redirect):</strong> Browser caches mapping; reduces server load but loses tracking</li>
