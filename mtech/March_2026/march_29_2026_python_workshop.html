@@ -6,7 +6,12 @@
     <link rel="icon" type="image/png" href="../../favicon.png">
     <title>Python Workshop 2 | March 29, 2026 | IIT Patna M.Tech</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -14,156 +19,215 @@
             padding: 20px;
             color: #333;
         }
-        .wrapper { max-width: 1100px; margin: 0 auto; }
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .navbar-brand {
-            font-size: 1.5em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .back-link:hover { color: #764ba2; }
+
         .container {
+            max-width: 1000px;
+            margin: 0 auto;
             background: white;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 36px 30px;
+            padding: 40px 30px;
             text-align: center;
         }
-        .header h1 { font-size: 2.1em; margin-bottom: 10px; font-weight: 700; }
-        .header p { font-size: 1.05em; opacity: 0.95; margin-bottom: 6px; }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
         .date-badge {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.95em;
-            margin-top: 14px;
+            margin-top: 15px;
         }
-        .content { padding: 28px 32px 36px; }
-        .notes-section {
-            margin-bottom: 32px;
-            padding-bottom: 28px;
-            border-bottom: 2px solid #e8eaf6;
+
+        .content {
+            padding: 40px;
         }
-        .notes-article { color: #333; }
-        .notes-doc-title {
-            font-size: 1.45em;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 14px;
-            line-height: 1.3;
+
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-        .notes-meta {
-            color: #4a5568;
-            font-size: 0.95em;
-            line-height: 1.6;
-            margin-bottom: 6px;
+
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
         }
-        .notes-divider {
-            border: none;
-            border-top: 2px solid #e8eaf6;
-            margin: 22px 0 24px;
-        }
-        .notes-article h3 {
+
+        .section h2 {
             color: #667eea;
-            font-size: 1.22em;
-            font-weight: 700;
-            margin: 1.35em 0 0.6em;
-            line-height: 1.3;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
         }
-        .notes-article h3:first-of-type { margin-top: 0; }
-        .notes-article h4 {
+
+        .section h2::before {
+            content: "📌";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .section h3:first-child {
+            margin-top: 0;
+        }
+
+        .section h4 {
             color: #764ba2;
             font-size: 1.05em;
             font-weight: 600;
             margin: 1em 0 0.45em;
         }
-        .notes-article p {
-            color: #444;
-            line-height: 1.65;
-            margin-bottom: 0.85em;
-            font-size: 0.98em;
+
+        .section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
-        .notes-article ul {
-            margin: 0.4em 0 1em 1.35em;
-            line-height: 1.55;
-            color: #444;
-            font-size: 0.98em;
-        }
-        .notes-article ul li { margin-bottom: 0.45em; }
-        .notes-article ul li strong { color: #2d3748; }
-        .notes-article code {
+
+        .section code {
             font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
             font-size: 0.9em;
             background: #eef0f7;
             padding: 2px 6px;
             border-radius: 4px;
         }
-        .notes-table-wrap {
-            overflow-x: auto;
-            margin: 0.65em 0 1.15em;
-            border-radius: 8px;
-            border: 1px solid #e0e3ee;
+
+        .meta-lead {
+            color: #555;
+            line-height: 1.65;
+            margin-bottom: 16px;
+            font-size: 1em;
         }
-        table.notes-table {
+
+        ul {
+            list-style: none;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9em;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .notes-table th,
-        .notes-table td {
-            border: 1px solid #dde0ee;
-            padding: 9px 11px;
-            text-align: left;
-            vertical-align: top;
-        }
-        .notes-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        table th {
+            background: #667eea;
             color: white;
+            padding: 12px;
+            text-align: left;
             font-weight: 600;
         }
-        .notes-table tbody tr:nth-child(even) { background: #f8f9fc; }
-        .notes-attribution {
-            margin-top: 1.75em;
-            padding-top: 1.1em;
-            border-top: 1px solid #e8eaf6;
-            font-size: 0.9em;
-            color: #666;
-            font-style: italic;
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
         }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .example {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #1565c0;
+        }
+
+        .key-point {
+            background: #f3e5f5;
+            padding: 15px;
+            border-left: 4px solid #764ba2;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+            color: #6a1b9a;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 40px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .footer strong {
+            color: #667eea;
+        }
+
         .pdf-section-title {
             color: #667eea;
-            font-size: 1.15em;
+            font-size: 1.25em;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin: 30px 0 14px;
         }
+
         .pdf-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -174,7 +238,15 @@
             padding-bottom: 14px;
             border-bottom: 2px solid #e8eaf6;
         }
-        .pdf-toolbar p { color: #666; font-size: 0.95em; max-width: 520px; line-height: 1.5; }
+
+        .pdf-toolbar p {
+            color: #666;
+            font-size: 0.95em;
+            max-width: 520px;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
         .pdf-link {
             display: inline-flex;
             align-items: center;
@@ -189,10 +261,12 @@
             white-space: nowrap;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .pdf-link:hover {
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.45);
         }
+
         .pdf-viewer {
             width: 100%;
             border: 2px solid #e0e0e0;
@@ -201,6 +275,7 @@
             background: #2d2d2d;
             min-height: 70vh;
         }
+
         .pdf-viewer iframe {
             width: 100%;
             height: 85vh;
@@ -208,9 +283,104 @@
             border: none;
             display: block;
         }
+
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; text-align: center; }
-            .pdf-viewer iframe { height: 75vh; min-height: 400px; }
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pdf-viewer iframe {
+                height: 75vh;
+                min-height: 400px;
+            }
+        }
+
+        .print-friendly {
+            page-break-inside: avoid;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .navbar {
+                display: none;
+            }
+        }
+
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .attribution {
+            margin-top: 14px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -225,300 +395,302 @@
             <div class="header">
                 <h1>Python Workshop 2</h1>
                 <p>IIT Patna — AI &amp; Data Science (M.Tech)</p>
-                <div class="date-badge">📅 March 29, 2026</div>
+                <div class="date-badge">📅 Lecture notes — March 29, 2026</div>
             </div>
+
             <div class="content">
-                <section class="notes-section" aria-labelledby="notes-doc-title">
-                    <article class="notes-article">
-                        <h2 id="notes-doc-title" class="notes-doc-title">Python Introductory Refresher — Video Notes</h2>
-                        <p class="notes-meta">Summary of the introductory refresher course video. The instructor targets a mixed audience and focuses on core Python for data-science beginners; advanced topics such as object-oriented programming are deliberately omitted for accessibility.</p>
-                        <hr class="notes-divider">
+                <div class="section print-friendly">
+                    <h2>Course overview</h2>
+                    <p class="meta-lead">Summary of the introductory refresher course video. The instructor targets a mixed audience and focuses on core Python for data-science beginners; advanced topics such as object-oriented programming are deliberately omitted for accessibility.</p>
+                    <h3>Objective and structure</h3>
+                    <ul>
+                        <li>Refresh Python fundamentals without going deep into data-science-specific material yet.</li>
+                        <li>Multiple sessions, each on distinct topics.</li>
+                        <li>A <strong>Google Colab</strong> notebook accompanies the course for hands-on practice.</li>
+                        <li>Questions and interactive learning are encouraged.</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Colab:</strong> online Python environment built on Jupyter — NumPy, Pandas, and Matplotlib are pre-installed for quick experiments.
+                    </div>
+                </div>
 
-                        <h3>Course objective &amp; structure</h3>
-                        <ul>
-                            <li>Refresh Python fundamentals without going deep into data-science-specific material yet.</li>
-                            <li>Multiple sessions, each on distinct topics.</li>
-                            <li>A <strong>Google Colab</strong> notebook accompanies the course for hands-on practice.</li>
-                            <li>Questions and interactive learning are encouraged.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Programming environment</h2>
+                    <ul>
+                        <li><strong>Google Colab</strong> — online environment for Python, built on Jupyter Notebook.</li>
+                        <li>Ready-to-use Python runtime with libraries such as NumPy, Pandas, and Matplotlib pre-installed.</li>
+                        <li>Creating notebooks, running code cells, and using <strong>markdown cells</strong> for documentation.</li>
+                        <li>Comments: <code>#</code> for single-line; multi-line commenting often done with <strong>Ctrl + /</strong> (toggle comment) in the editor.</li>
+                    </ul>
+                </div>
 
-                        <h3>Python programming environment</h3>
-                        <ul>
-                            <li><strong>Google Colab</strong> — online environment for Python, built on Jupyter Notebook.</li>
-                            <li>Ready-to-use Python runtime with libraries such as NumPy, Pandas, and Matplotlib pre-installed.</li>
-                            <li>Creating notebooks, running code cells, and using <strong>markdown cells</strong> for documentation.</li>
-                            <li>Comments: <code>#</code> for single-line; multi-line commenting often done with <strong>Ctrl + /</strong> (toggle comment) in the editor.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Python vs other languages</h2>
+                    <ul>
+                        <li><strong>Indentation</strong> (typically 4 spaces) defines blocks — not curly braces <code>{}</code>.</li>
+                        <li>Statements end with <strong>new lines</strong>; semicolons are not required.</li>
+                        <li><strong>Dynamically typed</strong> — no explicit type declaration on variables.</li>
+                        <li>No mandatory <code>main()</code> entry point (unlike C/Java).</li>
+                        <li><strong>Interpreted</strong> — code runs line by line.</li>
+                        <li>Readable, almost English-like syntax; large ecosystem and community.</li>
+                    </ul>
+                </div>
 
-                        <h3>Python vs other languages</h3>
-                        <ul>
-                            <li><strong>Indentation</strong> (typically 4 spaces) defines blocks — not curly braces <code>{}</code>.</li>
-                            <li>Statements end with <strong>new lines</strong>; semicolons are not required.</li>
-                            <li><strong>Dynamically typed</strong> — no explicit type declaration on variables.</li>
-                            <li>No mandatory <code>main()</code> entry point (unlike C/Java).</li>
-                            <li><strong>Interpreted</strong> — code runs line by line.</li>
-                            <li>Readable, almost English-like syntax; large ecosystem and community.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Variables and data types</h2>
+                    <ul>
+                        <li>Types are inferred from the assigned value (dynamic typing).</li>
+                        <li><strong>Duck typing:</strong> what matters is how an object behaves, not its declared type.</li>
+                        <li>Variables can be reassigned to different types without error.</li>
+                        <li>Internally, names refer to <strong>objects in memory</strong> (references), not raw value slots.</li>
+                        <li><strong>Garbage collection</strong> reclaims unused objects automatically.</li>
+                        <li>Everything is an <strong>object</strong>; there are no separate “primitive” types like in some languages.</li>
+                    </ul>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable name</th>
+                                <th>Value</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>my_integer</code></td>
+                                <td><code>10</code></td>
+                                <td><code>int</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>my_float</code></td>
+                                <td><code>20.5</code></td>
+                                <td><code>float</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>my_string</code></td>
+                                <td><code>"hello Python"</code></td>
+                                <td><code>str</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>my_boolean</code></td>
+                                <td><code>True</code></td>
+                                <td><code>bool</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Basic types in practice</h3>
+                    <ul>
+                        <li><strong>Integers:</strong> arbitrary precision in Python (unlike fixed 32/64-bit integers in many languages).</li>
+                        <li><strong>Floats:</strong> stored in binary — watch for precision quirks (e.g. <code>0.3</code> vs <code>0.30000004</code>).</li>
+                        <li><strong>Booleans:</strong> subclass of <code>int</code> (<code>True == 1</code>, <code>False == 0</code>) — useful for counting and logic.</li>
+                        <li><strong><code>None</code>:</strong> Python&apos;s null; prefer <code>is None</code> / <code>is not None</code> over <code>== None</code>.</li>
+                    </ul>
+                </div>
 
-                        <h3>Variables and data types</h3>
-                        <ul>
-                            <li>Types are inferred from the assigned value (dynamic typing).</li>
-                            <li><strong>Duck typing:</strong> what matters is how an object behaves, not its declared type.</li>
-                            <li>Variables can be reassigned to different types without error.</li>
-                            <li>Internally, names refer to <strong>objects in memory</strong> (references), not raw value slots.</li>
-                            <li><strong>Garbage collection</strong> reclaims unused objects automatically.</li>
-                            <li>Everything is an <strong>object</strong>; there are no separate “primitive” types like in some languages.</li>
-                        </ul>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Variable name</th>
-                                        <th>Value</th>
-                                        <th>Type</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><code>my_integer</code></td>
-                                        <td><code>10</code></td>
-                                        <td><code>int</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>my_float</code></td>
-                                        <td><code>20.5</code></td>
-                                        <td><code>float</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>my_string</code></td>
-                                        <td><code>"hello Python"</code></td>
-                                        <td><code>str</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>my_boolean</code></td>
-                                        <td><code>True</code></td>
-                                        <td><code>bool</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="section print-friendly">
+                    <h2>Operators in Python</h2>
+                    <p>Seven broad categories: <strong>arithmetic</strong>, <strong>comparison</strong>, <strong>logical</strong>, <strong>bitwise</strong>, <strong>assignment</strong>, <strong>membership</strong>, and <strong>identity</strong>.</p>
+                    <h3>Arithmetic</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>+</code></td><td>Addition</td><td><code>10 + 3</code></td><td><code>13</code></td></tr>
+                            <tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 3</code></td><td><code>7</code></td></tr>
+                            <tr><td><code>*</code></td><td>Multiplication</td><td><code>10 * 3</code></td><td><code>30</code></td></tr>
+                            <tr><td><code>/</code></td><td>Division (float)</td><td><code>10 / 3</code></td><td><code>3.333…</code></td></tr>
+                            <tr><td><code>//</code></td><td>Floor division</td><td><code>10 // 3</code></td><td><code>3</code></td></tr>
+                            <tr><td><code>%</code></td><td>Modulus (remainder)</td><td><code>10 % 3</code></td><td><code>1</code></td></tr>
+                            <tr><td><code>**</code></td><td>Exponentiation</td><td><code>10 ** 3</code></td><td><code>1000</code></td></tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li>In Python 3, <code>/</code> always returns a <code>float</code> (unlike Python 2&apos;s integer division for ints).</li>
+                        <li>Precedence: <strong>exponentiation</strong> first, then multiplication/division, then addition/subtraction (standard math rules).</li>
+                        <li><strong>Augmented assignment:</strong> e.g. <code>x += 5</code> combines operation and assignment.</li>
+                        <li><strong>Walrus operator</strong> <code>:=</code> (Python 3.8+): assign and use a value in one expression.</li>
+                    </ul>
+                </div>
 
-                        <h3>Basic data types explained</h3>
-                        <ul>
-                            <li><strong>Integers:</strong> arbitrary precision in Python (unlike fixed 32/64-bit integers in many languages).</li>
-                            <li><strong>Floats:</strong> stored in binary — watch for precision quirks (e.g. <code>0.3</code> vs <code>0.30000004</code>).</li>
-                            <li><strong>Booleans:</strong> subclass of <code>int</code> (<code>True == 1</code>, <code>False == 0</code>) — useful for counting and logic.</li>
-                            <li><strong><code>None</code>:</strong> Python&apos;s null; prefer <code>is None</code> / <code>is not None</code> over <code>== None</code>.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Comparison and logical operators</h2>
+                    <h3>Comparison</h3>
+                    <p>Expressions evaluate to <code>True</code> or <code>False</code>.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Meaning</th>
+                                <th>Example</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>==</code></td><td>Equal to</td><td><code>5 == 5</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>!=</code></td><td>Not equal to</td><td><code>5 != 3</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>&gt;</code></td><td>Greater than</td><td><code>10 &gt; 3</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>&lt;</code></td><td>Less than</td><td><code>3 &lt; 10</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>&gt;=</code></td><td>Greater or equal</td><td><code>5 &gt;= 5</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>&lt;=</code></td><td>Less or equal</td><td><code>4 &lt;= 5</code></td><td><code>True</code></td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Logical</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>and</code></td><td>Logical AND</td><td><code>True and False</code> → <code>False</code></td></tr>
+                            <tr><td><code>or</code></td><td>Logical OR</td><td><code>True or False</code> → <code>True</code></td></tr>
+                            <tr><td><code>not</code></td><td>Logical NOT</td><td><code>not True</code> → <code>False</code></td></tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li><strong>Short-circuiting:</strong> <code>and</code> stops at the first falsey value; <code>or</code> stops at the first truthy value — saves work and can avoid errors in chained checks.</li>
+                    </ul>
+                </div>
 
-                        <h3>Operators in Python</h3>
-                        <p>Seven broad categories: <strong>arithmetic</strong>, <strong>comparison</strong>, <strong>logical</strong>, <strong>bitwise</strong>, <strong>assignment</strong>, <strong>membership</strong>, and <strong>identity</strong>.</p>
+                <div class="section print-friendly">
+                    <h2>Bitwise operators</h2>
+                    <p>Operate on integer bit patterns.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>&amp;</code></td><td>Bitwise AND</td><td><code>5 &amp; 3</code></td><td><code>1</code></td></tr>
+                            <tr><td><code>|</code></td><td>Bitwise OR</td><td><code>5 | 3</code></td><td><code>7</code></td></tr>
+                            <tr><td><code>^</code></td><td>Bitwise XOR</td><td><code>5 ^ 3</code></td><td><code>6</code></td></tr>
+                            <tr><td><code>~</code></td><td>Bitwise NOT</td><td><code>~5</code></td><td><code>-6</code> (Python signed ints)</td></tr>
+                            <tr><td><code>&lt;&lt;</code></td><td>Left shift</td><td><code>5 &lt;&lt; 1</code></td><td><code>10</code></td></tr>
+                            <tr><td><code>&gt;&gt;</code></td><td>Right shift</td><td><code>5 &gt;&gt; 1</code></td><td><code>2</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                        <h4>Arithmetic operators</h4>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                        <th>Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>+</code></td><td>Addition</td><td><code>10 + 3</code></td><td><code>13</code></td></tr>
-                                    <tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 3</code></td><td><code>7</code></td></tr>
-                                    <tr><td><code>*</code></td><td>Multiplication</td><td><code>10 * 3</code></td><td><code>30</code></td></tr>
-                                    <tr><td><code>/</code></td><td>Division (float)</td><td><code>10 / 3</code></td><td><code>3.333…</code></td></tr>
-                                    <tr><td><code>//</code></td><td>Floor division</td><td><code>10 // 3</code></td><td><code>3</code></td></tr>
-                                    <tr><td><code>%</code></td><td>Modulus (remainder)</td><td><code>10 % 3</code></td><td><code>1</code></td></tr>
-                                    <tr><td><code>**</code></td><td>Exponentiation</td><td><code>10 ** 3</code></td><td><code>1000</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul>
-                            <li>In Python 3, <code>/</code> always returns a <code>float</code> (unlike Python 2&apos;s integer division for ints).</li>
-                            <li>Precedence: <strong>exponentiation</strong> first, then multiplication/division, then addition/subtraction (standard math rules).</li>
-                            <li><strong>Augmented assignment:</strong> e.g. <code>x += 5</code> combines operation and assignment.</li>
-                            <li><strong>Walrus operator</strong> <code>:=</code> (Python 3.8+): assign and use a value in one expression.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Assignment, membership, and identity</h2>
+                    <h3>Assignment</h3>
+                    <ul>
+                        <li>Simple: <code>x = 10</code></li>
+                        <li>Augmented: <code>x += 5</code>, <code>x -= 3</code>, <code>x *= 2</code>, etc.</li>
+                        <li>Multiple assignment: <code>a, b, c = 1, 2, 3</code></li>
+                        <li>Swapping: <code>a, b = b, a</code></li>
+                    </ul>
+                    <h3>Membership</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>in</code></td><td>Membership test</td><td><code>3 in [1, 2, 3]</code></td><td><code>True</code></td></tr>
+                            <tr><td><code>not in</code></td><td>Non-membership</td><td><code>5 not in [1, 2, 3]</code></td><td><code>True</code></td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Identity</h3>
+                    <p>Test whether two names refer to the <strong>same object</strong> in memory.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>is</code></td><td>Same object</td><td><code>a is b</code></td><td><code>True</code> if same object</td></tr>
+                            <tr><td><code>is not</code></td><td>Not the same object</td><td><code>a is not b</code></td><td><code>True</code> / <code>False</code></td></tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li><code>is</code> / <code>is not</code> → <strong>object identity</strong> (same address).</li>
+                        <li><code>==</code> / <code>!=</code> → <strong>value equality</strong>.</li>
+                        <li>Analogy: twins can look identical (<code>==</code>) but are not the same person (<code>is</code>).</li>
+                    </ul>
+                </div>
 
-                        <h4>Comparison operators</h4>
-                        <p>Expressions evaluate to <code>True</code> or <code>False</code>.</p>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Meaning</th>
-                                        <th>Example</th>
-                                        <th>Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>==</code></td><td>Equal to</td><td><code>5 == 5</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>!=</code></td><td>Not equal to</td><td><code>5 != 3</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>&gt;</code></td><td>Greater than</td><td><code>10 &gt; 3</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>&lt;</code></td><td>Less than</td><td><code>3 &lt; 10</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>&gt;=</code></td><td>Greater or equal</td><td><code>5 &gt;= 5</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>&lt;=</code></td><td>Less or equal</td><td><code>4 &lt;= 5</code></td><td><code>True</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="section print-friendly">
+                    <h2>Concepts to remember</h2>
+                    <ul>
+                        <li>Indentation defines code structure.</li>
+                        <li>Dynamic typing and duck typing support flexible APIs.</li>
+                        <li>Variables are references to objects.</li>
+                        <li>Float precision: use tools like <code>math.isclose</code> when comparing floats in data work.</li>
+                        <li>Use <code>is None</code> for null checks.</li>
+                        <li>Short-circuit evaluation in <code>and</code> / <code>or</code> for efficiency and safety.</li>
+                        <li>Bitwise ops are rarer in everyday scripts but matter in some numerical/low-level contexts.</li>
+                        <li>Walrus operator <code>:=</code> for inline assignment (3.8+).</li>
+                        <li>Multiple assignment and tuple swapping for clear, compact code.</li>
+                        <li>Comments and markdown cells document intent and workflow.</li>
+                    </ul>
+                </div>
 
-                        <h4>Logical operators</h4>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>and</code></td><td>Logical AND</td><td><code>True and False</code> → <code>False</code></td></tr>
-                                    <tr><td><code>or</code></td><td>Logical OR</td><td><code>True or False</code> → <code>True</code></td></tr>
-                                    <tr><td><code>not</code></td><td>Logical NOT</td><td><code>not True</code> → <code>False</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul>
-                            <li><strong>Short-circuiting:</strong> <code>and</code> stops at the first falsey value; <code>or</code> stops at the first truthy value — saves work and can avoid errors in chained checks.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Learning approach and summary</h2>
+                    <h3>How to practise</h3>
+                    <ul>
+                        <li>Practice in the provided Colab notebooks.</li>
+                        <li>Run examples and experiment interactively.</li>
+                        <li>Ask questions during sessions.</li>
+                        <li>Understand patterns rather than memorising syntax.</li>
+                        <li>Solidify foundations before advanced topics.</li>
+                    </ul>
+                    <h3>Operator categories (cheat sheet)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Purpose</th>
+                                <th>Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Arithmetic</td><td>Math operations</td><td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>, <code>**</code></td></tr>
+                            <tr><td>Comparison</td><td>Compare values → <code>bool</code></td><td><code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></td></tr>
+                            <tr><td>Logical</td><td>Boolean logic</td><td><code>and</code>, <code>or</code>, <code>not</code></td></tr>
+                            <tr><td>Bitwise</td><td>Binary-level on ints</td><td><code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code></td></tr>
+                            <tr><td>Assignment</td><td>Assign / update</td><td><code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>//=</code>, …</td></tr>
+                            <tr><td>Membership</td><td>Presence in collections</td><td><code>in</code>, <code>not in</code></td></tr>
+                            <tr><td>Identity</td><td>Same object in memory</td><td><code>is</code>, <code>is not</code></td></tr>
+                        </tbody>
+                    </table>
+                    <p class="attribution">Notes summarised from the Python introductory refresher course video.</p>
+                </div>
 
-                        <h4>Bitwise operators</h4>
-                        <p>Operate on integer bit patterns.</p>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                        <th>Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>&amp;</code></td><td>Bitwise AND</td><td><code>5 &amp; 3</code></td><td><code>1</code></td></tr>
-                                    <tr><td><code>|</code></td><td>Bitwise OR</td><td><code>5 | 3</code></td><td><code>7</code></td></tr>
-                                    <tr><td><code>^</code></td><td>Bitwise XOR</td><td><code>5 ^ 3</code></td><td><code>6</code></td></tr>
-                                    <tr><td><code>~</code></td><td>Bitwise NOT</td><td><code>~5</code></td><td><code>-6</code> (Python signed ints)</td></tr>
-                                    <tr><td><code>&lt;&lt;</code></td><td>Left shift</td><td><code>5 &lt;&lt; 1</code></td><td><code>10</code></td></tr>
-                                    <tr><td><code>&gt;&gt;</code></td><td>Right shift</td><td><code>5 &gt;&gt; 1</code></td><td><code>2</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h4>Assignment operators</h4>
-                        <ul>
-                            <li>Simple: <code>x = 10</code></li>
-                            <li>Augmented: <code>x += 5</code>, <code>x -= 3</code>, <code>x *= 2</code>, etc.</li>
-                            <li>Multiple assignment: <code>a, b, c = 1, 2, 3</code></li>
-                            <li>Swapping: <code>a, b = b, a</code></li>
-                        </ul>
-
-                        <h4>Membership operators</h4>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                        <th>Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>in</code></td><td>Membership test</td><td><code>3 in [1, 2, 3]</code></td><td><code>True</code></td></tr>
-                                    <tr><td><code>not in</code></td><td>Non-membership</td><td><code>5 not in [1, 2, 3]</code></td><td><code>True</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h4>Identity operators</h4>
-                        <p>Test whether two names refer to the <strong>same object</strong> in memory.</p>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Operator</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                        <th>Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><code>is</code></td><td>Same object</td><td><code>a is b</code></td><td><code>True</code> if same object</td></tr>
-                                    <tr><td><code>is not</code></td><td>Not the same object</td><td><code>a is not b</code></td><td><code>True</code> / <code>False</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul>
-                            <li><code>is</code> / <code>is not</code> → <strong>object identity</strong> (same address).</li>
-                            <li><code>==</code> / <code>!=</code> → <strong>value equality</strong>.</li>
-                            <li>Analogy: twins can look identical (<code>==</code>) but are not the same person (<code>is</code>).</li>
-                        </ul>
-
-                        <h3>Important concepts highlighted</h3>
-                        <ul>
-                            <li>Indentation defines code structure.</li>
-                            <li>Dynamic typing and duck typing support flexible APIs.</li>
-                            <li>Variables are references to objects.</li>
-                            <li>Float precision: use tools like <code>math.isclose</code> when comparing floats in data work.</li>
-                            <li>Use <code>is None</code> for null checks.</li>
-                            <li>Short-circuit evaluation in <code>and</code> / <code>or</code> for efficiency and safety.</li>
-                            <li>Bitwise ops are rarer in everyday scripts but matter in some numerical/low-level contexts.</li>
-                            <li>Walrus operator <code>:=</code> for inline assignment (3.8+).</li>
-                            <li>Multiple assignment and tuple swapping for clear, compact code.</li>
-                            <li>Comments and markdown cells document intent and workflow.</li>
-                        </ul>
-
-                        <h3>Learning approach encouraged</h3>
-                        <ul>
-                            <li>Practice in the provided Colab notebooks.</li>
-                            <li>Run examples and experiment interactively.</li>
-                            <li>Ask questions during sessions.</li>
-                            <li>Understand patterns rather than memorising syntax.</li>
-                            <li>Solidify foundations before advanced topics.</li>
-                        </ul>
-
-                        <h3>Summary: operator categories</h3>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Purpose</th>
-                                        <th>Examples</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>Arithmetic</td><td>Math operations</td><td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>, <code>**</code></td></tr>
-                                    <tr><td>Comparison</td><td>Compare values → <code>bool</code></td><td><code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></td></tr>
-                                    <tr><td>Logical</td><td>Boolean logic</td><td><code>and</code>, <code>or</code>, <code>not</code></td></tr>
-                                    <tr><td>Bitwise</td><td>Binary-level on ints</td><td><code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code></td></tr>
-                                    <tr><td>Assignment</td><td>Assign / update</td><td><code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>//=</code>, …</td></tr>
-                                    <tr><td>Membership</td><td>Presence in collections</td><td><code>in</code>, <code>not in</code></td></tr>
-                                    <tr><td>Identity</td><td>Same object in memory</td><td><code>is</code>, <code>is not</code></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <p class="notes-attribution">Notes summarised from the Python introductory refresher course video.</p>
-                    </article>
-                </section>
                 <h3 class="pdf-section-title">Slides (PDF)</h3>
                 <div class="pdf-toolbar">
                     <p>Scroll inside the viewer below to read the full deck. If it does not load in your browser, use the button to open the PDF directly.</p>
                     <a class="pdf-link" href="Python_Workshop_2.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
                 </div>
                 <div class="pdf-viewer">
-                    <iframe
-                        src="Python_Workshop_2.pdf"
-                        title="Python Workshop 2 — PDF"
-                    ></iframe>
+                    <iframe src="Python_Workshop_2.pdf" title="Python Workshop 2 — PDF"></iframe>
                 </div>
+            </div>
+
+            <div class="footer">
+                <strong>End of workshop notes</strong><br>
+                IIT Patna M.Tech — Python Workshop 2<br>
+                📅 March 29, 2026
             </div>
         </div>
     </div>

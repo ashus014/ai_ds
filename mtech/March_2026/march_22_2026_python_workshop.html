@@ -6,7 +6,12 @@
     <link rel="icon" type="image/png" href="../../favicon.png">
     <title>Python Workshop 1 | March 22, 2026 | IIT Patna M.Tech</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -14,182 +19,215 @@
             padding: 20px;
             color: #333;
         }
-        .wrapper { max-width: 1100px; margin: 0 auto; }
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .navbar-brand {
-            font-size: 1.5em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .back-link:hover { color: #764ba2; }
+
         .container {
+            max-width: 1000px;
+            margin: 0 auto;
             background: white;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 36px 30px;
+            padding: 40px 30px;
             text-align: center;
         }
-        .header h1 { font-size: 2.1em; margin-bottom: 10px; font-weight: 700; }
-        .header p { font-size: 1.05em; opacity: 0.95; margin-bottom: 6px; }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
         .date-badge {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.95em;
-            margin-top: 14px;
+            margin-top: 15px;
         }
-        .content { padding: 28px 32px 36px; }
-        .notes-section {
-            margin-bottom: 32px;
-            padding-bottom: 28px;
-            border-bottom: 2px solid #e8eaf6;
+
+        .content {
+            padding: 40px;
         }
-        .notes-article { color: #333; }
-        .notes-doc-title {
-            font-size: 1.45em;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 14px;
-            line-height: 1.3;
+
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-        .notes-meta {
-            color: #4a5568;
-            font-size: 0.95em;
-            line-height: 1.6;
-            margin-bottom: 6px;
+
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
         }
-        .notes-divider {
-            border: none;
-            border-top: 2px solid #e8eaf6;
-            margin: 22px 0 24px;
-        }
-        .notes-article h3 {
+
+        .section h2 {
             color: #667eea;
-            font-size: 1.22em;
-            font-weight: 700;
-            margin: 1.35em 0 0.6em;
-            line-height: 1.3;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
         }
-        .notes-article h3:first-of-type { margin-top: 0; }
-        .notes-article h4 {
+
+        .section h2::before {
+            content: "📌";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .section h3:first-child {
+            margin-top: 0;
+        }
+
+        .section h4 {
             color: #764ba2;
             font-size: 1.05em;
             font-weight: 600;
             margin: 1em 0 0.45em;
         }
-        .notes-article p {
-            color: #444;
-            line-height: 1.65;
-            margin-bottom: 0.85em;
-            font-size: 0.98em;
+
+        .section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
-        .notes-article ul {
-            margin: 0.4em 0 1em 1.35em;
-            line-height: 1.55;
-            color: #444;
-            font-size: 0.98em;
-        }
-        .notes-article ul li { margin-bottom: 0.45em; }
-        .notes-article ul li strong { color: #2d3748; }
-        .notes-article code {
+
+        .section code {
             font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
             font-size: 0.9em;
             background: #eef0f7;
             padding: 2px 6px;
             border-radius: 4px;
         }
-        .notes-pre {
-            background: #f4f5f9;
-            border: 1px solid #e0e3ee;
-            border-radius: 8px;
-            padding: 12px 14px;
-            overflow-x: auto;
-            font-size: 0.86em;
-            line-height: 1.5;
-            margin: 0.65em 0 1em;
-            font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+
+        .meta-lead {
+            color: #555;
+            line-height: 1.65;
+            margin-bottom: 16px;
+            font-size: 1em;
         }
-        .notes-table-wrap {
-            overflow-x: auto;
-            margin: 0.65em 0 1.15em;
-            border-radius: 8px;
-            border: 1px solid #e0e3ee;
+
+        ul {
+            list-style: none;
+            margin-left: 20px;
+            margin-bottom: 15px;
         }
-        table.notes-table {
+
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9em;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .notes-table th,
-        .notes-table td {
-            border: 1px solid #dde0ee;
-            padding: 9px 11px;
-            text-align: left;
-            vertical-align: top;
-        }
-        .notes-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        table th {
+            background: #667eea;
             color: white;
+            padding: 12px;
+            text-align: left;
             font-weight: 600;
         }
-        .notes-table tbody tr:nth-child(even) { background: #f8f9fc; }
-        .notes-callout {
-            border-left: 4px solid #764ba2;
-            padding: 10px 14px;
-            margin: 0.65em 0 1em;
-            background: #faf9fc;
-            font-size: 0.95em;
-            line-height: 1.55;
-            color: #444;
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
         }
-        .notes-callout strong { color: #2d3748; }
-        .notes-keywords {
-            font-size: 0.92em;
-            color: #4a5568;
-            line-height: 1.55;
+
+        table tr:last-child td {
+            border-bottom: none;
         }
-        .notes-attribution {
-            margin-top: 1.75em;
-            padding-top: 1.1em;
-            border-top: 1px solid #e8eaf6;
-            font-size: 0.9em;
-            color: #666;
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .example {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            border-radius: 6px;
+            margin: 15px 0;
             font-style: italic;
+            color: #1565c0;
         }
+
+        .key-point {
+            background: #f3e5f5;
+            padding: 15px;
+            border-left: 4px solid #764ba2;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+            color: #6a1b9a;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 40px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .footer strong {
+            color: #667eea;
+        }
+
         .pdf-section-title {
             color: #667eea;
-            font-size: 1.15em;
+            font-size: 1.25em;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin: 30px 0 14px;
         }
+
         .pdf-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -200,7 +238,15 @@
             padding-bottom: 14px;
             border-bottom: 2px solid #e8eaf6;
         }
-        .pdf-toolbar p { color: #666; font-size: 0.95em; max-width: 520px; line-height: 1.5; }
+
+        .pdf-toolbar p {
+            color: #666;
+            font-size: 0.95em;
+            max-width: 520px;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
         .pdf-link {
             display: inline-flex;
             align-items: center;
@@ -215,10 +261,12 @@
             white-space: nowrap;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .pdf-link:hover {
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.45);
         }
+
         .pdf-viewer {
             width: 100%;
             border: 2px solid #e0e0e0;
@@ -227,6 +275,7 @@
             background: #2d2d2d;
             min-height: 70vh;
         }
+
         .pdf-viewer iframe {
             width: 100%;
             height: 85vh;
@@ -234,9 +283,104 @@
             border: none;
             display: block;
         }
+
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; text-align: center; }
-            .pdf-viewer iframe { height: 75vh; min-height: 400px; }
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pdf-viewer iframe {
+                height: 75vh;
+                min-height: 400px;
+            }
+        }
+
+        .print-friendly {
+            page-break-inside: avoid;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .navbar {
+                display: none;
+            }
+        }
+
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .attribution {
+            margin-top: 14px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -251,228 +395,243 @@
             <div class="header">
                 <h1>Python Workshop 1</h1>
                 <p>IIT Patna — AI &amp; Data Science (M.Tech)</p>
-                <div class="date-badge">📅 March 22, 2026</div>
+                <div class="date-badge">📅 Lecture notes — March 22, 2026</div>
             </div>
+
             <div class="content">
-                <section class="notes-section" aria-labelledby="notes-doc-title">
-                    <article class="notes-article">
-                        <h2 id="notes-doc-title" class="notes-doc-title">Python Programming Lecture — Summary Notes</h2>
-                        <p class="notes-meta">Lecture by <strong>Anjit Ranjan Sha</strong> (Assistant Professor, Mathematics; CS background). Overview of Python for beginners, with terminology and concepts for further study.</p>
-                        <hr class="notes-divider">
+                <div class="section print-friendly">
+                    <h2>Workshop overview</h2>
+                    <p class="meta-lead">Lecture by <strong>Anjit Ranjan Sha</strong> (Assistant Professor, Mathematics; CS background). Overview of Python for beginners, with terminology and concepts for further study.</p>
+                    <h3>Speaker and context</h3>
+                    <ul>
+                        <li>Specialises in <strong>ML</strong>, <strong>deep learning</strong>, and <strong>AI</strong>.</li>
+                        <li>Teaches CS topics including databases, networks, and Python.</li>
+                        <li>Session aimed at newcomers: core ideas and vocabulary before deeper topics.</li>
+                    </ul>
+                    <div class="example">
+                        <strong>Session goal:</strong> Build a shared vocabulary for Python and ML so later workshops can move faster.
+                    </div>
+                </div>
 
-                        <h3>Speaker introduction and context</h3>
-                        <ul>
-                            <li>Specialises in <strong>ML</strong>, <strong>deep learning</strong>, and <strong>AI</strong>.</li>
-                            <li>Teaches CS topics including databases, networks, and Python.</li>
-                            <li>Session aimed at newcomers: core ideas and vocabulary before deeper topics.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Motivation for learning Python</h2>
+                    <ul>
+                        <li>Central in <strong>AI, ML, and DL</strong>; many models are built with Python.</li>
+                        <li>Systems like <strong>ChatGPT</strong> rest on deep learning stacks that are largely implemented in Python.</li>
+                        <li>Broad use in <strong>education, industry, and research</strong>.</li>
+                        <li>Versatile: web development, automation, data science, computer vision, image processing, and more.</li>
+                    </ul>
+                </div>
 
-                        <h3>1. Motivation for learning Python</h3>
-                        <ul>
-                            <li>Central in <strong>AI, ML, and DL</strong>; many models are built with Python.</li>
-                            <li>Systems like <strong>ChatGPT</strong> rest on deep learning stacks that are largely implemented in Python.</li>
-                            <li>Broad use in <strong>education, industry, and research</strong>.</li>
-                            <li>Versatile: web development, automation, data science, computer vision, image processing, and more.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Python history and versions</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Year / era</th>
+                                <th>Version / feature</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1980</td>
+                                <td>Development started</td>
+                                <td>Implemented in <strong>C</strong>; foundational runtime layer is C.</td>
+                            </tr>
+                            <tr>
+                                <td>1991</td>
+                                <td>Python 0.90 released</td>
+                                <td>Initial public version.</td>
+                            </tr>
+                            <tr>
+                                <td>Early 2000s</td>
+                                <td>Python 2</td>
+                                <td>Very popular; now <strong>deprecated</strong> (support ended ~2020).</td>
+                            </tr>
+                            <tr>
+                                <td>Post-2020</td>
+                                <td>Python 3.x</td>
+                                <td>Dominant line; ongoing releases (e.g. 3.14, 3.16) emphasise <strong>security</strong> among other improvements.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li>Python is <strong>open source</strong> and free.</li>
+                        <li>Code is run by an <strong>interpreter</strong>, not compiled as one monolithic binary step like typical C workflows.</li>
+                    </ul>
+                </div>
 
-                        <h3>2. Python history and versions</h3>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Year / era</th>
-                                        <th>Version / feature</th>
-                                        <th>Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1980</td>
-                                        <td>Development started</td>
-                                        <td>Implemented in <strong>C</strong>; foundational runtime layer is C.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1991</td>
-                                        <td>Python 0.90 released</td>
-                                        <td>Initial public version.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Early 2000s</td>
-                                        <td>Python 2</td>
-                                        <td>Very popular; now <strong>deprecated</strong> (support ended ~2020).</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Post-2020</td>
-                                        <td>Python 3.x</td>
-                                        <td>Dominant line; ongoing releases (e.g. 3.14, 3.16) emphasise <strong>security</strong> among other improvements.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul>
-                            <li>Python is <strong>open source</strong> and free.</li>
-                            <li>Code is run by an <strong>interpreter</strong>, not compiled as one monolithic binary step like typical C workflows.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Execution model: interpreter vs compiler</h2>
+                    <ul>
+                        <li><strong>C:</strong> compiler turns the <em>whole</em> program into machine code before run.</li>
+                        <li><strong>Python:</strong> interpreter runs <strong>line by line</strong>, translating and executing incrementally.</li>
+                        <li>Easier debugging: failures surface at the line where they occur; earlier lines may already have run.</li>
+                        <li>CPython is built on C; execution paths may involve translation toward C-level work — abstracted for everyday coding.</li>
+                        <li><strong>Trade-off:</strong> Python is typically slower than C, but faster to write, test, and maintain.</li>
+                    </ul>
+                </div>
 
-                        <h3>3. Execution model: interpreter vs compiler</h3>
-                        <ul>
-                            <li><strong>C:</strong> compiler turns the <em>whole</em> program into machine code before run.</li>
-                            <li><strong>Python:</strong> interpreter runs <strong>line by line</strong>, translating and executing incrementally.</li>
-                            <li>Easier debugging: failures surface at the line where they occur; earlier lines may already have run.</li>
-                            <li>CPython is built on C; execution paths may involve translation toward C-level work — abstracted for everyday coding.</li>
-                            <li><strong>Trade-off:</strong> Python is typically slower than C, but faster to write, test, and maintain.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Python vs C: key differences</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Python</th>
+                                <th>C</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Language type</td>
+                                <td>Interpreted; dynamically typed</td>
+                                <td>Compiled; statically typed</td>
+                            </tr>
+                            <tr>
+                                <td>Syntax</td>
+                                <td>Close to English; beginner-friendly</td>
+                                <td>Lower-level, more verbose</td>
+                            </tr>
+                            <tr>
+                                <td>Object orientation</td>
+                                <td>Supports OOP</td>
+                                <td>Procedural focus (no native OOP like Python&apos;s classes)</td>
+                            </tr>
+                            <tr>
+                                <td>Pointers</td>
+                                <td>Not exposed; managed implicitly</td>
+                                <td>Explicit pointers</td>
+                            </tr>
+                            <tr>
+                                <td>Typing</td>
+                                <td>Weakly typed, dynamic type inference (as presented in lecture)</td>
+                                <td>Strongly typed, fixed types after declaration</td>
+                            </tr>
+                            <tr>
+                                <td>Variables</td>
+                                <td>Can rebind to different types</td>
+                                <td>Type fixed after declaration</td>
+                            </tr>
+                            <tr>
+                                <td>Memory</td>
+                                <td>Automatic management</td>
+                                <td>Manual; pointer discipline required</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                        <h3>4. Python vs C: key differences</h3>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Feature</th>
-                                        <th>Python</th>
-                                        <th>C</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Language type</td>
-                                        <td>Interpreted; dynamically typed</td>
-                                        <td>Compiled; statically typed</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Syntax</td>
-                                        <td>Close to English; beginner-friendly</td>
-                                        <td>Lower-level, more verbose</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Object orientation</td>
-                                        <td>Supports OOP</td>
-                                        <td>Procedural focus (no native OOP like Python&apos;s classes)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pointers</td>
-                                        <td>Not exposed; managed implicitly</td>
-                                        <td>Explicit pointers</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Typing</td>
-                                        <td>Weakly typed, dynamic type inference (as presented in lecture)</td>
-                                        <td>Strongly typed, fixed types after declaration</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Variables</td>
-                                        <td>Can rebind to different types</td>
-                                        <td>Type fixed after declaration</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Memory</td>
-                                        <td>Automatic management</td>
-                                        <td>Manual; pointer discipline required</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="section print-friendly">
+                    <h2>Language features and syntax</h2>
+                    <ul>
+                        <li>Interpreted, interactive, portable across <strong>Linux, Windows</strong>, and other platforms.</li>
+                        <li>Supports <strong>procedural</strong>, <strong>object-oriented</strong>, and <strong>functional</strong> styles.</li>
+                        <li>No separate type declarations — types are inferred at runtime.</li>
+                        <li>Dynamic rebinding (e.g. <code>month = "May"</code> then <code>month = 9</code>).</li>
+                        <li><strong>Case-sensitive</strong> names (<code>x</code> vs <code>X</code>).</li>
+                        <li>Identifiers: letters, digits, underscore; <strong>must not start with a digit</strong>.</li>
+                        <li>Multiple assignment in one line, e.g. <code>a, b, c = 1, 2, "Python"</code>.</li>
+                    </ul>
+                </div>
 
-                        <h3>5. Python language features and syntax</h3>
-                        <ul>
-                            <li>Interpreted, interactive, portable across <strong>Linux, Windows</strong>, and other platforms.</li>
-                            <li>Supports <strong>procedural</strong>, <strong>object-oriented</strong>, and <strong>functional</strong> styles.</li>
-                            <li>No separate type declarations — types are inferred at runtime.</li>
-                            <li>Dynamic rebinding (e.g. <code>month = "May"</code> then <code>month = 9</code>).</li>
-                            <li><strong>Case-sensitive</strong> names (<code>x</code> vs <code>X</code>).</li>
-                            <li>Identifiers: letters, digits, underscore; <strong>must not start with a digit</strong>.</li>
-                            <li>Multiple assignment in one line, e.g. <code>a, b, c = 1, 2, "Python"</code>.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Data types and collections</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Examples &amp; description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Numeric</td>
+                                <td>Integer, float, complex, boolean</td>
+                            </tr>
+                            <tr>
+                                <td>Sequences</td>
+                                <td><strong>Strings</strong>; <strong>lists</strong> (mutable, mixed types); <strong>tuples</strong> (immutable sequences)</td>
+                            </tr>
+                            <tr>
+                                <td>Sets</td>
+                                <td>Unordered; <strong>unique</strong> elements only (duplicates dropped)</td>
+                            </tr>
+                            <tr>
+                                <td>Dictionaries</td>
+                                <td>Key–value maps; keys unique; values any type — fast lookup, e.g. <code>d['name'] = "Zone"</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li>Lists allow mixed element types.</li>
+                        <li>Tuples behave like fixed lists (immutable).</li>
+                        <li>Sets enforce uniqueness automatically.</li>
+                    </ul>
+                </div>
 
-                        <h3>6. Data types and collections</h3>
-                        <div class="notes-table-wrap">
-                            <table class="notes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Examples &amp; description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Numeric</td>
-                                        <td>Integer, float, complex, boolean</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sequences</td>
-                                        <td><strong>Strings</strong>; <strong>lists</strong> (mutable, mixed types); <strong>tuples</strong> (immutable sequences)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sets</td>
-                                        <td>Unordered; <strong>unique</strong> elements only (duplicates dropped)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dictionaries</td>
-                                        <td>Key–value maps; keys unique; values any type — fast lookup, e.g. <code>d['name'] = "Zone"</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul>
-                            <li>Lists allow mixed element types.</li>
-                            <li>Tuples behave like fixed lists (immutable).</li>
-                            <li>Sets enforce uniqueness automatically.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Type conversion and dynamic typing</h2>
+                    <ul>
+                        <li>Implicit and explicit conversions both arise in practice.</li>
+                        <li><code>int()</code> — truncates toward zero (not “round”).</li>
+                        <li><code>float()</code>, <code>str()</code> — common explicit casts.</li>
+                        <li>String → float → int chains must be staged; direct invalid paths raise errors.</li>
+                        <li>Important in ML/AI pipelines where data is often normalised to floats for numerics.</li>
+                    </ul>
+                </div>
 
-                        <h3>7. Type conversion and dynamic typing</h3>
-                        <ul>
-                            <li>Implicit and explicit conversions both arise in practice.</li>
-                            <li><code>int()</code> — truncates toward zero (not “round”).</li>
-                            <li><code>float()</code>, <code>str()</code> — common explicit casts.</li>
-                            <li>String → float → int chains must be staged; direct invalid paths raise errors.</li>
-                            <li>Important in ML/AI pipelines where data is often normalised to floats for numerics.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Use cases, careers, and ecosystem</h2>
+                    <ul>
+                        <li><strong>Data science</strong> and scientific computing.</li>
+                        <li>Frameworks: <strong>TensorFlow</strong>, <strong>PyTorch</strong>, <strong>Keras</strong>.</li>
+                        <li><strong>Computer vision</strong> (e.g. perception stacks in autonomous systems).</li>
+                        <li>Web development and automation.</li>
+                        <li>Roles: developer, data scientist, ML engineer, and related paths.</li>
+                        <li>Libraries such as <strong>NumPy</strong> (arrays/linear algebra), <strong>Pandas</strong> (tables/ETL), <strong>Matplotlib</strong> (plotting) extend the core language.</li>
+                    </ul>
+                </div>
 
-                        <h3>8. Use cases, careers, and ecosystem</h3>
-                        <ul>
-                            <li><strong>Data science</strong> and scientific computing.</li>
-                            <li>Frameworks: <strong>TensorFlow</strong>, <strong>PyTorch</strong>, <strong>Keras</strong>.</li>
-                            <li><strong>Computer vision</strong> (e.g. perception stacks in autonomous systems).</li>
-                            <li>Web development and automation.</li>
-                            <li>Roles: developer, data scientist, ML engineer, and related paths.</li>
-                            <li>Libraries such as <strong>NumPy</strong> (arrays/linear algebra), <strong>Pandas</strong> (tables/ETL), <strong>Matplotlib</strong> (plotting) extend the core language.</li>
-                        </ul>
+                <div class="section print-friendly">
+                    <h2>Takeaways and follow-up</h2>
+                    <h3>Core concepts</h3>
+                    <ul>
+                        <li>Line-by-line interpretation supports rapid iteration and debugging.</li>
+                        <li>Dynamic typing and readable syntax help beginners and prototypes.</li>
+                        <li>Speed vs C is offset by development velocity and ecosystem depth.</li>
+                        <li>Hiding pointers reduces low-level mistakes.</li>
+                        <li>Strong presence in AI/ML makes Python a practical career foundation.</li>
+                        <li>Collections and conversions show up constantly in real code.</li>
+                    </ul>
+                    <h3>From the session</h3>
+                    <ul>
+                        <li>Fundamentals stressed as the base for advanced AI/ML.</li>
+                        <li>Students encouraged to use extra materials and the lecturer&apos;s YouTube channel.</li>
+                        <li>Q&amp;A on runtime and execution vs Java/C.</li>
+                        <li>Platform independence and OS-specific installers discussed.</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Keywords:</strong> Python programming · interpreter vs compiler · dynamic typing · data types (list, tuple, set, dictionary) · type conversion · machine learning, deep learning, AI · ChatGPT · ecosystem (NumPy, Pandas, TensorFlow, PyTorch, Matplotlib) · memory management · object-oriented programming · platform independence
+                    </div>
+                    <p class="attribution">Summary of the lecture by Anjit Ranjan Sha, aligned with the session transcript (no extra claims beyond that material).</p>
+                </div>
 
-                        <h3>Core concepts and insights</h3>
-                        <ul>
-                            <li>Line-by-line interpretation supports rapid iteration and debugging.</li>
-                            <li>Dynamic typing and readable syntax help beginners and prototypes.</li>
-                            <li>Speed vs C is offset by development velocity and ecosystem depth.</li>
-                            <li>Hiding pointers reduces low-level mistakes.</li>
-                            <li>Strong presence in AI/ML makes Python a practical career foundation.</li>
-                            <li>Collections and conversions show up constantly in real code.</li>
-                        </ul>
-
-                        <h3>Additional notes (from session)</h3>
-                        <ul>
-                            <li>Fundamentals stressed as the base for advanced AI/ML.</li>
-                            <li>Students encouraged to use extra materials and the lecturer&apos;s YouTube channel.</li>
-                            <li>Q&amp;A on runtime and execution vs Java/C.</li>
-                            <li>Platform independence and OS-specific installers discussed.</li>
-                        </ul>
-
-                        <h3>Keywords</h3>
-                        <p class="notes-keywords">Python programming · interpreter vs compiler · dynamic typing · data types (list, tuple, set, dictionary) · type conversion · machine learning, deep learning, AI · ChatGPT · ecosystem (NumPy, Pandas, TensorFlow, PyTorch, Matplotlib) · memory management · object-oriented programming · platform independence</p>
-
-                        <p class="notes-attribution">Summary of the lecture by Anjit Ranjan Sha, aligned with the session transcript (no extra claims beyond that material).</p>
-                    </article>
-                </section>
                 <h3 class="pdf-section-title">Slides (PDF)</h3>
                 <div class="pdf-toolbar">
                     <p>Scroll inside the viewer below to read the full deck. If it does not load in your browser, use the button to open the PDF directly.</p>
                     <a class="pdf-link" href="Python_Workshop_1.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
                 </div>
                 <div class="pdf-viewer">
-                    <iframe
-                        src="Python_Workshop_1.pdf"
-                        title="Python Workshop 1 — PDF"
-                    ></iframe>
+                    <iframe src="Python_Workshop_1.pdf" title="Python Workshop 1 — PDF"></iframe>
                 </div>
+            </div>
+
+            <div class="footer">
+                <strong>End of workshop notes</strong><br>
+                IIT Patna M.Tech — Python Workshop 1<br>
+                📅 March 22, 2026
             </div>
         </div>
     </div>
