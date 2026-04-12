@@ -11,19 +11,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+            color: #333;
         }
-        .wrapper { width: 100%; max-width: 900px; }
+        .wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 15px 30px;
             border-radius: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,56 +41,98 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
         }
         .back-link:hover { color: #764ba2; }
         .main-container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 50px 40px;
+            padding: 36px 28px 44px;
         }
         .page-title-row {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
         .page-title-row img { width: 36px; height: 36px; object-fit: contain; }
-        .main-container h2 {
+        .main-container h1 {
             color: #667eea;
-            font-size: 2em;
+            font-size: 1.85em;
             margin: 0;
             text-align: center;
         }
-        .lede {
+        .sub {
             text-align: center;
             color: #555;
-            line-height: 1.65;
-            max-width: 640px;
-            margin: 0 auto 28px;
-            font-size: 1.02em;
+            margin-bottom: 22px;
+            line-height: 1.5;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .courses-title {
-            color: #764ba2;
-            font-size: 1.3em;
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 640px;
+            font-size: 0.92em;
+        }
+        thead th {
+            background: #667eea;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
             font-weight: 600;
-            margin-bottom: 15px;
+        }
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        tbody tr:hover td { background: #f8f9ff; }
+        tr.cat-row td {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.12) 100%);
+            font-weight: 700;
+            color: #4a3a6b;
+            padding: 14px 12px;
             border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
         }
-        .courses-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .course-item {
-            padding: 12px 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-left: 4px solid #667eea;
-            border-radius: 6px;
-            color: #666;
-            font-size: 0.98em;
+        td.slno {
+            font-weight: 700;
+            color: #764ba2;
+            width: 3.25rem;
+            text-align: center;
         }
-        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
+        td.stmt { font-weight: 500; }
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+        }
+        .diff-easy { background: #e8f5e9; color: #2e7d32; }
+        .diff-medium { background: #fff8e1; color: #f57f17; }
+        .diff-hard { background: #ffebee; color: #c62828; }
+        td.linkcell a,
+        td.solution a.sol-link {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        td.linkcell a:hover,
+        td.solution a.sol-link:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; }
+            .main-container { padding: 24px 16px; }
+        }
     </style>
 </head>
 <body>
@@ -104,13 +144,32 @@
         <div class="main-container">
             <div class="page-title-row">
                 <img src="assets/brand-amazon.svg" width="36" height="36" alt="" decoding="async">
-                <h2>Top Amazon Questions</h2>
+                <h1>Top Amazon Questions</h1>
             </div>
-            <p class="lede">Curated coding and design problems commonly seen in Amazon interviews. Annotated solutions and links will be added here over time.</p>
-            <div class="courses-title">Topics</div>
-            <ul class="courses-list">
-                <li class="course-item">More questions and write-ups coming soon.</li>
-            </ul>
+            <p class="sub">Curated problems with <strong>Solution</strong> write-ups (naive + optimised where it helps). <strong>Link</strong> opens the LeetCode problem.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">Problem statement</th>
+                            <th scope="col">Difficulty</th>
+                            <th scope="col">Solution</th>
+                            <th scope="col">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="cat-row"><td colspan="5">Amazon list</td></tr>
+                        <tr>
+                            <td class="slno">1</td>
+                            <td class="stmt">2357. Make Array Zero by Subtracting Equal Amounts</td>
+                            <td><span class="pill diff-easy">Easy</span></td>
+                            <td class="solution"><a class="sol-link" href="amazon/solutions/2357-make-array-zero-by-subtracting-equal-amounts.html">Sol</a></td>
+                            <td class="linkcell"><a href="https://leetcode.com/problems/make-array-zero-by-subtracting-equal-amounts/description/?envType=problem-list-v2&amp;envId=7p5x763" target="_blank" rel="noopener noreferrer">Open</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
