@@ -88,6 +88,12 @@
             align-items: center;
         }
         .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin: 18px 0 10px;
+            font-weight: 600;
+        }
         .section p, .section li { line-height: 1.65; }
         ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
         ul li {
@@ -116,6 +122,7 @@
             border-radius: 14px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
+        .section .snippet-surface { margin-top: 12px; }
         .code-window {
             border-radius: 12px;
             overflow: hidden;
@@ -232,19 +239,19 @@
         <div class="container">
             <div class="header">
                 <h1>LRU Cache</h1>
-                <p>Low-Level Design — least recently used cache with list-based naive implementation</p>
+                <p>Low-Level Design — naive list approach ⚠️ and map-indexed list variant ℹ️</p>
                 <span class="date-badge">12 April 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>An LRU (Least Recently Used) cache stores key-value pairs with a fixed capacity. When full, it evicts the least recently used entry before inserting a new one. In this naive version, recency is maintained in a list by moving recently accessed or updated items to the front.</p>
+                    <p>An LRU (Least Recently Used) cache stores key-value pairs with a fixed capacity. When full, it evicts the least recently used entry before inserting a new one. The <strong>earlier code</strong> is a <strong>naive approach</strong> ⚠️: a single list, linear scan for keys, and move-to-front. The <strong>next variant</strong> is <strong>a bit optimised</strong> ℹ️: a <code>HashMap</code> maps each key to its current index in the list so you skip the scan; after any reorder you refresh indices with <code>updateMap()</code>.</p>
                 </div>
 
                 <div class="section">
-                    <h2>Naive Approach</h2>
+                    <h2>Naive approach ⚠️</h2>
                     <ul>
-                        <li>Use a list of <code>[key, value]</code> pairs.</li>
+                        <li>Use a list of <code>[key, value]</code> pairs only.</li>
                         <li>Keep most recently used entry at index <code>0</code>.</li>
                         <li>For <code>get(key)</code>, linearly scan the list; if found, move entry to front.</li>
                         <li>For <code>put(key, value)</code>, update existing key by moving to front, or insert new key at front.</li>
@@ -253,9 +260,9 @@
                 </div>
 
                 <div class="section">
-                    <h2>Java Code</h2>
+                    <h2>Java — naive ⚠️</h2>
                     <p>Copy the full listing from the code window toolbar.</p>
-                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">import java.util.*;
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Naive LRU Java source for copy">import java.util.*;
 
 class LRUCache {
 
@@ -317,9 +324,9 @@ class LRUCache {
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">LRUCache.java (naive approach)</span>
+                                <span class="code-window-title">LRUCache.java — naive ⚠️</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" id="copy-all" title="Copy entire solution">Copy all</button>
+                                    <button type="button" class="copy-all-btn" id="copy-all-naive" title="Copy naive implementation">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
@@ -381,11 +388,152 @@ class LRUCache {
                 </div>
 
                 <div class="section">
-                    <h2>Complexity</h2>
+                    <h2>Map-assisted variant ℹ️</h2>
+                    <p>This version is <strong>a bit optimised</strong> ℹ️: <code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index in the list</strong>, so <code>get</code> and updates do not scan for the key.</p>
                     <ul>
-                        <li><code>get(key)</code>: <code>O(n)</code> due to linear search and potential shift during insert/remove.</li>
-                        <li><code>put(key, value)</code>: <code>O(n)</code> due to linear search and list operations.</li>
-                        <li>Space: <code>O(capacity)</code>.</li>
+                        <li>After <code>remove</code> / <code>add(0, …)</code>, list indices shift — <code>updateMap()</code> walks the list once and rebuilds key → index.</li>
+                        <li>On eviction at capacity, remove the tail entry and drop its key from the map.</li>
+                        <li>Still an intermediate design: <code>ArrayList</code> remove/insert at arbitrary positions and full map refresh are linear; true <code>O(1)</code> LRU usually uses doubly linked list + hash map.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Java — optimised ℹ️</h2>
+                    <p>Copy the full listing from the code window toolbar.</p>
+                    <textarea id="copy-buffer-optimised" class="offscreen-copy" readonly aria-label="Optimised LRU Java source for copy">import java.util.*;
+
+class LRUCache {
+
+    List&lt;int[]&gt; cache;
+    Map&lt;Integer, Integer&gt; map; // key -&gt; index
+    int n;
+
+    public LRUCache(int capacity) {
+        this.n = capacity;
+        this.cache = new ArrayList&lt;&gt;();
+        this.map = new HashMap&lt;&gt;();
+    }
+
+    public int get(int key) {
+
+        if (!map.containsKey(key)) return -1;
+
+        int index = map.get(key);
+        int value = cache.get(index)[1];
+
+        cache.remove(index);
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+
+        return value;
+    }
+
+    public void put(int key, int value) {
+
+        if (map.containsKey(key)) {
+            int index = map.get(key);
+            cache.remove(index);
+        }
+        else if (cache.size() == n) {
+            int removedKey = cache.get(cache.size() - 1)[0];
+            cache.remove(cache.size() - 1);
+            map.remove(removedKey);
+        }
+
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+    }
+
+    private void updateMap() {
+        for (int i = 0; i &lt; cache.size(); i++) {
+            map.put(cache.get(i)[0], i);
+        }
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java map-assisted implementation">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">LRUCache.java — optimised ℹ️</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" id="copy-all-optimised" title="Copy optimised implementation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt; cache;
+    <span class="sh-type">Map</span>&lt;<span class="sh-type">Integer</span>, <span class="sh-type">Integer</span>&gt; map; <span class="sh-comment">// key → index</span>
+    <span class="sh-kw">int</span> n;
+
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.n = capacity;
+        <span class="sh-kw">this</span>.cache = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">this</span>.map = <span class="sh-kw">new</span> <span class="sh-type">HashMap</span>&lt;&gt;();
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
+
+        <span class="sh-kw">if</span> (!map.<span class="sh-call">containsKey</span>(key)) <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
+
+        <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+        <span class="sh-kw">int</span> value = cache.<span class="sh-call">get</span>(index)[<span class="sh-lit">1</span>];
+
+        cache.<span class="sh-call">remove</span>(index);
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+
+        <span class="sh-kw">return</span> value;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
+
+        <span class="sh-kw">if</span> (map.<span class="sh-call">containsKey</span>(key)) {
+            <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+            cache.<span class="sh-call">remove</span>(index);
+        }
+        <span class="sh-kw">else if</span> (cache.<span class="sh-call">size</span>() == n) {
+            <span class="sh-kw">int</span> removedKey = cache.<span class="sh-call">get</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>)[<span class="sh-lit">0</span>];
+            cache.<span class="sh-call">remove</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+            map.<span class="sh-call">remove</span>(removedKey);
+        }
+
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">updateMap</span>() {
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            map.<span class="sh-call">put</span>(cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>], i);
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <h3>Naive ⚠️</h3>
+                    <ul>
+                        <li><code>get(key)</code>: <code>O(n)</code> linear search, plus list remove/insert cost.</li>
+                        <li><code>put(key, value)</code>: <code>O(n)</code> for the same reasons.</li>
+                        <li>Space: <code>O(capacity)</code> for the list.</li>
+                    </ul>
+                    <h3>Map-assisted ℹ️</h3>
+                    <ul>
+                        <li>Key lookup in the map is <code>O(1)</code>, but <code>ArrayList.remove(index)</code>, insert at index <code>0</code>, and <code>updateMap()</code> are each <code>O(n)</code> in the worst case.</li>
+                        <li>So <code>get</code> and <code>put</code> remain <code>O(n)</code> overall — better constant factors on the search step, not asymptotic <code>O(1)</code> like a classic doubly-linked LRU.</li>
+                        <li>Space: <code>O(capacity)</code> for the list plus <code>O(capacity)</code> for the map.</li>
                     </ul>
                 </div>
             </div>
@@ -393,32 +541,36 @@ class LRUCache {
     </div>
     <script>
         (function () {
-            var btn = document.getElementById('copy-all');
-            var ta = document.getElementById('copy-buffer');
-            if (!btn || !ta) return;
-            var label = 'Copy all';
-            btn.addEventListener('click', function () {
-                ta.select();
-                ta.setSelectionRange(0, ta.value.length);
-                var text = ta.value;
-                function ok() {
-                    btn.textContent = 'Copied!';
-                    setTimeout(function () { btn.textContent = label; }, 2000);
-                }
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(ok).catch(function () {
+            function bindCopy(btnId, taId) {
+                var btn = document.getElementById(btnId);
+                var ta = document.getElementById(taId);
+                if (!btn || !ta) return;
+                var label = 'Copy all';
+                btn.addEventListener('click', function () {
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
                         try {
                             document.execCommand('copy');
                             ok();
                         } catch (e) {}
-                    });
-                } else {
-                    try {
-                        document.execCommand('copy');
-                        ok();
-                    } catch (e) {}
-                }
-            });
+                    }
+                });
+            }
+            bindCopy('copy-all-naive', 'copy-buffer-naive');
+            bindCopy('copy-all-optimised', 'copy-buffer-optimised');
         })();
     </script>
 </body>
