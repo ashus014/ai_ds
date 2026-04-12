@@ -73,9 +73,26 @@
             margin-bottom: 14px;
             font-weight: 700;
         }
-        .toc ul { list-style: none; margin: 0; padding: 0; }
-        .toc li { margin-bottom: 10px; padding-left: 0; }
-        .toc li::before { display: none; }
+        .toc ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .toc ul li {
+            position: relative;
+            margin-bottom: 12px;
+            padding-left: 25px;
+            line-height: 1.55;
+        }
+        .toc ul li:last-child { margin-bottom: 0; }
+        .toc ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
         .toc a {
             color: #4c51bf;
             font-weight: 600;
