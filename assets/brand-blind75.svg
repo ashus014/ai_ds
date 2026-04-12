@@ -1,29 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
-  <!-- Blind 75–style mark: triple stem + concentric loops + center dots -->
+  <!-- Red tile + white B (matches Blind 75 mark); pink offset behind arcs -->
   <defs>
-    <linearGradient id="bl75stemShadow" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#b71c1c" stop-opacity="0"/>
-      <stop offset="0.45" stop-color="#8b1515" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#b71c1c" stop-opacity="0"/>
+    <linearGradient id="bl75bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ef5350"/>
+      <stop offset="1" stop-color="#c62828"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8" fill="#ffffff" stroke="#ececec" stroke-width="0.4"/>
-  <!-- stem shadow where curves meet bars -->
-  <rect x="10.35" y="5.5" width="1.15" height="21" fill="url(#bl75stemShadow)"/>
-  <!-- triple vertical stem -->
-  <g fill="#e53935">
-    <rect x="4.85" y="5.25" width="1.75" height="21.5" rx="0.35"/>
-    <rect x="7.15" y="5.25" width="1.75" height="21.5" rx="0.35"/>
-    <rect x="9.45" y="5.25" width="1.75" height="21.5" rx="0.35"/>
+  <rect width="32" height="32" rx="7" fill="url(#bl75bg)"/>
+  <!-- soft pink shadow (offset behind white bowls) -->
+  <g fill="#f48fb1" opacity="0.5" transform="translate(0.5 0.55)">
+    <path d="M 10.78 5.28 A 10.05 9.72 0 0 1 10.78 15.72 Z"/>
+    <path d="M 10.78 16.28 A 10.05 9.72 0 0 1 10.78 26.72 Z"/>
   </g>
-  <!-- upper loop: outer red → white ring → inner red → white bullseye -->
-  <path d="M 11.15 5.35 A 10.2 9.85 0 0 1 11.15 15.65 Z" fill="#e53935"/>
-  <path d="M 11.28 7.55 A 7.6 7.35 0 0 1 11.28 13.45 Z" fill="#ffffff"/>
-  <path d="M 11.38 8.85 A 6.15 5.95 0 0 1 11.38 12.15 Z" fill="#e53935"/>
-  <circle cx="20.05" cy="10.5" r="1.35" fill="#ffffff"/>
-  <!-- lower loop (mirror sweep so bulge stays on the right) -->
-  <path d="M 11.15 16.35 A 10.2 9.85 0 0 1 11.15 26.65 Z" fill="#e53935"/>
-  <path d="M 11.28 18.55 A 7.6 7.35 0 0 1 11.28 24.45 Z" fill="#ffffff"/>
-  <path d="M 11.38 19.85 A 6.15 5.95 0 0 1 11.38 23.15 Z" fill="#e53935"/>
-  <circle cx="20.05" cy="21.5" r="1.35" fill="#ffffff"/>
+  <!-- triple stem -->
+  <g fill="#ffffff">
+    <rect x="4.85" y="5.15" width="1.58" height="21.7" rx="0.32"/>
+    <rect x="6.98" y="5.15" width="1.58" height="21.7" rx="0.32"/>
+    <rect x="9.11" y="5.15" width="1.58" height="21.7" rx="0.32"/>
+  </g>
+  <!-- upper bowl: white / red / white rings + red bullseye -->
+  <path fill="#ffffff" d="M 10.72 5.18 A 10.15 9.82 0 0 1 10.72 15.82 Z"/>
+  <path fill="#c62828" d="M 10.88 7.38 A 8 7.7 0 0 1 10.88 13.62 Z"/>
+  <path fill="#ffffff" d="M 11 8.62 A 6.85 6.6 0 0 1 11 12.38 Z"/>
+  <path fill="#c62828" d="M 11.1 9.55 A 5.75 5.55 0 0 1 11.1 11.45 Z"/>
+  <circle cx="20.15" cy="10.5" r="1.22" fill="#c62828"/>
+  <!-- lower bowl -->
+  <path fill="#ffffff" d="M 10.72 16.18 A 10.15 9.82 0 0 1 10.72 26.82 Z"/>
+  <path fill="#c62828" d="M 10.88 18.38 A 8 7.7 0 0 1 10.88 24.62 Z"/>
+  <path fill="#ffffff" d="M 11 19.62 A 6.85 6.6 0 0 1 11 23.38 Z"/>
+  <path fill="#c62828" d="M 11.1 20.55 A 5.75 5.55 0 0 1 11.1 22.45 Z"/>
+  <circle cx="20.15" cy="21.5" r="1.22" fill="#c62828"/>
 </svg>
