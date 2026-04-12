@@ -79,20 +79,11 @@
     accent-color: #667eea;
 }
 
-/* Sl No — same idea as leetcode-75 td.slno */
-.course-item.topic-progress-enhanced .topic-slno {
-    width: 3.25rem;
-    flex-shrink: 0;
+/* Problem index before title — like “1. 1768. …” / Sl No + statement on LC75 */
+.course-item.topic-progress-enhanced .topic-stmt-num {
     font-weight: 700;
     color: #764ba2;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: stretch;
-    font-size: 0.95em;
-    border-right: 1px solid #eee;
-    background: rgba(118, 75, 162, 0.04);
+    margin-right: 2px;
 }
 
 .course-item.topic-progress-enhanced > a {
@@ -117,8 +108,7 @@
     background-color: #c8e6c9 !important;
 }
 
-.course-item.row-solved.topic-progress-enhanced .done-cell,
-.course-item.row-solved.topic-progress-enhanced .topic-slno {
+.course-item.row-solved.topic-progress-enhanced .done-cell {
     background: rgba(255, 255, 255, 0.35);
     border-right-color: rgba(0, 0, 0, 0.06);
 }

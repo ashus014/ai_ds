@@ -90,13 +90,16 @@
                 });
                 td.appendChild(inp);
 
-                var num = document.createElement('span');
-                num.className = 'topic-slno';
-                num.textContent = String(slno);
+                var titleSpan = it.a.querySelector(':scope > span:not(.arrow)');
+                if (titleSpan && !titleSpan.querySelector('.topic-stmt-num')) {
+                    var numSpan = document.createElement('span');
+                    numSpan.className = 'topic-stmt-num';
+                    numSpan.textContent = slno + '. ';
+                    titleSpan.insertBefore(numSpan, titleSpan.firstChild);
+                }
 
                 li.classList.add('topic-progress-enhanced');
                 li.insertBefore(td, li.firstChild);
-                li.insertBefore(num, it.a);
                 checkboxes.push(inp);
             });
         });
