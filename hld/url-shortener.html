@@ -149,13 +149,34 @@
             border: 1px solid #2d2d44;
         }
         pre.api-sample + pre.api-sample { margin-top: 12px; }
-        .hld-diagram { max-width: 100%; height: auto; display: block; }
+        .diagram-figure {
+            margin: 20px 0 0 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
             table th, table td { padding: 8px; }
         }
     </style>
+    <link rel="stylesheet" href="diagram-zoom.css">
 </head>
 <body>
     <div class="wrapper">
@@ -273,7 +294,15 @@
 
                 <div class="section">
                     <h2>High-Level Design</h2>
-                    <img src="assets/url-shortener-high-level-design.png" alt="High-level design" width="1024" height="439" class="hld-diagram">
+                    <ul>
+                        <li><strong>Client:</strong> Sends requests to shorten or access URLs</li>
+                        <li><strong>Backend Server:</strong> Handles URL shortening logic and redirection</li>
+                        <li><strong>Database:</strong> Stores mapping between short URLs and long URLs, user metadata, expiration dates, custom URL info</li>
+                    </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-high-level-design.png" alt="High-level design: client, server, database" width="1024" height="454">
+                        <figcaption></figcaption>
+                    </figure>
                 </div>
 
                 <div class="section">
@@ -411,5 +440,6 @@
             </div>
         </div>
     </div>
+    <script src="diagram-zoom.js" defer></script>
 </body>
 </html>
