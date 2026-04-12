@@ -135,6 +135,27 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        .api-sample-label {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #764ba2;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+        .api-sample-label:first-of-type { margin-top: 8px; }
+        pre.api-sample {
+            background: #1e1e2e;
+            color: #e4e4e7;
+            padding: 16px 18px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.82em;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 0 0 6px 0;
+            white-space: pre;
+            border: 1px solid #2d2d44;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -237,6 +258,60 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h3>1. <code>POST /v1/shorten</code> — create short URL</h3>
+                    <p class="api-sample-label">Request sample</p>
+                    <pre class="api-sample">POST /v1/shorten HTTP/1.1
+Host: api.short.example
+Content-Type: application/json
+
+{
+  "long_url": "https://example.com/products/summer-sale-2026",
+  "custom_url": "summer-sale",
+  "expiration_date": "2026-12-31T23:59:59Z"
+}</pre>
+                    <p class="api-sample-label">Response sample (<code>201 Created</code>)</p>
+                    <pre class="api-sample">HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "short_url": "https://short.example/v1/summer-sale",
+  "long_url": "https://example.com/products/summer-sale-2026",
+  "expires_at": "2026-12-31T23:59:59Z"
+}</pre>
+                    <p class="api-sample-label">Minimal request (only long URL)</p>
+                    <pre class="api-sample">POST /v1/shorten HTTP/1.1
+Host: api.short.example
+Content-Type: application/json
+
+{
+  "long_url": "https://example.com/blog/post-42"
+}</pre>
+                    <p class="api-sample-label">Response sample (system-generated slug)</p>
+                    <pre class="api-sample">HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "short_url": "https://short.example/v1/a7K3mZ",
+  "long_url": "https://example.com/blog/post-42"
+}</pre>
+
+                    <h3>2. <code>GET /v1/{short_url}</code> — redirect to long URL</h3>
+                    <p class="api-sample-label">Request sample</p>
+                    <pre class="api-sample">GET /v1/a7K3mZ HTTP/1.1
+Host: short.example
+Accept: text/html,application/xhtml+xml</pre>
+                    <p class="api-sample-label">Response sample (<code>302 Found</code> — good for analytics; <code>301</code> if you want clients to cache)</p>
+                    <pre class="api-sample">HTTP/1.1 302 Found
+Location: https://example.com/blog/post-42</pre>
+                    <p class="api-sample-label">Response sample (expired or unknown short code)</p>
+                    <pre class="api-sample">HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "not_found",
+  "message": "Short URL is invalid or has expired."
+}</pre>
                 </div>
 
                 <div class="section">
