@@ -250,7 +250,7 @@
         <div class="container">
             <div class="header">
                 <h1>LRU Cache</h1>
-                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. <strong>Naive</strong> ⚠️ uses a list and linear key search; <strong>optimised</strong> ℹ️ adds a <code>HashMap</code> from key → list index and <code>updateMap()</code> after each reorder.</p>
+                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. ⚠️ <strong>Naive</strong> uses a list and linear key search; ℹ️ <strong>optimised</strong> adds a <code>HashMap</code> from key → list index and <code>updateMap()</code> after each reorder.</p>
                 <span class="meta">LLD / Java — 12 April 2026</span>
             </div>
             <div class="content">
@@ -262,7 +262,7 @@
                 <div class="section">
                     <h2>Answers</h2>
 
-                    <h3>Naive approach ⚠️</h3>
+                    <h3>⚠️ Naive approach</h3>
                     <p>List of <code>[key, value]</code> pairs; MRU at index <code>0</code>. <code>get</code> scans, then move-to-front. <code>put</code> scans for an existing key or inserts at front; evict tail when at capacity.</p>
                     <ul>
                         <li>Linear scan on every <code>get</code> / <code>put</code>.</li>
@@ -330,7 +330,7 @@ class LRUCache {
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">LRUCache.java — naive ⚠️</span>
+                                <span class="code-window-title">⚠️ LRUCache.java — naive</span>
                                 <div class="code-window-actions">
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy naive implementation">Copy all</button>
                                 </div>
@@ -392,10 +392,10 @@ class LRUCache {
                         </div>
                     </div>
                     <div class="callout" role="note">
-                        <strong>Naive ⚠️.</strong> Every <code>get</code> / <code>put</code> scans the whole list for the key — <code>O(n)</code> time plus list remove/insert. Fine for learning; not for production-scale caches.
+                        <strong>⚠️ Naive.</strong> Every <code>get</code> / <code>put</code> scans the whole list for the key — <code>O(n)</code> time plus list remove/insert. Fine for learning; not for production-scale caches.
                     </div>
 
-                    <h3 class="spaced">Optimised (map + list) ℹ️</h3>
+                    <h3 class="spaced">ℹ️ Optimised (map + list)</h3>
                     <p><code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index</strong> in the list. After <code>remove</code> / <code>add(0, …)</code>, call <code>updateMap()</code> to refresh every index. On eviction, remove the tail pair and <code>map.remove(removedKey)</code>.</p>
                     <ul>
                         <li><code>O(1)</code> key lookup in the map; list shifts and <code>updateMap()</code> remain <code>O(n)</code> overall.</li>
@@ -461,7 +461,7 @@ class LRUCache {
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">LRUCache.java — optimised ℹ️</span>
+                                <span class="code-window-title">ℹ️ LRUCache.java — optimised</span>
                                 <div class="code-window-actions">
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-optimised" title="Copy optimised implementation">Copy all</button>
                                 </div>
@@ -521,18 +521,18 @@ class LRUCache {
                         </div>
                     </div>
                     <div class="callout" role="note">
-                        <strong>Map-assisted ℹ️.</strong> You skip the linear <strong>search</strong> for the key, but <code>remove(index)</code>, insert at <code>0</code>, and <code>updateMap()</code> still scale linearly with capacity — same asymptotic class as naive, with a better leading constant on lookup.
+                        <strong>ℹ️ Map-assisted.</strong> You skip the linear <strong>search</strong> for the key, but <code>remove(index)</code>, insert at <code>0</code>, and <code>updateMap()</code> still scale linearly with capacity — same asymptotic class as naive, with a better leading constant on lookup.
                     </div>
                 </div>
 
                 <div class="section">
                     <h2>Complexity</h2>
-                    <h3>Naive ⚠️</h3>
+                    <h3>⚠️ Naive</h3>
                     <ul>
                         <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(n)</code> for scan + list ops.</li>
                         <li>Space: <code>O(capacity)</code>.</li>
                     </ul>
-                    <h3 class="spaced">Map-assisted ℹ️</h3>
+                    <h3 class="spaced">ℹ️ Map-assisted</h3>
                     <ul>
                         <li>Map lookup <code>O(1)</code>; list + <code>updateMap()</code> dominate — still <code>O(n)</code> per operation worst case.</li>
                         <li>Space: <code>O(capacity)</code> for list + map.</li>
