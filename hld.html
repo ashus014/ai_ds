@@ -104,6 +104,7 @@
         .courses-list + .courses-title { margin-top: 36px; }
         @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
     </style>
+    <link rel="stylesheet" href="topic-progress.css">
 </head>
 <body>
     <div class="wrapper">
@@ -116,6 +117,7 @@
                 <img src="assets/brand-hld.svg" width="36" height="36" alt="" decoding="async">
                 <h2>High-Level Design</h2>
             </div>
+            <div id="topic-progress-hub" class="topic-progress-hub" hidden></div>
             <div class="courses-title">HLD Concepts</div>
             <ul class="courses-list">
                 <li class="course-item">
@@ -222,5 +224,6 @@
             </ul>
         </div>
     </div>
+    <script src="topic-progress.js" defer></script>
 </body>
 </html>

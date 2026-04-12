@@ -1,0 +1,121 @@
+/* Shared HLD / LLD topic progress (localStorage) */
+
+.topic-progress-hub {
+    margin: 0 auto 24px;
+    max-width: 520px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.35);
+}
+
+.topic-progress-hub[hidden] {
+    display: none !important;
+}
+
+.topic-progress-hub__label {
+    display: block;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #4a3a6b;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.topic-progress-hub__bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #e8eaf6;
+    overflow: hidden;
+}
+
+.topic-progress-hub__fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.25s ease;
+}
+
+.course-item.topic-progress-enhanced {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 10px;
+}
+
+.course-item.topic-progress-enhanced > a {
+    flex: 1;
+    min-width: 0;
+}
+
+.course-item.topic-progress-done {
+    border-left-color: #22c55e;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(102, 126, 234, 0.08) 100%);
+}
+
+.topic-progress-toggle {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #c7c9e0;
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+    color: transparent;
+    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.topic-progress-toggle:hover {
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+.topic-progress-toggle:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+.topic-progress-toggle[aria-checked="true"] {
+    border-color: #22c55e;
+    background: #22c55e;
+    color: #fff;
+}
+
+.topic-progress-toggle[aria-checked="true"]::after {
+    content: "\2713";
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+/* Topic page navbar control */
+.topic-progress-page-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.topic-progress-page-wrap .topic-progress-toggle {
+    width: 36px;
+    height: 36px;
+}
+
+.topic-progress-page-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #4a3a6b;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .course-item.topic-progress-enhanced {
+        flex-wrap: wrap;
+    }
+}

@@ -104,6 +104,7 @@
         .course-item .arrow { color: #667eea; }
         @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
     </style>
+    <link rel="stylesheet" href="topic-progress.css">
 </head>
 <body>
     <div class="wrapper">
@@ -116,6 +117,7 @@
                 <img src="assets/brand-lld.svg" width="36" height="36" alt="" decoding="async">
                 <h2>Low-Level Design</h2>
             </div>
+            <div id="topic-progress-hub" class="topic-progress-hub" hidden></div>
             <ul class="courses-list lld-guide">
                 <li class="course-item">
                     <a href="lld/how-to-answer-lld-questions.html">
@@ -148,5 +150,6 @@
             </ul>
         </div>
     </div>
+    <script src="topic-progress.js" defer></script>
 </body>
 </html>
