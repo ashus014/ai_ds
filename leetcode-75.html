@@ -49,10 +49,19 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 36px 28px 44px;
         }
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .page-title-row img { width: 36px; height: 36px; object-fit: contain; }
         .main-container h1 {
             color: #667eea;
             font-size: 1.85em;
-            margin-bottom: 8px;
+            margin: 0;
             text-align: center;
         }
         .sub {
@@ -248,7 +257,10 @@
             <a href="index.html" class="back-link">← Back to Home</a>
         </nav>
         <div class="main-container">
-            <h1>LeetCode 75 Study Plan</h1>
+            <div class="page-title-row">
+                <img src="assets/brand-leetcode.svg" width="36" height="36" alt="" decoding="async">
+                <h1>LeetCode 75 Study Plan</h1>
+            </div>
             <p class="sub">Official LeetCode <strong>75</strong> curated path (<code>envId=leetcode-75</code>). Use <strong>Solution</strong> for your own notes or links later; <strong>Link</strong> opens the problem or submission on LeetCode; <strong>Hint</strong> holds quick notes.</p>
             <div id="studyProgressMount" aria-live="polite"></div>
             <div class="table-wrap">
