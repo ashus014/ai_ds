@@ -95,27 +95,36 @@
         .section h2 {
             color: #667eea;
             font-size: 1.6em;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
         .section h3 {
             color: #764ba2;
             font-size: 1.2em;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 22px;
+            margin-bottom: 12px;
             border-bottom: 2px solid #667eea;
             padding-bottom: 8px;
         }
         .section h3:first-of-type { margin-top: 0; }
         .section p, .section li { line-height: 1.65; }
         .section p { margin-bottom: 12px; }
+        .block { margin-bottom: 18px; }
+        .block:last-child { margin-bottom: 0; }
+        .block .label {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .block p { margin-bottom: 0; }
+        .block p + p { margin-top: 8px; }
         .content ul:not(.toc ul) {
             list-style: none;
-            margin-left: 0;
+            margin-left: 20px;
             margin-bottom: 15px;
         }
         .content ul:not(.toc ul) li {
             position: relative;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             padding-left: 25px;
         }
         .content ul:not(.toc ul) li::before {
@@ -125,6 +134,14 @@
             color: #667eea;
             font-weight: bold;
             font-size: 1.2em;
+        }
+        .section ul li strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+        }
+        .section ul li p {
+            margin: 0;
         }
         table {
             width: 100%;
@@ -142,6 +159,11 @@
             font-weight: 600;
         }
         table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table td:first-child {
+            width: 3rem;
+            font-weight: 600;
+            color: #764ba2;
+        }
         table tr:last-child td { border-bottom: none; }
         table tr:hover { background: #f5f5f5; }
         table a { color: #5a67d8; font-weight: 600; }
@@ -167,89 +189,123 @@
                 <h1>How to answer LLD questions</h1>
             </div>
             <div class="content">
-                <nav class="toc" aria-label="On this page">
-                    <h2>On this page</h2>
+                <nav class="toc" aria-label="Index">
+                    <h2>Index</h2>
                     <ul>
-                        <li><a href="#design-princple">Design princple</a></li>
-                        <li><a href="#design-peincples">design peincples</a></li>
-                        <li><a href="#common-askes-lld-questions">common askes LLD questions</a></li>
-                        <li><a href="#how-ro-answer-a-lld-interview">how ro answer a LLD interview</a></li>
+                        <li><a href="#design-principles">Design principles</a></li>
+                        <li><a href="#design-patterns">Design patterns</a></li>
+                        <li><a href="#common-lld-questions">Commonly asked LLD questions</a></li>
+                        <li><a href="#how-to-answer-an-lld-interview">How to answer an LLD interview</a></li>
                         <li><a href="#best-lld-coding-practices">Best LLD coding practices</a></li>
                     </ul>
                 </nav>
 
-                <section class="section" id="design-princple">
-                    <h2>Design princple</h2>
-                    <p>DRY — Don’t Repeat Yourself<br>
-                    Don’t duplicate logic everywhere. Keep common code in one place so it’s easy to change and maintain.</p>
-                    <p>YAGNI — You Aren’t Gonna Need It<br>
-                     Don’t build extra features “just in case.”<br>
-                     Build only what is needed right now.</p>
-                    <p>KISS — Keep It Simple, Stupid<br>
-                    Prefer simple, readable designs instead of clever, complicated ones.</p>
-                    <h3>SOLID Principles</h3>
-                    <p>S — Single Responsibility Principle<br>
-                     One class = one main job.<br>
-                     If a class is doing too many things, split it.</p>
-                    <p>O — Open/Closed Principle<br>
-                     Code should be open for extension but closed for modification.<br>
-                     You extend behavior (add new classes), not rewrite existing ones.</p>
-                    <p>L — Liskov Substitution Principle<br>
-                     A child class should be usable anywhere its parent is expected —<br>
-                    without breaking the program.</p>
-                    <p>I — Interface Segregation Principle<br>
-                     Don’t force classes to implement big, unnecessary interfaces.<br>
-                     Create smaller, focused interfaces.</p>
-                    <p>D — Dependency Inversion Principle (not Injection)<br>
-                     High-level modules shouldn’t depend directly on low-level ones — both depend on abstractions (interfaces).<br>
-                     Dependency Injection is one way to achieve this.</p>
+                <section class="section" id="design-principles">
+                    <h2>Design principles</h2>
+
+                    <div class="block">
+                        <p class="label">DRY — Don’t Repeat Yourself</p>
+                        <p>Don’t duplicate logic everywhere. Keep common code in one place so it’s easy to change and maintain.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">YAGNI — You Aren’t Gonna Need It</p>
+                        <p>Don’t build extra features “just in case.” Build only what is needed right now.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">KISS — Keep It Simple, Stupid</p>
+                        <p>Prefer simple, readable designs instead of clever, complicated ones.</p>
+                    </div>
+
+                    <h3>SOLID principles</h3>
+
+                    <div class="block">
+                        <p class="label">S — Single Responsibility Principle</p>
+                        <p>One class = one main job. If a class is doing too many things, split it.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">O — Open/Closed Principle</p>
+                        <p>Code should be open for extension but closed for modification. You extend behavior (add new classes), not rewrite existing ones.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">L — Liskov Substitution Principle</p>
+                        <p>A child class should be usable anywhere its parent is expected — without breaking the program.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">I — Interface Segregation Principle</p>
+                        <p>Don’t force classes to implement big, unnecessary interfaces. Create smaller, focused interfaces.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">D — Dependency Inversion Principle (not Injection)</p>
+                        <p>High-level modules shouldn’t depend directly on low-level ones — both depend on abstractions (interfaces). Dependency Injection is one way to achieve this.</p>
+                    </div>
                 </section>
 
-                <section class="section" id="design-peincples">
-                    <h2>design peincples</h2>
-                    <p>Singleton<br>
-                    Only one object of a class should ever exist.<br>
-                     Example: one global logger, one DB connection manager.</p>
-                    <p>🔹 Factory<br>
-                    You ask the factory for an object — it decides which exact class to create.<br>
-                     Good when object creation logic gets messy.</p>
-                    <p>🔹 Abstract Factory<br>
-                    A factory of factories.<br>
-                     Used to create families of related objects without knowing their concrete classes.</p>
-                    <p>🔹 Builder<br>
-                    Used when objects have lots of optional fields.<br>
-                     Lets you build an object step-by-step instead of using a huge constructor.</p>
-                    <p>🔹 Adapter<br>
-                    Makes two incompatible classes work together.<br>
-                     Like a charger plug adapter.</p>
-                    <p>🔹 Decorator<br>
-                    Adds extra features without changing existing code.<br>
-                     Wraps an object and enhances it.</p>
-                    <p>Facade<br>
-                    Provides a simple interface to a complex system.<br>
-                     Like a hotel reception desk handling everything for you.</p>
-                    <p>🔹 Composite<br>
-                    Treats a group of objects the same way as a single object.<br>
-                     Useful for tree-like structures (folders, UI components).</p>
-                    <p>🔹 Observer<br>
-                    One object changes → automatically notifies others.<br>
-                     Like YouTube channel notifications to subscribers.</p>
-                    <p>🔹 Command<br>
-                    Wraps an action as an object.<br>
-                     Helps with undo/redo, queues, and logging.</p>
-                    <p>🔹 Strategy<br>
-                    Different algorithms, same goal — switch them at runtime.<br>
-                     Example: different sorting methods.</p>
-                    <p>🔹 State<br>
-                    Behavior changes based on internal state.<br>
-                     Example: Media player → playing / paused/stopped.</p>
-                    <p>🔹 Template Method<br>
-                    Defines the skeleton of an algorithm, but lets subclasses fill steps.<br>
-                     Base class decides structure, child classes customize parts.</p>
+                <section class="section" id="design-patterns">
+                    <h2>Design patterns</h2>
+                    <ul>
+                        <li>
+                            <strong>Singleton</strong>
+                            <p>Only one object of a class should ever exist. Example: one global logger, one DB connection manager.</p>
+                        </li>
+                        <li>
+                            <strong>Factory</strong>
+                            <p>You ask the factory for an object — it decides which exact class to create. Good when object creation logic gets messy.</p>
+                        </li>
+                        <li>
+                            <strong>Abstract Factory</strong>
+                            <p>A factory of factories. Used to create families of related objects without knowing their concrete classes.</p>
+                        </li>
+                        <li>
+                            <strong>Builder</strong>
+                            <p>Used when objects have lots of optional fields. Lets you build an object step-by-step instead of using a huge constructor.</p>
+                        </li>
+                        <li>
+                            <strong>Adapter</strong>
+                            <p>Makes two incompatible classes work together. Like a charger plug adapter.</p>
+                        </li>
+                        <li>
+                            <strong>Decorator</strong>
+                            <p>Adds extra features without changing existing code. Wraps an object and enhances it.</p>
+                        </li>
+                        <li>
+                            <strong>Facade</strong>
+                            <p>Provides a simple interface to a complex system. Like a hotel reception desk handling everything for you.</p>
+                        </li>
+                        <li>
+                            <strong>Composite</strong>
+                            <p>Treats a group of objects the same way as a single object. Useful for tree-like structures (folders, UI components).</p>
+                        </li>
+                        <li>
+                            <strong>Observer</strong>
+                            <p>One object changes → automatically notifies others. Like YouTube channel notifications to subscribers.</p>
+                        </li>
+                        <li>
+                            <strong>Command</strong>
+                            <p>Wraps an action as an object. Helps with undo/redo, queues, and logging.</p>
+                        </li>
+                        <li>
+                            <strong>Strategy</strong>
+                            <p>Different algorithms, same goal — switch them at runtime. Example: different sorting methods.</p>
+                        </li>
+                        <li>
+                            <strong>State</strong>
+                            <p>Behavior changes based on internal state. Example: media player → playing / paused / stopped.</p>
+                        </li>
+                        <li>
+                            <strong>Template Method</strong>
+                            <p>Defines the skeleton of an algorithm, but lets subclasses fill steps. Base class decides structure; child classes customize parts.</p>
+                        </li>
+                    </ul>
                 </section>
 
-                <section class="section" id="common-askes-lld-questions">
-                    <h2>common askes LLD questions</h2>
+                <section class="section" id="common-lld-questions">
+                    <h2>Commonly asked LLD questions</h2>
                     <table>
                         <thead>
                             <tr>
@@ -263,52 +319,93 @@
                             <tr><td>3</td><td>Elevator System</td></tr>
                             <tr><td>4</td><td>LRU Cache</td></tr>
                             <tr><td>5</td><td>Chess Game</td></tr>
-                            <tr><td>6</td><td>Snake and Ladders</td></tr>
+                            <tr><td>6</td><td>Snakes and Ladders</td></tr>
                             <tr><td>7</td><td><a href="splitwise.html">Splitwise</a></td></tr>
                             <tr><td>8</td><td>Logging Framework</td></tr>
                             <tr><td>9</td><td>Hotel Management System</td></tr>
                             <tr><td>10</td><td>Movie Ticket Booking System</td></tr>
                             <tr><td>11</td><td>Ludo</td></tr>
                             <tr><td>12</td><td>Tic-Tac-Toe</td></tr>
-                            <tr><td>13</td><td>StackOverflow</td></tr>
+                            <tr><td>13</td><td>Stack Overflow</td></tr>
                             <tr><td>14</td><td>Stock Exchange (Order Matching Engine – LLD, Simplified)</td></tr>
                             <tr><td>15</td><td>Helicopter Booking Application</td></tr>
-                            <tr><td>16</td><td>snake and aldders</td></tr>
-                            <tr><td>17</td><td>vending machine</td></tr>
-                            <tr><td>18</td><td>logging management</td></tr>
+                            <tr><td>16</td><td>Snakes and Ladders</td></tr>
+                            <tr><td>17</td><td>Vending Machine</td></tr>
+                            <tr><td>18</td><td>Logging Management</td></tr>
                         </tbody>
                     </table>
                 </section>
 
-                <section class="section" id="how-ro-answer-a-lld-interview">
-                    <h2>how ro answer a LLD interview</h2>
-                    <h3>How to answer an LLD interview</h3>
+                <section class="section" id="how-to-answer-an-lld-interview">
+                    <h2>How to answer an LLD interview</h2>
                     <p>In LLD interviews, you are given a real-world problem and expected to come up with a solution using object-oriented programming.</p>
-                    <p>Clarify requirements and core use cases<br>
-                     Ask questions to understand what we need to do and the core use cases we need to support.</p>
-                    <p>Identify the entities or objects</p>
-                    <p>Translate entities into classes and come up with a list of attributes</p>
-                    <p>Identify core methods</p>
-                    <p>Define relationships between classes<br>
-                     Draw UML diagrams to represent relationships.</p>
-                    <p>Implement necessary methods<br>
-                     No need to implement all methods — check with the interviewer to understand which methods are important.</p>
-                    <p>Exception handling<br>
-                     Handle errors and edge cases.</p>
+
+                    <div class="block">
+                        <p class="label">Clarify requirements and core use cases</p>
+                        <p>Ask questions to understand what we need to do and the core use cases we need to support.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Identify the entities or objects</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Translate entities into classes and come up with a list of attributes</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Identify core methods</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Define relationships between classes</p>
+                        <p>Draw UML diagrams to represent relationships.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Implement necessary methods</p>
+                        <p>No need to implement all methods — check with the interviewer to understand which methods are important.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Exception handling</p>
+                        <p>Handle errors and edge cases.</p>
+                    </div>
                 </section>
 
                 <section class="section" id="best-lld-coding-practices">
                     <h2>Best LLD coding practices</h2>
-                    <p>Use meaningful names<br>
-                     Class names, method names, and variable names.</p>
-                    <p>Focus on simplicity and readability</p>
-                    <p>Favor composition over inheritance<br>
-                     Promote flexible and tight coupling.</p>
-                    <p>Use interfaces to define contracts<br>
-                     Enable loose coupling between components.</p>
-                    <p>Strive for modularity and separation of concern</p>
-                    <p>Apply design patterns and design principles</p>
-                    <p>Make it scalable</p>
+
+                    <div class="block">
+                        <p class="label">Use meaningful names</p>
+                        <p>Class names, method names, and variable names.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Focus on simplicity and readability</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Favor composition over inheritance</p>
+                        <p>Promote flexibility and loose coupling.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Use interfaces to define contracts</p>
+                        <p>Enable loose coupling between components.</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Strive for modularity and separation of concerns</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Apply design patterns and design principles</p>
+                    </div>
+
+                    <div class="block">
+                        <p class="label">Make it scalable</p>
+                    </div>
                 </section>
             </div>
         </div>
