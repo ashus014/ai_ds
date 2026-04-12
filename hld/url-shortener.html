@@ -135,14 +135,6 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
-        .api-sample-label {
-            font-size: 0.95em;
-            font-weight: 600;
-            color: #764ba2;
-            margin-top: 18px;
-            margin-bottom: 8px;
-        }
-        .api-sample-label:first-of-type { margin-top: 8px; }
         pre.api-sample {
             background: #1e1e2e;
             color: #e4e4e7;
@@ -152,10 +144,11 @@
             font-size: 0.82em;
             line-height: 1.5;
             overflow-x: auto;
-            margin: 0 0 6px 0;
+            margin: 14px 0 0 0;
             white-space: pre;
             border: 1px solid #2d2d44;
         }
+        pre.api-sample + pre.api-sample { margin-top: 12px; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -243,75 +236,31 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>/v1/shorten</code></td>
+                                <td><code>/v1/url</code></td>
                                 <td>POST</td>
-                                <td><code>long_url</code> (required), <code>custom_url</code> (optional), <code>expiration_date</code> (optional)</td>
-                                <td><code>short_url</code></td>
-                                <td>Generate short URL from long URL</td>
+                                <td><code>longURL</code> (required), <code>customURL</code> (optional), <code>expirationDate</code> (optional)</td>
+                                <td><code>shortURL</code></td>
+                                <td>Create short URL from long URL</td>
                             </tr>
                             <tr>
-                                <td><code>/v1/{short_url}</code></td>
+                                <td><code>/v1/url/{shortURL}</code></td>
                                 <td>GET</td>
-                                <td>None</td>
-                                <td>Redirect to <code>long_url</code></td>
-                                <td>Redirect user from short URL to long URL</td>
+                                <td>—</td>
+                                <td><code>longURL</code> (e.g. <code>302</code> + <code>Location</code>)</td>
+                                <td>Resolve short key → original URL</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <h3>1. <code>POST /v1/shorten</code> — create short URL</h3>
-                    <p class="api-sample-label">Request sample</p>
-                    <pre class="api-sample">POST /v1/shorten HTTP/1.1
-Host: api.short.example
-Content-Type: application/json
+                    <pre class="api-sample">POST /v1/url  ->  shortURL
 
 {
-  "long_url": "https://example.com/products/summer-sale-2026",
-  "custom_url": "summer-sale",
-  "expiration_date": "2026-12-31T23:59:59Z"
-}</pre>
-                    <p class="api-sample-label">Response sample (<code>201 Created</code>)</p>
-                    <pre class="api-sample">HTTP/1.1 201 Created
-Content-Type: application/json
-
-{
-  "short_url": "https://short.example/v1/summer-sale",
-  "long_url": "https://example.com/products/summer-sale-2026",
-  "expires_at": "2026-12-31T23:59:59Z"
-}</pre>
-                    <p class="api-sample-label">Minimal request (only long URL)</p>
-                    <pre class="api-sample">POST /v1/shorten HTTP/1.1
-Host: api.short.example
-Content-Type: application/json
-
-{
-  "long_url": "https://example.com/blog/post-42"
-}</pre>
-                    <p class="api-sample-label">Response sample (system-generated slug)</p>
-                    <pre class="api-sample">HTTP/1.1 201 Created
-Content-Type: application/json
-
-{
-  "short_url": "https://short.example/v1/a7K3mZ",
-  "long_url": "https://example.com/blog/post-42"
+  longURL
+  customURL?
+  expirationDate?
 }</pre>
 
-                    <h3>2. <code>GET /v1/{short_url}</code> — redirect to long URL</h3>
-                    <p class="api-sample-label">Request sample</p>
-                    <pre class="api-sample">GET /v1/a7K3mZ HTTP/1.1
-Host: short.example
-Accept: text/html,application/xhtml+xml</pre>
-                    <p class="api-sample-label">Response sample (<code>302 Found</code> — good for analytics; <code>301</code> if you want clients to cache)</p>
-                    <pre class="api-sample">HTTP/1.1 302 Found
-Location: https://example.com/blog/post-42</pre>
-                    <p class="api-sample-label">Response sample (expired or unknown short code)</p>
-                    <pre class="api-sample">HTTP/1.1 404 Not Found
-Content-Type: application/json
-
-{
-  "error": "not_found",
-  "message": "Short URL is invalid or has expired."
-}</pre>
+                    <pre class="api-sample">GET: /v1/url/{shortURL}  ->  longURL</pre>
                 </div>
 
                 <div class="section">
