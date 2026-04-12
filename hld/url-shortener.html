@@ -192,10 +192,10 @@
                     <h2>Non-Functional Requirements</h2>
                     <ul>
                         <li><strong>Low latency:</strong> URL shortening and redirection within ~200 ms</li>
-                        <li><strong>High availability:</strong> Prioritize availability over strict consistency (CAP theorem)</li>
+                        <li><strong>High availability (redirect path):</strong> From a CAP perspective, the system should stay <strong>highly available</strong> for <strong>redirects</strong>—users should usually reach the redirect service and get a valid response even under partial outages or replication lag. We deliberately do <strong>not</strong> require the same bar for <strong>immediate</strong> consistency everywhere.</li>
                         <li><strong>Scalability:</strong> ~100 million daily active users, ~1 billion URLs shortened</li>
                         <li><strong>Uniqueness:</strong> Shortened URLs must be unique</li>
-                        <li><strong>Eventual consistency:</strong> Acceptable small delay in redirection consistency</li>
+                        <li><strong>Eventual consistency:</strong> It is acceptable if a newly created mapping is <strong>not</strong> reflected instantly on every replica or cache edge—there may be a <strong>short delay</strong> between creating a short URL and successfully hitting it. <strong>Availability over strict, immediate consistency</strong> is the right trade-off here: redirects should keep working; perfect read-your-writes globally is optional.</li>
                     </ul>
                 </div>
 
@@ -367,7 +367,7 @@
                     <h2>Key Insights</h2>
                     <ul>
                         <li>Requirement gathering and clarifying functional &amp; non-functional needs are crucial first steps</li>
-                        <li>Prioritize availability over consistency for URL shortening (user experience, eventual consistency tolerance)</li>
+                        <li>CAP trade-off: <strong>high availability</strong> for redirects beats <strong>immediate</strong> global consistency—a brief lag after create before every edge sees the mapping is acceptable.</li>
                         <li>Effective scaling requires microservices, load balancing, caching, distributed ID generation</li>
                         <li>Zookeeper + Snowflake solves scaling and uniqueness; reduces latency and runtime complexity</li>
                         <li>Caching and separation of encryption/decryption services optimize resource utilization</li>
