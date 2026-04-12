@@ -39,28 +39,23 @@
         return m ? m[1].replace(/\\/g, '/') : null;
     }
 
-    function makeToggleButton(isChecked) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'topic-progress-toggle';
-        btn.setAttribute('aria-checked', isChecked ? 'true' : 'false');
-        btn.setAttribute('aria-label', isChecked ? 'Marked done; click to undo' : 'Mark topic as done');
-        btn.setAttribute('title', isChecked ? 'Done — click to undo' : 'Mark as done');
-        return btn;
-    }
-
-    function syncToggleVisual(btn, done) {
-        btn.setAttribute('aria-checked', done ? 'true' : 'false');
-        btn.setAttribute('aria-label', done ? 'Marked done; click to undo' : 'Mark topic as done');
-        btn.setAttribute('title', done ? 'Done — click to undo' : 'Mark as done');
+    /** No hub tick / no topic-page “Done” for guide or concept-only pages (same idea as LLD guide). */
+    function isExcludedFromTopicProgress(topicId) {
+        if (!topicId) return true;
+        if (topicId === 'lld/how-to-answer-lld-questions.html') return true;
+        if (topicId === 'hld/proximity-search.html') return true;
+        if (topicId === 'hld/real-time-applications.html') return true;
+        return false;
     }
 
     function initHub() {
-        var mount = document.getElementById('topic-progress-hub');
+        var mount = document.getElementById('studyProgressMount');
         if (!mount) return;
 
         var items = [];
         document.querySelectorAll('.courses-list .course-item').forEach(function (li) {
+            var ul = li.closest('ul');
+            if (ul && ul.classList.contains('courses-list-no-progress')) return;
             var a = li.querySelector(':scope > a[href$=".html"]');
             if (!a) return;
             var href = (a.getAttribute('href') || '').trim();
@@ -71,53 +66,57 @@
 
         if (!items.length) return;
 
-        mount.removeAttribute('hidden');
-        mount.innerHTML =
-            '<span class="topic-progress-hub__label" id="topic-progress-hub-label"></span>' +
-            '<div class="topic-progress-hub__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="topic-progress-hub-label">' +
-            '<div class="topic-progress-hub__fill" id="topic-progress-hub-fill"></div></div>';
+        var summary = document.createElement('div');
+        summary.className = 'study-progress-summary';
+        var label = document.createElement('p');
+        label.className = 'study-progress-label';
+        var barWrap = document.createElement('div');
+        barWrap.className = 'study-progress-bar-wrap';
+        var bar = document.createElement('div');
+        bar.className = 'study-progress-bar-fill';
+        barWrap.appendChild(bar);
+        summary.appendChild(label);
+        summary.appendChild(barWrap);
+        mount.appendChild(summary);
 
-        var labelEl = document.getElementById('topic-progress-hub-label');
-        var fillEl = document.getElementById('topic-progress-hub-fill');
-        var barEl = mount.querySelector('.topic-progress-hub__bar');
+        var checkboxes = [];
 
         function updateSummary() {
-            var store = readStore();
-            var done = 0;
-            items.forEach(function (it) {
-                if (isDone(it.id, store)) done++;
-            });
-            var total = items.length;
-            var pct = total ? Math.round((done / total) * 100) : 0;
-            if (labelEl) labelEl.textContent = 'Progress: ' + done + ' / ' + total + ' topics';
-            if (fillEl) fillEl.style.width = pct + '%';
-            if (barEl) {
-                barEl.setAttribute('aria-valuenow', String(pct));
-                barEl.setAttribute('aria-valuetext', done + ' of ' + total + ' complete');
-            }
+            var n = checkboxes.filter(function (cb) {
+                return cb.checked;
+            }).length;
+            var total = checkboxes.length;
+            label.textContent = 'Solved: ' + n + ' / ' + total;
+            bar.style.width = total ? Math.round((n / total) * 100) + '%' : '0%';
         }
 
         items.forEach(function (it) {
             var li = it.li;
-            if (li.querySelector(':scope > .topic-progress-toggle')) return;
-            var store = readStore();
-            var done = isDone(it.id, store);
-            if (done) li.classList.add('topic-progress-done');
+            if (li.querySelector(':scope > .done-cell input')) return;
 
-            var btn = makeToggleButton(done);
-            li.classList.add('topic-progress-enhanced');
-            li.insertBefore(btn, li.firstChild);
-
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var now = readStore();
-                var next = !isDone(it.id, now);
-                setDone(it.id, next);
-                li.classList.toggle('topic-progress-done', next);
-                syncToggleVisual(btn, next);
+            var td = document.createElement('span');
+            td.className = 'done-cell';
+            var inp = document.createElement('input');
+            inp.type = 'checkbox';
+            inp.setAttribute('aria-label', 'Mark as done');
+            if (isDone(it.id)) {
+                inp.checked = true;
+                li.classList.add('row-solved');
+            }
+            inp.addEventListener('change', function () {
+                if (inp.checked) {
+                    setDone(it.id, true);
+                    li.classList.add('row-solved');
+                } else {
+                    setDone(it.id, false);
+                    li.classList.remove('row-solved');
+                }
                 updateSummary();
             });
+            td.appendChild(inp);
+            li.classList.add('topic-progress-enhanced');
+            li.insertBefore(td, li.firstChild);
+            checkboxes.push(inp);
         });
 
         updateSummary();
@@ -125,40 +124,40 @@
 
     function initTopicPage() {
         var topicId = getCurrentTopicId();
-        if (!topicId) return;
+        if (!topicId || isExcludedFromTopicProgress(topicId)) return;
 
         var nav = document.querySelector('.navbar');
         if (!nav || nav.querySelector('.topic-progress-page-wrap')) return;
 
-        var store = readStore();
-        var done = isDone(topicId, store);
-
         var wrap = document.createElement('div');
         wrap.className = 'topic-progress-page-wrap';
 
-        var lbl = document.createElement('span');
+        var cell = document.createElement('span');
+        cell.className = 'done-cell';
+
+        var inp = document.createElement('input');
+        inp.type = 'checkbox';
+        inp.id = 'topicProgressPageDone';
+        inp.setAttribute('aria-label', 'Mark this topic as done');
+        if (isDone(topicId)) inp.checked = true;
+
+        var lbl = document.createElement('label');
         lbl.className = 'topic-progress-page-label';
+        lbl.setAttribute('for', 'topicProgressPageDone');
         lbl.textContent = 'Done';
 
-        var btn = makeToggleButton(done);
-        btn.setAttribute('aria-label', done ? 'Topic marked done; click to undo' : 'Mark this topic as done');
-
-        wrap.appendChild(lbl);
-        wrap.appendChild(btn);
-        nav.appendChild(wrap);
-
-        btn.addEventListener('click', function () {
-            var now = readStore();
-            var next = !isDone(topicId, now);
-            setDone(topicId, next);
-            syncToggleVisual(btn, next);
-            btn.setAttribute('aria-label', next ? 'Topic marked done; click to undo' : 'Mark this topic as done');
-            btn.setAttribute('title', next ? 'Done — click to undo' : 'Mark as done');
+        inp.addEventListener('change', function () {
+            setDone(topicId, inp.checked);
         });
+
+        cell.appendChild(inp);
+        wrap.appendChild(cell);
+        wrap.appendChild(lbl);
+        nav.appendChild(wrap);
     }
 
     function run() {
-        if (document.getElementById('topic-progress-hub')) {
+        if (document.getElementById('studyProgressMount')) {
             initHub();
         }
         initTopicPage();
