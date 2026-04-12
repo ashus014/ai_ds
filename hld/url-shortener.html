@@ -308,14 +308,24 @@
                 <div class="section">
                     <h2>Low-Level Design — URL Shortening Approaches</h2>
 
-                    <h3>1. Hash-based / Encryption Approach</h3>
+                    <h3>1. Approch 1 : Using encryption Logic</h3>
                     <ul>
-                        <li>Use hashing libraries (MD5, SHA1, Base64) to create hash of long URL</li>
-                        <li>Return first 5–6 characters as short URL</li>
-                        <li><strong>Problem:</strong> Hash collisions (only substring used) → duplicates</li>
-                        <li><strong>Mitigation:</strong> Check DB for duplicates; if collision, re-hash with additional data</li>
-                        <li><strong>Drawbacks:</strong> High latency due to DB scanning; increases exponentially with collisions</li>
+                        <li>There are few libraries freely availbale over internet for the encryption - MD5, SHA-1, base64</li>
+                        <li>MD5 returns a 32-character encrypted string, and SHA1 returns a 40-character encoded string</li>
+                        <li>But a shortened URL should be 5-6 characters long.</li>
+                        <li>And what if first 6 charcters of two URL become same, then that might be the issue- So we need to check the database if the URL exists already or not
+                            <ul style="margin-top: 8px; margin-bottom: 0;">
+                                <li>If not -> then return the same</li>
+                                <li>If it exists -> append some key and generate once again</li>
+                            </ul>
+                        </li>
+                        <li>But with this approach -> we are generating url (1ms), then calling database(5ms) and then writing database(10ms)</li>
+                        <li>If already found in database, then do it all over again - 16ms + 16ms</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-approach1-hash-encryption.png" alt="" width="1024" height="479" decoding="async">
+                        <figcaption></figcaption>
+                    </figure>
 
                     <h3>2. Counter-Based Approach</h3>
                     <ul>
