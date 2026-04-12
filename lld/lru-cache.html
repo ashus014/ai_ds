@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>LRU Cache — LLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section p, .section li { line-height: 1.65; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #764ba2;
+            margin: 20px 0 8px;
+        }
+        pre.code-block {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            border: 1px solid #313244;
+        }
+        pre.code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            pre.code-block { font-size: 0.75em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../lld.html" class="back-link">← Back to LLD</a>
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>LRU Cache</h1>
+                <p>Low-Level Design — least recently used cache with list-based naive implementation</p>
+                <span class="date-badge">12 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>An LRU (Least Recently Used) cache stores key-value pairs with a fixed capacity. When full, it evicts the least recently used entry before inserting a new one. In this naive version, recency is maintained in a list by moving recently accessed or updated items to the front.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Naive Approach</h2>
+                    <ul>
+                        <li>Use a list of <code>[key, value]</code> pairs.</li>
+                        <li>Keep most recently used entry at index <code>0</code>.</li>
+                        <li>For <code>get(key)</code>, linearly scan the list; if found, move entry to front.</li>
+                        <li>For <code>put(key, value)</code>, update existing key by moving to front, or insert new key at front.</li>
+                        <li>If capacity is full, remove the last element (least recently used).</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Java Code</h2>
+                    <div class="code-label">LRUCache.java (naive approach)</div>
+                    <pre class="code-block"><code>import java.util.*;
+
+class LRUCache {
+
+    List&lt;int[]&gt; cache;
+    int n;
+
+    public LRUCache(int capacity) {
+        this.n = capacity;
+        this.cache = new ArrayList&lt;&gt;();
+    }
+
+    public int get(int key) {
+
+        for (int i = 0; i &lt; cache.size(); i++) {
+            if (cache.get(i)[0] == key) {
+
+                int value = cache.get(i)[1];
+
+                // 🔥 move to front (most recent)
+                cache.remove(i);
+                cache.add(0, new int[]{key, value});
+
+                return value;
+            }
+        }
+
+        return -1;
+    }
+
+    public void put(int key, int value) {
+
+        // 🔥 check if key already exists
+        for (int i = 0; i &lt; cache.size(); i++) {
+            if (cache.get(i)[0] == key) {
+
+                // remove old position
+                cache.remove(i);
+
+                // insert at front (most recent)
+                cache.add(0, new int[]{key, value});
+                return;
+            }
+        }
+
+        // 🔥 if capacity full → remove least recently used (last element)
+        if (cache.size() == n) {
+            cache.remove(cache.size() - 1);
+        }
+
+        // insert new at front
+        cache.add(0, new int[]{key, value});
+    }
+}</code></pre>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li><code>get(key)</code>: <code>O(n)</code> due to linear search and potential shift during insert/remove.</li>
+                        <li><code>put(key, value)</code>: <code>O(n)</code> due to linear search and list operations.</li>
+                        <li>Space: <code>O(capacity)</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
