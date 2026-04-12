@@ -149,6 +149,7 @@
             border: 1px solid #2d2d44;
         }
         pre.api-sample + pre.api-sample { margin-top: 12px; }
+        .hld-diagram { max-width: 100%; height: auto; display: block; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -272,12 +273,7 @@
 
                 <div class="section">
                     <h2>High-Level Design</h2>
-                    <ul>
-                        <li><strong>Client:</strong> Sends requests to shorten or access URLs</li>
-                        <li><strong>Backend Server:</strong> Handles URL shortening logic and redirection</li>
-                        <li><strong>Database:</strong> Stores mapping between short URLs and long URLs, user metadata, expiration dates, custom URL info</li>
-                        <li><strong>Redis Cache:</strong> Speeds up redirection by caching mappings to reduce DB hits</li>
-                    </ul>
+                    <img src="assets/url-shortener-high-level-design.png" alt="High-level design" width="1024" height="439" class="hld-diagram">
                 </div>
 
                 <div class="section">
