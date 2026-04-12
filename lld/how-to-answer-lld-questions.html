@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>How to answer LLD questions | LLD</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; }
+        .content { padding: 40px; }
+        .toc {
+            background: #f0f2ff;
+            border: 1px solid #c5cae9;
+            border-radius: 10px;
+            padding: 22px 26px;
+            margin-bottom: 36px;
+        }
+        .toc h2 {
+            color: #667eea;
+            font-size: 1.15em;
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+        .toc li { margin-bottom: 10px; padding-left: 0; }
+        .toc li::before { display: none; }
+        .toc a {
+            color: #4c51bf;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .toc a:hover { color: #764ba2; border-bottom-color: #764ba2; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            scroll-margin-top: 24px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-of-type { margin-top: 0; }
+        .section p, .section li { line-height: 1.65; }
+        .section p { margin-bottom: 12px; }
+        .content ul:not(.toc ul) {
+            list-style: none;
+            margin-left: 0;
+            margin-bottom: 15px;
+        }
+        .content ul:not(.toc ul) li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        .content ul:not(.toc ul) li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        table a { color: #5a67d8; font-weight: 600; }
+        table a:hover { color: #764ba2; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../lld.html" class="back-link">← Back to LLD</a>
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>How to answer LLD questions</h1>
+            </div>
+            <div class="content">
+                <nav class="toc" aria-label="On this page">
+                    <h2>On this page</h2>
+                    <ul>
+                        <li><a href="#design-princple">Design princple</a></li>
+                        <li><a href="#design-peincples">design peincples</a></li>
+                        <li><a href="#common-askes-lld-questions">common askes LLD questions</a></li>
+                        <li><a href="#how-ro-answer-a-lld-interview">how ro answer a LLD interview</a></li>
+                        <li><a href="#best-lld-coding-practices">Best LLD coding practices</a></li>
+                    </ul>
+                </nav>
+
+                <section class="section" id="design-princple">
+                    <h2>Design princple</h2>
+                    <p>DRY — Don’t Repeat Yourself<br>
+                    Don’t duplicate logic everywhere. Keep common code in one place so it’s easy to change and maintain.</p>
+                    <p>YAGNI — You Aren’t Gonna Need It<br>
+                     Don’t build extra features “just in case.”<br>
+                     Build only what is needed right now.</p>
+                    <p>KISS — Keep It Simple, Stupid<br>
+                    Prefer simple, readable designs instead of clever, complicated ones.</p>
+                    <h3>SOLID Principles</h3>
+                    <p>S — Single Responsibility Principle<br>
+                     One class = one main job.<br>
+                     If a class is doing too many things, split it.</p>
+                    <p>O — Open/Closed Principle<br>
+                     Code should be open for extension but closed for modification.<br>
+                     You extend behavior (add new classes), not rewrite existing ones.</p>
+                    <p>L — Liskov Substitution Principle<br>
+                     A child class should be usable anywhere its parent is expected —<br>
+                    without breaking the program.</p>
+                    <p>I — Interface Segregation Principle<br>
+                     Don’t force classes to implement big, unnecessary interfaces.<br>
+                     Create smaller, focused interfaces.</p>
+                    <p>D — Dependency Inversion Principle (not Injection)<br>
+                     High-level modules shouldn’t depend directly on low-level ones — both depend on abstractions (interfaces).<br>
+                     Dependency Injection is one way to achieve this.</p>
+                </section>
+
+                <section class="section" id="design-peincples">
+                    <h2>design peincples</h2>
+                    <p>Singleton<br>
+                    Only one object of a class should ever exist.<br>
+                     Example: one global logger, one DB connection manager.</p>
+                    <p>🔹 Factory<br>
+                    You ask the factory for an object — it decides which exact class to create.<br>
+                     Good when object creation logic gets messy.</p>
+                    <p>🔹 Abstract Factory<br>
+                    A factory of factories.<br>
+                     Used to create families of related objects without knowing their concrete classes.</p>
+                    <p>🔹 Builder<br>
+                    Used when objects have lots of optional fields.<br>
+                     Lets you build an object step-by-step instead of using a huge constructor.</p>
+                    <p>🔹 Adapter<br>
+                    Makes two incompatible classes work together.<br>
+                     Like a charger plug adapter.</p>
+                    <p>🔹 Decorator<br>
+                    Adds extra features without changing existing code.<br>
+                     Wraps an object and enhances it.</p>
+                    <p>Facade<br>
+                    Provides a simple interface to a complex system.<br>
+                     Like a hotel reception desk handling everything for you.</p>
+                    <p>🔹 Composite<br>
+                    Treats a group of objects the same way as a single object.<br>
+                     Useful for tree-like structures (folders, UI components).</p>
+                    <p>🔹 Observer<br>
+                    One object changes → automatically notifies others.<br>
+                     Like YouTube channel notifications to subscribers.</p>
+                    <p>🔹 Command<br>
+                    Wraps an action as an object.<br>
+                     Helps with undo/redo, queues, and logging.</p>
+                    <p>🔹 Strategy<br>
+                    Different algorithms, same goal — switch them at runtime.<br>
+                     Example: different sorting methods.</p>
+                    <p>🔹 State<br>
+                    Behavior changes based on internal state.<br>
+                     Example: Media player → playing / paused/stopped.</p>
+                    <p>🔹 Template Method<br>
+                    Defines the skeleton of an algorithm, but lets subclasses fill steps.<br>
+                     Base class decides structure, child classes customize parts.</p>
+                </section>
+
+                <section class="section" id="common-askes-lld-questions">
+                    <h2>common askes LLD questions</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Problem / System</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Parking Lot</td></tr>
+                            <tr><td>2</td><td>Vending Machine</td></tr>
+                            <tr><td>3</td><td>Elevator System</td></tr>
+                            <tr><td>4</td><td>LRU Cache</td></tr>
+                            <tr><td>5</td><td>Chess Game</td></tr>
+                            <tr><td>6</td><td>Snake and Ladders</td></tr>
+                            <tr><td>7</td><td><a href="splitwise.html">Splitwise</a></td></tr>
+                            <tr><td>8</td><td>Logging Framework</td></tr>
+                            <tr><td>9</td><td>Hotel Management System</td></tr>
+                            <tr><td>10</td><td>Movie Ticket Booking System</td></tr>
+                            <tr><td>11</td><td>Ludo</td></tr>
+                            <tr><td>12</td><td>Tic-Tac-Toe</td></tr>
+                            <tr><td>13</td><td>StackOverflow</td></tr>
+                            <tr><td>14</td><td>Stock Exchange (Order Matching Engine – LLD, Simplified)</td></tr>
+                            <tr><td>15</td><td>Helicopter Booking Application</td></tr>
+                            <tr><td>16</td><td>snake and aldders</td></tr>
+                            <tr><td>17</td><td>vending machine</td></tr>
+                            <tr><td>18</td><td>logging management</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="section" id="how-ro-answer-a-lld-interview">
+                    <h2>how ro answer a LLD interview</h2>
+                    <h3>How to answer an LLD interview</h3>
+                    <p>In LLD interviews, you are given a real-world problem and expected to come up with a solution using object-oriented programming.</p>
+                    <p>Clarify requirements and core use cases<br>
+                     Ask questions to understand what we need to do and the core use cases we need to support.</p>
+                    <p>Identify the entities or objects</p>
+                    <p>Translate entities into classes and come up with a list of attributes</p>
+                    <p>Identify core methods</p>
+                    <p>Define relationships between classes<br>
+                     Draw UML diagrams to represent relationships.</p>
+                    <p>Implement necessary methods<br>
+                     No need to implement all methods — check with the interviewer to understand which methods are important.</p>
+                    <p>Exception handling<br>
+                     Handle errors and edge cases.</p>
+                </section>
+
+                <section class="section" id="best-lld-coding-practices">
+                    <h2>Best LLD coding practices</h2>
+                    <p>Use meaningful names<br>
+                     Class names, method names, and variable names.</p>
+                    <p>Focus on simplicity and readability</p>
+                    <p>Favor composition over inheritance<br>
+                     Promote flexible and tight coupling.</p>
+                    <p>Use interfaces to define contracts<br>
+                     Enable loose coupling between components.</p>
+                    <p>Strive for modularity and separation of concern</p>
+                    <p>Apply design patterns and design principles</p>
+                    <p>Make it scalable</p>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
