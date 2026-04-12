@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <title>LRU Cache — LLD Notes</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,7 +44,6 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
         }
         .back-link:hover { color: #764ba2; }
         .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
@@ -54,86 +56,82 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px 30px;
+            padding: 36px 28px;
             text-align: center;
         }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
-        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
-        .date-badge {
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
             display: inline-block;
+            margin-top: 14px;
             background: rgba(255, 255, 255, 0.2);
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.95em;
-            margin-top: 15px;
+            font-size: 0.92em;
         }
-        .content { padding: 40px; }
+        .content { padding: 36px 28px 40px; }
         .section {
-            margin-bottom: 35px;
-            padding: 25px;
+            padding: 22px;
             background: #f8f9fa;
             border-left: 5px solid #667eea;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            margin-bottom: 22px;
         }
-        .section:hover {
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
-            transform: translateX(5px);
-        }
+        .section:last-child { margin-bottom: 0; }
         .section h2 {
             color: #667eea;
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
-        .section h2:not(:first-of-type) {
-            margin-top: 26px;
+            font-size: 1.45em;
             margin-bottom: 12px;
         }
         .section h3 {
-            color: #764ba2;
-            font-size: 1.15em;
-            margin: 18px 0 10px;
-            font-weight: 600;
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
         }
-        .section p, .section li { line-height: 1.65; }
-        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
-        ul li {
-            position: relative;
-            margin-bottom: 10px;
-            padding-left: 25px;
+        .section h3.spaced { margin-top: 22px; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul {
+            margin: 0 0 16px 1.15em;
+            padding: 0;
+            color: #444;
+            line-height: 1.65;
         }
-        ul li::before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        code {
-            background: #e8eaf6;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
+        .section ul li { margin-bottom: 8px; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
         }
         .snippet-surface {
-            margin-top: 8px;
+            margin-top: 6px;
+            margin-bottom: 4px;
             padding: 20px;
             background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
             border-radius: 14px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
-        .section .snippet-surface { margin-top: 12px; }
+        .snippet-surface + .callout { margin-top: 0; }
         .code-window {
             border-radius: 12px;
             overflow: hidden;
             box-shadow:
                 0 18px 40px rgba(30, 27, 75, 0.35),
                 0 0 0 1px rgba(0, 0, 0, 0.12);
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
         }
         .code-window-titlebar {
             position: relative;
@@ -167,9 +165,12 @@
             font-weight: 500;
             letter-spacing: 0.02em;
             color: #b4b4c6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             pointer-events: none;
             white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .code-window-actions {
             margin-left: auto;
@@ -190,17 +191,6 @@
         .copy-all-btn:focus-visible {
             outline: 2px solid #a5b4fc;
             outline-offset: 2px;
-        }
-        .offscreen-copy {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: pre;
-            border: 0;
         }
         .code-window-body {
             margin: 0;
@@ -223,8 +213,25 @@
         .sh-type { color: #ffb4a8; }
         .sh-call { color: #5eead4; }
         .sh-comment { color: #7a7a8c; font-style: normal; }
-        .sh-lit { color: #f8f8f2; }
-        .sh-ch { color: #f1fa8c; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
             .code-window-body { font-size: 11.5px; }
@@ -243,27 +250,24 @@
         <div class="container">
             <div class="header">
                 <h1>LRU Cache</h1>
-                <p>Low-Level Design — naive list approach ⚠️ and map-indexed list variant ℹ️</p>
-                <span class="date-badge">12 April 2026</span>
+                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. <strong>Naive</strong> ⚠️ uses a list and linear key search; <strong>optimised</strong> ℹ️ adds a <code>HashMap</code> from key → list index and <code>updateMap()</code> after each reorder.</p>
+                <span class="meta">LLD / Java — 12 April 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>An LRU (Least Recently Used) cache stores key-value pairs with a fixed capacity. When full, it evicts the least recently used entry before inserting a new one. The <strong>earlier code</strong> is a <strong>naive approach</strong> ⚠️: a single list, linear scan for keys, and move-to-front. The <strong>next variant</strong> is <strong>a bit optimised</strong> ℹ️: a <code>HashMap</code> maps each key to its current index in the list so you skip the scan; after any reorder you refresh indices with <code>updateMap()</code>.</p>
+                    <p>Store key–value pairs with cap <code>n</code>. <code>get</code> marks an entry as most recent (front of list). <code>put</code> updates or inserts at the front; when full, drop the tail. The map-backed version avoids scanning for the key but still pays for <code>ArrayList</code> shifts and rebuilding indices.</p>
                 </div>
 
                 <div class="section">
-                    <h2>Naive approach ⚠️</h2>
-                    <ul>
-                        <li>Use a list of <code>[key, value]</code> pairs only.</li>
-                        <li>Keep most recently used entry at index <code>0</code>.</li>
-                        <li>For <code>get(key)</code>, linearly scan the list; if found, move entry to front.</li>
-                        <li>For <code>put(key, value)</code>, update existing key by moving to front, or insert new key at front.</li>
-                        <li>If capacity is full, remove the last element (least recently used).</li>
-                    </ul>
+                    <h2>Answers</h2>
 
-                    <h2>Java — naive ⚠️</h2>
-                    <p>Copy the full listing from the code window toolbar.</p>
+                    <h3>Naive approach ⚠️</h3>
+                    <p>List of <code>[key, value]</code> pairs; MRU at index <code>0</code>. <code>get</code> scans, then move-to-front. <code>put</code> scans for an existing key or inserts at front; evict tail when at capacity.</p>
+                    <ul>
+                        <li>Linear scan on every <code>get</code> / <code>put</code>.</li>
+                        <li>No auxiliary structure — easy to explain, slow on large capacity.</li>
+                    </ul>
                     <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Naive LRU Java source for copy">import java.util.*;
 
 class LRUCache {
@@ -319,7 +323,7 @@ class LRUCache {
     }
 }</textarea>
                     <div class="snippet-surface">
-                        <div class="code-window" aria-label="LRUCache.java naive implementation">
+                        <div class="code-window" aria-label="LRUCache.java naive">
                             <div class="code-window-titlebar">
                                 <div class="traffic-lights" aria-hidden="true">
                                     <span class="tl-red"></span>
@@ -328,7 +332,7 @@ class LRUCache {
                                 </div>
                                 <span class="code-window-title">LRUCache.java — naive ⚠️</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" id="copy-all-naive" title="Copy naive implementation">Copy all</button>
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy naive implementation">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
@@ -387,19 +391,16 @@ class LRUCache {
 }</code></pre>
                         </div>
                     </div>
-                </div>
+                    <div class="callout" role="note">
+                        <strong>Naive ⚠️.</strong> Every <code>get</code> / <code>put</code> scans the whole list for the key — <code>O(n)</code> time plus list remove/insert. Fine for learning; not for production-scale caches.
+                    </div>
 
-                <div class="section">
-                    <h2>Map-assisted variant ℹ️</h2>
-                    <p>This version is <strong>a bit optimised</strong> ℹ️: <code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index in the list</strong>, so <code>get</code> and updates do not scan for the key.</p>
+                    <h3 class="spaced">Optimised (map + list) ℹ️</h3>
+                    <p><code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index</strong> in the list. After <code>remove</code> / <code>add(0, …)</code>, call <code>updateMap()</code> to refresh every index. On eviction, remove the tail pair and <code>map.remove(removedKey)</code>.</p>
                     <ul>
-                        <li>After <code>remove</code> / <code>add(0, …)</code>, list indices shift — <code>updateMap()</code> walks the list once and rebuilds key → index.</li>
-                        <li>On eviction at capacity, remove the tail entry and drop its key from the map.</li>
-                        <li>Still an intermediate design: <code>ArrayList</code> remove/insert at arbitrary positions and full map refresh are linear; true <code>O(1)</code> LRU usually uses doubly linked list + hash map.</li>
+                        <li><code>O(1)</code> key lookup in the map; list shifts and <code>updateMap()</code> remain <code>O(n)</code> overall.</li>
+                        <li>Step toward a classic DLL + hash LRU (<code>O(1)</code> get/put), not a full substitute.</li>
                     </ul>
-
-                    <h2>Java — optimised ℹ️</h2>
-                    <p>Copy the full listing from the code window toolbar.</p>
                     <textarea id="copy-buffer-optimised" class="offscreen-copy" readonly aria-label="Optimised LRU Java source for copy">import java.util.*;
 
 class LRUCache {
@@ -453,7 +454,7 @@ class LRUCache {
     }
 }</textarea>
                     <div class="snippet-surface">
-                        <div class="code-window" aria-label="LRUCache.java map-assisted implementation">
+                        <div class="code-window" aria-label="LRUCache.java map-assisted">
                             <div class="code-window-titlebar">
                                 <div class="traffic-lights" aria-hidden="true">
                                     <span class="tl-red"></span>
@@ -462,7 +463,7 @@ class LRUCache {
                                 </div>
                                 <span class="code-window-title">LRUCache.java — optimised ℹ️</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" id="copy-all-optimised" title="Copy optimised implementation">Copy all</button>
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-optimised" title="Copy optimised implementation">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
@@ -519,21 +520,22 @@ class LRUCache {
 }</code></pre>
                         </div>
                     </div>
+                    <div class="callout" role="note">
+                        <strong>Map-assisted ℹ️.</strong> You skip the linear <strong>search</strong> for the key, but <code>remove(index)</code>, insert at <code>0</code>, and <code>updateMap()</code> still scale linearly with capacity — same asymptotic class as naive, with a better leading constant on lookup.
+                    </div>
                 </div>
 
                 <div class="section">
                     <h2>Complexity</h2>
                     <h3>Naive ⚠️</h3>
                     <ul>
-                        <li><code>get(key)</code>: <code>O(n)</code> linear search, plus list remove/insert cost.</li>
-                        <li><code>put(key, value)</code>: <code>O(n)</code> for the same reasons.</li>
-                        <li>Space: <code>O(capacity)</code> for the list.</li>
+                        <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(n)</code> for scan + list ops.</li>
+                        <li>Space: <code>O(capacity)</code>.</li>
                     </ul>
-                    <h3>Map-assisted ℹ️</h3>
+                    <h3 class="spaced">Map-assisted ℹ️</h3>
                     <ul>
-                        <li>Key lookup in the map is <code>O(1)</code>, but <code>ArrayList.remove(index)</code>, insert at index <code>0</code>, and <code>updateMap()</code> are each <code>O(n)</code> in the worst case.</li>
-                        <li>So <code>get</code> and <code>put</code> remain <code>O(n)</code> overall — better constant factors on the search step, not asymptotic <code>O(1)</code> like a classic doubly-linked LRU.</li>
-                        <li>Space: <code>O(capacity)</code> for the list plus <code>O(capacity)</code> for the map.</li>
+                        <li>Map lookup <code>O(1)</code>; list + <code>updateMap()</code> dominate — still <code>O(n)</code> per operation worst case.</li>
+                        <li>Space: <code>O(capacity)</code> for list + map.</li>
                     </ul>
                 </div>
             </div>
@@ -541,12 +543,12 @@ class LRUCache {
     </div>
     <script>
         (function () {
-            function bindCopy(btnId, taId) {
-                var btn = document.getElementById(btnId);
-                var ta = document.getElementById(taId);
-                if (!btn || !ta) return;
-                var label = 'Copy all';
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
                 btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
                     ta.select();
                     ta.setSelectionRange(0, ta.value.length);
                     var text = ta.value;
@@ -568,9 +570,7 @@ class LRUCache {
                         } catch (e) {}
                     }
                 });
-            }
-            bindCopy('copy-all-naive', 'copy-buffer-naive');
-            bindCopy('copy-all-optimised', 'copy-buffer-optimised');
+            });
         })();
     </script>
 </body>
