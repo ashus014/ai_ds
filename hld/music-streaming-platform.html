@@ -302,6 +302,25 @@
                             <tr><td>POST /users/me/follow</td><td>Follow artist (artist ID)</td></tr>
                         </tbody>
                     </table>
+                    <h3>GET — resolve to stream URL</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/songs/{songId}/stream</code></td>
+                                <td>—</td>
+                                <td><code>streamURL</code> (e.g. <code>302</code> + <code>Location</code>)</td>
+                                <td>Redirect client to playable audio URL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre>GET: /v1/songs/{songId}/stream  ->  streamURL</pre>
+                    <p style="margin-top: 14px; font-weight: 600; color: #4a3a6b;">Resolve ("play") path</p>
+                    <ul>
+                        <li>It is simple: if the song is found (cache first if present, else database), API returns <strong>302</strong> with signed audio URL in <code>Location</code> (or returns that URL in response JSON). App then starts playback from storage/CDN.</li>
+                    </ul>
                     <p>RESTful conventions with plural resource names and consistent query parameters.</p>
                 </div>
 
