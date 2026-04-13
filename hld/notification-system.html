@@ -135,6 +135,20 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        pre.api-sample {
+            background: #1e1e2e;
+            color: #e4e4e7;
+            padding: 16px 18px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.82em;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 14px 0 0 0;
+            white-space: pre;
+            border: 1px solid #2d2d44;
+        }
+        pre.api-sample + pre.api-sample { margin-top: 12px; }
         .diagram-figure {
             margin: 20px 0;
             text-align: center;
@@ -181,7 +195,7 @@
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>Detailed walkthrough of designing a scalable notification system for modern applications (e.g., social media). Focuses on engineering challenges, architectural improvements, and design patterns to handle emails, in-app notifications, and push notifications efficiently.</p>
+                    <p>Detailed walkthrough of designing a scalable notification system for modern applications (e.g., social media). Covers architecture, queues, fan-out, and a simple <strong>REST API</strong> shape (publish, inbox, read state, devices, preferences) alongside patterns for email, in-app, and push delivery.</p>
                 </div>
 
                 <div class="section">
@@ -269,6 +283,137 @@
                         <li><strong>Benefits:</strong> Minimal code changes for new channels; flexible binding; easier maintenance and scale</li>
                         <li>Workers consume from queues and send notifications</li>
                     </ul>
+                </div>
+
+                <div class="section">
+                    <h2>API Design</h2>
+                    <p>Same idea as the URL shortener notes: once you know what the product must do, you sketch <strong>one endpoint per main job</strong> — publish an event, read the inbox, mark read, save push token, edit preferences. Your API is the front door; <strong>SNS / SQS / workers</strong> stay behind it.</p>
+
+                    <h3>POST — publish notification (producer)</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/notifications</code></td>
+                                <td><code>eventType</code> (required), <code>userId</code> (one user) or <code>userIds</code> (many), <code>payload</code> (JSON), <code>channels</code> (optional: email, push, in_app), <code>idempotencyKey</code> (optional)</td>
+                                <td><code>notificationId</code> or <code>202 Accepted</code></td>
+                                <td>Backend publishes “something happened” — service validates, writes audit row if needed, then publishes to SNS (or enqueues) so workers can fan out</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/notifications  ->  notificationId (or 202)
+
+{
+  eventType
+  userId?
+  userIds?
+  payload
+  channels?
+  idempotencyKey?
+}</pre>
+
+                    <h3>GET — inbox (in-app list)</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/users/me/notifications?cursor=&amp;limit=</code></td>
+                                <td>—</td>
+                                <td>list of notifications (newest first)</td>
+                                <td>Mobile / web notification center</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/users/me/notifications?cursor=...&amp;limit=20</pre>
+                    <p style="margin-top: 14px; font-weight: 600; color: #4a3a6b;">Read (“inbox”) path</p>
+                    <ul>
+                        <li>It is <strong>simple</strong>: user opens the bell → app calls this GET. You can answer from <strong>cache</strong> (Redis) for hot users, else <strong>database</strong>. Same pattern as “resolve short URL”: read path should be fast and easy to paginate.</li>
+                    </ul>
+
+                    <h3>PATCH — mark notification read</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>PATCH /v1/notifications/{notificationId}</code></td>
+                                <td><code>read</code>: <code>true</code></td>
+                                <td>updated row</td>
+                                <td>User tapped a row; clears badge / unread count</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">PATCH /v1/notifications/{notificationId}
+
+{ "read": true }</pre>
+
+                    <h3>POST — register device (push token)</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/users/me/devices</code></td>
+                                <td><code>platform</code> (ios | android | web), <code>deviceToken</code>, <code>appVersion</code> (optional)</td>
+                                <td><code>deviceId</code></td>
+                                <td>Store FCM / APNs token so push workers know where to send</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/users/me/devices  ->  deviceId
+
+{
+  platform
+  deviceToken
+  appVersion?
+}</pre>
+
+                    <h3>GET — notification preferences</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/users/me/notification-settings</code></td>
+                                <td>—</td>
+                                <td>flags per channel + quiet hours (JSON)</td>
+                                <td>Settings screen loads current choices</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/users/me/notification-settings  ->  settings JSON</pre>
+
+                    <h3>PUT — update notification preferences</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>PUT /v1/users/me/notification-settings</code></td>
+                                <td><code>email</code>, <code>push</code>, <code>inApp</code> (booleans), <code>quietHours</code> (optional)</td>
+                                <td>updated settings</td>
+                                <td>User turns channels on/off; ingestion layer reads this before sending</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">PUT /v1/users/me/notification-settings
+
+{
+  email
+  push
+  inApp
+  quietHours?
+}</pre>
+
+                    <p>Use <code>Authorization: Bearer …</code> (JWT) on <code>/users/me/…</code> routes; keep <strong>publish</strong> either internal-only (mTLS / service token) or same auth if only your backends call it.</p>
                 </div>
 
                 <div class="section">
