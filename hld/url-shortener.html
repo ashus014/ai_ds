@@ -292,12 +292,16 @@
                             <tr>
                                 <td><code>GET /v1/url/{shortURL}</code></td>
                                 <td>—</td>
-                                <td><code>longURL</code> (e.g. <code>302</code> + <code>Location</code>)</td>
+                                <td><code>longURL</code> (e.g. <code>301</code> or <code>302</code> + <code>Location</code>)</td>
                                 <td>Redirect client to original URL</td>
                             </tr>
                         </tbody>
                     </table>
                     <pre class="api-sample">GET: /v1/url/{shortURL}  ->  longURL</pre>
+                    <p style="margin-top: 14px; font-weight: 600; color: #4a3a6b;">Resolve (“decrypt”) path</p>
+                    <ul>
+                        <li>The flow is <strong>simple</strong>: given <code>{shortURL}</code>, look up the row (cache first if you use Redis, then database on miss). If a mapping exists and is not expired, respond with an HTTP redirect—typically <strong>301</strong> or <strong>302</strong>—and put the long URL in the <code>Location</code> header. From the user’s perspective in the browser bar, <strong>there is not much difference</strong> between 301 and 302; both end up opening the destination page.</li>
+                    </ul>
                 </div>
 
                 <div class="section">
@@ -459,15 +463,20 @@
                     </ul>
                     <h3>HTTP Redirect Status Codes</h3>
                     <ul>
-                        <li><strong>301 (Permanent Redirect):</strong> Browser caches mapping; reduces server load but loses tracking</li>
-                        <li><strong>302 (Temporary Redirect):</strong> Every request hits server; enables analytics and logging</li>
+                        <li><strong>301 (Moved Permanently):</strong> Browsers (and many intermediaries) treat this as a <strong>stable</strong> short → long mapping and <strong>cache</strong> it locally. Later clicks on the same short URL may <strong>not hit your decryption tier at all</strong>, which <strong>cuts traffic and cost</strong>—but you lose per-click visibility on those cached hits.</li>
+                        <li><strong>302 (Found / temporary redirect):</strong> Clients generally <strong>do not</strong> treat the mapping as permanent, so each follow often <strong>goes through your server</strong> again—you can log, count, and experiment on every resolve. Heavier load, richer telemetry.</li>
+                        <li><strong>What to say in an interview:</strong> align with product goals. Choose <strong>301</strong> if you want <strong>fewer calls</strong> to the decryption layer and lowest latency for repeat visitors. Choose <strong>302</strong> (or another non-cacheable redirect policy) if you need <strong>click analytics</strong>, training data for <strong>ML</strong>, fraud detection, or <strong>premium</strong> dashboard features that depend on seeing each access—then accept more traffic on the resolve path.</li>
                     </ul>
                     <h3>Database Choice</h3>
                     <ul>
-                        <li>Simple key-value store with indexing on short URL</li>
-                        <li>PostgreSQL or MySQL sufficient</li>
-                        <li>Index on short URL for efficient lookups</li>
+                        <li>The stored shape is <strong>not deeply relational</strong>: essentially a <strong>short key → long URL</strong> row plus <strong>expiration</strong> (and optional custom-slug metadata). <strong>PostgreSQL</strong> or <strong>MySQL</strong> are both reasonable—familiar ops, transactions, backups—without needing a specialized graph or document model for the core table.</li>
+                        <li><strong>Lookups are by short URL</strong> on every resolve that misses cache, and create flows must check whether a slug already exists. Make that path fast: use <code>shortURL</code> as the <strong>primary key</strong> (or at minimum a <strong>unique index</strong>) so the database does a single indexed seek instead of scanning the table.</li>
+                        <li>For a <strong>cold cache</strong> or the <strong>first</strong> time a short link is followed, the database is on the critical path—so solid indexing on <code>shortURL</code> (and a clear expiry filter) keeps “is this tiny URL present?” checks cheap at scale.</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-db-schema-url.png" alt="URL table: shortURL primary key, longURL, expirationDate, customURL" width="218" height="156" decoding="async">
+                        <figcaption>Example <strong>URL</strong> table: <code>shortURL</code> as PK, <code>longURL</code>, <code>expirationDate</code>, optional <code>customURL</code> / flags as needed.</figcaption>
+                    </figure>
                 </div>
 
                 <div class="section">
