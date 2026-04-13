@@ -420,6 +420,17 @@
                         </li>
                         <li><strong>Benefits:</strong> IDs generated locally with uniqueness across servers (no per-create ZK or DB round-trip for the ID itself); very low collision risk after hashing; ZooKeeper touched on <strong>registration</strong>, not every shorten.</li>
                     </ul>
+
+                    <h4>Approach 3 (continued): Expiration date</h4>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-approach3-expiration.png" alt="Same Approach 3 topology with a daily cron job deleting expired rows from the database" width="1024" height="452" decoding="async">
+                        <figcaption>Expiration sketch: same client → LB → encryption / decryption stack; a <strong>cron</strong> job periodically cleans <strong>expired</strong> mappings in the database. Cache entries must honor the same lifetime (TTL).</figcaption>
+                    </figure>
+                    <ul>
+                        <li><strong>Database cleanup.</strong> Run a <strong>cron job</strong> (for example <strong>once per day</strong>) that deletes rows whose <strong>expiration date</strong> is in the past, so the durable store does not keep short URLs forever.</li>
+                        <li><strong>Cache must use TTL.</strong> Store each cache entry with a <strong>TTL</strong> (or explicit expiry) that matches the URL’s lifetime. Otherwise the cron may remove a mapping from the database while a <strong>hot</strong> slug still lives in Redis—traffic keeps refreshing “recent” access but the entry never falls out of cache, so users could still resolve a URL you consider expired, or you serve <strong>stale</strong> data after the DB row is gone.</li>
+                        <li><strong>Align policy.</strong> Set Redis TTL at (or slightly below) the business expiration, and on read optionally <strong>revalidate</strong> against the DB so a long-lived cache entry cannot outlive the authoritative record.</li>
+                    </ul>
                 </div>
 
                 <div class="section">
