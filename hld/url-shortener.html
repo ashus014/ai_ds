@@ -376,20 +376,33 @@
 
                     <h3>3. Distributed Unique ID Generation Using Zookeeper</h3>
                     <ul>
-                        <li><strong>Zookeeper</strong> as distributed coordination service</li>
-                        <li>Servers register with Zookeeper; each gets a <strong>unique worker ID</strong></li>
+                        <li><strong>Apache ZooKeeper</strong> is an open-source <strong>distributed coordination service</strong> for distributed applications.</li>
+                        <li>It provides <strong>centralized</strong> building blocks for <strong>configuration management</strong>, <strong>naming</strong>, <strong>synchronization</strong>, and <strong>group services</strong>, so teams can manage large clusters with less ad-hoc glue code.</li>
+                        <li>In practice ZooKeeper is used for things like <strong>keeping configuration in one place</strong>, <strong>naming</strong> / service discovery, <strong>distributed synchronization</strong>, <strong>distributed locking</strong>, and <strong>group membership</strong> (who is alive, who joined, who left).</li>
+                    </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-zookeeper-znodes.png" alt="ZooKeeper znode hierarchy: root slash, app1 and app2 branches, paths under app1" width="491" height="281" decoding="async">
+                        <figcaption>This is how ZooKeeper nodes (<strong>znodes</strong>) look — a hierarchical path tree, similar to a file system (for example <code>/</code>, <code>/app1</code>, <code>/app1/p_1</code>, …).</figcaption>
+                    </figure>
+                    <p style="margin: 12px 0 6px 0; font-weight: 600; color: #4a3a6b;">ZooKeeper has two important znode types:</p>
+                    <ol style="list-style: decimal; margin: 0 0 16px 28px; padding: 0; color: #333;">
+                        <li style="padding-left: 8px; margin-bottom: 10px;"><strong>Persistent node</strong> — as the name suggests, it is <strong>not tied to the client’s lifetime</strong>: it is <strong>not automatically removed</strong> from ZooKeeper when an application stops or disconnects. It stays in the namespace until an operator or process <strong>explicitly deletes</strong> that path.</li>
+                        <li style="padding-left: 8px;"><strong>Ephemeral node</strong> — tied to a <strong>session</strong> between the ZooKeeper client (your app) and the ZooKeeper servers. The client must keep the session alive with periodic <strong>heartbeats</strong> (pings / keep-alives). If ZooKeeper decides the heartbeat has <strong>timed out</strong>—for example the application crashed or stopped sending traffic—it treats the session as dead and <strong>removes all ephemeral znodes</strong> that session created (they disappear from the tree under the relevant paths).</li>
+                    </ol>
+                    <ul>
+                        <li><strong>In this URL-shortener design:</strong> servers register with ZooKeeper so each instance receives a <strong>unique worker ID</strong> (used below with Snowflake-style IDs).</li>
                         <li><strong>Snowflake ID generator:</strong> 64-bit ID composed of:
                             <ul>
                                 <li>1-bit sign</li>
                                 <li>41-bit timestamp</li>
-                                <li>10-bit worker ID (from Zookeeper)</li>
+                                <li>10-bit worker ID (from ZooKeeper)</li>
                                 <li>12-bit local counter</li>
                             </ul>
                         </li>
                         <li>Snowflake IDs generated locally with guaranteed uniqueness across servers; no cross-server coordination or DB hits</li>
                         <li>Snowflake ID can be hashed (e.g., MD5) and truncated to produce short URL</li>
                         <li><strong>Benefits:</strong> No collisions; lowest latency; removes single points of failure</li>
-                        <li>Zookeeper called <strong>only on server startup</strong>, not per request</li>
+                        <li>ZooKeeper is contacted <strong>only on server startup</strong> (for registration / worker ID), not on every shorten request.</li>
                     </ul>
                 </div>
 
