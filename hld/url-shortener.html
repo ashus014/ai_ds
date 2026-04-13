@@ -360,6 +360,20 @@
                         <figcaption></figcaption>
                     </figure>
 
+                    <h4>Approach 2 (continued): encryption vs decryption &amp; Redis cache for reads</h4>
+                    <ul>
+                        <li>In the same server we are doing two things — <strong>(1) encryption</strong> and <strong>(2) decryption</strong>.</li>
+                        <li>There could be a case where only about <strong>20%</strong> of traffic is encryption (create short URL) and the rest <strong>~80%</strong> is decryption (redirect / resolve).</li>
+                        <li>So <strong>decryption</strong> should be <strong>scaled more</strong> than encryption—we should not over-spend resources on the encryption path.</li>
+                        <li>With this we address <strong>separation of concerns</strong> (different scaling profiles for create vs resolve).</li>
+                        <li>After all the optimisation we can still have <strong>latency on reads</strong>: to find the long URL we may hit the <strong>database again and again</strong>. We can put a <strong>Redis cache</strong> between the decryption servers and the database—request goes to cache first, then the database on a <strong>cache miss</strong>.</li>
+                        <li>Then we do not need to hit the database on every lookup; roughly <strong>~2ms</strong> Redis lookup is often enough.</li>
+                    </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-approach2-separation-redis-cache.png" alt="" width="1024" height="530" decoding="async">
+                        <figcaption></figcaption>
+                    </figure>
+
                     <h3>3. Distributed Unique ID Generation Using Zookeeper</h3>
                     <ul>
                         <li><strong>Zookeeper</strong> as distributed coordination service</li>
