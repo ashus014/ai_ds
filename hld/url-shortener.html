@@ -440,27 +440,6 @@
 
                 <div class="section">
                     <h2>Additional Design Considerations</h2>
-                    <h3>Separation of Concerns</h3>
-                    <ul>
-                        <li>Separate microservices for URL shortening (encryption) and redirection (decryption)</li>
-                        <li>Scale decryption services more than encryption (redirection traffic ~80% of requests)</li>
-                    </ul>
-                    <h3>Caching</h3>
-                    <ul>
-                        <li>Redis cache for redirection lookups; reduces DB latency from ~10ms to ~2ms</li>
-                        <li>Cache TTL matches URL expiration to avoid stale data</li>
-                    </ul>
-                    <h3>Expiration and Cleanup</h3>
-                    <ul>
-                        <li>Store expiration dates in DB and cache</li>
-                        <li>Daily cron job to clean expired URLs from DB and cache</li>
-                    </ul>
-                    <h3>Custom URLs</h3>
-                    <ul>
-                        <li>For a <strong>custom</strong> short key you <strong>do not</strong> run Snowflake, ZooKeeper worker assignment per request, or hash-of-ID shortening—the client’s chosen string <em>is</em> the slug (subject to validation).</li>
-                        <li>After validating length, character set, and <strong>reserved words</strong>, <strong>query the database</strong> to see if that slug already exists.</li>
-                        <li>If it is <strong>taken</strong>, respond with an error (e.g. 409 conflict) telling the user to submit <strong>a different custom URL</strong>; repeat until they supply a free slug, then insert the mapping and return success.</li>
-                    </ul>
                     <h3>HTTP Redirect Status Codes</h3>
                     <ul>
                         <li><strong>301 (Moved Permanently):</strong> Browsers (and many intermediaries) treat this as a <strong>stable</strong> short → long mapping and <strong>cache</strong> it locally. Later clicks on the same short URL may <strong>not hit your decryption tier at all</strong>, which <strong>cuts traffic and cost</strong>—but you lose per-click visibility on those cached hits.</li>
