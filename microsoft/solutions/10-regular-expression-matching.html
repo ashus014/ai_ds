@@ -197,6 +197,11 @@
             font-size: inherit;
             color: inherit;
         }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
         code {
             background: #e8eaf6;
             padding: 2px 6px;
@@ -301,46 +306,46 @@
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-sub" title="Copy solution">Copy all</button>
                                 </div>
                             </div>
-<pre class="code-window-body"><code>class Solution {
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
 
-    public boolean solve(String s, String p) {
-        // 🔹 Base case:
-        // If pattern is empty, string must also be empty
-        if (p.length() == 0) {
-            return s.length() == 0;
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">solve</span>(<span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
+        <span class="sh-comment">// 🔹 Base case:</span>
+        <span class="sh-comment">// If pattern is empty, string must also be empty</span>
+        <span class="sh-kw">if</span> (p.<span class="sh-call">length</span>() == <span class="sh-lit">0</span>) {
+            <span class="sh-kw">return</span> s.<span class="sh-call">length</span>() == <span class="sh-lit">0</span>;
         }
 
-        // 🔹 Check if first character matches
-        boolean firstCharMatched = false;
+        <span class="sh-comment">// 🔹 Check if first character matches</span>
+        <span class="sh-kw">boolean</span> firstCharMatched = <span class="sh-kw">false</span>;
 
-        if (s.length() &gt; 0 &amp;&amp;
-           (p.charAt(0) == s.charAt(0) || p.charAt(0) == '.')) {
-            firstCharMatched = true;
+        <span class="sh-kw">if</span> (s.<span class="sh-call">length</span>() &gt; <span class="sh-lit">0</span> &amp;&amp;
+           (p.<span class="sh-call">charAt</span>(<span class="sh-lit">0</span>) == s.<span class="sh-call">charAt</span>(<span class="sh-lit">0</span>) || p.<span class="sh-call">charAt</span>(<span class="sh-lit">0</span>) == <span class="sh-lit">'.'</span>)) {
+            firstCharMatched = <span class="sh-kw">true</span>;
         }
 
-        // 🔹 Case when next character in pattern is '*'
-        if (p.length() &gt;= 2 &amp;&amp; p.charAt(1) == '*') {
+        <span class="sh-comment">// 🔹 Case when next character in pattern is '*'</span>
+        <span class="sh-kw">if</span> (p.<span class="sh-call">length</span>() &gt;= <span class="sh-lit">2</span> &amp;&amp; p.<span class="sh-call">charAt</span>(<span class="sh-lit">1</span>) == <span class="sh-lit">'*'</span>) {
 
-            // ❌ NOT TAKE:
-            // Skip "x*" → move pattern by 2
-            boolean notTake = solve(s, p.substring(2));
+            <span class="sh-comment">// ❌ NOT TAKE:</span>
+            <span class="sh-comment">// Skip "x*" → move pattern by 2</span>
+            <span class="sh-kw">boolean</span> notTake = <span class="sh-call">solve</span>(s, p.<span class="sh-call">substring</span>(<span class="sh-lit">2</span>));
 
-            // ✅ TAKE:
-            // If current char matches, consume 1 char from string
-            // and stay on same pattern (because '*' can repeat)
-            boolean take = firstCharMatched &amp;&amp; solve(s.substring(1), p);
+            <span class="sh-comment">// ✅ TAKE:</span>
+            <span class="sh-comment">// If current char matches, consume 1 char from string</span>
+            <span class="sh-comment">// and stay on same pattern (because '*' can repeat)</span>
+            <span class="sh-kw">boolean</span> take = firstCharMatched &amp;&amp; <span class="sh-call">solve</span>(s.<span class="sh-call">substring</span>(<span class="sh-lit">1</span>), p);
 
-            return notTake || take;
+            <span class="sh-kw">return</span> notTake || take;
         }
 
-        // 🔹 Normal case (no '*'):
-        // If current char matches → move both forward
-        return firstCharMatched &amp;&amp;
-               solve(s.substring(1), p.substring(1));
+        <span class="sh-comment">// 🔹 Normal case (no '*'):</span>
+        <span class="sh-comment">// If current char matches → move both forward</span>
+        <span class="sh-kw">return</span> firstCharMatched &amp;&amp;
+               <span class="sh-call">solve</span>(s.<span class="sh-call">substring</span>(<span class="sh-lit">1</span>), p.<span class="sh-call">substring</span>(<span class="sh-lit">1</span>));
     }
 
-    public boolean isMatch(String s, String p) {
-        return solve(s, p);
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">isMatch</span>(<span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(s, p);
     }
 }</code></pre>
                         </div>
@@ -397,41 +402,41 @@
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-idx" title="Copy solution">Copy all</button>
                                 </div>
                             </div>
-<pre class="code-window-body"><code>class Solution {
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
 
-    public boolean solve(int i, int j, String s, String p) {
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">solve</span>(<span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j, <span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
 
-        // 🔹 If pattern finished → string must also finish
-        if (j == p.length()) {
-            return i == s.length();
+        <span class="sh-comment">// 🔹 If pattern finished → string must also finish</span>
+        <span class="sh-kw">if</span> (j == p.<span class="sh-call">length</span>()) {
+            <span class="sh-kw">return</span> i == s.<span class="sh-call">length</span>();
         }
 
-        // 🔹 Check if current chars match
-        boolean firstCharMatched = false;
+        <span class="sh-comment">// 🔹 Check if current chars match</span>
+        <span class="sh-kw">boolean</span> firstCharMatched = <span class="sh-kw">false</span>;
 
-        if (i &lt; s.length() &amp;&amp;
-           (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')) {
-            firstCharMatched = true;
+        <span class="sh-kw">if</span> (i &lt; s.<span class="sh-call">length</span>() &amp;&amp;
+           (s.<span class="sh-call">charAt</span>(i) == p.<span class="sh-call">charAt</span>(j) || p.<span class="sh-call">charAt</span>(j) == <span class="sh-lit">'.'</span>)) {
+            firstCharMatched = <span class="sh-kw">true</span>;
         }
 
-        // 🔹 If next char is '*'
-        if (j + 1 &lt; p.length() &amp;&amp; p.charAt(j + 1) == '*') {
+        <span class="sh-comment">// 🔹 If next char is '*'</span>
+        <span class="sh-kw">if</span> (j + <span class="sh-lit">1</span> &lt; p.<span class="sh-call">length</span>() &amp;&amp; p.<span class="sh-call">charAt</span>(j + <span class="sh-lit">1</span>) == <span class="sh-lit">'*'</span>) {
 
-            // ❌ NOT TAKE → skip "x*"
-            boolean notTake = solve(i, j + 2, s, p);
+            <span class="sh-comment">// ❌ NOT TAKE → skip "x*"</span>
+            <span class="sh-kw">boolean</span> notTake = <span class="sh-call">solve</span>(i, j + <span class="sh-lit">2</span>, s, p);
 
-            // ✅ TAKE → consume one char from s, stay on same pattern
-            boolean take = firstCharMatched &amp;&amp; solve(i + 1, j, s, p);
+            <span class="sh-comment">// ✅ TAKE → consume one char from s, stay on same pattern</span>
+            <span class="sh-kw">boolean</span> take = firstCharMatched &amp;&amp; <span class="sh-call">solve</span>(i + <span class="sh-lit">1</span>, j, s, p);
 
-            return notTake || take;
+            <span class="sh-kw">return</span> notTake || take;
         }
 
-        // 🔹 Normal match → move both pointers
-        return firstCharMatched &amp;&amp; solve(i + 1, j + 1, s, p);
+        <span class="sh-comment">// 🔹 Normal match → move both pointers</span>
+        <span class="sh-kw">return</span> firstCharMatched &amp;&amp; <span class="sh-call">solve</span>(i + <span class="sh-lit">1</span>, j + <span class="sh-lit">1</span>, s, p);
     }
 
-    public boolean isMatch(String s, String p) {
-        return solve(0, 0, s, p);
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">isMatch</span>(<span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(<span class="sh-lit">0</span>, <span class="sh-lit">0</span>, s, p);
     }
 }</code></pre>
                         </div>
@@ -499,52 +504,52 @@
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-dp" title="Copy solution">Copy all</button>
                                 </div>
                             </div>
-<pre class="code-window-body"><code>class Solution {
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
 
-    Boolean[][] dp;
+    <span class="sh-type">Boolean</span>[][] dp;
 
-    boolean solve(int i, int j, String s, String p) {
+    <span class="sh-kw">boolean</span> <span class="sh-call">solve</span>(<span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j, <span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
 
-        // 🔹 check cache
-        if (dp[i][j] != null) {
-            return dp[i][j];
+        <span class="sh-comment">// 🔹 check cache</span>
+        <span class="sh-kw">if</span> (dp[i][j] != <span class="sh-kw">null</span>) {
+            <span class="sh-kw">return</span> dp[i][j];
         }
 
-        // 🔹 base case
-        if (j == p.length()) {
-            return dp[i][j] = (i == s.length());
+        <span class="sh-comment">// 🔹 base case</span>
+        <span class="sh-kw">if</span> (j == p.<span class="sh-call">length</span>()) {
+            <span class="sh-kw">return</span> dp[i][j] = (i == s.<span class="sh-call">length</span>());
         }
 
-        boolean first_char_matched = false;
+        <span class="sh-kw">boolean</span> first_char_matched = <span class="sh-kw">false</span>;
 
-        if (i &lt; s.length() &amp;&amp;
-           (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')) {
-            first_char_matched = true;
+        <span class="sh-kw">if</span> (i &lt; s.<span class="sh-call">length</span>() &amp;&amp;
+           (p.<span class="sh-call">charAt</span>(j) == s.<span class="sh-call">charAt</span>(i) || p.<span class="sh-call">charAt</span>(j) == <span class="sh-lit">'.'</span>)) {
+            first_char_matched = <span class="sh-kw">true</span>;
         }
 
-        boolean ans;
+        <span class="sh-kw">boolean</span> ans;
 
-        // 🔹 '*' case
-        if (j + 1 &lt; p.length() &amp;&amp; p.charAt(j + 1) == '*') {
+        <span class="sh-comment">// 🔹 '*' case</span>
+        <span class="sh-kw">if</span> (j + <span class="sh-lit">1</span> &lt; p.<span class="sh-call">length</span>() &amp;&amp; p.<span class="sh-call">charAt</span>(j + <span class="sh-lit">1</span>) == <span class="sh-lit">'*'</span>) {
 
-            boolean not_take = solve(i, j + 2, s, p);
-            boolean take = first_char_matched &amp;&amp; solve(i + 1, j, s, p);
+            <span class="sh-kw">boolean</span> not_take = <span class="sh-call">solve</span>(i, j + <span class="sh-lit">2</span>, s, p);
+            <span class="sh-kw">boolean</span> take = first_char_matched &amp;&amp; <span class="sh-call">solve</span>(i + <span class="sh-lit">1</span>, j, s, p);
 
             ans = not_take || take;
-        } else {
-            ans = first_char_matched &amp;&amp; solve(i + 1, j + 1, s, p);
+        } <span class="sh-kw">else</span> {
+            ans = first_char_matched &amp;&amp; <span class="sh-call">solve</span>(i + <span class="sh-lit">1</span>, j + <span class="sh-lit">1</span>, s, p);
         }
 
-        // 🔹 store result
-        return dp[i][j] = ans;
+        <span class="sh-comment">// 🔹 store result</span>
+        <span class="sh-kw">return</span> dp[i][j] = ans;
     }
 
-    public boolean isMatch(String s, String p) {
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">isMatch</span>(<span class="sh-type">String</span> s, <span class="sh-type">String</span> p) {
 
-        // size +1 because i and j can reach end
-        dp = new Boolean[s.length() + 1][p.length() + 1];
+        <span class="sh-comment">// size +1 because i and j can reach end</span>
+        dp = <span class="sh-kw">new</span> <span class="sh-type">Boolean</span>[s.<span class="sh-call">length</span>() + <span class="sh-lit">1</span>][p.<span class="sh-call">length</span>() + <span class="sh-lit">1</span>];
 
-        return solve(0, 0, s, p);
+        <span class="sh-kw">return</span> <span class="sh-call">solve</span>(<span class="sh-lit">0</span>, <span class="sh-lit">0</span>, s, p);
     }
 }</code></pre>
                         </div>
