@@ -156,6 +156,20 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        pre.api-sample {
+            background: #1e1e2e;
+            color: #e4e4e7;
+            padding: 16px 18px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.82em;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 14px 0 0 0;
+            white-space: pre;
+            border: 1px solid #2d2d44;
+        }
+        pre.api-sample + pre.api-sample { margin-top: 12px; }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -181,7 +195,7 @@
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>A comprehensive guide to designing a music streaming platform akin to Spotify, focusing on system design principles. The design process is broken down into seven clear steps: requirements and capacity planning, architecture design, API and database design, scalability considerations, and insights into skillset for senior engineering roles.</p>
+                    <p>A comprehensive guide to designing a music streaming platform akin to Spotify, focusing on system design principles. The design process is broken down into clear steps: requirements and capacity planning, high-level architecture, workflows, API design, data storage design, and scalability considerations.</p>
                 </div>
 
                 <div class="section">
@@ -253,16 +267,16 @@
                     <h3>Read workflow</h3>
                     <p>When the user plays a song:</p>
                     <ul>
-                        <li><strong>User hits play</strong> → App sends <code>GET /songs/{id}</code>.</li>
+                        <li><strong>User hits play</strong> → App sends <code>GET /v1/songs/{id}</code> (metadata) and <code>GET /v1/songs/{id}/stream</code> (signed URL).</li>
                         <li><strong>API authentication</strong> → API server validates the JWT.</li>
                         <li><strong>Metadata lookup</strong> → API server queries the SQL database for song details (metadata).</li>
                         <li><strong>URL generation</strong> → API server creates a signed URL for blob storage access.</li>
                         <li><strong>Audio streaming</strong> → App fetches chunks of audio (HTTP range requests) directly from blob storage using adaptive streaming (HLS or DASH), enabling smooth playback, automatic bitrate switching, and broad device support.</li>
-                        <li><strong>Analytics</strong> → App periodically calls <code>POST /songs/{id}/play</code> to track plays and listening time.</li>
+                        <li><strong>Analytics</strong> → App periodically calls <code>POST /v1/songs/{id}/play</code> to track plays and listening time.</li>
                     </ul>
                     <figure class="diagram-figure">
                         <img src="assets/spotify-read-workflow-sequence.png" alt="Sequence diagram: play flow from user and mobile app through load balancer and API server to SQL and blob storage, including parallel streaming and analytics">
-                        <figcaption>Read workflow (sequence): JWT validation, metadata and signed URL, then parallel paths — range requests to blob storage for playback and <code>POST /songs/{id}/play</code> for analytics.</figcaption>
+                        <figcaption>Read workflow (sequence): JWT validation, metadata and signed URL, then parallel paths — range requests to blob storage for playback and <code>POST /v1/songs/{id}/play</code> for analytics.</figcaption>
                     </figure>
 
                     <h3>Write workflow (upload song)</h3>
@@ -271,7 +285,7 @@
                             <tr><th>Step</th><th>Description</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>Artist uploads via <code>POST /songs</code> with metadata</td></tr>
+                            <tr><td>1</td><td>Artist uploads via <code>POST /v1/songs</code> with metadata</td></tr>
                             <tr><td>2</td><td>Load balancer routes the request</td></tr>
                             <tr><td>3</td><td>Validate file size and format</td></tr>
                             <tr><td>4</td><td>Store audio file in blob storage</td></tr>
@@ -284,25 +298,56 @@
                 </div>
 
                 <div class="section">
-                    <h2>4. API Design Highlights</h2>
+                    <h2>4. API Design</h2>
+                    <p>Same idea as the URL shortener notes: once <strong>functional requirements</strong> are clear, sketching the API is usually easy — each main job maps almost <strong>one-to-one</strong> to an operation (search, get song, play, playlist, likes, follow, upload).</p>
+
+                    <h3>GET — browse &amp; search</h3>
                     <table>
                         <thead>
-                            <tr><th>Endpoint</th><th>Purpose</th></tr>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>GET /search?query=&type=&limit=&offset=</td><td>Search with type filtering and pagination</td></tr>
-                            <tr><td>GET /songs/trending</td><td>Trending songs (optional filters)</td></tr>
-                            <tr><td>GET /artists/{id}/songs</td><td>Artist's songs</td></tr>
-                            <tr><td>GET /songs/{id}</td><td>Song metadata and streaming URL</td></tr>
-                            <tr><td>POST /plays</td><td>Create playlist (name, visibility)</td></tr>
-                            <tr><td>PUT /plays/{id}/songs</td><td>Add/remove songs (song IDs, position)</td></tr>
-                            <tr><td>GET /plays/{id}</td><td>Get playlist details (optionally with songs)</td></tr>
-                            <tr><td>GET /users/me/plays</td><td>Fetch user playlists</td></tr>
-                            <tr><td>GET /users/me/likes</td><td>Fetch liked songs</td></tr>
-                            <tr><td>POST /users/me/follow</td><td>Follow artist (artist ID)</td></tr>
+                            <tr>
+                                <td><code>GET /v1/search?query=&amp;type=&amp;limit=&amp;offset=</code></td>
+                                <td>—</td>
+                                <td>matching songs / artists / albums (paginated)</td>
+                                <td>Search with type filter and pagination</td>
+                            </tr>
+                            <tr>
+                                <td><code>GET /v1/songs/trending</code></td>
+                                <td>—</td>
+                                <td>list of songs</td>
+                                <td>Trending catalog slice</td>
+                            </tr>
+                            <tr>
+                                <td><code>GET /v1/artists/{artistId}/songs</code></td>
+                                <td>—</td>
+                                <td>list of songs</td>
+                                <td>All songs for an artist</td>
+                            </tr>
                         </tbody>
                     </table>
-                    <h3>GET — resolve to stream URL</h3>
+                    <pre class="api-sample">GET /v1/search?query=...&amp;type=song&amp;limit=20&amp;offset=0
+GET /v1/songs/trending
+GET /v1/artists/{artistId}/songs</pre>
+
+                    <h3>GET — song metadata</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/songs/{songId}</code></td>
+                                <td>—</td>
+                                <td>title, artist, duration, album, … (JSON)</td>
+                                <td>Details for player UI (not the raw audio bytes)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/songs/{songId}  ->  song metadata (JSON)</pre>
+
+                    <h3>GET — stream URL (play)</h3>
                     <table>
                         <thead>
                             <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
@@ -311,17 +356,170 @@
                             <tr>
                                 <td><code>GET /v1/songs/{songId}/stream</code></td>
                                 <td>—</td>
-                                <td><code>streamURL</code> (e.g. <code>302</code> + <code>Location</code>)</td>
-                                <td>Redirect client to playable audio URL</td>
+                                <td><code>streamURL</code> (e.g. <code>301</code> or <code>302</code> + <code>Location</code>, or same URL in JSON)</td>
+                                <td>Give client a signed URL to pull audio from blob / CDN</td>
                             </tr>
                         </tbody>
                     </table>
-                    <pre>GET: /v1/songs/{songId}/stream  ->  streamURL</pre>
-                    <p style="margin-top: 14px; font-weight: 600; color: #4a3a6b;">Resolve ("play") path</p>
+                    <pre class="api-sample">GET: /v1/songs/{songId}/stream  ->  streamURL</pre>
+                    <p style="margin-top: 14px; font-weight: 600; color: #4a3a6b;">Resolve (“play”) path</p>
                     <ul>
-                        <li>It is simple: if the song is found (cache first if present, else database), API returns <strong>302</strong> with signed audio URL in <code>Location</code> (or returns that URL in response JSON). App then starts playback from storage/CDN.</li>
+                        <li>It is <strong>simple</strong>: if the song is found (cache first if you have Redis, else database), you return <strong>301</strong> or <strong>302</strong> with the signed audio URL in <code>Location</code>, or return that URL in JSON — app then streams from storage/CDN.</li>
+                        <li><strong>301 — permanent redirect:</strong> browser may cache the mapping, so later play calls may <strong>not hit your API</strong> every time — less traffic, less per-play logging.</li>
+                        <li><strong>302 — temporary redirect:</strong> request usually <strong>comes to your server</strong> again — more traffic, better analytics.</li>
+                        <li><strong>Discuss with interviewer:</strong> pick <strong>301</strong> if you want fewer backend calls; pick <strong>302</strong> if you want play logs, ML signals, premium dashboard stuff.</li>
                     </ul>
-                    <p>RESTful conventions with plural resource names and consistent query parameters.</p>
+
+                    <h3>POST — record play (analytics)</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/songs/{songId}/play</code></td>
+                                <td><code>listenedSeconds</code> (optional), <code>sessionId</code> (optional)</td>
+                                <td><code>ok</code></td>
+                                <td>Track plays / listening time (can be async from the app)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/songs/{songId}/play
+
+{
+  listenedSeconds?
+  sessionId?
+}</pre>
+
+                    <h3>POST — upload song (artist)</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/songs</code></td>
+                                <td>multipart: audio file + metadata (title, artistId, albumId, …)</td>
+                                <td><code>songId</code> + stored paths</td>
+                                <td>Artist uploads audio; API writes blob + SQL row</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/songs  ->  songId
+
+multipart: file + metadata fields</pre>
+
+                    <h3>POST — create playlist</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/playlists</code></td>
+                                <td><code>name</code> (required), <code>visibility</code> (optional: public/private)</td>
+                                <td><code>playlistId</code></td>
+                                <td>Create empty playlist for the logged-in user</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/playlists  ->  playlistId
+
+{
+  name
+  visibility?
+}</pre>
+
+                    <h3>GET — playlist by id</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/playlists/{playlistId}</code></td>
+                                <td>—</td>
+                                <td>playlist + song ids (optional <code>?include=songs</code>)</td>
+                                <td>Read one playlist</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/playlists/{playlistId}  ->  playlist JSON</pre>
+
+                    <h3>PUT — playlist songs</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>PUT /v1/playlists/{playlistId}/songs</code></td>
+                                <td><code>songIds</code>, <code>positions</code> (add / remove / reorder)</td>
+                                <td>updated playlist</td>
+                                <td>Change which songs are in the playlist and order</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">PUT /v1/playlists/{playlistId}/songs
+
+{
+  songIds
+  positions
+}</pre>
+
+                    <h3>GET — my playlists</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/users/me/playlists</code></td>
+                                <td>—</td>
+                                <td>list of playlists</td>
+                                <td>All playlists owned by the current user</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/users/me/playlists  ->  playlist list</pre>
+
+                    <h3>GET — liked songs</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>GET /v1/users/me/likes</code></td>
+                                <td>—</td>
+                                <td>list of songs</td>
+                                <td>Songs the user liked</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">GET: /v1/users/me/likes  ->  liked songs</pre>
+
+                    <h3>POST — follow artist</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Endpoint</th><th>Request body</th><th>Returns</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>POST /v1/users/me/follow</code></td>
+                                <td><code>artistId</code> (required)</td>
+                                <td><code>ok</code></td>
+                                <td>Follow an artist for feed / recommendations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="api-sample">POST /v1/users/me/follow
+
+{
+  artistId
+}</pre>
+
+                    <p>Plural resource names (<code>/songs</code>, <code>/playlists</code>, <code>/artists</code>), <code>/v1/</code> version prefix, and <code>Authorization: Bearer …</code> (JWT) on protected routes — same style as typical REST notes.</p>
                 </div>
 
                 <div class="section">
@@ -362,18 +560,6 @@
                 </div>
 
                 <div class="section">
-                    <h2>7. Skillset to Become a Senior Engineer</h2>
-                    <p><strong>System design as a pyramid:</strong></p>
-                    <ul>
-                        <li><strong>Base:</strong> Planning and requirement analysis (blueprinting)</li>
-                        <li><strong>Middle:</strong> Technical stack selection (database, cache, storage)</li>
-                        <li><strong>Top:</strong> Coding/implementation (smallest, least brainpower-intensive)</li>
-                    </ul>
-                    <p><strong>Senior engineers excel in:</strong> Understanding requirements, capacity estimation, choosing architecture and tech, thinking before coding.</p>
-                    <p><strong>Common pitfall:</strong> Mid-level developers often start coding without a clear design or plan.</p>
-                </div>
-
-                <div class="section">
                     <h2>Key Insights</h2>
                     <ul>
                         <li>Audio streaming dominates storage and bandwidth costs — efficient object storage and CDN are critical</li>
@@ -382,7 +568,6 @@
                         <li>Signed URLs provide secure access to audio files</li>
                         <li>Caching and CDN invalidation crucial for performance and data freshness</li>
                         <li>Scaling: read-write splitting, sharding, geographic replication</li>
-                        <li>Senior skills emphasize planning and problem understanding over coding</li>
                     </ul>
                 </div>
 
