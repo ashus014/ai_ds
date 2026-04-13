@@ -403,6 +403,7 @@
                         <li><strong>On each create request,</strong> the microservice assembles <strong>sign bit + timestamp at request time + worker ID from ZooKeeper registration + local counter</strong> → a <strong>Snowflake ID</strong> unique across workers without calling ZooKeeper again.</li>
                         <li><strong>What if ZooKeeper fails?</strong> ZooKeeper is used at <strong>server startup / registration</strong> for the worker ID—not on every shorten—so the steady-state create path does not depend on ZK being up for every request (new instances or re-registration still need a healthy ensemble).</li>
                         <li><strong>Then reuse Approach 1 style encoding.</strong> Hash the 64-bit Snowflake (e.g. <strong>MD5</strong> or <strong>SHA-1</strong>) and take a <strong>short prefix</strong> (for example the first six characters of the hex digest, mapped to your allowed alphabet) as the public slug. The token is derived from the <strong>Snowflake</strong>, not from re-hashing the whole long URL as the primary key source—so the chance of a accidental collision on that path is <strong>extremely low</strong>.</li>
+                        <li><strong>Custom short URL (user-chosen slug).</strong> Skip the Snowflake path entirely: take the slug the user wants (after format / reserved-word checks), <strong>look it up in the database</strong>. If it is <strong>already in use</strong>, return a conflict and ask them to pick <strong>another</strong> custom URL; when it is free, insert and return—same “check DB, retry on clash” style as Approach 1, not distributed ID generation.</li>
                     </ul>
 
                     <ul>
@@ -451,7 +452,11 @@
                         <li>Daily cron job to clean expired URLs from DB and cache</li>
                     </ul>
                     <h3>Custom URLs</h3>
-                    <p>When custom slugs are supported, check uniqueness in the DB (and reserved-word policy) before accepting a user-defined short key.</p>
+                    <ul>
+                        <li>For a <strong>custom</strong> short key you <strong>do not</strong> run Snowflake, ZooKeeper worker assignment per request, or hash-of-ID shortening—the client’s chosen string <em>is</em> the slug (subject to validation).</li>
+                        <li>After validating length, character set, and <strong>reserved words</strong>, <strong>query the database</strong> to see if that slug already exists.</li>
+                        <li>If it is <strong>taken</strong>, respond with an error (e.g. 409 conflict) telling the user to submit <strong>a different custom URL</strong>; repeat until they supply a free slug, then insert the mapping and return success.</li>
+                    </ul>
                     <h3>HTTP Redirect Status Codes</h3>
                     <ul>
                         <li><strong>301 (Permanent Redirect):</strong> Browser caches mapping; reduces server load but loses tracking</li>
