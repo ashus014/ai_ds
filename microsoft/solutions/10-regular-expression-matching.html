@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>10 — Regular Expression Matching — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header a {
+            color: #fef3c7;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+        .header a:hover { color: #fff; }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>10. Regular Expression Matching</h1>
+                <p>Match an input string <code>s</code> against a pattern <code>p</code> with <code>.</code> (any single char) and <code>*</code> (zero or more of the preceding element). Try “skip <code>x*</code>” vs “consume one char and repeat” when the next pattern char is <code>*</code>. <a href="https://leetcode.com/problems/regular-expression-matching/description/?envType=problem-list-v2&amp;envId=55vr69d7" target="_blank" rel="noopener noreferrer">Problem on LeetCode →</a></p>
+                <span class="meta">Microsoft · Hard — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> If the next pattern character is <code>*</code>, either skip the <code>x*</code> pair (<code>notTake</code>) or, if the current chars match, consume one character from <code>s</code> and stay on the same pattern index (<code>take</code>). Otherwise require a single-character match and advance both pointers.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>✅ Recursive — substring</h3>
+                    <textarea id="copy-buffer-sol-sub" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+
+    public boolean solve(String s, String p) {
+        // 🔹 Base case:
+        // If pattern is empty, string must also be empty
+        if (p.length() == 0) {
+            return s.length() == 0;
+        }
+
+        // 🔹 Check if first character matches
+        boolean firstCharMatched = false;
+
+        if (s.length() > 0 &&
+           (p.charAt(0) == s.charAt(0) || p.charAt(0) == '.')) {
+            firstCharMatched = true;
+        }
+
+        // 🔹 Case when next character in pattern is '*'
+        if (p.length() >= 2 && p.charAt(1) == '*') {
+
+            // ❌ NOT TAKE:
+            // Skip "x*" → move pattern by 2
+            boolean notTake = solve(s, p.substring(2));
+
+            // ✅ TAKE:
+            // If current char matches, consume 1 char from string
+            // and stay on same pattern (because '*' can repeat)
+            boolean take = firstCharMatched && solve(s.substring(1), p);
+
+            return notTake || take;
+        }
+
+        // 🔹 Normal case (no '*'):
+        // If current char matches → move both forward
+        return firstCharMatched &&
+               solve(s.substring(1), p.substring(1));
+    }
+
+    public boolean isMatch(String s, String p) {
+        return solve(s, p);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — substring">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — substring</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-sub" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code>class Solution {
+
+    public boolean solve(String s, String p) {
+        // 🔹 Base case:
+        // If pattern is empty, string must also be empty
+        if (p.length() == 0) {
+            return s.length() == 0;
+        }
+
+        // 🔹 Check if first character matches
+        boolean firstCharMatched = false;
+
+        if (s.length() &gt; 0 &amp;&amp;
+           (p.charAt(0) == s.charAt(0) || p.charAt(0) == '.')) {
+            firstCharMatched = true;
+        }
+
+        // 🔹 Case when next character in pattern is '*'
+        if (p.length() &gt;= 2 &amp;&amp; p.charAt(1) == '*') {
+
+            // ❌ NOT TAKE:
+            // Skip "x*" → move pattern by 2
+            boolean notTake = solve(s, p.substring(2));
+
+            // ✅ TAKE:
+            // If current char matches, consume 1 char from string
+            // and stay on same pattern (because '*' can repeat)
+            boolean take = firstCharMatched &amp;&amp; solve(s.substring(1), p);
+
+            return notTake || take;
+        }
+
+        // 🔹 Normal case (no '*'):
+        // If current char matches → move both forward
+        return firstCharMatched &amp;&amp;
+               solve(s.substring(1), p.substring(1));
+    }
+
+    public boolean isMatch(String s, String p) {
+        return solve(s, p);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Recursive — indices (no substring)</h3>
+                    <textarea id="copy-buffer-sol-idx" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+
+    public boolean solve(int i, int j, String s, String p) {
+
+        // 🔹 If pattern finished → string must also finish
+        if (j == p.length()) {
+            return i == s.length();
+        }
+
+        // 🔹 Check if current chars match
+        boolean firstCharMatched = false;
+
+        if (i < s.length() &&
+           (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')) {
+            firstCharMatched = true;
+        }
+
+        // 🔹 If next char is '*'
+        if (j + 1 < p.length() && p.charAt(j + 1) == '*') {
+
+            // ❌ NOT TAKE → skip "x*"
+            boolean notTake = solve(i, j + 2, s, p);
+
+            // ✅ TAKE → consume one char from s, stay on same pattern
+            boolean take = firstCharMatched && solve(i + 1, j, s, p);
+
+            return notTake || take;
+        }
+
+        // 🔹 Normal match → move both pointers
+        return firstCharMatched && solve(i + 1, j + 1, s, p);
+    }
+
+    public boolean isMatch(String s, String p) {
+        return solve(0, 0, s, p);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — indices">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — indices</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-idx" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code>class Solution {
+
+    public boolean solve(int i, int j, String s, String p) {
+
+        // 🔹 If pattern finished → string must also finish
+        if (j == p.length()) {
+            return i == s.length();
+        }
+
+        // 🔹 Check if current chars match
+        boolean firstCharMatched = false;
+
+        if (i &lt; s.length() &amp;&amp;
+           (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')) {
+            firstCharMatched = true;
+        }
+
+        // 🔹 If next char is '*'
+        if (j + 1 &lt; p.length() &amp;&amp; p.charAt(j + 1) == '*') {
+
+            // ❌ NOT TAKE → skip "x*"
+            boolean notTake = solve(i, j + 2, s, p);
+
+            // ✅ TAKE → consume one char from s, stay on same pattern
+            boolean take = firstCharMatched &amp;&amp; solve(i + 1, j, s, p);
+
+            return notTake || take;
+        }
+
+        // 🔹 Normal match → move both pointers
+        return firstCharMatched &amp;&amp; solve(i + 1, j + 1, s, p);
+    }
+
+    public boolean isMatch(String s, String p) {
+        return solve(0, 0, s, p);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Memoised (same recurrence)</h3>
+                    <textarea id="copy-buffer-sol-dp" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+
+    Boolean[][] dp;
+
+    boolean solve(int i, int j, String s, String p) {
+
+        // 🔹 check cache
+        if (dp[i][j] != null) {
+            return dp[i][j];
+        }
+
+        // 🔹 base case
+        if (j == p.length()) {
+            return dp[i][j] = (i == s.length());
+        }
+
+        boolean first_char_matched = false;
+
+        if (i < s.length() &&
+           (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')) {
+            first_char_matched = true;
+        }
+
+        boolean ans;
+
+        // 🔹 '*' case
+        if (j + 1 < p.length() && p.charAt(j + 1) == '*') {
+
+            boolean not_take = solve(i, j + 2, s, p);
+            boolean take = first_char_matched && solve(i + 1, j, s, p);
+
+            ans = not_take || take;
+        } else {
+            ans = first_char_matched && solve(i + 1, j + 1, s, p);
+        }
+
+        // 🔹 store result
+        return dp[i][j] = ans;
+    }
+
+    public boolean isMatch(String s, String p) {
+
+        // size +1 because i and j can reach end
+        dp = new Boolean[s.length() + 1][p.length() + 1];
+
+        return solve(0, 0, s, p);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — memo">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — memo</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol-dp" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code>class Solution {
+
+    Boolean[][] dp;
+
+    boolean solve(int i, int j, String s, String p) {
+
+        // 🔹 check cache
+        if (dp[i][j] != null) {
+            return dp[i][j];
+        }
+
+        // 🔹 base case
+        if (j == p.length()) {
+            return dp[i][j] = (i == s.length());
+        }
+
+        boolean first_char_matched = false;
+
+        if (i &lt; s.length() &amp;&amp;
+           (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')) {
+            first_char_matched = true;
+        }
+
+        boolean ans;
+
+        // 🔹 '*' case
+        if (j + 1 &lt; p.length() &amp;&amp; p.charAt(j + 1) == '*') {
+
+            boolean not_take = solve(i, j + 2, s, p);
+            boolean take = first_char_matched &amp;&amp; solve(i + 1, j, s, p);
+
+            ans = not_take || take;
+        } else {
+            ans = first_char_matched &amp;&amp; solve(i + 1, j + 1, s, p);
+        }
+
+        // 🔹 store result
+        return dp[i][j] = ans;
+    }
+
+    public boolean isMatch(String s, String p) {
+
+        // size +1 because i and j can reach end
+        dp = new Boolean[s.length() + 1][p.length() + 1];
+
+        return solve(0, 0, s, p);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="callout" role="note">
+                        <strong>Substring DFS</strong> is simplest to read but allocates new strings. <strong>Index + memo</strong> is what you want for interviews: <code>O(m n)</code> states, <code>O(m n)</code> time.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Substring recursion: exponential time in the worst case without memo; extra space from substring copies.</li>
+                        <li>Memoised (<code>i</code>, <code>j</code>): time <code>O(m n)</code>, space <code>O(m n)</code> for <code>|s| = m</code>, <code>|p| = n</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
