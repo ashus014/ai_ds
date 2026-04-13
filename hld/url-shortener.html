@@ -374,7 +374,7 @@
                         <figcaption></figcaption>
                     </figure>
 
-                    <h3>3. Distributed Unique ID Generation Using Zookeeper</h3>
+                    <h3>3. Approach 3: Distributed unique IDs with ZooKeeper</h3>
                     <ul>
                         <li><strong>Apache ZooKeeper</strong> is an open-source <strong>distributed coordination service</strong> for distributed applications.</li>
                         <li>It provides <strong>centralized</strong> building blocks for <strong>configuration management</strong>, <strong>naming</strong>, <strong>synchronization</strong>, and <strong>group services</strong>, so teams can manage large clusters with less ad-hoc glue code.</li>
@@ -389,20 +389,36 @@
                         <li style="padding-left: 8px; margin-bottom: 10px;"><strong>Persistent node</strong> — as the name suggests, it is <strong>not tied to the client’s lifetime</strong>: it is <strong>not automatically removed</strong> from ZooKeeper when an application stops or disconnects. It stays in the namespace until an operator or process <strong>explicitly deletes</strong> that path.</li>
                         <li style="padding-left: 8px;"><strong>Ephemeral node</strong> — tied to a <strong>session</strong> between the ZooKeeper client (your app) and the ZooKeeper servers. The client must keep the session alive with periodic <strong>heartbeats</strong> (pings / keep-alives). If ZooKeeper decides the heartbeat has <strong>timed out</strong>—for example the application crashed or stopped sending traffic—it treats the session as dead and <strong>removes all ephemeral znodes</strong> that session created (they disappear from the tree under the relevant paths).</li>
                     </ol>
+
+                    <h4>Approach 3: ZooKeeper — architecture walk-through</h4>
+                    <figure class="diagram-figure">
+                        <img src="assets/url-shortener-approach3-zookeeper-arch.png" alt="URL shortener with load balancer, encryption and decryption servers, ZooKeeper, database, and Redis; path latencies annotated" width="1024" height="535" decoding="async">
+                        <figcaption>Approach 3 sketch: client → LB (e.g. round robin) → encryption / decryption tiers; ZooKeeper for coordination, database for durable mappings, Redis for fast reads (typical ~5ms LB→app, ~10ms DB, ~2ms cache).</figcaption>
+                    </figure>
                     <ul>
-                        <li><strong>In this URL-shortener design:</strong> servers register with ZooKeeper so each instance receives a <strong>unique worker ID</strong> (used below with Snowflake-style IDs).</li>
-                        <li><strong>Snowflake ID generator:</strong> 64-bit ID composed of:
+                        <li><strong>Counter in ZooKeeper (persistent layer).</strong> Any shared “counter” or sequence you keep in ZooKeeper for coordination lives under <strong>persistent</strong> znodes. You do <strong>not</strong> drive it like the per-request <strong>Redis</strong> counter from Approach 2—ZooKeeper is for <strong>registration / IDs / coordination</strong>, not the same hot-path increment pattern as Redis.</li>
+                        <li><strong>Worker ID on registration.</strong> When a server registers with ZooKeeper, ZooKeeper (or your registration recipe on top of it) gives that instance a <strong>unique worker ID</strong>.</li>
+                        <li><strong>One ID per instance.</strong> Three encryption server replicas → three worker IDs, for example <code>123</code>, <code>234</code>, and <code>345</code> (the diagram’s “two instances” idea generalizes: <strong>one worker ID per live instance</strong>).</li>
+                        <li><strong>Snowflake template (64 bits).</strong> To mint a unique numeric ID per request, use a <strong>Snowflake</strong>-shaped 64-bit value: the low <strong>12 bits</strong> come from a <strong>local counter</strong> maintained inside each encryption server (sequence within the same millisecond / same worker), combined with sign, timestamp, and worker ID (see layout below).</li>
+                        <li><strong>On each create request,</strong> the microservice assembles <strong>sign bit + timestamp at request time + worker ID from ZooKeeper registration + local counter</strong> → a <strong>Snowflake ID</strong> unique across workers without calling ZooKeeper again.</li>
+                        <li><strong>What if ZooKeeper fails?</strong> ZooKeeper is used at <strong>server startup / registration</strong> for the worker ID—not on every shorten—so the steady-state create path does not depend on ZK being up for every request (new instances or re-registration still need a healthy ensemble).</li>
+                        <li><strong>Then reuse Approach 1 style encoding.</strong> Hash the 64-bit Snowflake (e.g. <strong>MD5</strong> or <strong>SHA-1</strong>) and take a <strong>short prefix</strong> (for example the first six characters of the hex digest, mapped to your allowed alphabet) as the public slug. The token is derived from the <strong>Snowflake</strong>, not from re-hashing the whole long URL as the primary key source—so the chance of a accidental collision on that path is <strong>extremely low</strong>.</li>
+                    </ul>
+
+                    <ul>
+                        <li><strong>Snowflake ID generator (bit layout):</strong> 64-bit ID composed of:
                             <ul>
                                 <li>1-bit sign</li>
                                 <li>41-bit timestamp</li>
                                 <li>10-bit worker ID (from ZooKeeper)</li>
                                 <li>12-bit local counter</li>
                             </ul>
+                            <figure class="diagram-figure" style="margin-top: 14px;">
+                                <img src="assets/url-shortener-snowflake-id.png" alt="Snowflake 64-bit layout: 1 sign bit, 41 timestamp bits, 10 worker ID bits, 12 sequence bits, with bit-capacity annotations" width="700" height="304" decoding="async">
+                                <figcaption><strong>Snowflake ID</strong> layout (64 bits): reserved sign bit, millisecond timestamp (41 bits ≈ 69 years from a chosen epoch), <strong>worker ID</strong> (10 bits → 1,024 machines; here often assigned via ZooKeeper), and a per-worker per-ms <strong>sequence</strong> (12 bits → 4,096 IDs per millisecond per worker).</figcaption>
+                            </figure>
                         </li>
-                        <li>Snowflake IDs generated locally with guaranteed uniqueness across servers; no cross-server coordination or DB hits</li>
-                        <li>Snowflake ID can be hashed (e.g., MD5) and truncated to produce short URL</li>
-                        <li><strong>Benefits:</strong> No collisions; lowest latency; removes single points of failure</li>
-                        <li>ZooKeeper is contacted <strong>only on server startup</strong> (for registration / worker ID), not on every shorten request.</li>
+                        <li><strong>Benefits:</strong> IDs generated locally with uniqueness across servers (no per-create ZK or DB round-trip for the ID itself); very low collision risk after hashing; ZooKeeper touched on <strong>registration</strong>, not every shorten.</li>
                     </ul>
                 </div>
 
