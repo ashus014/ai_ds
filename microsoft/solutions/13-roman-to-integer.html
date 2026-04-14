@@ -191,6 +191,11 @@
             font-size: inherit;
             color: inherit;
         }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
         code {
             background: #e8eaf6;
             padding: 2px 6px;
@@ -289,41 +294,41 @@
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
                                 </div>
                             </div>
-<pre class="code-window-body"><code>class Solution {
-    public int romanToInt(String s) {
-        int i = 0;
-        int total = 0;
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">romanToInt</span>(<span class="sh-type">String</span> s) {
+        <span class="sh-kw">int</span> i = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> total = <span class="sh-lit">0</span>;
 
-        while (i &lt; s.length()) {
+        <span class="sh-kw">while</span> (i &lt; s.<span class="sh-call">length</span>()) {
 
-            // check 2-character cases first
-            if (i + 1 &lt; s.length()) {
-                String pair = s.substring(i, i + 2);
+            <span class="sh-comment">// check 2-character cases first</span>
+            <span class="sh-kw">if</span> (i + <span class="sh-lit">1</span> &lt; s.<span class="sh-call">length</span>()) {
+                <span class="sh-type">String</span> pair = s.<span class="sh-call">substring</span>(i, i + <span class="sh-lit">2</span>);
 
-                if (pair.equals("IV")) { total += 4; i += 2; continue; }
-                if (pair.equals("IX")) { total += 9; i += 2; continue; }
-                if (pair.equals("XL")) { total += 40; i += 2; continue; }
-                if (pair.equals("XC")) { total += 90; i += 2; continue; }
-                if (pair.equals("CD")) { total += 400; i += 2; continue; }
-                if (pair.equals("CM")) { total += 900; i += 2; continue; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"IV"</span>)) { total += <span class="sh-lit">4</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"IX"</span>)) { total += <span class="sh-lit">9</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"XL"</span>)) { total += <span class="sh-lit">40</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"XC"</span>)) { total += <span class="sh-lit">90</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"CD"</span>)) { total += <span class="sh-lit">400</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
+                <span class="sh-kw">if</span> (pair.<span class="sh-call">equals</span>(<span class="sh-lit">"CM"</span>)) { total += <span class="sh-lit">900</span>; i += <span class="sh-lit">2</span>; <span class="sh-kw">continue</span>; }
             }
 
-            // otherwise single character
-            total += getValue(s.charAt(i));
+            <span class="sh-comment">// otherwise single character</span>
+            total += <span class="sh-call">getValue</span>(s.<span class="sh-call">charAt</span>(i));
             i++;
         }
 
-        return total;
+        <span class="sh-kw">return</span> total;
     }
 
-    private int getValue(char c) {
-        if (c == 'I') return 1;
-        if (c == 'V') return 5;
-        if (c == 'X') return 10;
-        if (c == 'L') return 50;
-        if (c == 'C') return 100;
-        if (c == 'D') return 500;
-        return 1000;
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">getValue</span>(<span class="sh-kw">char</span> c) {
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'I'</span>) <span class="sh-kw">return</span> <span class="sh-lit">1</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'V'</span>) <span class="sh-kw">return</span> <span class="sh-lit">5</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'X'</span>) <span class="sh-kw">return</span> <span class="sh-lit">10</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'L'</span>) <span class="sh-kw">return</span> <span class="sh-lit">50</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'C'</span>) <span class="sh-kw">return</span> <span class="sh-lit">100</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'D'</span>) <span class="sh-kw">return</span> <span class="sh-lit">500</span>;
+        <span class="sh-kw">return</span> <span class="sh-lit">1000</span>;
     }
 }</code></pre>
                         </div>
