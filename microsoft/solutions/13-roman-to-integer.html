@@ -243,8 +243,84 @@
 
                 <div class="section">
                     <h2>Answers</h2>
-                    <h3>✅ Naive approach</h3>
-                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+                    <h3>✅ Optimized approach</h3>
+                    <textarea id="copy-buffer-opt" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+    public int romanToInt(String s) {
+        int total = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            int curr = getValue(s.charAt(i));
+
+            // check next character
+            if (i < s.length() - 1 && curr < getValue(s.charAt(i + 1))) {
+                total -= curr;  // subtract case
+            } else {
+                total += curr;  // normal case
+            }
+        }
+
+        return total;
+    }
+
+    private int getValue(char c) {
+        if (c == 'I') return 1;
+        if (c == 'V') return 5;
+        if (c == 'X') return 10;
+        if (c == 'L') return 50;
+        if (c == 'C') return 100;
+        if (c == 'D') return 500;
+        return 1000; // 'M'
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — optimized</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">romanToInt</span>(<span class="sh-type">String</span> s) {
+        <span class="sh-kw">int</span> total = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; s.<span class="sh-call">length</span>(); i++) {
+            <span class="sh-kw">int</span> curr = <span class="sh-call">getValue</span>(s.<span class="sh-call">charAt</span>(i));
+
+            <span class="sh-comment">// check next character</span>
+            <span class="sh-kw">if</span> (i &lt; s.<span class="sh-call">length</span>() - <span class="sh-lit">1</span> &amp;&amp; curr &lt; <span class="sh-call">getValue</span>(s.<span class="sh-call">charAt</span>(i + <span class="sh-lit">1</span>))) {
+                total -= curr;  <span class="sh-comment">// subtract case</span>
+            } <span class="sh-kw">else</span> {
+                total += curr;  <span class="sh-comment">// normal case</span>
+            }
+        }
+
+        <span class="sh-kw">return</span> total;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">getValue</span>(<span class="sh-kw">char</span> c) {
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'I'</span>) <span class="sh-kw">return</span> <span class="sh-lit">1</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'V'</span>) <span class="sh-kw">return</span> <span class="sh-lit">5</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'X'</span>) <span class="sh-kw">return</span> <span class="sh-lit">10</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'L'</span>) <span class="sh-kw">return</span> <span class="sh-lit">50</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'C'</span>) <span class="sh-kw">return</span> <span class="sh-lit">100</span>;
+        <span class="sh-kw">if</span> (c == <span class="sh-lit">'D'</span>) <span class="sh-kw">return</span> <span class="sh-lit">500</span>;
+        <span class="sh-kw">return</span> <span class="sh-lit">1000</span>; <span class="sh-comment">// 'M'</span>
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Subtractive rule in one pass.</strong> Time <code>O(n)</code>, space <code>O(1)</code>.
+                    </div>
+
+                    <h3>Naive approach</h3>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
     public int romanToInt(String s) {
         int i = 0;
         int total = 0;
@@ -289,9 +365,9 @@
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">✅ Solution.java — naive</span>
+                                <span class="code-window-title">Solution.java — naive</span>
                                 <div class="code-window-actions">
-                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
                                 </div>
                             </div>
 <pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
