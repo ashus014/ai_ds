@@ -542,7 +542,8 @@
                 function stash(pattern, cls) {
                     html = html.replace(pattern, function (match) {
                         var idx = tokens.push('<span class="' + cls + '">' + match + '</span>') - 1;
-                        return '@@' + idx + '@@';
+                        // One Private-Use char (not a digit) so later /\b\d+\b/ cannot corrupt the marker.
+                        return '@@' + String.fromCharCode(0xe000 + idx) + '@@';
                     });
                 }
 
@@ -554,8 +555,8 @@
                 stash(/\b(?:List|ArrayList|Set|HashSet|Arrays|Collections|Integer|String|Solution)\b/g, 'sh-type');
                 stash(/\b(?!if\b|for\b|while\b|switch\b|return\b|new\b|class\b|public\b|private\b|else\b)(?:[A-Za-z_][A-Za-z0-9_]*)\s*(?=\()/g, 'sh-call');
 
-                return html.replace(/@@(\d+)@@/g, function (_, idx) {
-                    return tokens[Number(idx)];
+                return html.replace(/@@([\s\S])@@/g, function (_, ch) {
+                    return tokens[ch.charCodeAt(0) - 0xe000];
                 });
             }
 
