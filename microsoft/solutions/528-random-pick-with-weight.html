@@ -245,7 +245,7 @@
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p>For each index, weighting just means it should be returned <em>proportionally</em> often. The naive expansion uses <code>w[i]</code> copies of <code>i</code> in a bucket; an optimal solution will store cumulative sums and binary-search them. Optimal write-up coming next.</p>
+                    <p><strong>Hint:</strong> Build a prefix sum of weights so <code>prefix[i] = w[0]+…+w[i]</code>. Pick a random <code>target</code> in <code>[1, total]</code> and return the smallest index <code>i</code> with <code>prefix[i] &ge; target</code>. Linear scan works; binary search makes it <code>O(log n)</code> per call.</p>
                 </div>
 
                 <div class="section">
@@ -321,15 +321,196 @@
                         </div>
                     </div>
                     <div class="callout" role="note">
-                        <strong>Heads-up.</strong> Each weight <code>w[i]</code> can be up to <code>1e5</code> and the sum up to <code>1e8</code>, so the bucket can blow past memory limits. This approach is easy to reason about but generally TLE / MLE on the real constraints — keep it as intuition only; the binary-search version is the interview answer.
+                        <strong>Heads-up.</strong> Each weight <code>w[i]</code> can be up to <code>1e5</code> and the sum up to <code>1e8</code>, so the bucket can blow past memory limits. Keep this as intuition only.
+                    </div>
+
+                    <h3>Optimal — prefix sum + linear scan</h3>
+                    <textarea id="copy-buffer-opt-linear" class="offscreen-copy" readonly aria-label="Java source for copy">import java.util.*;
+
+class Solution {
+
+    int[] prefix;
+    int total;
+    Random rand;
+
+    public Solution(int[] w) {
+        prefix = new int[w.length];
+        rand = new Random();
+
+        prefix[0] = w[0];
+        for (int i = 1; i &lt; w.length; i++) {
+            prefix[i] = prefix[i - 1] + w[i];
+        }
+
+        total = prefix[w.length - 1];
+    }
+
+    public int pickIndex() {
+        int target = rand.nextInt(total) + 1;
+
+        for (int i = 0; i &lt; prefix.length; i++) {
+            if (prefix[i] &gt;= target) {   // ✅ found range
+                return i;
+            }
+        }
+
+        return -1; // won't happen
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — prefix sum linear">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — prefix sum (linear)</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt-linear" title="Copy prefix-sum linear solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span>[] prefix;
+    <span class="sh-kw">int</span> total;
+    <span class="sh-type">Random</span> rand;
+
+    <span class="sh-kw">public</span> <span class="sh-call">Solution</span>(<span class="sh-kw">int</span>[] w) {
+        prefix = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[w.length];
+        rand = <span class="sh-kw">new</span> <span class="sh-type">Random</span>();
+
+        prefix[<span class="sh-lit">0</span>] = w[<span class="sh-lit">0</span>];
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; w.length; i++) {
+            prefix[i] = prefix[i - <span class="sh-lit">1</span>] + w[i];
+        }
+
+        total = prefix[w.length - <span class="sh-lit">1</span>];
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">pickIndex</span>() {
+        <span class="sh-kw">int</span> target = rand.<span class="sh-call">nextInt</span>(total) + <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; prefix.length; i++) {
+            <span class="sh-kw">if</span> (prefix[i] &gt;= target) {   <span class="sh-comment">// ✅ found range</span>
+                <span class="sh-kw">return</span> i;
+            }
+        }
+
+        <span class="sh-kw">return</span> -<span class="sh-lit">1</span>; <span class="sh-comment">// won't happen</span>
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Right idea, wrong complexity.</strong> Storing prefix sums is perfect, but scanning linearly on every <code>pickIndex()</code> becomes <code>O(n)</code> per call. Good stepping stone before the binary-search version.
+                    </div>
+
+                    <h3>✅ Optimal — prefix sum + binary search</h3>
+                    <textarea id="copy-buffer-opt-binary" class="offscreen-copy" readonly aria-label="Java source for copy">import java.util.*;
+
+class Solution {
+
+    int[] prefix;
+    int total;
+    Random rand;
+
+    public Solution(int[] w) {
+        prefix = new int[w.length];
+        rand = new Random();
+
+        prefix[0] = w[0];
+        for (int i = 1; i &lt; w.length; i++) {
+            prefix[i] = prefix[i - 1] + w[i];
+        }
+
+        total = prefix[w.length - 1];
+    }
+
+    public int pickIndex() {
+        int target = rand.nextInt(total) + 1;
+
+        int left = 0, right = prefix.length - 1;
+
+        while (left &lt; right) {
+            int mid = left + (right - left) / 2;
+
+            if (prefix[mid] &gt;= target) {
+                right = mid;      // ✅ go left
+            } else {
+                left = mid + 1;   // ✅ go right
+            }
+        }
+
+        return left; // ✅ answer
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — prefix sum binary search">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — prefix sum + binary search</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt-binary" title="Copy binary-search solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span>[] prefix;
+    <span class="sh-kw">int</span> total;
+    <span class="sh-type">Random</span> rand;
+
+    <span class="sh-kw">public</span> <span class="sh-call">Solution</span>(<span class="sh-kw">int</span>[] w) {
+        prefix = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[w.length];
+        rand = <span class="sh-kw">new</span> <span class="sh-type">Random</span>();
+
+        prefix[<span class="sh-lit">0</span>] = w[<span class="sh-lit">0</span>];
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; w.length; i++) {
+            prefix[i] = prefix[i - <span class="sh-lit">1</span>] + w[i];
+        }
+
+        total = prefix[w.length - <span class="sh-lit">1</span>];
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">pickIndex</span>() {
+        <span class="sh-kw">int</span> target = rand.<span class="sh-call">nextInt</span>(total) + <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">int</span> left = <span class="sh-lit">0</span>, right = prefix.length - <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">while</span> (left &lt; right) {
+            <span class="sh-kw">int</span> mid = left + (right - left) / <span class="sh-lit">2</span>;
+
+            <span class="sh-kw">if</span> (prefix[mid] &gt;= target) {
+                right = mid;      <span class="sh-comment">// ✅ go left</span>
+            } <span class="sh-kw">else</span> {
+                left = mid + <span class="sh-lit">1</span>;   <span class="sh-comment">// ✅ go right</span>
+            }
+        }
+
+        <span class="sh-kw">return</span> left; <span class="sh-comment">// ✅ answer</span>
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Classic lower-bound binary search.</strong> We want the <em>smallest</em> <code>i</code> with <code>prefix[i] &ge; target</code>, so on a match we move <code>right = mid</code> (keep the candidate) and otherwise <code>left = mid + 1</code>.
                     </div>
                 </div>
 
                 <div class="section">
-                    <h2>Complexity (naive)</h2>
+                    <h2>Complexity</h2>
                     <ul>
-                        <li>Constructor: <code>O(sum(w))</code> time and space.</li>
-                        <li><code>pickIndex()</code>: <code>O(1)</code> after the bucket is built.</li>
+                        <li><strong>Naive bucket:</strong> build <code>O(sum(w))</code> time/space, pick <code>O(1)</code>.</li>
+                        <li><strong>Prefix + linear scan:</strong> build <code>O(n)</code>, pick <code>O(n)</code>.</li>
+                        <li><strong>✅ Prefix + binary search:</strong> build <code>O(n)</code>, pick <code>O(log n)</code>, space <code>O(n)</code>.</li>
                     </ul>
                 </div>
             </div>
