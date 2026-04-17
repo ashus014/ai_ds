@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>1578 — Minimum Time to Make Rope Colorful — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 18px 0 10px;
+            font-weight: 700;
+        }
+        .section h3:first-of-type { margin-top: 0; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>1578. Minimum Time to Make Rope Colorful</h1>
+                <p>Given a rope of balloons <code>colors</code> and costs <code>neededTime[i]</code> to remove balloon <code>i</code>, remove the fewest-cost balloons so no two <em>adjacent</em> balloons share a color. Inside any run of equal colors, <strong>keep the most expensive one</strong> and remove the rest — a classic "sum − max of each group" trick.</p>
+                <span class="meta">Microsoft · Medium — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> Group contiguous equal colors. Within each group we must remove all but one balloon; to minimise cost, keep the one with the highest <code>neededTime</code> (add <code>sum − max</code> to the answer). This can be done in a one-pass sweep keeping only the running max of the current group.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Naive approach — group scan (sum − max per run)</h3>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java source for naive copy">class Solution {
+    public int minCost(String colors, int[] neededTime) {
+        int n = colors.length();
+        int totalCost = 0;
+
+        int i = 0;
+
+        while (i &lt; n) {
+            int j = i;
+            int sum = 0;
+            int max = 0;
+
+            // group of same colors
+            while (j &lt; n &amp;&amp; colors.charAt(i) == colors.charAt(j)) {
+                sum += neededTime[j];
+                max = Math.max(max, neededTime[j]);
+                j++;
+            }
+
+            totalCost += (sum - max);
+            i = j;
+        }
+
+        return totalCost;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — group scan">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — group scan</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">minCost</span>(<span class="sh-type">String</span> colors, <span class="sh-kw">int</span>[] neededTime) {
+        <span class="sh-kw">int</span> n = colors.<span class="sh-call">length</span>();
+        <span class="sh-kw">int</span> totalCost = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">int</span> i = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">while</span> (i &lt; n) {
+            <span class="sh-kw">int</span> j = i;
+            <span class="sh-kw">int</span> sum = <span class="sh-lit">0</span>;
+            <span class="sh-kw">int</span> max = <span class="sh-lit">0</span>;
+
+            <span class="sh-comment">// group of same colors</span>
+            <span class="sh-kw">while</span> (j &lt; n &amp;&amp; colors.<span class="sh-call">charAt</span>(i) == colors.<span class="sh-call">charAt</span>(j)) {
+                sum += neededTime[j];
+                max = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(max, neededTime[j]);
+                j++;
+            }
+
+            totalCost += (sum - max);
+            i = j;
+        }
+
+        <span class="sh-kw">return</span> totalCost;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        Clear and obviously correct — explicitly computes each group's <code>sum</code> and <code>max</code>, then adds <code>sum − max</code> (the total cost of removing everything except the most expensive). Same asymptotic cost as the optimal version; just uses more memory semantics per group.
+                    </div>
+
+                    <h3>✅ Optimal — one-pass, rolling max of the current run</h3>
+                    <textarea id="copy-buffer-opt" class="offscreen-copy" readonly aria-label="Java source for optimal copy">class Solution {
+    public int minCost(String colors, int[] neededTime) {
+        int totalCost = 0;
+        int prevMax = neededTime[0];
+
+        for (int i = 1; i &lt; colors.length(); i++) {
+            if (colors.charAt(i) == colors.charAt(i - 1)) {
+                totalCost += Math.min(prevMax, neededTime[i]);
+                prevMax = Math.max(prevMax, neededTime[i]);
+            } else {
+                prevMax = neededTime[i];
+            }
+        }
+
+        return totalCost;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — rolling max">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — rolling max</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">minCost</span>(<span class="sh-type">String</span> colors, <span class="sh-kw">int</span>[] neededTime) {
+        <span class="sh-kw">int</span> totalCost = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> prevMax = neededTime[<span class="sh-lit">0</span>];
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; colors.<span class="sh-call">length</span>(); i++) {
+            <span class="sh-kw">if</span> (colors.<span class="sh-call">charAt</span>(i) == colors.<span class="sh-call">charAt</span>(i - <span class="sh-lit">1</span>)) {
+                totalCost += <span class="sh-type">Math</span>.<span class="sh-call">min</span>(prevMax, neededTime[i]);
+                prevMax = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(prevMax, neededTime[i]);
+            } <span class="sh-kw">else</span> {
+                prevMax = neededTime[i];
+            }
+        }
+
+        <span class="sh-kw">return</span> totalCost;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why it works.</strong> Inside a run, every time we see a duplicate we <em>must</em> delete either the rolling max or the new balloon. The cheaper of the two goes (<code>Math.min</code>); the survivor becomes the new max (<code>Math.max</code>). When the color changes, we reset <code>prevMax</code> and start a new run. This is algebraically equivalent to <code>sum − max</code> per group, computed on the fly.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Dry run — <code>colors = "abaac", neededTime = [1,2,3,4,5]</code></h2>
+                    <ul>
+                        <li><code>i=1</code> 'b' vs 'a': reset <code>prevMax = 2</code>.</li>
+                        <li><code>i=2</code> 'a' vs 'b': reset <code>prevMax = 3</code>.</li>
+                        <li><code>i=3</code> 'a' vs 'a': duplicate — add <code>min(3, 4) = 3</code>, <code>prevMax = 4</code>. Cost = 3.</li>
+                        <li><code>i=4</code> 'c' vs 'a': reset <code>prevMax = 5</code>. Final cost = 3 ✅.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(n)</code> — single pass over the balloons.</li>
+                        <li>Space: <code>O(1)</code> — two integer accumulators (<code>totalCost</code>, <code>prevMax</code>).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
