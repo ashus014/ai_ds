@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>285 — Inorder Successor in BST — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>285. Inorder Successor in BST</h1>
+                <p>Given a BST and a node <code>x</code>, return the value that comes <em>immediately after</em> <code>x.data</code> in an inorder traversal — or <code>-1</code> if <code>x</code> is the largest. Naive route: dump the inorder into a list and look up <code>x</code>'s index; optimal route exploits the BST property for <code>O(h)</code> time.</p>
+                <span class="meta">Microsoft · Medium — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint (naive):</strong> Do a regular inorder traversal and dump the values into a list. Scan the list to find <code>x.data</code> and return the next entry (or <code>-1</code>).</p>
+                    <p><strong>Optimal (BST property):</strong> Walk the tree from root once, remembering the last ancestor where you turned <em>left</em> (i.e., the last node strictly greater than <code>x.data</code>). That ancestor is the inorder successor. <code>O(h)</code> time, <code>O(1)</code> extra space.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>Naive approach — inorder dump + linear scan</h3>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java source for naive copy">/*Complete the function below
+Node is as follows:
+class Node{
+    int data;
+    Node left,right;
+    Node(int d){
+        data=d;
+        left=right=null;
+    }
+}
+*/
+
+class Solution {
+
+    public int inorderSuccessor(Node root, Node x) {
+        List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+
+        // Step 1: store inorder
+        inorder(root, list);
+
+        // Step 2: find x and return next
+        for (int i = 0; i &lt; list.size(); i++) {
+            if (list.get(i) == x.data) {
+                // if next exists
+                if (i + 1 &lt; list.size()) {
+                    return list.get(i + 1);
+                } else {
+                    return -1;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    // simple inorder traversal
+    private void inorder(Node root, List&lt;Integer&gt; list) {
+        if (root == null) return;
+
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — inorder dump">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — inorder dump</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/*Complete the function below
+Node is as follows:
+class Node{
+    int data;
+    Node left,right;
+    Node(int d){
+        data=d;
+        left=right=null;
+    }
+}
+*/</span>
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">inorderSuccessor</span>(<span class="sh-type">Node</span> root, <span class="sh-type">Node</span> x) {
+        <span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt; list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+        <span class="sh-comment">// Step 1: store inorder</span>
+        <span class="sh-call">inorder</span>(root, list);
+
+        <span class="sh-comment">// Step 2: find x and return next</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; list.<span class="sh-call">size</span>(); i++) {
+            <span class="sh-kw">if</span> (list.<span class="sh-call">get</span>(i) == x.data) {
+                <span class="sh-comment">// if next exists</span>
+                <span class="sh-kw">if</span> (i + <span class="sh-lit">1</span> &lt; list.<span class="sh-call">size</span>()) {
+                    <span class="sh-kw">return</span> list.<span class="sh-call">get</span>(i + <span class="sh-lit">1</span>);
+                } <span class="sh-kw">else</span> {
+                    <span class="sh-kw">return</span> -<span class="sh-lit">1</span>;
+                }
+            }
+        }
+
+        <span class="sh-kw">return</span> -<span class="sh-lit">1</span>;
+    }
+
+    <span class="sh-comment">// simple inorder traversal</span>
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">inorder</span>(<span class="sh-type">Node</span> root, <span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt; list) {
+        <span class="sh-kw">if</span> (root == <span class="sh-kw">null</span>) <span class="sh-kw">return</span>;
+
+        <span class="sh-call">inorder</span>(root.left, list);
+        list.<span class="sh-call">add</span>(root.data);
+        <span class="sh-call">inorder</span>(root.right, list);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        Works in <code>O(n)</code> time / <code>O(n)</code> extra space, and it ignores the BST structure entirely — it'd work on any binary tree. The two BST-aware solutions below cut this to <code>O(h)</code> time with <code>O(1)</code> / <code>O(h)</code> extra space.
+                    </div>
+
+                    <h3>✅ Optimal — iterative descent (last-left-turn ancestor)</h3>
+                    <textarea id="copy-buffer-iter" class="offscreen-copy" readonly aria-label="Java source for iterative copy">class Solution {
+    public int inorderSuccessor(Node root, Node x) {
+        Node successor = null;
+
+        while (root != null) {
+            if (x.data &lt; root.data) {
+                successor = root;   // possible answer
+                root = root.left;  // try smaller one
+            } else {
+                root = root.right; // move right
+            }
+        }
+
+        return (successor != null) ? successor.data : -1;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — iterative">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — iterative</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-iter" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">inorderSuccessor</span>(<span class="sh-type">Node</span> root, <span class="sh-type">Node</span> x) {
+        <span class="sh-type">Node</span> successor = <span class="sh-kw">null</span>;
+
+        <span class="sh-kw">while</span> (root != <span class="sh-kw">null</span>) {
+            <span class="sh-kw">if</span> (x.data &lt; root.data) {
+                successor = root;   <span class="sh-comment">// possible answer</span>
+                root = root.left;  <span class="sh-comment">// try smaller one</span>
+            } <span class="sh-kw">else</span> {
+                root = root.right; <span class="sh-comment">// move right</span>
+            }
+        }
+
+        <span class="sh-kw">return</span> (successor != <span class="sh-kw">null</span>) ? successor.data : -<span class="sh-lit">1</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why it works.</strong> Starting from the root, every time we go <em>left</em>, the current node is a candidate (it's strictly greater than <code>x.data</code> and we may yet find a smaller one). Every time we go <em>right</em>, all of <code>root</code>'s ancestors via right turns are <em>not</em> greater than <code>x.data</code>, so we discard them. The last node where we went left is the smallest value strictly greater than <code>x.data</code> — exactly the inorder successor.
+                    </div>
+
+                    <h3>✅ Optimal — recursive descent (same idea)</h3>
+                    <textarea id="copy-buffer-rec" class="offscreen-copy" readonly aria-label="Java source for recursive copy">class Solution {
+
+    Node ans = null;
+
+    public int inorderSuccessor(Node root, Node x) {
+        helper(root, x);
+        return (ans != null) ? ans.data : -1;
+    }
+
+    private void helper(Node root, Node x) {
+        if (root == null) return;
+
+        if (root.data &gt; x.data) {
+            ans = root;          // store candidate
+            helper(root.left, x); // try to find smaller one
+        } else {
+            helper(root.right, x); // go right
+        }
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — recursive">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — recursive</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-rec" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-type">Node</span> ans = <span class="sh-kw">null</span>;
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">inorderSuccessor</span>(<span class="sh-type">Node</span> root, <span class="sh-type">Node</span> x) {
+        <span class="sh-call">helper</span>(root, x);
+        <span class="sh-kw">return</span> (ans != <span class="sh-kw">null</span>) ? ans.data : -<span class="sh-lit">1</span>;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">helper</span>(<span class="sh-type">Node</span> root, <span class="sh-type">Node</span> x) {
+        <span class="sh-kw">if</span> (root == <span class="sh-kw">null</span>) <span class="sh-kw">return</span>;
+
+        <span class="sh-kw">if</span> (root.data &gt; x.data) {
+            ans = root;          <span class="sh-comment">// store candidate</span>
+            <span class="sh-call">helper</span>(root.left, x); <span class="sh-comment">// try to find smaller one</span>
+        } <span class="sh-kw">else</span> {
+            <span class="sh-call">helper</span>(root.right, x); <span class="sh-comment">// go right</span>
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        Same logic as the iterative version, written as a single descent. The instance field <code>ans</code> records the latest "go-left" node; we never need to backtrack.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li><strong>Naive (inorder dump):</strong> Time <code>O(n)</code>, Space <code>O(n)</code> — visits every node and stores the full list.</li>
+                        <li><strong>Optimal (iterative):</strong> Time <code>O(h)</code>, Space <code>O(1)</code> — single descent from root to a leaf.</li>
+                        <li><strong>Optimal (recursive):</strong> Time <code>O(h)</code>, Space <code>O(h)</code> — single descent on the call stack, balanced BST: <code>O(log n)</code>; skewed: <code>O(n)</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
