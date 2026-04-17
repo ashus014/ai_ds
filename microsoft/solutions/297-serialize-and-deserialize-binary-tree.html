@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>297 — Serialize and Deserialize Binary Tree — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>297. Serialize and Deserialize Binary Tree</h1>
+                <p>Design <code>serialize(root)</code> → <code>String</code> and <code>deserialize(String)</code> → <code>TreeNode</code> such that <code>deserialize(serialize(root))</code> reconstructs the original tree exactly. The clean approach: <strong>pre-order DFS with explicit <code>null</code> markers</strong>, comma-separated — enough information to rebuild unambiguously.</p>
+                <span class="meta">Microsoft · Hard — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> A single traversal (pre-order or level-order) with <code>null</code> sentinels is enough — no second traversal needed — because the <code>null</code> markers tell us when a subtree ends. For serialize, emit <code>val,</code> then recurse left then right; null children become <code>null,</code>. For deserialize, tokenise, then consume one token at a time with the same order.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>✅ Pre-order DFS with <code>null</code> markers</h3>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serializeHelper(root, sb);
+        return sb.toString();
+    }
+
+    private void serializeHelper(TreeNode node, StringBuilder sb) {
+        if (node == null) {
+            sb.append("null,");
+            return;
+        }
+        sb.append(node.val).append(",");
+        serializeHelper(node.left, sb);
+        serializeHelper(node.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue&lt;String&gt; queue = new LinkedList&lt;&gt;(Arrays.asList(data.split(",")));
+        return deserializeHelper(queue);
+    }
+
+    private TreeNode deserializeHelper(Queue&lt;String&gt; queue) {
+        String val = queue.poll();
+        if (val.equals("null")) {
+            return null;
+        }
+        TreeNode node = new TreeNode(Integer.parseInt(val));
+        node.left = deserializeHelper(queue);
+        node.right = deserializeHelper(queue);
+        return node;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Codec.java — preorder with nulls">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Codec.java — preorder + null markers</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */</span>
+<span class="sh-kw">public</span> <span class="sh-kw">class</span> <span class="sh-type">Codec</span> {
+
+    <span class="sh-comment">// Encodes a tree to a single string.</span>
+    <span class="sh-kw">public</span> <span class="sh-type">String</span> <span class="sh-call">serialize</span>(<span class="sh-type">TreeNode</span> root) {
+        <span class="sh-type">StringBuilder</span> sb = <span class="sh-kw">new</span> <span class="sh-type">StringBuilder</span>();
+        <span class="sh-call">serializeHelper</span>(root, sb);
+        <span class="sh-kw">return</span> sb.<span class="sh-call">toString</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">serializeHelper</span>(<span class="sh-type">TreeNode</span> node, <span class="sh-type">StringBuilder</span> sb) {
+        <span class="sh-kw">if</span> (node == <span class="sh-kw">null</span>) {
+            sb.<span class="sh-call">append</span>(<span class="sh-lit">"null,"</span>);
+            <span class="sh-kw">return</span>;
+        }
+        sb.<span class="sh-call">append</span>(node.val).<span class="sh-call">append</span>(<span class="sh-lit">","</span>);
+        <span class="sh-call">serializeHelper</span>(node.left, sb);
+        <span class="sh-call">serializeHelper</span>(node.right, sb);
+    }
+
+    <span class="sh-comment">// Decodes your encoded data to tree.</span>
+    <span class="sh-kw">public</span> <span class="sh-type">TreeNode</span> <span class="sh-call">deserialize</span>(<span class="sh-type">String</span> data) {
+        <span class="sh-type">Queue</span>&lt;<span class="sh-type">String</span>&gt; queue = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;(<span class="sh-type">Arrays</span>.<span class="sh-call">asList</span>(data.<span class="sh-call">split</span>(<span class="sh-lit">","</span>)));
+        <span class="sh-kw">return</span> <span class="sh-call">deserializeHelper</span>(queue);
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-type">TreeNode</span> <span class="sh-call">deserializeHelper</span>(<span class="sh-type">Queue</span>&lt;<span class="sh-type">String</span>&gt; queue) {
+        <span class="sh-type">String</span> val = queue.<span class="sh-call">poll</span>();
+        <span class="sh-kw">if</span> (val.<span class="sh-call">equals</span>(<span class="sh-lit">"null"</span>)) {
+            <span class="sh-kw">return</span> <span class="sh-kw">null</span>;
+        }
+        <span class="sh-type">TreeNode</span> node = <span class="sh-kw">new</span> <span class="sh-type">TreeNode</span>(<span class="sh-type">Integer</span>.<span class="sh-call">parseInt</span>(val));
+        node.left = <span class="sh-call">deserializeHelper</span>(queue);
+        node.right = <span class="sh-call">deserializeHelper</span>(queue);
+        <span class="sh-kw">return</span> node;
+    }
+}
+
+<span class="sh-comment">// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why it works.</strong> A preorder traversal without null markers is ambiguous — <code>1 2 3</code> could be many different trees. Emitting <code>null</code> for every absent child makes the serialization a <em>complete</em> preorder (every non-null node has exactly two children, even if those children are <code>null</code>), which can be rebuilt by consuming tokens in the same preorder.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Dry run — tree <code>[1,2,3,null,null,4,5]</code></h2>
+                    <ul>
+                        <li>Serialize preorder: <code>1 → 2 → null,null → 3 → 4 → null,null → 5 → null,null</code> ⇒ <code>"1,2,null,null,3,4,null,null,5,null,null,"</code>.</li>
+                        <li>Deserialize: pop <code>1</code> → root. Recurse left: pop <code>2</code> → left node; its left pops <code>null</code> → <code>null</code>; its right pops <code>null</code> → <code>null</code>. Recurse right: pop <code>3</code> → right node; its left pops <code>4</code>, both children <code>null</code>; its right pops <code>5</code>, both children <code>null</code>.</li>
+                        <li>Result matches input.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(n)</code> for both serialize and deserialize — every node (and every null child) is visited once.</li>
+                        <li>Space: <code>O(n)</code> — the serialized string, the tokenised queue, and the recursion stack up to <code>O(h)</code>.</li>
+                        <li><strong>Alternative.</strong> Level-order (BFS) with null markers produces the LeetCode-style <code>"[1,2,3,null,null,4,5]"</code> format but is a bit more code; the preorder form above is the most compact. For very deep trees, convert the preorder version to an iterative stack to avoid stack overflow.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
