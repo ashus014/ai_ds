@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>146 — LRU Cache — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul {
+            margin: 0 0 16px 1.15em;
+            padding: 0;
+            color: #444;
+            line-height: 1.65;
+        }
+        .section ul li { margin-bottom: 8px; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .snippet-surface + .callout { margin-top: 0; }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../lld/lru-cache.html" class="back-link">← LLD · LRU Cache</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>146. LRU Cache</h1>
+                <p>Least Recently Used cache with fixed capacity: evict the <strong>least recently used</strong> entry when full. ⚠️ <strong>Naive</strong> scans a list; ℹ️ <strong>Map-assisted</strong> adds <code>HashMap</code> key → list index; ✅ <strong>O(1) LRU</strong> uses <code>HashMap</code> key → doubly-linked list node.</p>
+                <span class="meta">Microsoft · Medium — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Store key–value pairs with cap <code>n</code>. <code>get</code> / <code>put</code> promote the entry to most-recent. Start from a plain list (scan every time), add a map from key → index (skip the scan, still pay for list shifts), then use a map from key → DLL node for true <code>O(1)</code> splice and eviction.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>⚠️ Naive approach</h3>
+                    <p>List of <code>[key, value]</code> pairs; MRU at index <code>0</code>. <code>get</code> scans, then move-to-front. <code>put</code> scans for an existing key or inserts at front; evict tail when at capacity.</p>
+                    <ul>
+                        <li>Linear scan on every <code>get</code> / <code>put</code>.</li>
+                        <li>No auxiliary structure — easy to explain, slow on large capacity.</li>
+                    </ul>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Naive LRU Java source for copy">import java.util.*;
+
+class LRUCache {
+
+    List&lt;int[]&gt; cache;
+    int n;
+
+    public LRUCache(int capacity) {
+        this.n = capacity;
+        this.cache = new ArrayList&lt;&gt;();
+    }
+
+    public int get(int key) {
+
+        for (int i = 0; i &lt; cache.size(); i++) {
+            if (cache.get(i)[0] == key) {
+
+                int value = cache.get(i)[1];
+
+                // move to front (most recent)
+                cache.remove(i);
+                cache.add(0, new int[]{key, value});
+
+                return value;
+            }
+        }
+
+        return -1;
+    }
+
+    public void put(int key, int value) {
+
+        // check if key already exists
+        for (int i = 0; i &lt; cache.size(); i++) {
+            if (cache.get(i)[0] == key) {
+
+                // remove old position
+                cache.remove(i);
+
+                // insert at front (most recent)
+                cache.add(0, new int[]{key, value});
+                return;
+            }
+        }
+
+        // if capacity full → remove least recently used (last element)
+        if (cache.size() == n) {
+            cache.remove(cache.size() - 1);
+        }
+
+        // insert new at front
+        cache.add(0, new int[]{key, value});
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java naive">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">⚠️ LRUCache.java — naive</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy naive implementation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt; cache;
+    <span class="sh-kw">int</span> n;
+
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.n = capacity;
+        <span class="sh-kw">this</span>.cache = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            <span class="sh-kw">if</span> (cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>] == key) {
+
+                <span class="sh-kw">int</span> value = cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">1</span>];
+
+                <span class="sh-comment">// move to front (most recent)</span>
+                cache.<span class="sh-call">remove</span>(i);
+                cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+                <span class="sh-kw">return</span> value;
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
+
+        <span class="sh-comment">// check if key already exists</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            <span class="sh-kw">if</span> (cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>] == key) {
+
+                <span class="sh-comment">// remove old position</span>
+                cache.<span class="sh-call">remove</span>(i);
+
+                <span class="sh-comment">// insert at front (most recent)</span>
+                cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+                <span class="sh-kw">return</span>;
+            }
+        }
+
+        <span class="sh-comment">// if capacity full → remove least recently used (last element)</span>
+        <span class="sh-kw">if</span> (cache.<span class="sh-call">size</span>() == n) {
+            cache.<span class="sh-call">remove</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+        }
+
+        <span class="sh-comment">// insert new at front</span>
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>⚠️ Naive.</strong> Every <code>get</code> / <code>put</code> scans the whole list for the key — <code>O(n)</code> time plus list remove/insert. Fine for learning; not for production-scale caches.
+                    </div>
+
+                    <h3 class="spaced">ℹ️ Optimised (map + list)</h3>
+                    <p><code>Map&lt;Integer, Integer&gt;</code> stores <strong>key → index</strong> in the list. After <code>remove</code> / <code>add(0, …)</code>, call <code>updateMap()</code> to refresh every index. On eviction, remove the tail pair and <code>map.remove(removedKey)</code>.</p>
+                    <ul>
+                        <li><code>O(1)</code> key lookup in the map; list shifts and <code>updateMap()</code> remain <code>O(n)</code> overall.</li>
+                        <li>Good stepping-stone before a full DLL + hash <code>O(1)</code> design.</li>
+                    </ul>
+                    <textarea id="copy-buffer-map-assisted" class="offscreen-copy" readonly aria-label="Map-assisted LRU Java source for copy">import java.util.*;
+
+class LRUCache {
+
+    List&lt;int[]&gt; cache;
+    Map&lt;Integer, Integer&gt; map; // key -&gt; index
+    int n;
+
+    public LRUCache(int capacity) {
+        this.n = capacity;
+        this.cache = new ArrayList&lt;&gt;();
+        this.map = new HashMap&lt;&gt;();
+    }
+
+    public int get(int key) {
+
+        if (!map.containsKey(key)) return -1;
+
+        int index = map.get(key);
+        int value = cache.get(index)[1];
+
+        cache.remove(index);
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+
+        return value;
+    }
+
+    public void put(int key, int value) {
+
+        if (map.containsKey(key)) {
+            int index = map.get(key);
+            cache.remove(index);
+        }
+        else if (cache.size() == n) {
+            int removedKey = cache.get(cache.size() - 1)[0];
+            cache.remove(cache.size() - 1);
+            map.remove(removedKey);
+        }
+
+        cache.add(0, new int[]{key, value});
+
+        updateMap();
+    }
+
+    private void updateMap() {
+        for (int i = 0; i &lt; cache.size(); i++) {
+            map.put(cache.get(i)[0], i);
+        }
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java map-assisted">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">ℹ️ LRUCache.java — map + list</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-map-assisted" title="Copy map-assisted implementation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-kw">int</span>[]&gt; cache;
+    <span class="sh-type">Map</span>&lt;<span class="sh-type">Integer</span>, <span class="sh-type">Integer</span>&gt; map; <span class="sh-comment">// key → index</span>
+    <span class="sh-kw">int</span> n;
+
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.n = capacity;
+        <span class="sh-kw">this</span>.cache = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">this</span>.map = <span class="sh-kw">new</span> <span class="sh-type">HashMap</span>&lt;&gt;();
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
+
+        <span class="sh-kw">if</span> (!map.<span class="sh-call">containsKey</span>(key)) <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
+
+        <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+        <span class="sh-kw">int</span> value = cache.<span class="sh-call">get</span>(index)[<span class="sh-lit">1</span>];
+
+        cache.<span class="sh-call">remove</span>(index);
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+
+        <span class="sh-kw">return</span> value;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
+
+        <span class="sh-kw">if</span> (map.<span class="sh-call">containsKey</span>(key)) {
+            <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(key);
+            cache.<span class="sh-call">remove</span>(index);
+        }
+        <span class="sh-kw">else if</span> (cache.<span class="sh-call">size</span>() == n) {
+            <span class="sh-kw">int</span> removedKey = cache.<span class="sh-call">get</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>)[<span class="sh-lit">0</span>];
+            cache.<span class="sh-call">remove</span>(cache.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+            map.<span class="sh-call">remove</span>(removedKey);
+        }
+
+        cache.<span class="sh-call">add</span>(<span class="sh-lit">0</span>, <span class="sh-kw">new</span> <span class="sh-kw">int</span>[]{key, value});
+
+        <span class="sh-call">updateMap</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">updateMap</span>() {
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; cache.<span class="sh-call">size</span>(); i++) {
+            map.<span class="sh-call">put</span>(cache.<span class="sh-call">get</span>(i)[<span class="sh-lit">0</span>], i);
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>ℹ️ Map-assisted.</strong> You skip the linear <strong>search</strong> for the key, but <code>remove(index)</code>, insert at <code>0</code>, and <code>updateMap()</code> still scale linearly with capacity — same asymptotic class as naive, with a better leading constant on lookup.
+                    </div>
+
+                    <h3 class="spaced">✅ Optimised (HashMap + doubly linked list)</h3>
+                    <p><code>Map&lt;Integer, Node&gt;</code> maps each key to its list node. Sentinel <code>head</code> / <code>tail</code> dummy nodes bound the list so <code>remove</code> / <code>insert</code> never touch <code>null</code>. After <code>get</code> or <code>put</code>, move the node next to <code>head</code> (MRU); evict <code>tail.prev</code> when <code>map.size() &gt; capacity</code>.</p>
+                    <ul>
+                        <li><code>get</code> / <code>put</code>: <code>O(1)</code> expected — hash lookup plus constant-time splices.</li>
+                        <li>Space: <code>O(capacity)</code> for the map and one node per cached entry.</li>
+                    </ul>
+                    <textarea id="copy-buffer-optimised-dll" class="offscreen-copy" readonly aria-label="DLL optimised LRU Java source for copy">import java.util.*;
+
+class LRUCache {
+
+    class Node {
+        int key, value;
+        Node prev, next;
+
+        Node(int k, int v) {
+            key = k;
+            value = v;
+        }
+    }
+
+    Map&lt;Integer, Node&gt; map;
+    int capacity;
+
+    Node head, tail;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        map = new HashMap&lt;&gt;();
+
+        // dummy nodes (avoid null checks)
+        head = new Node(0, 0);
+        tail = new Node(0, 0);
+
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    public int get(int key) {
+
+        if (!map.containsKey(key)) return -1;
+
+        Node node = map.get(key);
+
+        // 🔥 move to front
+        remove(node);
+        insert(node);
+
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+
+        if (map.containsKey(key)) {
+            remove(map.get(key)); // remove old
+        }
+
+        Node node = new Node(key, value);
+        insert(node);
+        map.put(key, node);
+
+        // 🔥 remove LRU
+        if (map.size() &gt; capacity) {
+            Node lru = tail.prev;
+            remove(lru);
+            map.remove(lru.key);
+        }
+    }
+
+    private void remove(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void insert(Node node) {
+        node.next = head.next;
+        node.prev = head;
+
+        head.next.prev = node;
+        head.next = node;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="LRUCache.java HashMap and DLL">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ LRUCache.java — HashMap + DLL</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-optimised-dll" title="Copy HashMap + DLL implementation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">LRUCache</span> {
+
+    <span class="sh-kw">class</span> <span class="sh-type">Node</span> {
+        <span class="sh-kw">int</span> key, value;
+        <span class="sh-type">Node</span> prev, next;
+
+        <span class="sh-type">Node</span>(<span class="sh-kw">int</span> k, <span class="sh-kw">int</span> v) {
+            key = k;
+            value = v;
+        }
+    }
+
+    <span class="sh-type">Map</span>&lt;<span class="sh-type">Integer</span>, <span class="sh-type">Node</span>&gt; map;
+    <span class="sh-kw">int</span> capacity;
+
+    <span class="sh-type">Node</span> head, tail;
+
+    <span class="sh-kw">public</span> <span class="sh-type">LRUCache</span>(<span class="sh-kw">int</span> capacity) {
+        <span class="sh-kw">this</span>.capacity = capacity;
+        map = <span class="sh-kw">new</span> <span class="sh-type">HashMap</span>&lt;&gt;();
+
+        <span class="sh-comment">// dummy nodes (avoid null checks)</span>
+        head = <span class="sh-kw">new</span> <span class="sh-type">Node</span>(<span class="sh-lit">0</span>, <span class="sh-lit">0</span>);
+        tail = <span class="sh-kw">new</span> <span class="sh-type">Node</span>(<span class="sh-lit">0</span>, <span class="sh-lit">0</span>);
+
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">get</span>(<span class="sh-kw">int</span> key) {
+
+        <span class="sh-kw">if</span> (!map.<span class="sh-call">containsKey</span>(key)) <span class="sh-kw">return</span> <span class="sh-lit">-1</span>;
+
+        <span class="sh-type">Node</span> node = map.<span class="sh-call">get</span>(key);
+
+        <span class="sh-comment">// 🔥 move to front</span>
+        <span class="sh-call">remove</span>(node);
+        <span class="sh-call">insert</span>(node);
+
+        <span class="sh-kw">return</span> node.value;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">put</span>(<span class="sh-kw">int</span> key, <span class="sh-kw">int</span> value) {
+
+        <span class="sh-kw">if</span> (map.<span class="sh-call">containsKey</span>(key)) {
+            <span class="sh-call">remove</span>(map.<span class="sh-call">get</span>(key)); <span class="sh-comment">// remove old</span>
+        }
+
+        <span class="sh-type">Node</span> node = <span class="sh-kw">new</span> <span class="sh-type">Node</span>(key, value);
+        <span class="sh-call">insert</span>(node);
+        map.<span class="sh-call">put</span>(key, node);
+
+        <span class="sh-comment">// 🔥 remove LRU</span>
+        <span class="sh-kw">if</span> (map.<span class="sh-call">size</span>() &gt; capacity) {
+            <span class="sh-type">Node</span> lru = tail.prev;
+            <span class="sh-call">remove</span>(lru);
+            map.<span class="sh-call">remove</span>(lru.key);
+        }
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">remove</span>(<span class="sh-type">Node</span> node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">insert</span>(<span class="sh-type">Node</span> node) {
+        node.next = head.next;
+        node.prev = head;
+
+        head.next.prev = node;
+        head.next = node;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>✅ Production-style LRU.</strong> Hash map for key → node plus doubly linked list for recency order gives <code>O(1)</code> <code>get</code> and <code>put</code> without array shifts or full-map reindexing.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <h3>⚠️ Naive</h3>
+                    <ul>
+                        <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(n)</code> for scan + list ops.</li>
+                        <li>Space: <code>O(capacity)</code>.</li>
+                    </ul>
+                    <h3 class="spaced">ℹ️ Map-assisted</h3>
+                    <ul>
+                        <li>Map lookup <code>O(1)</code>; list + <code>updateMap()</code> dominate — still <code>O(n)</code> per operation worst case.</li>
+                        <li>Space: <code>O(capacity)</code> for list + map.</li>
+                    </ul>
+                    <h3 class="spaced">✅ HashMap + DLL</h3>
+                    <ul>
+                        <li><code>get(key)</code>, <code>put(key, value)</code>: <code>O(1)</code> average — map lookup and constant pointer updates.</li>
+                        <li>Space: <code>O(capacity)</code> for map plus one <code>Node</code> per entry (plus two sentinels).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
