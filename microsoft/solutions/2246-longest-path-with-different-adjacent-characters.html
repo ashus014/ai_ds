@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>2246 — Longest Path With Different Adjacent Characters — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .section a { color: #5b21b6; font-weight: 600; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>2246. Longest Path With Different Adjacent Characters</h1>
+                <p>You are given a tree on <code>n</code> nodes (parent array) and a string <code>s</code> of length <code>n</code> — character <code>s[i]</code> sits on node <code>i</code>. Find the length of the longest <strong>simple path</strong> in the tree such that <strong>no two adjacent nodes on the path share the same character</strong>. The winning pattern is the same “two best downward chains + update global answer at each node” structure as <a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/" style="color: #fef3c7; text-decoration: underline;">LeetCode 124 — Binary Tree Maximum Path Sum</a>, except edges with matching characters are treated as having gain <code>0</code> (skip merging across that child).</p>
+                <span class="meta">Microsoft · Hard — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Same core idea as LC 124:</strong> At each node, DFS returns the best <em>downward</em> path length ending at that node (toward the parent). While combining children, keep the top two child contributions that are still “valid” (child label ≠ current label). The global answer is the best either of: (a) extend only one branch through the node, or (b) stitch two branches through the node — <code>1 + longest + second_longest</code> — mirroring <code>left_gain + node + right_gain</code> in 124.</p>
+                    <p><strong>Hint:</strong> Build adjacency from the parent array (treat the input as an undirected tree for DFS from root <code>0</code>). For each child subtree, recurse first; if <code>s[child] == s[curr]</code>, treat that subtree’s contribution as unusable for chaining through <code>curr</code>. Maintain two best heights among valid children, then relax <code>result</code> the same way you would for a diameter / max path sum.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>✅ DFS — two best child chains (LC 124 analogue)</h3>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">import java.util.*;
+
+class Solution {
+
+    int result = 1;
+
+    public int longestPath(int[] parent, String s) {
+        int n = parent.length;
+
+        // build graph (undirected like your C++ code)
+        List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; n; i++) {
+            adj.add(new ArrayList&lt;&gt;());
+        }
+
+        for (int i = 1; i &lt; n; i++) {
+            adj.get(parent[i]).add(i);
+            adj.get(i).add(parent[i]);
+        }
+
+        DFS(adj, 0, -1, s);
+        return result;
+    }
+
+    private int DFS(List&lt;List&lt;Integer&gt;&gt; adj, int curr, int parent, String s) {
+
+        int longest = 0;
+        int second_longest = 0;
+
+        for (int child : adj.get(curr)) {
+
+            if (child == parent) continue;
+
+            int child_longest_length = DFS(adj, child, curr, s);
+
+            // skip same character
+            if (s.charAt(child) == s.charAt(curr)) continue;
+
+            // same logic as your C++ snippet
+            if (child_longest_length &gt; second_longest)
+                second_longest = child_longest_length;
+
+            if (second_longest &gt; longest) {
+                int temp = longest;
+                longest = second_longest;
+                second_longest = temp;
+            }
+        }
+
+        // ---------------- SAME AS LEETCODE - 124 ----------------
+
+        int koi_ek_acha = Math.max(longest, second_longest) + 1;
+
+        int only_root_acha = 1;
+
+        int neeche_hi_milgaya_answer = 1 + longest + second_longest;
+
+        result = Math.max(result,
+                Math.max(koi_ek_acha,
+                Math.max(only_root_acha, neeche_hi_milgaya_answer)));
+
+        return Math.max(koi_ek_acha, only_root_acha);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — tree DFS">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — two chains + global max</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> <span class="sh-type">java.util.*</span>;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-kw">int</span> result = <span class="sh-lit">1</span>;
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">longestPath</span>(<span class="sh-kw">int</span>[] parent, <span class="sh-type">String</span> s) {
+        <span class="sh-kw">int</span> n = parent.length;
+
+        <span class="sh-comment">// build graph (undirected like your C++ code)</span>
+        <span class="sh-type">List</span>&lt;<span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; n; i++) {
+            adj.<span class="sh-call">add</span>(<span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;());
+        }
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">1</span>; i &lt; n; i++) {
+            adj.<span class="sh-call">get</span>(parent[i]).<span class="sh-call">add</span>(i);
+            adj.<span class="sh-call">get</span>(i).<span class="sh-call">add</span>(parent[i]);
+        }
+
+        <span class="sh-call">DFS</span>(adj, <span class="sh-lit">0</span>, -<span class="sh-lit">1</span>, s);
+        <span class="sh-kw">return</span> result;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">DFS</span>(<span class="sh-type">List</span>&lt;<span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt;&gt; adj, <span class="sh-kw">int</span> curr, <span class="sh-kw">int</span> parent, <span class="sh-type">String</span> s) {
+
+        <span class="sh-kw">int</span> longest = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> second_longest = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> child : adj.<span class="sh-call">get</span>(curr)) {
+
+            <span class="sh-kw">if</span> (child == parent) <span class="sh-kw">continue</span>;
+
+            <span class="sh-kw">int</span> child_longest_length = <span class="sh-call">DFS</span>(adj, child, curr, s);
+
+            <span class="sh-comment">// skip same character</span>
+            <span class="sh-kw">if</span> (s.<span class="sh-call">charAt</span>(child) == s.<span class="sh-call">charAt</span>(curr)) <span class="sh-kw">continue</span>;
+
+            <span class="sh-comment">// same logic as your C++ snippet</span>
+            <span class="sh-kw">if</span> (child_longest_length &gt; second_longest)
+                second_longest = child_longest_length;
+
+            <span class="sh-kw">if</span> (second_longest &gt; longest) {
+                <span class="sh-kw">int</span> temp = longest;
+                longest = second_longest;
+                second_longest = temp;
+            }
+        }
+
+        <span class="sh-comment">// ---------------- SAME AS LEETCODE - 124 ----------------</span>
+
+        <span class="sh-kw">int</span> koi_ek_acha = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(longest, second_longest) + <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">int</span> only_root_acha = <span class="sh-lit">1</span>;
+
+        <span class="sh-kw">int</span> neeche_hi_milgaya_answer = <span class="sh-lit">1</span> + longest + second_longest;
+
+        result = <span class="sh-type">Math</span>.<span class="sh-call">max</span>(result,
+                <span class="sh-type">Math</span>.<span class="sh-call">max</span>(koi_ek_acha,
+                <span class="sh-type">Math</span>.<span class="sh-call">max</span>(only_root_acha, neeche_hi_milgaya_answer)));
+
+        <span class="sh-kw">return</span> <span class="sh-type">Math</span>.<span class="sh-call">max</span>(koi_ek_acha, only_root_acha);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>124 vs 2246.</strong> In <a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/">124</a>, each child always contributes <code>max(dfs(child), 0)</code> toward the path through the node. Here, if the child’s character equals the current node’s character, that edge cannot appear on a valid path — so you <code>continue</code> and that branch contributes nothing to <code>longest</code> / <code>second_longest</code>. The “pick two best downward lengths and form a path through the current vertex” step is otherwise the same mental model.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(n)</code> — each undirected edge is traversed a constant number of times in the DFS tree rooted at <code>0</code>.</li>
+                        <li>Space: <code>O(n)</code> for the adjacency lists plus <code>O(h)</code> recursion stack depth (<code>h ≤ n</code>).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
