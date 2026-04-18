@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>556 — Next Greater Element III — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 18px 0 10px;
+            font-weight: 700;
+        }
+        .section h3:first-of-type { margin-top: 0; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>556. Next Greater Element III</h1>
+                <p>Given a positive integer <code>n</code>, find the <strong>smallest</strong> integer strictly greater than <code>n</code> that uses the <em>same multiset of digits</em> (leading zeros are not allowed). If none exists or the result exceeds <code>2³¹ − 1</code>, return <code>-1</code>. Naive: enumerate permutations and sort. Optimal: one <strong>next permutation</strong> on the digit string in <code>O(d)</code> time.</p>
+                <span class="meta">Microsoft · Medium — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint (naive):</strong> Generate all rearrangements of the digits of <code>n</code>, parse each as a long, sort, then pick the smallest value <code>&gt; n</code> that still fits in a signed 32-bit int.</p>
+                    <p><strong>Hint (optimal):</strong> This is exactly <strong>next permutation</strong> on the digit array: find the rightmost ascent <code>a[i] &lt; a[i+1]</code>, swap <code>a[i]</code> with the smallest digit to its right that is larger than <code>a[i]</code>, then reverse the suffix after <code>i</code> so the tail is as small as possible. One pass in <code>O(d)</code> time for <code>d</code> digits.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Naive approach — enumerate all permutations, sort, scan</h3>
+                    <p style="margin-bottom: 10px; color: #555; font-size: 0.95em;">The two snippets you shared are identical in logic (full permutation backtracking + <code>Collections.sort</code>). A “slightly better” variant in practice would skip generating duplicates when digits repeat (multiset / next-permutation), or jump straight to the linear-time next-permutation algorithm.</p>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java source for naive copy">import java.util.*;
+
+class Solution {
+
+    List&lt;Long&gt; list = new ArrayList&lt;&gt;();
+
+    public int nextGreaterElement(int n) {
+        char[] arr = String.valueOf(n).toCharArray();
+
+        generate(arr, 0);
+
+        Collections.sort(list);
+
+        for (long num : list) {
+            if (num &gt; n &amp;&amp; num &lt;= Integer.MAX_VALUE) {
+                return (int) num;
+            }
+        }
+
+        return -1;
+    }
+
+    private void generate(char[] arr, int index) {
+        if (index == arr.length) {
+            list.add(Long.parseLong(new String(arr)));
+            return;
+        }
+
+        for (int i = index; i &lt; arr.length; i++) {
+            swap(arr, index, i);
+            generate(arr, index + 1);
+            swap(arr, index, i); // backtrack
+        }
+    }
+
+    private void swap(char[] arr, int i, int j) {
+        char temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — permutations">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — permutations + sort</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> <span class="sh-type">java.util.*</span>;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-type">Long</span>&gt; list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">nextGreaterElement</span>(<span class="sh-kw">int</span> n) {
+        <span class="sh-kw">char</span>[] arr = <span class="sh-type">String</span>.<span class="sh-call">valueOf</span>(n).<span class="sh-call">toCharArray</span>();
+
+        <span class="sh-call">generate</span>(arr, <span class="sh-lit">0</span>);
+
+        <span class="sh-type">Collections</span>.<span class="sh-call">sort</span>(list);
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">long</span> num : list) {
+            <span class="sh-kw">if</span> (num &gt; n &amp;&amp; num &lt;= <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span>) {
+                <span class="sh-kw">return</span> (<span class="sh-kw">int</span>) num;
+            }
+        }
+
+        <span class="sh-kw">return</span> -<span class="sh-lit">1</span>;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">generate</span>(<span class="sh-kw">char</span>[] arr, <span class="sh-kw">int</span> index) {
+        <span class="sh-kw">if</span> (index == arr.length) {
+            list.<span class="sh-call">add</span>(<span class="sh-type">Long</span>.<span class="sh-call">parseLong</span>(<span class="sh-kw">new</span> <span class="sh-type">String</span>(arr)));
+            <span class="sh-kw">return</span>;
+        }
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = index; i &lt; arr.length; i++) {
+            <span class="sh-call">swap</span>(arr, index, i);
+            <span class="sh-call">generate</span>(arr, index + <span class="sh-lit">1</span>);
+            <span class="sh-call">swap</span>(arr, index, i); <span class="sh-comment">// backtrack</span>
+        }
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">swap</span>(<span class="sh-kw">char</span>[] arr, <span class="sh-kw">int</span> i, <span class="sh-kw">int</span> j) {
+        <span class="sh-kw">char</span> temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why this is slow.</strong> There are up to <code>d!</code> permutations of <code>d</code> digits (with duplicates if repeated digits — this code still explores swaps, producing duplicate longs in <code>list</code>). Sorting can be <code>O(d! log d!)</code>. For <code>d ≤ 10</code> on LeetCode this may pass; it does not scale. The ✅ next-permutation solution below finds the answer in one linear pass over the digits.
+                    </div>
+
+                    <h3>✅ Optimal approach — next permutation (linear in digit count)</h3>
+                    <textarea id="copy-buffer-opt" class="offscreen-copy" readonly aria-label="Java source for optimal copy">class Solution {
+    public int nextGreaterElement(int n) {
+        // Convert number to char array so we can manipulate digits easily
+        char[] arr = String.valueOf(n).toCharArray();
+
+        // ---------------- STEP 1 ----------------
+        // Find the "break point" (first dip from right)
+        // We are looking for a place where:
+        // arr[i] &lt; arr[i + 1]
+        // Why? Because that's where we can increase the number
+
+        int i = arr.length - 2;
+        while (i &gt;= 0 &amp;&amp; arr[i] &gt;= arr[i + 1]) {
+            i--; // keep moving left while it's non-increasing
+        }
+
+        // If no such index found → digits are in descending order
+        // Example: 54321 → already the largest permutation
+        if (i &lt; 0) return -1;
+
+        // ---------------- STEP 2 ----------------
+        // Now we want to increase arr[i] slightly
+        // Find the smallest digit on right side which is &gt; arr[i]
+        // We scan from right because right side is in descending order
+
+        int j = arr.length - 1;
+        while (arr[j] &lt;= arr[i]) {
+            j--; // find first element greater than arr[i]
+        }
+
+        // Swap arr[i] with this just-greater element
+        // This ensures minimal increase
+        char temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+
+        // ---------------- STEP 3 ----------------
+        // IMPORTANT:
+        // Right side (i+1 to end) was in descending order
+        // After swap, it's still not the smallest arrangement
+
+        // To make the number just slightly bigger (not too big),
+        // we need to make the right part as SMALL as possible
+
+        // Since it's currently descending → reverse it to make ascending
+        reverse(arr, i + 1, arr.length - 1);
+
+        // ---------------- FINAL STEP ----------------
+        // Convert back to number
+        long num = Long.parseLong(new String(arr));
+
+        // Check 32-bit integer limit
+        return num &gt; Integer.MAX_VALUE ? -1 : (int) num;
+    }
+
+    private void reverse(char[] arr, int l, int r) {
+        // Standard reverse of array between l and r
+        // Used to convert descending → ascending
+        while (l &lt; r) {
+            char temp = arr[l];
+            arr[l] = arr[r];
+            arr[r] = temp;
+            l++;
+            r--;
+        }
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — next permutation">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — next permutation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">nextGreaterElement</span>(<span class="sh-kw">int</span> n) {
+        <span class="sh-comment">// Convert number to char array so we can manipulate digits easily</span>
+        <span class="sh-kw">char</span>[] arr = <span class="sh-type">String</span>.<span class="sh-call">valueOf</span>(n).<span class="sh-call">toCharArray</span>();
+
+        <span class="sh-comment">// ---------------- STEP 1 ----------------</span>
+        <span class="sh-comment">// Find the "break point" (first dip from right)</span>
+        <span class="sh-comment">// We are looking for a place where:</span>
+        <span class="sh-comment">// arr[i] &lt; arr[i + 1]</span>
+        <span class="sh-comment">// Why? Because that's where we can increase the number</span>
+
+        <span class="sh-kw">int</span> i = arr.length - <span class="sh-lit">2</span>;
+        <span class="sh-kw">while</span> (i &gt;= <span class="sh-lit">0</span> &amp;&amp; arr[i] &gt;= arr[i + <span class="sh-lit">1</span>]) {
+            i--; <span class="sh-comment">// keep moving left while it's non-increasing</span>
+        }
+
+        <span class="sh-comment">// If no such index found → digits are in descending order</span>
+        <span class="sh-comment">// Example: 54321 → already the largest permutation</span>
+        <span class="sh-kw">if</span> (i &lt; <span class="sh-lit">0</span>) <span class="sh-kw">return</span> -<span class="sh-lit">1</span>;
+
+        <span class="sh-comment">// ---------------- STEP 2 ----------------</span>
+        <span class="sh-comment">// Now we want to increase arr[i] slightly</span>
+        <span class="sh-comment">// Find the smallest digit on right side which is &gt; arr[i]</span>
+        <span class="sh-comment">// We scan from right because right side is in descending order</span>
+
+        <span class="sh-kw">int</span> j = arr.length - <span class="sh-lit">1</span>;
+        <span class="sh-kw">while</span> (arr[j] &lt;= arr[i]) {
+            j--; <span class="sh-comment">// find first element greater than arr[i]</span>
+        }
+
+        <span class="sh-comment">// Swap arr[i] with this just-greater element</span>
+        <span class="sh-comment">// This ensures minimal increase</span>
+        <span class="sh-kw">char</span> temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+
+        <span class="sh-comment">// ---------------- STEP 3 ----------------</span>
+        <span class="sh-comment">// IMPORTANT:</span>
+        <span class="sh-comment">// Right side (i+1 to end) was in descending order</span>
+        <span class="sh-comment">// After swap, it's still not the smallest arrangement</span>
+
+        <span class="sh-comment">// To make the number just slightly bigger (not too big),</span>
+        <span class="sh-comment">// we need to make the right part as SMALL as possible</span>
+
+        <span class="sh-comment">// Since it's currently descending → reverse it to make ascending</span>
+        <span class="sh-call">reverse</span>(arr, i + <span class="sh-lit">1</span>, arr.length - <span class="sh-lit">1</span>);
+
+        <span class="sh-comment">// ---------------- FINAL STEP ----------------</span>
+        <span class="sh-comment">// Convert back to number</span>
+        <span class="sh-kw">long</span> num = <span class="sh-type">Long</span>.<span class="sh-call">parseLong</span>(<span class="sh-kw">new</span> <span class="sh-type">String</span>(arr));
+
+        <span class="sh-comment">// Check 32-bit integer limit</span>
+        <span class="sh-kw">return</span> num &gt; <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span> ? -<span class="sh-lit">1</span> : (<span class="sh-kw">int</span>) num;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">reverse</span>(<span class="sh-kw">char</span>[] arr, <span class="sh-kw">int</span> l, <span class="sh-kw">int</span> r) {
+        <span class="sh-comment">// Standard reverse of array between l and r</span>
+        <span class="sh-comment">// Used to convert descending → ascending</span>
+        <span class="sh-kw">while</span> (l &lt; r) {
+            <span class="sh-kw">char</span> temp = arr[l];
+            arr[l] = arr[r];
+            arr[r] = temp;
+            l++;
+            r--;
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why reversing the suffix is correct.</strong> After step 1, everything to the right of <code>i</code> is non-increasing (descending). After swapping <code>arr[i]</code> with the next-larger digit from the right, the suffix is still descending — so reversing it yields the <em>lexicographically smallest</em> tail, i.e. the smallest possible number strictly larger than <code>n</code> for this choice of prefix up through index <code>i</code>.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li><strong>Naive (permutations + sort):</strong> Time <code>O(d! · d)</code> generation plus <code>O(d! log d!)</code> sort — dominated by factorial growth. Space <code>O(d!)</code> for the list of all parsed numbers.</li>
+                        <li><strong>✅ Optimal (next permutation):</strong> Time <code>O(d)</code>, Space <code>O(d)</code> for the char array — find pivot, swap, reverse suffix, then parse once and compare to <code>Integer.MAX_VALUE</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
