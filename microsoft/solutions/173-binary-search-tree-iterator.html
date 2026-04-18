@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>173 — Binary Search Tree Iterator — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 18px 0 10px;
+            font-weight: 700;
+        }
+        .section h3:first-of-type { margin-top: 0; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            font-size: 0.95em;
+        }
+        table.summary-table th, table.summary-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e8eaf6;
+            vertical-align: top;
+        }
+        table.summary-table th {
+            background: #ede9fe;
+            color: #4c1d95;
+            font-weight: 700;
+        }
+        table.summary-table tr:last-child td { border-bottom: 0; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>173. Binary Search Tree Iterator</h1>
+                <p>Implement an iterator over a BST that returns the next smallest element in order. <code>hasNext()</code> and <code>next()</code> should run in average <code>O(1)</code> time and use <code>O(h)</code> memory, where <code>h</code> is the tree height — the classic pattern is a stack that simulates inorder “on demand.” Flattening the whole inorder into a list is simpler but uses <code>O(n)</code> extra space.</p>
+                <span class="meta">Microsoft · Medium — 14 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint (eager list):</strong> Run a full inorder traversal in the constructor, push every value into an <code>ArrayList</code>, then <code>next()</code> / <code>hasNext()</code> are just index bookkeeping — <code>O(n)</code> space upfront.</p>
+                    <p><strong>Hint (optimal stack):</strong> Keep a stack of nodes whose left spine has been pushed. <code>next()</code> pops the smallest not-yet-returned node, then pushes the left spine of its right child (if any). The stack never holds more than <code>O(h)</code> nodes.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Eager approach — full inorder in <code>ArrayList</code> (higher space)</h3>
+                    <p style="margin-bottom: 10px; color: #555; font-size: 0.95em;">Not “wrong,” just trades memory for simplicity: constructor does all the work; iteration is trivial. Fine when the tree is small or you know you will walk every node anyway.</p>
+                    <textarea id="copy-buffer-eager" class="offscreen-copy" readonly aria-label="Java source for eager BSTIterator">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+import java.util.*;
+
+class BSTIterator {
+
+    List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+    int index = 0;
+
+    public BSTIterator(TreeNode root) {
+        inorder(root);
+    }
+
+    public int next() {
+        return list.get(index++); // return and move pointer
+    }
+
+    public boolean hasNext() {
+        return index &lt; list.size();
+    }
+
+    private void inorder(TreeNode node) {
+        if (node == null) return;
+
+        inorder(node.left);
+        list.add(node.val);
+        inorder(node.right);
+    }
+}
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator obj = new BSTIterator(root);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="BSTIterator.java — eager list">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">BSTIterator.java — eager ArrayList</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-eager" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */</span>
+<span class="sh-kw">import</span> <span class="sh-type">java.util.*</span>;
+
+<span class="sh-kw">class</span> <span class="sh-type">BSTIterator</span> {
+
+    <span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt; list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+    <span class="sh-kw">int</span> index = <span class="sh-lit">0</span>;
+
+    <span class="sh-kw">public</span> <span class="sh-call">BSTIterator</span>(<span class="sh-type">TreeNode</span> root) {
+        <span class="sh-call">inorder</span>(root);
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">next</span>() {
+        <span class="sh-kw">return</span> list.<span class="sh-call">get</span>(index++); <span class="sh-comment">// return and move pointer</span>
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">hasNext</span>() {
+        <span class="sh-kw">return</span> index &lt; list.<span class="sh-call">size</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">inorder</span>(<span class="sh-type">TreeNode</span> node) {
+        <span class="sh-kw">if</span> (node == <span class="sh-kw">null</span>) <span class="sh-kw">return</span>;
+
+        <span class="sh-call">inorder</span>(node.left);
+        list.<span class="sh-call">add</span>(node.val);
+        <span class="sh-call">inorder</span>(node.right);
+    }
+}
+
+<span class="sh-comment">/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator obj = new BSTIterator(root);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Space trade-off.</strong> You store every node value — <code>O(n)</code> integers plus <code>O(h)</code> recursion depth during the initial traversal. <code>next()</code> / <code>hasNext()</code> become <code>O(1)</code> after that, but the problem’s follow-up usually asks for <code>O(h)</code> auxiliary memory instead.
+                    </div>
+
+                    <h3>✅ Optimal approach — controlled stack (lazy inorder)</h3>
+                    <textarea id="copy-buffer-opt" class="offscreen-copy" readonly aria-label="Java source for optimal BSTIterator">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+import java.util.*;
+
+class BSTIterator {
+
+    Stack&lt;TreeNode&gt; stack = new Stack&lt;&gt;();
+
+    public BSTIterator(TreeNode root) {
+        // push all left nodes
+        pushLeft(root);
+    }
+
+    public int next() {
+        // get next smallest element
+        TreeNode node = stack.pop();
+
+        // if right exists, process its left chain
+        if (node.right != null) {
+            pushLeft(node.right);
+        }
+
+        return node.val;
+    }
+
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+
+    private void pushLeft(TreeNode node) {
+        while (node != null) {
+            stack.push(node);
+            node = node.left;
+        }
+    }
+}
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator obj = new BSTIterator(root);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="BSTIterator.java — stack">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ BSTIterator.java — stack + pushLeft</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */</span>
+<span class="sh-kw">import</span> <span class="sh-type">java.util.*</span>;
+
+<span class="sh-kw">class</span> <span class="sh-type">BSTIterator</span> {
+
+    <span class="sh-type">Stack</span>&lt;<span class="sh-type">TreeNode</span>&gt; stack = <span class="sh-kw">new</span> <span class="sh-type">Stack</span>&lt;&gt;();
+
+    <span class="sh-kw">public</span> <span class="sh-call">BSTIterator</span>(<span class="sh-type">TreeNode</span> root) {
+        <span class="sh-comment">// push all left nodes</span>
+        <span class="sh-call">pushLeft</span>(root);
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">next</span>() {
+        <span class="sh-comment">// get next smallest element</span>
+        <span class="sh-type">TreeNode</span> node = stack.<span class="sh-call">pop</span>();
+
+        <span class="sh-comment">// if right exists, process its left chain</span>
+        <span class="sh-kw">if</span> (node.right != <span class="sh-kw">null</span>) {
+            <span class="sh-call">pushLeft</span>(node.right);
+        }
+
+        <span class="sh-kw">return</span> node.val;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">hasNext</span>() {
+        <span class="sh-kw">return</span> !stack.<span class="sh-call">isEmpty</span>();
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">pushLeft</span>(<span class="sh-type">TreeNode</span> node) {
+        <span class="sh-kw">while</span> (node != <span class="sh-kw">null</span>) {
+            stack.<span class="sh-call">push</span>(node);
+            node = node.left;
+        }
+    }
+}
+
+<span class="sh-comment">/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator obj = new BSTIterator(root);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why it matches inorder.</strong> The stack always holds the “current left spine” from some subtree root down — the top is the next unvisited smallest. After you pop a node, its inorder successor is either the leftmost node of its right subtree (pushed by <code>pushLeft</code>) or whatever was already below it on the stack (an ancestor you deferred when you first went left).
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li><strong>Eager <code>ArrayList</code>:</strong> Constructor <code>O(n)</code> time and <code>O(n)</code> space. Each <code>next()</code> / <code>hasNext()</code> is <code>O(1)</code> after that.</li>
+                        <li><strong>✅ Stack (lazy):</strong> Constructor <code>O(h)</code> time to push the left spine from the root. Each <code>next()</code> is amortized <code>O(1)</code> over the whole traversal (each edge crossed at most twice); worst single call <code>O(h)</code>. Space <code>O(h)</code> for the stack.</li>
+                    </ul>
+                    <h3>Comparison table</h3>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Approach</th>
+                                <th scope="col">Constructor</th>
+                                <th scope="col"><code>next()</code> / <code>hasNext()</code></th>
+                                <th scope="col">Extra space</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Eager — inorder → <code>ArrayList</code></td>
+                                <td><code>O(n)</code></td>
+                                <td><code>O(1)</code></td>
+                                <td><code>O(n)</code></td>
+                            </tr>
+                            <tr>
+                                <td>✅ Stack — lazy left spines</td>
+                                <td><code>O(h)</code></td>
+                                <td>amortized <code>O(1)</code> (worst <code>O(h)</code> per call)</td>
+                                <td><code>O(h)</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 10px; color: #555; font-size: 0.95em;"><code>n</code> = number of nodes, <code>h</code> = height of the BST (balanced: <code>h ≈ log n</code>; skewed: <code>h ≈ n</code>).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
