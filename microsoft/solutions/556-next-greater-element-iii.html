@@ -240,52 +240,48 @@
         <div class="container">
             <div class="header">
                 <h1>556. Next Greater Element III</h1>
-                <p>Given a positive integer <code>n</code>, find the <strong>smallest</strong> integer strictly greater than <code>n</code> that uses the <em>same multiset of digits</em> (leading zeros are not allowed). If none exists or the result exceeds <code>2³¹ − 1</code>, return <code>-1</code>. Naive: enumerate permutations and sort. Optimal: one <strong>next permutation</strong> on the digit string in <code>O(d)</code> time.</p>
+                <p>Given a positive integer <code>n</code>, find the <strong>smallest</strong> integer strictly greater than <code>n</code> that uses the <em>same multiset of digits</em> (leading zeros are not allowed). If none exists or the result exceeds <code>2³¹ − 1</code>, return <code>-1</code>. Naive: enumerate permutations and track the best answer in a <code>long</code>. Optimal: one <strong>next permutation</strong> on the digit string in <code>O(d)</code> time.</p>
                 <span class="meta">Microsoft · Medium — 14 April 2026</span>
             </div>
             <div class="content">
                 <div class="section">
                     <h2>Summary</h2>
-                    <p><strong>Hint (naive):</strong> Generate all rearrangements of the digits of <code>n</code>, parse each as a long, sort, then pick the smallest value <code>&gt; n</code> that still fits in a signed 32-bit int.</p>
+                    <p><strong>Hint (naive):</strong> Generate all rearrangements of the digits of <code>n</code> via backtracking; at each leaf, parse the string as a <code>long</code> and, if it is <code>&gt; n</code> and ≤ <code>Integer.MAX_VALUE</code>, update a running minimum with <code>Math.min</code>. Sentinel <code>Long.MAX_VALUE</code> means “no valid candidate yet.”</p>
                     <p><strong>Hint (optimal):</strong> This is exactly <strong>next permutation</strong> on the digit array: find the rightmost ascent <code>a[i] &lt; a[i+1]</code>, swap <code>a[i]</code> with the smallest digit to its right that is larger than <code>a[i]</code>, then reverse the suffix after <code>i</code> so the tail is as small as possible. One pass in <code>O(d)</code> time for <code>d</code> digits.</p>
                 </div>
 
                 <div class="section">
                     <h2>Answers</h2>
 
-                    <h3>Naive approach — enumerate all permutations, sort, scan</h3>
-                    <p style="margin-bottom: 10px; color: #555; font-size: 0.95em;">The two snippets you shared are identical in logic (full permutation backtracking + <code>Collections.sort</code>). A “slightly better” variant in practice would skip generating duplicates when digits repeat (multiset / next-permutation), or jump straight to the linear-time next-permutation algorithm.</p>
+                    <h3>Naive approach — enumerate permutations, keep best with a <code>long</code></h3>
+                    <p style="margin-bottom: 10px; color: #555; font-size: 0.95em;">Same factorial exploration as “generate everything then sort,” but avoids storing all permutations: whenever a full arrangement parses to a value <code>&gt; n</code> and ≤ <code>Integer.MAX_VALUE</code>, fold it into <code>result</code> with <code>Math.min</code>. Using <code>long</code> avoids overflow while comparing against <code>Integer.MAX_VALUE</code>. Still not competitive with next permutation for large <code>d</code>.</p>
                     <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java source for naive copy">import java.util.*;
 
 class Solution {
-
-    List&lt;Long&gt; list = new ArrayList&lt;&gt;();
+    long result = Long.MAX_VALUE; // FIX: use long
 
     public int nextGreaterElement(int n) {
         char[] arr = String.valueOf(n).toCharArray();
 
-        generate(arr, 0);
+        generate(arr, 0, n);
 
-        Collections.sort(list);
-
-        for (long num : list) {
-            if (num &gt; n &amp;&amp; num &lt;= Integer.MAX_VALUE) {
-                return (int) num;
-            }
-        }
-
-        return -1;
+        // if still not updated → no answer
+        return result == Long.MAX_VALUE ? -1 : (int) result;
     }
 
-    private void generate(char[] arr, int index) {
+    private void generate(char[] arr, int index, int n) {
         if (index == arr.length) {
-            list.add(Long.parseLong(new String(arr)));
+            long num = Long.parseLong(new String(arr));
+
+            if (num &gt; n &amp;&amp; num &lt;= Integer.MAX_VALUE) {
+                result = Math.min(result, num);
+            }
             return;
         }
 
         for (int i = index; i &lt; arr.length; i++) {
             swap(arr, index, i);
-            generate(arr, index + 1);
+            generate(arr, index + 1, n);
             swap(arr, index, i); // backtrack
         }
     }
@@ -304,7 +300,7 @@ class Solution {
                                     <span class="tl-yellow"></span>
                                     <span class="tl-green"></span>
                                 </div>
-                                <span class="code-window-title">Solution.java — permutations + sort</span>
+                                <span class="code-window-title">Solution.java — permutations + min long</span>
                                 <div class="code-window-actions">
                                     <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
                                 </div>
@@ -312,34 +308,30 @@ class Solution {
 <pre class="code-window-body"><code><span class="sh-kw">import</span> <span class="sh-type">java.util.*</span>;
 
 <span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
-
-    <span class="sh-type">List</span>&lt;<span class="sh-type">Long</span>&gt; list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+    <span class="sh-kw">long</span> result = <span class="sh-type">Long</span>.<span class="sh-type">MAX_VALUE</span>; <span class="sh-comment">// FIX: use long</span>
 
     <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">nextGreaterElement</span>(<span class="sh-kw">int</span> n) {
         <span class="sh-kw">char</span>[] arr = <span class="sh-type">String</span>.<span class="sh-call">valueOf</span>(n).<span class="sh-call">toCharArray</span>();
 
-        <span class="sh-call">generate</span>(arr, <span class="sh-lit">0</span>);
+        <span class="sh-call">generate</span>(arr, <span class="sh-lit">0</span>, n);
 
-        <span class="sh-type">Collections</span>.<span class="sh-call">sort</span>(list);
-
-        <span class="sh-kw">for</span> (<span class="sh-kw">long</span> num : list) {
-            <span class="sh-kw">if</span> (num &gt; n &amp;&amp; num &lt;= <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span>) {
-                <span class="sh-kw">return</span> (<span class="sh-kw">int</span>) num;
-            }
-        }
-
-        <span class="sh-kw">return</span> -<span class="sh-lit">1</span>;
+        <span class="sh-comment">// if still not updated → no answer</span>
+        <span class="sh-kw">return</span> result == <span class="sh-type">Long</span>.<span class="sh-type">MAX_VALUE</span> ? -<span class="sh-lit">1</span> : (<span class="sh-kw">int</span>) result;
     }
 
-    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">generate</span>(<span class="sh-kw">char</span>[] arr, <span class="sh-kw">int</span> index) {
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">generate</span>(<span class="sh-kw">char</span>[] arr, <span class="sh-kw">int</span> index, <span class="sh-kw">int</span> n) {
         <span class="sh-kw">if</span> (index == arr.length) {
-            list.<span class="sh-call">add</span>(<span class="sh-type">Long</span>.<span class="sh-call">parseLong</span>(<span class="sh-kw">new</span> <span class="sh-type">String</span>(arr)));
+            <span class="sh-kw">long</span> num = <span class="sh-type">Long</span>.<span class="sh-call">parseLong</span>(<span class="sh-kw">new</span> <span class="sh-type">String</span>(arr));
+
+            <span class="sh-kw">if</span> (num &gt; n &amp;&amp; num &lt;= <span class="sh-type">Integer</span>.<span class="sh-type">MAX_VALUE</span>) {
+                result = <span class="sh-type">Math</span>.<span class="sh-call">min</span>(result, num);
+            }
             <span class="sh-kw">return</span>;
         }
 
         <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = index; i &lt; arr.length; i++) {
             <span class="sh-call">swap</span>(arr, index, i);
-            <span class="sh-call">generate</span>(arr, index + <span class="sh-lit">1</span>);
+            <span class="sh-call">generate</span>(arr, index + <span class="sh-lit">1</span>, n);
             <span class="sh-call">swap</span>(arr, index, i); <span class="sh-comment">// backtrack</span>
         }
     }
@@ -353,7 +345,7 @@ class Solution {
                         </div>
                     </div>
                     <div class="callout" role="note">
-                        <strong>Why this is slow.</strong> There are up to <code>d!</code> permutations of <code>d</code> digits (with duplicates if repeated digits — this code still explores swaps, producing duplicate longs in <code>list</code>). Sorting can be <code>O(d! log d!)</code>. For <code>d ≤ 10</code> on LeetCode this may pass; it does not scale. The ✅ next-permutation solution below finds the answer in one linear pass over the digits.
+                        <strong>Why this is still slow.</strong> You still visit on the order of <code>d!</code> leaf permutations (duplicate digit strings get explored many times). There is no sort pass anymore, so you save memory versus collecting every permutation in a list — but time remains factorial. The ✅ next-permutation solution below finds the answer in one linear pass over the digits.
                     </div>
 
                     <h3>✅ Optimal approach — next permutation (linear in digit count)</h3>
@@ -514,7 +506,7 @@ class Solution {
                 <div class="section">
                     <h2>Complexity</h2>
                     <ul>
-                        <li><strong>Naive (permutations + sort):</strong> Time <code>O(d! · d)</code> generation plus <code>O(d! log d!)</code> sort — dominated by factorial growth. Space <code>O(d!)</code> for the list of all parsed numbers.</li>
+                        <li><strong>Naive (permutations + min <code>long</code>):</strong> Time <code>O(d! · d)</code> — same leaf count as before, each leaf parses a string of length <code>d</code>. Extra space <code>O(1)</code> beyond the recursion stack (<code>O(d)</code>) and the char buffer; no <code>O(d!)</code> list.</li>
                         <li><strong>✅ Optimal (next permutation):</strong> Time <code>O(d)</code>, Space <code>O(d)</code> for the char array — find pivot, swap, reverse suffix, then parse once and compare to <code>Integer.MAX_VALUE</code>.</li>
                     </ul>
                 </div>
