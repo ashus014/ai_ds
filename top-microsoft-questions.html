@@ -1024,6 +1024,21 @@
                                 >?</button>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="slno">50</td>
+                            <td class="stmt">127. Word Ladder</td>
+                            <td><span class="pill diff-hard">Hard</span></td>
+                            <td class="solution"><a class="sol-link" href="microsoft/solutions/127-word-ladder.html">Sol</a></td>
+                            <td class="linkcell"><a href="https://leetcode.com/problems/word-ladder/description/?envType=problem-list-v2&envId=wssfcu1i" target="_blank" rel="noopener noreferrer">Open</a></td>
+                            <td class="hint hint-tooltip-cell">
+                                <button
+                                    type="button"
+                                    class="hint-dot"
+                                    aria-label="Show hint"
+                                    data-hint="Shortest path on an unweighted word-graph → BFS. For each dequeued word, generate neighbors by replacing each position with 'a'..'z' (26·L tries), check membership in a HashSet built from wordList. Remove enqueued words from the set as a 'visited' marker. Process the queue level-by-level (snapshot queue.size()) and return the level when endWord is polled."
+                                >?</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

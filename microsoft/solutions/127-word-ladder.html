@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>127 — Word Ladder — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul, .section ol { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>127. Word Ladder</h1>
+                <p>Given two words <code>beginWord</code>, <code>endWord</code>, and a dictionary <code>wordList</code>, return the length of the <strong>shortest</strong> transformation sequence such that each adjacent pair differs by exactly one letter and every intermediate word is in the dictionary. Return <code>0</code> if no such sequence exists. The length counts <em>both</em> endpoints.</p>
+                <span class="meta">Microsoft · Hard</span>
+            </div>
+            <div class="content">
+
+                <div class="section">
+                    <h2>Approach in simple words</h2>
+                    <p>Picture every word as a <strong>dot</strong>, and draw a <strong>line</strong> between any two dots that differ by exactly one letter. Now the question becomes: <em>what is the shortest hop count from the <code>beginWord</code> dot to the <code>endWord</code> dot?</em></p>
+                    <p>"Shortest path on an unweighted graph" is the textbook signal for <strong>BFS</strong>. BFS explores in concentric rings: first all words 1 hop away, then all words 2 hops away, and so on. The first ring that contains <code>endWord</code> is the answer.</p>
+                    <p>Two practical tricks make this fast:</p>
+                    <ol>
+                        <li><strong>Generate neighbors on the fly.</strong> Don't precompute the whole graph. For each word in the queue, try replacing every position with every letter <code>a</code>–<code>z</code>. If the candidate is in the dictionary, it's a neighbor. That's only <code>26 × L</code> tries per word.</li>
+                        <li><strong>Use the dictionary set as the "visited" tracker.</strong> The moment you enqueue a word, <code>remove()</code> it from <code>wordSet</code>. It can never be reached again on a shorter path (BFS guarantees that), and now you can't accidentally re-enqueue it.</li>
+                    </ol>
+                    <p>To count "how many words in the chain so far," BFS in <strong>level order</strong>: snapshot <code>queue.size()</code> at the start of each round, drain exactly that many words, then bump <code>level</code>. That round's words are all at the same hop distance from <code>beginWord</code>.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> Treat each word as a graph node, edges = "differs by one letter," and BFS from <code>beginWord</code>. Generate neighbors by mutating each position to every letter <code>a–z</code> and checking the dictionary set. Strip enqueued words out of the set so we never revisit them. Process the queue level-by-level, returning the level at which we pull <code>endWord</code> off.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>✅ BFS — generate neighbors by mutating one letter at a time</h3>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">import java.util.*;
+
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+
+        // store all words for fast lookup
+        Set<String> wordSet = new HashSet<>(wordList);
+
+        // if endWord not present → impossible
+        if (!wordSet.contains(endWord)) {
+            return 0;
+        }
+
+        // BFS queue
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+
+        int level = 1; // starting word counts as 1
+
+        while (!queue.isEmpty()) {
+
+            int size = queue.size(); // process level by level
+
+            for (int i = 0; i < size; i++) {
+                String word = queue.poll();
+
+                // if reached endWord → return steps
+                if (word.equals(endWord)) {
+                    return level;
+                }
+
+                // try all possible transformations
+                char[] arr = word.toCharArray();
+
+                for (int j = 0; j < arr.length; j++) {
+
+                    char original = arr[j];
+
+                    // replace with 'a' to 'z'
+                    for (char ch = 'a'; ch <= 'z'; ch++) {
+
+                        arr[j] = ch;
+                        String newWord = new String(arr);
+
+                        // if valid word in dictionary
+                        if (wordSet.contains(newWord)) {
+                            queue.offer(newWord);
+
+                            // mark visited (remove to avoid reuse)
+                            wordSet.remove(newWord);
+                        }
+                    }
+
+                    // restore original character
+                    arr[j] = original;
+                }
+            }
+
+            level++; // move to next level
+        }
+
+        return 0; // no path found
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — BFS with on-the-fly neighbor generation">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — BFS</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">ladderLength</span>(<span class="sh-type">String</span> beginWord, <span class="sh-type">String</span> endWord, <span class="sh-type">List</span>&lt;<span class="sh-type">String</span>&gt; wordList) {
+
+        <span class="sh-comment">// store all words for fast lookup</span>
+        <span class="sh-type">Set</span>&lt;<span class="sh-type">String</span>&gt; wordSet = <span class="sh-kw">new</span> <span class="sh-type">HashSet</span>&lt;&gt;(wordList);
+
+        <span class="sh-comment">// if endWord not present → impossible</span>
+        <span class="sh-kw">if</span> (!wordSet.<span class="sh-call">contains</span>(endWord)) {
+            <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+        }
+
+        <span class="sh-comment">// BFS queue</span>
+        <span class="sh-type">Queue</span>&lt;<span class="sh-type">String</span>&gt; queue = <span class="sh-kw">new</span> <span class="sh-type">LinkedList</span>&lt;&gt;();
+        queue.<span class="sh-call">offer</span>(beginWord);
+
+        <span class="sh-kw">int</span> level = <span class="sh-lit">1</span>; <span class="sh-comment">// starting word counts as 1</span>
+
+        <span class="sh-kw">while</span> (!queue.<span class="sh-call">isEmpty</span>()) {
+
+            <span class="sh-kw">int</span> size = queue.<span class="sh-call">size</span>(); <span class="sh-comment">// process level by level</span>
+
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; size; i++) {
+                <span class="sh-type">String</span> word = queue.<span class="sh-call">poll</span>();
+
+                <span class="sh-comment">// if reached endWord → return steps</span>
+                <span class="sh-kw">if</span> (word.<span class="sh-call">equals</span>(endWord)) {
+                    <span class="sh-kw">return</span> level;
+                }
+
+                <span class="sh-comment">// try all possible transformations</span>
+                <span class="sh-kw">char</span>[] arr = word.<span class="sh-call">toCharArray</span>();
+
+                <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = <span class="sh-lit">0</span>; j &lt; arr.length; j++) {
+
+                    <span class="sh-kw">char</span> original = arr[j];
+
+                    <span class="sh-comment">// replace with 'a' to 'z'</span>
+                    <span class="sh-kw">for</span> (<span class="sh-kw">char</span> ch = <span class="sh-lit">'a'</span>; ch &lt;= <span class="sh-lit">'z'</span>; ch++) {
+
+                        arr[j] = ch;
+                        <span class="sh-type">String</span> newWord = <span class="sh-kw">new</span> <span class="sh-type">String</span>(arr);
+
+                        <span class="sh-comment">// if valid word in dictionary</span>
+                        <span class="sh-kw">if</span> (wordSet.<span class="sh-call">contains</span>(newWord)) {
+                            queue.<span class="sh-call">offer</span>(newWord);
+
+                            <span class="sh-comment">// mark visited (remove to avoid reuse)</span>
+                            wordSet.<span class="sh-call">remove</span>(newWord);
+                        }
+                    }
+
+                    <span class="sh-comment">// restore original character</span>
+                    arr[j] = original;
+                }
+            }
+
+            level++; <span class="sh-comment">// move to next level</span>
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-lit">0</span>; <span class="sh-comment">// no path found</span>
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why "remove from set" is a valid visited-marker.</strong> BFS visits nodes in non-decreasing distance order. The very first time we reach a word is via the shortest possible path; any later route to the same word would only be longer (or equal). So once enqueued, that word can be safely deleted from <code>wordSet</code> — re-enqueuing it could never improve the answer, only waste work and risk infinite loops.
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why the <code>queue.size()</code> snapshot.</strong> We're growing the queue while we drain it, so we capture <code>size</code> <em>once</em> at the top of each level. We then poll exactly that many words — those are all at the current <code>level</code>. Anything offered during this round goes to <code>level + 1</code>. This is the standard BFS-by-levels pattern.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough — <code>begin = "hit", end = "cog"</code>, dict = <code>["hot","dot","dog","lot","log","cog"]</code></h2>
+                    <p>Expected output: <code>5</code>, via the chain <code>hit → hot → dot → dog → cog</code> (5 words counted).</p>
+                    <div class="ascii-block">level | queue (state when level starts)        | what we generate this round
+------+----------------------------------------+--------------------------------------------------
+  1   | [hit]                                  | "hit": mutate each slot. Only "hot" exists in
+      |                                        | the dictionary. → enqueue "hot", remove from set.
+                                                  set after = {dot, dog, lot, log, cog}
+------+----------------------------------------+--------------------------------------------------
+  2   | [hot]                                  | "hot" → neighbors in set: "dot", "lot".
+                                                  enqueue both, remove. set after = {dog, log, cog}
+------+----------------------------------------+--------------------------------------------------
+  3   | [dot, lot]                             | "dot" → "dog" (in set). enqueue, remove.
+      |                                        | "lot" → "log" (in set). enqueue, remove.
+                                                  set after = {cog}
+------+----------------------------------------+--------------------------------------------------
+  4   | [dog, log]                             | "dog" → "cog" (in set!). enqueue, remove.
+      |                                        | "log" → "cog" already gone — nothing new.
+                                                  set after = {}
+------+----------------------------------------+--------------------------------------------------
+  5   | [cog]                                  | poll "cog" → equals endWord → return level = 5  ✓
+</div>
+                    <p>Notice how at level 4 both <code>dog</code> and <code>log</code> could lead to <code>cog</code>, but BFS only enqueues it once because the first sighting removes it from the set — saving a duplicate visit at no cost to correctness.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Edge cases</h2>
+                    <ul>
+                        <li><strong><code>endWord</code> not in dictionary.</strong> Caught upfront — return <code>0</code>. Without this guard the BFS would still terminate correctly but waste time exploring the graph.</li>
+                        <li><strong><code>beginWord == endWord</code>.</strong> Pulled from queue immediately at level 1, returns <code>1</code>. (Per LeetCode spec, <code>beginWord</code> is not required to be in the dictionary; it counts as the first word in the chain.)</li>
+                        <li><strong>No reachable path.</strong> Queue eventually drains, fall through to <code>return 0</code>.</li>
+                        <li><strong><code>beginWord</code> in dictionary.</strong> Harmless — we never re-enqueue it anyway because we don't push the seed twice. (If it had self-mutation back to itself, the equality check at <code>"a" → "a"</code> still produces the same word, but it's already been pulled and processed; <code>remove</code> just no-ops on the next sighting because the set lookup misses.)</li>
+                        <li><strong>Length-1 words.</strong> Inner loop runs once per word, mutating that single slot through 26 letters — works.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(N · L · 26)</code> = <code>O(N · L)</code>, where <code>N</code> = words in the dictionary and <code>L</code> = word length. Each word is dequeued at most once (we strip it from the set on enqueue). For each, we try <code>L · 26</code> mutations and a hash lookup on each. Building the candidate string is another <code>O(L)</code>, so a tighter bound is <code>O(N · L² · 26)</code>.</li>
+                        <li>Space: <code>O(N · L)</code> for the dictionary set and the queue (in the worst case the queue can hold a full BFS frontier).</li>
+                    </ul>
+                    <div class="callout" role="note">
+                        <strong>Faster variant — bidirectional BFS.</strong> When the dictionary is large, BFS from both <code>beginWord</code> <em>and</em> <code>endWord</code> simultaneously, always expanding the smaller frontier. They meet in the middle, and the total work shrinks roughly from <code>b<sup>d</sup></code> to <code>2·b<sup>d/2</sup></code>. Same algorithmic complexity class but a big constant-factor win for hard test cases.
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Alternate neighbor lookup — generic patterns.</strong> Pre-build a map keyed by patterns like <code>"h*t" → ["hot","hat",…]</code>, <code>"*ot" → ["hot","dot","lot",…]</code>. Then a word's neighbors are the union of buckets for each of its <code>L</code> patterns — no <code>26</code> factor. Trade-off: a one-time <code>O(N · L²)</code> preprocess for cheaper per-word neighbor lookups during BFS.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
