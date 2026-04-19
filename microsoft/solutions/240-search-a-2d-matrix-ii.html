@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>240 — Search a 2D Matrix II — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            font-size: 0.95em;
+        }
+        table.summary-table th, table.summary-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e8eaf6;
+            vertical-align: top;
+        }
+        table.summary-table th {
+            background: #ede9fe;
+            color: #4c1d95;
+            font-weight: 700;
+        }
+        table.summary-table tr:last-child td { border-bottom: 0; }
+        table.summary-table td code { font-size: 0.9em; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>240. Search a 2D Matrix II</h1>
+                <p>Matrix is sorted such that <strong>every row is ascending</strong> left → right and <strong>every column is ascending</strong> top → bottom. Return <code>true</code> if <code>target</code> appears anywhere in the matrix. (Unlike LC 74, rows are <em>not</em> one big sorted sequence — you can't just binary-search flatten.)</p>
+                <span class="meta">Microsoft · Medium</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> Start at a corner where <em>one direction makes values go up</em> and <em>the other makes them go down</em> — the top-right (or bottom-left) corner is the sweet spot. From the top-right: moving <em>left</em> shrinks the value, moving <em>down</em> grows it. So comparing <code>matrix[row][col]</code> to <code>target</code> gives you exactly one deterministic direction to move in. Each step eliminates one full row or one full column, so the whole search is <code>O(m + n)</code>.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+                    <h3>Naive — scan every cell</h3>
+                    <p>Ignore the sortedness completely and just brute-force every element.</p>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java naive source for copy">class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == target)
+                    return true;
+            }
+        }
+        return false;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — brute force scan">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — brute force</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">searchMatrix</span>(<span class="sh-kw">int</span>[][] matrix, <span class="sh-kw">int</span> target) {
+        <span class="sh-kw">int</span> m = matrix.length;
+        <span class="sh-kw">int</span> n = matrix[<span class="sh-lit">0</span>].length;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; m; i++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = <span class="sh-lit">0</span>; j &lt; n; j++) {
+                <span class="sh-kw">if</span> (matrix[i][j] == target)
+                    <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+            }
+        }
+        <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        Works but throws away the whole reason the matrix was given to you sorted. <code>O(m · n)</code> time.
+                    </div>
+
+                    <h3 class="spaced">✅ Optimal — start at top-right, walk in a staircase</h3>
+                    <p>Put a finger at <code>matrix[0][n - 1]</code>. At each step compare to <code>target</code>:</p>
+                    <ul>
+                        <li>if <code>val == target</code>: found ✓</li>
+                        <li>if <code>val &gt; target</code>: the whole current column below has values <em>≥ val &gt; target</em>, so this column can be thrown away — move <strong>left</strong> (<code>col--</code>).</li>
+                        <li>if <code>val &lt; target</code>: the whole current row to the left has values <em>≤ val &lt; target</em>, so this row can be thrown away — move <strong>down</strong> (<code>row++</code>).</li>
+                    </ul>
+                    <p>We exit the matrix (either <code>row == m</code> or <code>col &lt; 0</code>) once every row or column has been eliminated, so we return <code>false</code>.</p>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java optimal source for copy">class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        int row = 0;
+        int col = n - 1; // start from top-right
+
+        while (row < m && col >= 0) {
+            int val = matrix[row][col];
+
+            if (val == target) {
+                return true;
+            } else if (val > target) {
+                col--; // move left
+            } else {
+                row++; // move down
+            }
+        }
+
+        return false;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — top-right staircase">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — staircase from top-right</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">searchMatrix</span>(<span class="sh-kw">int</span>[][] matrix, <span class="sh-kw">int</span> target) {
+        <span class="sh-kw">int</span> m = matrix.length;
+        <span class="sh-kw">int</span> n = matrix[<span class="sh-lit">0</span>].length;
+
+        <span class="sh-kw">int</span> row = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> col = n - <span class="sh-lit">1</span>; <span class="sh-comment">// start from top-right</span>
+
+        <span class="sh-kw">while</span> (row &lt; m &amp;&amp; col &gt;= <span class="sh-lit">0</span>) {
+            <span class="sh-kw">int</span> val = matrix[row][col];
+
+            <span class="sh-kw">if</span> (val == target) {
+                <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+            } <span class="sh-kw">else if</span> (val &gt; target) {
+                col--; <span class="sh-comment">// move left</span>
+            } <span class="sh-kw">else</span> {
+                row++; <span class="sh-comment">// move down</span>
+            }
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why top-right (or bottom-left)?</strong> At the top-right, the current cell sits at the <em>maximum</em> of its row and the <em>minimum</em> of its column. So the comparison to <code>target</code> uniquely tells us whether to drop the column (it's too big) or drop the row (it's too small). If you started at the top-left or bottom-right, both neighbours in the two candidate directions move the <em>same</em> way relative to the current value, so the comparison wouldn't split the decision cleanly.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough — search <code>5</code> in</h2>
+                    <div class="ascii-block">  1   4   7  11  15
+  2   5   8  12  19
+  3   6   9  16  22
+ 10  13  14  17  24
+ 18  21  23  26  30</div>
+                    <p>Start at <code>row=0, col=4</code> (value <code>15</code>).</p>
+                    <div class="ascii-block">step | row col | val | compare with 5 | move       | next (row, col)
+-----+---------+-----+----------------+------------+-----------------
+  0  |  0   4  | 15  | 15 &gt; 5         | col--      |   (0, 3)
+  1  |  0   3  | 11  | 11 &gt; 5         | col--      |   (0, 2)
+  2  |  0   2  |  7  |  7 &gt; 5         | col--      |   (0, 1)
+  3  |  0   1  |  4  |  4 &lt; 5         | row++      |   (1, 1)
+  4  |  1   1  |  5  |  5 == 5        | return true</div>
+                    <p>Five comparisons, one hit. If instead we searched for <code>20</code>: after step 3 we'd keep row-stepping down column 1 until we fall off the bottom, returning <code>false</code> — still bounded by <code>m + n</code> steps.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Approach</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Space</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Naive — brute-force scan</td>
+                                <td><code>O(m · n)</code></td>
+                                <td><code>O(1)</code></td>
+                            </tr>
+                            <tr>
+                                <td>✅ Staircase from top-right</td>
+                                <td><code>O(m + n)</code> — each iteration drops one row or one column</td>
+                                <td><code>O(1)</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 12px; color: #555; font-size: 0.95em;">Because we only ever move left or down, we make at most <code>(m - 1) + (n - 1) + 1</code> steps before exiting — hence the linear bound.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
