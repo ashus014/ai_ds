@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>1404 — Number of Steps to Reduce a Number in Binary Representation to One — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            font-size: 0.95em;
+        }
+        table.summary-table th, table.summary-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e8eaf6;
+            vertical-align: top;
+        }
+        table.summary-table th {
+            background: #ede9fe;
+            color: #4c1d95;
+            font-weight: 700;
+        }
+        table.summary-table tr:last-child td { border-bottom: 0; }
+        table.summary-table td code { font-size: 0.9em; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>1404. Number of Steps to Reduce a Number in Binary Representation to One</h1>
+                <p>Given a positive binary string <code>s</code>, count how many steps it takes to reduce it to <code>"1"</code> under the rules: if the number is <strong>even</strong>, divide by 2; if <strong>odd</strong>, add 1. (In binary: even means last bit is <code>0</code>, odd means last bit is <code>1</code>.)</p>
+                <span class="meta">Microsoft · Medium</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> Work in binary directly, right → left. "Divide by 2" is just dropping the last bit; "add 1" creates a carry that ripples up. For each bit (except the leading <code>1</code>), combine it with an incoming <code>carry</code>:</p>
+                    <ul>
+                        <li><code>bit + carry == 0</code> (even here) ⇒ 1 step to divide, carry stays <code>0</code>.</li>
+                        <li><code>bit + carry == 1</code> (odd here) ⇒ 2 steps (add 1, then divide), carry becomes <code>1</code>.</li>
+                        <li><code>bit + carry == 2</code> (even here, with a propagating carry) ⇒ 1 step to divide, carry stays <code>1</code>.</li>
+                    </ul>
+                    <p>At the end, add <code>carry</code> itself (if the leading <code>1</code> absorbs a carry, that's one extra "divide" to collapse <code>10 → 1</code>).</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+                    <h3>Naive — simulate the string</h3>
+                    <p>Keep the binary as a <code>StringBuilder</code>. On each step: if last char is <code>0</code>, pop it (divide by 2). Otherwise ripple-add <code>1</code> by flipping trailing <code>1</code>s to <code>0</code>s and setting the first <code>0</code> (or prepending a new <code>1</code> if we blew past the front).</p>
+                    <textarea id="copy-buffer-naive" class="offscreen-copy" readonly aria-label="Java naive source for copy">class Solution {
+    public int numSteps(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        int steps = 0;
+
+        while (!sb.toString().equals("1")) {
+            if (sb.charAt(sb.length() - 1) == '0') {
+                // even → divide by 2
+                sb.deleteCharAt(sb.length() - 1);
+            } else {
+                // odd → add 1
+                int i = sb.length() - 1;
+
+                while (i >= 0 && sb.charAt(i) == '1') {
+                    sb.setCharAt(i, '0');
+                    i--;
+                }
+
+                if (i >= 0) {
+                    sb.setCharAt(i, '1');
+                } else {
+                    sb.insert(0, '1');
+                }
+            }
+            steps++;
+        }
+
+        return steps;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — simulate with StringBuilder">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — simulate the string</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-naive" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">numSteps</span>(<span class="sh-type">String</span> s) {
+        <span class="sh-type">StringBuilder</span> sb = <span class="sh-kw">new</span> <span class="sh-type">StringBuilder</span>(s);
+        <span class="sh-kw">int</span> steps = <span class="sh-lit">0</span>;
+
+        <span class="sh-kw">while</span> (!sb.<span class="sh-call">toString</span>().<span class="sh-call">equals</span>(<span class="sh-lit">"1"</span>)) {
+            <span class="sh-kw">if</span> (sb.<span class="sh-call">charAt</span>(sb.<span class="sh-call">length</span>() - <span class="sh-lit">1</span>) == <span class="sh-lit">'0'</span>) {
+                <span class="sh-comment">// even → divide by 2</span>
+                sb.<span class="sh-call">deleteCharAt</span>(sb.<span class="sh-call">length</span>() - <span class="sh-lit">1</span>);
+            } <span class="sh-kw">else</span> {
+                <span class="sh-comment">// odd → add 1</span>
+                <span class="sh-kw">int</span> i = sb.<span class="sh-call">length</span>() - <span class="sh-lit">1</span>;
+
+                <span class="sh-kw">while</span> (i &gt;= <span class="sh-lit">0</span> &amp;&amp; sb.<span class="sh-call">charAt</span>(i) == <span class="sh-lit">'1'</span>) {
+                    sb.<span class="sh-call">setCharAt</span>(i, <span class="sh-lit">'0'</span>);
+                    i--;
+                }
+
+                <span class="sh-kw">if</span> (i &gt;= <span class="sh-lit">0</span>) {
+                    sb.<span class="sh-call">setCharAt</span>(i, <span class="sh-lit">'1'</span>);
+                } <span class="sh-kw">else</span> {
+                    sb.<span class="sh-call">insert</span>(<span class="sh-lit">0</span>, <span class="sh-lit">'1'</span>);
+                }
+            }
+            steps++;
+        }
+
+        <span class="sh-kw">return</span> steps;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        Correct but expensive — each "add 1" can ripple up the whole string, giving worst-case <code>O(n²)</code> with extra string work.
+                    </div>
+
+                    <h3 class="spaced">✅ Optimal — right-to-left single pass with a running carry</h3>
+                    <p>Walk bits from index <code>n - 1</code> down to <code>1</code> (we deliberately stop <em>before</em> the leading bit <code>s[0]</code>, since that's the <code>1</code> we're trying to end up with). At every position, look at <code>bit + carry</code>:</p>
+                    <ul>
+                        <li><code>0</code>: current position is <code>0</code> with no incoming carry — one shift-right step.</li>
+                        <li><code>1</code>: current position behaves odd — we add <code>1</code> (that flips this to <code>0</code> and sends a carry up), then shift right. That's <code>2</code> steps and a new <code>carry = 1</code>.</li>
+                        <li><code>2</code>: current bit is <code>1</code> <em>and</em> incoming carry is <code>1</code> — they sum to <code>10</code>, so this position is effectively <code>0</code> with a carry to the next. One shift-right; carry stays <code>1</code>.</li>
+                    </ul>
+                    <p>After the loop, the leading bit is <code>1</code>. If a <code>carry</code> is still floating in, we have <code>1 + 1 = 10</code>, which needs one more divide to become <code>1</code>. Hence <code>return steps + carry</code>.</p>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java optimal source for copy">class Solution {
+    public int numSteps(String s) {
+        int steps = 0;
+        int carry = 0;
+
+        // traverse from right to left (ignore first bit)
+        for (int i = s.length() - 1; i > 0; i--) {
+            int bit = s.charAt(i) - '0';
+
+            if (bit + carry == 1) {
+                // odd
+                steps += 2;
+                carry = 1;
+            } else {
+                // even
+                steps += 1;
+            }
+        }
+
+        // if carry remains, one extra step
+        return steps + carry;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — single pass + carry">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — single pass + carry</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">numSteps</span>(<span class="sh-type">String</span> s) {
+        <span class="sh-kw">int</span> steps = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> carry = <span class="sh-lit">0</span>;
+
+        <span class="sh-comment">// traverse from right to left (ignore first bit)</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = s.<span class="sh-call">length</span>() - <span class="sh-lit">1</span>; i &gt; <span class="sh-lit">0</span>; i--) {
+            <span class="sh-kw">int</span> bit = s.<span class="sh-call">charAt</span>(i) - <span class="sh-lit">'0'</span>;
+
+            <span class="sh-kw">if</span> (bit + carry == <span class="sh-lit">1</span>) {
+                <span class="sh-comment">// odd</span>
+                steps += <span class="sh-lit">2</span>;
+                carry = <span class="sh-lit">1</span>;
+            } <span class="sh-kw">else</span> {
+                <span class="sh-comment">// even</span>
+                steps += <span class="sh-lit">1</span>;
+            }
+        }
+
+        <span class="sh-comment">// if carry remains, one extra step</span>
+        <span class="sh-kw">return</span> steps + carry;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why the <code>else</code> branch doesn't reset <code>carry</code>.</strong> When <code>bit + carry</code> is <code>0</code> the carry was already <code>0</code>, so "stay at 0" is correct. When it's <code>2</code> we intentionally want <code>carry</code> to stay <code>1</code> — the two <code>1</code>s added to <code>10</code> in binary, so a carry propagates upward. Leaving the variable alone captures both cases.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough — <code>s = "1101"</code> (decimal 13)</h2>
+                    <p>Sanity check by simulation first:</p>
+                    <div class="ascii-block">13 odd  → +1 → 14       step 1
+14 even → /2 → 7        step 2
+ 7 odd  → +1 → 8        step 3
+ 8 even → /2 → 4        step 4
+ 4 even → /2 → 2        step 5
+ 2 even → /2 → 1        step 6   ✓</div>
+                    <p>Now the optimal pass (<code>i</code> goes from <code>3</code> down to <code>1</code>, never <code>0</code>):</p>
+                    <div class="ascii-block">i | s[i] | carry_in | bit+carry | branch   | steps | carry_out
+--+------+----------+-----------+----------+-------+----------
+3 |  1   |    0     |     1     | odd (+2) |   2   |    1
+2 |  0   |    1     |     1     | odd (+2) |   4   |    1
+1 |  1   |    1     |     2     | even(+1) |   5   |    1     (carry stays 1)
+
+loop ends. return steps + carry = 5 + 1 = 6  ✓</div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Approach</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Space</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Naive — simulate with <code>StringBuilder</code></td>
+                                <td><code>O(n²)</code> worst case — a +1 ripple can touch the whole string each time it happens</td>
+                                <td><code>O(n)</code> for the mutable buffer</td>
+                            </tr>
+                            <tr>
+                                <td>✅ Single pass + carry</td>
+                                <td><code>O(n)</code> — one right-to-left scan</td>
+                                <td><code>O(1)</code> — just <code>steps</code> and <code>carry</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
