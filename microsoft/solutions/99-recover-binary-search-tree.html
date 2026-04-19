@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>99 — Recover Binary Search Tree — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>99. Recover Binary Search Tree</h1>
+                <p>Two nodes of a BST were swapped by mistake. Restore the tree <em>without changing its structure</em>. Use the BST property: an inorder traversal must produce a strictly increasing sequence — when it does not, the offenders are exactly the two swapped nodes.</p>
+                <span class="meta">Microsoft · Medium</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> Do an inorder traversal and collect the nodes in a list. Walk adjacent pairs <code>(list[i], list[i+1])</code> looking for <code>list[i].val &gt; list[i+1].val</code> — call those <em>violations</em>. The two swapped nodes are: the <strong>first</strong> entry of the <em>first</em> violation, and the <strong>second</strong> entry of the <em>last</em> violation. Swap their <code>val</code> fields, done.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+                    <h3>✅ Inorder list + swap two values</h3>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public void recoverTree(TreeNode root) {
+        List<TreeNode> list = new ArrayList<>();
+
+        // step 1: inorder
+        inorder(root, list);
+
+        // step 2: find two wrong nodes
+        TreeNode first = null, second = null;
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            if (list.get(i).val > list.get(i + 1).val) {
+                if (first == null) {
+                    first = list.get(i);
+                }
+                second = list.get(i + 1);
+            }
+        }
+
+        // step 3: swap values
+        int temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+
+    private void inorder(TreeNode node, List<TreeNode> list) {
+        if (node == null) return;
+
+        inorder(node.left, list);
+        list.add(node);
+        inorder(node.right, list);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — recover BST">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — inorder list</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */</span>
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">recoverTree</span>(<span class="sh-type">TreeNode</span> root) {
+        <span class="sh-type">List</span>&lt;<span class="sh-type">TreeNode</span>&gt; list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();
+
+        <span class="sh-comment">// step 1: inorder</span>
+        <span class="sh-call">inorder</span>(root, list);
+
+        <span class="sh-comment">// step 2: find two wrong nodes</span>
+        <span class="sh-type">TreeNode</span> first = <span class="sh-kw">null</span>, second = <span class="sh-kw">null</span>;
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; list.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>; i++) {
+            <span class="sh-kw">if</span> (list.<span class="sh-call">get</span>(i).val &gt; list.<span class="sh-call">get</span>(i + <span class="sh-lit">1</span>).val) {
+                <span class="sh-kw">if</span> (first == <span class="sh-kw">null</span>) {
+                    first = list.<span class="sh-call">get</span>(i);
+                }
+                second = list.<span class="sh-call">get</span>(i + <span class="sh-lit">1</span>);
+            }
+        }
+
+        <span class="sh-comment">// step 3: swap values</span>
+        <span class="sh-kw">int</span> temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">inorder</span>(<span class="sh-type">TreeNode</span> node, <span class="sh-type">List</span>&lt;<span class="sh-type">TreeNode</span>&gt; list) {
+        <span class="sh-kw">if</span> (node == <span class="sh-kw">null</span>) <span class="sh-kw">return</span>;
+
+        <span class="sh-call">inorder</span>(node.left, list);
+        list.<span class="sh-call">add</span>(node);
+        <span class="sh-call">inorder</span>(node.right, list);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="spaced">Optimal — O(n) time, O(1) extra space*</h3>
+                    <p>Same idea, but instead of materializing the full inorder list, we keep a single <code>prev</code> pointer and check <code>prev.val &gt; node.val</code> at each visit. <code>first</code> still locks once on the first violation; <code>second</code> still overwrites on every violation (so it ends on the last one). <em>*ignoring the recursion stack <code>O(h)</code>.</em></p>
+                    <textarea id="copy-buffer-opt" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+    TreeNode first = null;
+    TreeNode second = null;
+    TreeNode prev = null;
+
+    public void recoverTree(TreeNode root) {
+        inorder(root);
+
+        // swap
+        int temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+
+    private void inorder(TreeNode node) {
+        if (node == null) return;
+
+        inorder(node.left);
+
+        // violation check
+        if (prev != null && prev.val > node.val) {
+            if (first == null) {
+                first = prev;
+            }
+            second = node;
+        }
+
+        prev = node;
+
+        inorder(node.right);
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — inorder with prev pointer">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — inorder + prev pointer</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-opt" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-type">TreeNode</span> first = <span class="sh-kw">null</span>;
+    <span class="sh-type">TreeNode</span> second = <span class="sh-kw">null</span>;
+    <span class="sh-type">TreeNode</span> prev = <span class="sh-kw">null</span>;
+
+    <span class="sh-kw">public</span> <span class="sh-kw">void</span> <span class="sh-call">recoverTree</span>(<span class="sh-type">TreeNode</span> root) {
+        <span class="sh-call">inorder</span>(root);
+
+        <span class="sh-comment">// swap</span>
+        <span class="sh-kw">int</span> temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">void</span> <span class="sh-call">inorder</span>(<span class="sh-type">TreeNode</span> node) {
+        <span class="sh-kw">if</span> (node == <span class="sh-kw">null</span>) <span class="sh-kw">return</span>;
+
+        <span class="sh-call">inorder</span>(node.left);
+
+        <span class="sh-comment">// violation check</span>
+        <span class="sh-kw">if</span> (prev != <span class="sh-kw">null</span> &amp;&amp; prev.val &gt; node.val) {
+            <span class="sh-kw">if</span> (first == <span class="sh-kw">null</span>) {
+                first = prev;
+            }
+            second = node;
+        }
+
+        prev = node;
+
+        <span class="sh-call">inorder</span>(node.right);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why <code>prev</code> is enough.</strong> The list version checks neighbors via <code>list[i]</code> and <code>list[i+1]</code>. In a recursive inorder, the "previous node" in inorder order is just whatever node finished its visit right before this one — so we cache it in a field and compare. No extra array, same logic. To strip the recursion stack as well, swap the recursion for <strong>Morris inorder</strong> for true <code>O(1)</code> total auxiliary space.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Why <code>second = list.get(i + 1);</code> sits <em>outside</em> the inner <code>if</code></h2>
+                    <p>Easy way to remember (don't overthink it): <strong>there are two possible situations</strong>. The code has to handle both with the same loop.</p>
+
+                    <h4>✅ Case 1 — swapped nodes are adjacent in inorder</h4>
+                    <p>Example:</p>
+                    <div class="ascii-block">Original inorder: 1 2 3 4
+After swap:       1 3 2 4
+                       ^ ^   swapped (3 and 2)</div>
+                    <p>Only <strong>one</strong> violation:</p>
+                    <div class="ascii-block">3 &gt; 2   ❌</div>
+                    <p>So we set <code>first = 3</code> (the bigger one in the violation) and <code>second = 2</code> (the smaller one right after). Both happen on the same iteration.</p>
+
+                    <h4>✅ Case 2 — swapped nodes are far apart</h4>
+                    <p>Example: swap 1 and 3 in <code>1 2 3 4</code>:</p>
+                    <div class="ascii-block">Original inorder: 1 2 3 4
+After swap:       3 2 1 4
+                  ^     ^   swapped (1 and 3)</div>
+                    <p>Now <strong>two</strong> violations show up:</p>
+                    <div class="ascii-block">3 &gt; 2   ❌   first violation
+2 &gt; 1   ❌   second violation</div>
+                    <p>From the first violation we want to grab <code>first = 3</code>. From the <em>second</em> violation we want to grab <code>second = 1</code>.</p>
+
+                    <h4>That is exactly what the loop does</h4>
+                    <ul>
+                        <li><code>first</code> is set <strong>only once</strong> — guarded by <code>if (first == null)</code> — so it locks in on the <em>first</em> violation.</li>
+                        <li><code>second</code> is set <strong>every time</strong> a violation is seen — no <code>if</code> guard — so by the end of the loop it holds <code>list.get(i + 1)</code> from the <em>last</em> violation.</li>
+                    </ul>
+                    <p>This handles both cases with one pass:</p>
+                    <ul>
+                        <li>Adjacent (Case 1): only one violation fires; both <code>first</code> and <code>second</code> are set in that single iteration.</li>
+                        <li>Non-adjacent (Case 2): the first violation sets <code>first</code> (and tentatively <code>second</code>); the second violation overwrites <code>second</code> with the correct one.</li>
+                    </ul>
+                    <div class="callout" role="note">
+                        <strong>If you put <code>second</code> inside the same <code>if (first == null)</code></strong>, Case 2 breaks — <code>second</code> would freeze on <code>2</code> from the first violation instead of moving on to <code>1</code> from the second one. You'd "fix" the tree by swapping 3 ↔ 2, which is wrong.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(n)</code> for both variants — one inorder traversal (the list version also does a linear scan after, still <code>O(n)</code>).</li>
+                        <li>Space (list version): <code>O(n)</code> for the inorder list, plus <code>O(h)</code> recursion stack.</li>
+                        <li>Space (prev-pointer version): <code>O(1)</code> extra besides the <code>O(h)</code> recursion stack. Morris inorder strips that too for true <code>O(1)</code> total auxiliary space.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
