@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>380 — Insert Delete GetRandom O(1) — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>380. Insert Delete GetRandom O(1)</h1>
+                <p>Design a set of distinct integers supporting <code>insert(val)</code>, <code>remove(val)</code>, and <code>getRandom()</code> — each in <strong>average <code>O(1)</code></strong>. <code>getRandom</code> must return any current element with <em>uniform probability</em>.</p>
+                <span class="meta">Microsoft · Medium</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> <code>HashSet</code> alone gives <code>O(1)</code> insert / remove but <code>getRandom</code> over a hash table can't pick uniformly in <code>O(1)</code>. <code>ArrayList</code> alone gives <code>O(1)</code> random pick but <code>remove(val)</code> would be linear. Combine them:</p>
+                    <ul>
+                        <li>An <code>ArrayList&lt;Integer&gt;</code> — the actual elements, packed contiguously. <code>getRandom</code> just picks a random index here.</li>
+                        <li>A <code>HashMap&lt;Integer, Integer&gt;</code> mapping <code>value → its index in the list</code>. Lets us locate any element in <code>O(1)</code>.</li>
+                    </ul>
+                    <p>The trick to <code>O(1)</code> remove: <strong>swap the doomed element with the last element of the list</strong>, update the map for the moved element, then pop the last position. No shifting.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>✅ <code>ArrayList</code> + <code>HashMap</code> + swap-with-last on remove</h3>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">import java.util.*;
+
+class RandomizedSet {
+
+    private List<Integer> list;
+    private Map<Integer, Integer> map;
+    private Random rand;
+
+    public RandomizedSet() {
+        list = new ArrayList<>();        // stores values
+        map = new HashMap<>();          // value -> index
+        rand = new Random();
+    }
+    
+    public boolean insert(int val) {
+        // if already present → return false
+        if (map.containsKey(val)) {
+            return false;
+        }
+
+        // add at end
+        list.add(val);
+        map.put(val, list.size() - 1);
+
+        return true;
+    }
+    
+    public boolean remove(int val) {
+        // if not present → return false
+        if (!map.containsKey(val)) {
+            return false;
+        }
+
+        // get index of element to remove
+        int index = map.get(val);
+
+        // get last element
+        int lastElement = list.get(list.size() - 1);
+
+        // swap with last element
+        list.set(index, lastElement);
+        map.put(lastElement, index);
+
+        // remove last element
+        list.remove(list.size() - 1);
+
+        // remove from map
+        map.remove(val);
+
+        return true;
+    }
+    
+    public int getRandom() {
+        // pick random index
+        int randomIndex = rand.nextInt(list.size());
+        return list.get(randomIndex);
+    }
+}
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet obj = new RandomizedSet();
+ * boolean param_1 = obj.insert(val);
+ * boolean param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="RandomizedSet.java — list + map + swap-with-last">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ RandomizedSet.java — list + map + swap-with-last</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.*;
+
+<span class="sh-kw">class</span> <span class="sh-type">RandomizedSet</span> {
+
+    <span class="sh-kw">private</span> <span class="sh-type">List</span>&lt;<span class="sh-type">Integer</span>&gt; list;
+    <span class="sh-kw">private</span> <span class="sh-type">Map</span>&lt;<span class="sh-type">Integer</span>, <span class="sh-type">Integer</span>&gt; map;
+    <span class="sh-kw">private</span> <span class="sh-type">Random</span> rand;
+
+    <span class="sh-kw">public</span> <span class="sh-call">RandomizedSet</span>() {
+        list = <span class="sh-kw">new</span> <span class="sh-type">ArrayList</span>&lt;&gt;();        <span class="sh-comment">// stores values</span>
+        map = <span class="sh-kw">new</span> <span class="sh-type">HashMap</span>&lt;&gt;();          <span class="sh-comment">// value -&gt; index</span>
+        rand = <span class="sh-kw">new</span> <span class="sh-type">Random</span>();
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">insert</span>(<span class="sh-kw">int</span> val) {
+        <span class="sh-comment">// if already present → return false</span>
+        <span class="sh-kw">if</span> (map.<span class="sh-call">containsKey</span>(val)) {
+            <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+        }
+
+        <span class="sh-comment">// add at end</span>
+        list.<span class="sh-call">add</span>(val);
+        map.<span class="sh-call">put</span>(val, list.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+
+        <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">boolean</span> <span class="sh-call">remove</span>(<span class="sh-kw">int</span> val) {
+        <span class="sh-comment">// if not present → return false</span>
+        <span class="sh-kw">if</span> (!map.<span class="sh-call">containsKey</span>(val)) {
+            <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+        }
+
+        <span class="sh-comment">// get index of element to remove</span>
+        <span class="sh-kw">int</span> index = map.<span class="sh-call">get</span>(val);
+
+        <span class="sh-comment">// get last element</span>
+        <span class="sh-kw">int</span> lastElement = list.<span class="sh-call">get</span>(list.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+
+        <span class="sh-comment">// swap with last element</span>
+        list.<span class="sh-call">set</span>(index, lastElement);
+        map.<span class="sh-call">put</span>(lastElement, index);
+
+        <span class="sh-comment">// remove last element</span>
+        list.<span class="sh-call">remove</span>(list.<span class="sh-call">size</span>() - <span class="sh-lit">1</span>);
+
+        <span class="sh-comment">// remove from map</span>
+        map.<span class="sh-call">remove</span>(val);
+
+        <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+    }
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">getRandom</span>() {
+        <span class="sh-comment">// pick random index</span>
+        <span class="sh-kw">int</span> randomIndex = rand.<span class="sh-call">nextInt</span>(list.<span class="sh-call">size</span>());
+        <span class="sh-kw">return</span> list.<span class="sh-call">get</span>(randomIndex);
+    }
+}
+
+<span class="sh-comment">/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet obj = new RandomizedSet();
+ * boolean param_1 = obj.insert(val);
+ * boolean param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why the swap-with-last is the whole game.</strong> Removing from the middle of an <code>ArrayList</code> normally takes <code>O(n)</code> because everything to the right shifts left. By overwriting the doomed slot with whatever lives at the tail (and updating <em>that</em> element's entry in the map to its new index), the only thing left to do is pop the tail — which is <code>O(1)</code> for an <code>ArrayList</code>. The map keeps every value's location accurate after each operation, so all three ops stay <code>O(1)</code>.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough</h2>
+                    <p>Operations: <code>insert(1), insert(2), insert(3), remove(2), insert(4), getRandom()</code>.</p>
+                    <div class="ascii-block">op            | list (after)   | map (after)
+--------------+----------------+--------------------
+insert(1)     | [1]            | {1→0}
+insert(2)     | [1, 2]         | {1→0, 2→1}
+insert(3)     | [1, 2, 3]      | {1→0, 2→1, 3→2}
+remove(2)     | [1, 3]         | {1→0, 3→1}
+   step a: index = map.get(2) = 1
+   step b: last = list.get(2) = 3
+   step c: list.set(1, 3)        → [1, 3, 3]
+           map.put(3, 1)         → {1→0, 2→1, 3→1}
+   step d: list.remove(2)        → [1, 3]
+           map.remove(2)         → {1→0, 3→1}
+insert(4)     | [1, 3, 4]      | {1→0, 3→1, 4→2}
+getRandom()   | returns one of {1, 3, 4} uniformly</div>
+                    <p>Notice in <code>remove(2)</code> how the last element (<code>3</code>) jumps into position <code>1</code> and the map immediately updates <code>3 → 1</code>. After that, <code>list.remove(list.size() - 1)</code> is a cheap pop.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Edge cases worth knowing</h2>
+                    <ul>
+                        <li><strong>Removing the last element itself.</strong> The "swap" becomes a no-op (we set <code>list.get(index)</code> to itself and <code>map.put(val, index)</code> right before removing it from the map). Still correct, no special-case branch needed.</li>
+                        <li><strong>Duplicate <code>insert</code>.</strong> The <code>map.containsKey</code> guard returns <code>false</code> without touching the list; the list never holds duplicates so the random pick stays uniform.</li>
+                        <li><strong>Removing a missing value.</strong> Same guard returns <code>false</code> upfront — no list mutation.</li>
+                        <li><strong>Empty <code>getRandom</code>.</strong> The problem guarantees at least one element exists when called, so we don't need to defend against <code>list.size() == 0</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li><code>insert</code>: <code>O(1)</code> average — one hashmap lookup + one append.</li>
+                        <li><code>remove</code>: <code>O(1)</code> average — one hashmap lookup, one swap, one tail pop, one map delete.</li>
+                        <li><code>getRandom</code>: <code>O(1)</code> — random index + one list lookup.</li>
+                        <li>Space: <code>O(n)</code> total — the list and the map each hold at most one entry per value.</li>
+                    </ul>
+                    <div class="callout" role="note">
+                        <strong>"Average" not "worst case."</strong> The <code>O(1)</code> bounds rely on the hashmap, so a degenerate hash that buckets many keys into the same chain could make individual operations <code>O(n)</code>. That's the standard caveat; under Java's <code>HashMap</code> with reasonable inputs it holds in practice.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
