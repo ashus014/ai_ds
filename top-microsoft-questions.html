@@ -889,6 +889,21 @@
                                 >?</button>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="slno">40</td>
+                            <td class="stmt">359. Logger Rate Limiter <span style="font-size: 0.78em; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; margin-left: 6px; font-weight: 600;">🔒 Premium</span></td>
+                            <td><span class="pill diff-easy">Easy</span></td>
+                            <td class="solution"><a class="sol-link" href="microsoft/solutions/359-logger-rate-limiter.html">Sol</a></td>
+                            <td class="linkcell"><a href="microsoft/problems/359-logger-rate-limiter.html">Open</a></td>
+                            <td class="hint hint-tooltip-cell">
+                                <button
+                                    type="button"
+                                    class="hint-dot"
+                                    aria-label="Show hint"
+                                    data-hint="Keep a HashMap<String, Integer> mapping each message to the earliest timestamp it's allowed to print again. On a call: if timestamp < nextAllowed, return false; else put(message, timestamp + 10) and return true. O(1) per call."
+                                >?</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
