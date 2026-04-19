@@ -904,6 +904,21 @@
                                 >?</button>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="slno">41</td>
+                            <td class="stmt">1647. Minimum Deletions to Make Character Frequencies Unique</td>
+                            <td><span class="pill diff-medium">Medium</span></td>
+                            <td class="solution"><a class="sol-link" href="microsoft/solutions/1647-minimum-deletions-to-make-character-frequencies-unique.html">Sol</a></td>
+                            <td class="linkcell"><a href="https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/description/?envType=problem-list-v2&amp;envId=wssfcu1i" target="_blank" rel="noopener noreferrer">Open</a></td>
+                            <td class="hint hint-tooltip-cell">
+                                <button
+                                    type="button"
+                                    class="hint-dot"
+                                    aria-label="Show hint"
+                                    data-hint="Count freq[26]. Keep a HashSet of 'used' counts; for each f, while f>0 && used.contains(f): f--; deletions++; then used.add(f). Follow-up without HashSet: sort freq ascending and from i=24 down, push freq[i] to min(freq[i], freq[i+1]-1) clamped at 0; sum the drops."
+                                >?</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
