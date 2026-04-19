@@ -1009,6 +1009,21 @@
                                 >?</button>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="slno">49</td>
+                            <td class="stmt">253. Meeting Rooms II</td>
+                            <td><span class="pill diff-medium">Medium</span></td>
+                            <td class="solution"><a class="sol-link" href="microsoft/solutions/253-meeting-rooms-ii.html">Sol</a></td>
+                            <td class="linkcell"><a href="https://neetcode.io/problems/meeting-schedule-ii/question?list=blind75" target="_blank" rel="noopener noreferrer">Open</a></td>
+                            <td class="hint hint-tooltip-cell">
+                                <button
+                                    type="button"
+                                    class="hint-dot"
+                                    aria-label="Show hint"
+                                    data-hint="Sort intervals by start. Walk them with a min-heap of end times of currently-occupied rooms. If heap.peek() <= meeting.start, the earliest room is free → poll. Always add meeting.end. Final heap size = answer. Note: '<=' (not '<') so (0,8) & (8,10) share a room."
+                                >?</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

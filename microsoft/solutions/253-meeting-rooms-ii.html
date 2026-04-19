@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>253 — Meeting Rooms II — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        .ext-link {
+            color: #4c1d95;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>253. Meeting Rooms II</h1>
+                <p>Given a list of meeting <code>[start, end)</code> intervals, return the minimum number of conference rooms required so that no two meetings collide. Touching at a boundary — e.g. <code>(0,8)</code> and <code>(8,10)</code> — does <em>not</em> count as a conflict.</p>
+                <span class="meta">Microsoft · Medium</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> The answer is the <em>maximum number of meetings that overlap at any single instant</em>. To compute this in <code>O(n log n)</code>: sort meetings by <strong>start time</strong>, then sweep them in order while keeping a min-heap of the <em>end times</em> of currently-occupied rooms. For each new meeting, if the earliest-ending room is already free (its end time ≤ this meeting's start), reuse that room (poll it); always push this meeting's end time. The heap's final size is the answer.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Answer</h2>
+                    <h3>✅ Sort by start + min-heap of end times</h3>
+                    <p>Step by step:</p>
+                    <ul>
+                        <li>Sort intervals by <code>start</code> ascending — we'll process meetings in the order they begin.</li>
+                        <li>Maintain a min-heap whose contents are the end times of every room currently in use. <code>heap.peek()</code> tells us the earliest a room will become free.</li>
+                        <li>For each meeting, if <code>heap.peek() &lt;= meeting.start</code>, that room finished in time — <code>poll()</code> to free it (we'll immediately reassign it). Then <code>add(meeting.end)</code> to mark whichever room (reused or brand-new) is now busy until then.</li>
+                        <li>The size of the heap at the end equals how many distinct rooms we had in flight — the answer.</li>
+                    </ul>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">/**
+ * Definition of Interval:
+ * public class Interval {
+ *     public int start, end;
+ *     public Interval(int start, int end) {
+ *         this.start = start;
+ *         this.end = end;
+ *     }
+ * }
+ */
+
+class Solution {
+    public int minMeetingRooms(List<Interval> intervals) {
+        if (intervals == null || intervals.size() == 0) return 0;
+
+        // sort by start time
+        intervals.sort((a, b) -> a.start - b.start);
+
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (Interval meeting : intervals) {
+            // if room is free
+            if (!minHeap.isEmpty() && minHeap.peek() <= meeting.start) {
+                minHeap.poll();
+            }
+
+            // allocate room
+            minHeap.add(meeting.end);
+        }
+
+        return minHeap.size();
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — sort by start + min-heap of end times">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — sort + min-heap</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-comment">/**
+ * Definition of Interval:
+ * public class Interval {
+ *     public int start, end;
+ *     public Interval(int start, int end) {
+ *         this.start = start;
+ *         this.end = end;
+ *     }
+ * }
+ */</span>
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">minMeetingRooms</span>(<span class="sh-type">List</span>&lt;<span class="sh-type">Interval</span>&gt; intervals) {
+        <span class="sh-kw">if</span> (intervals == <span class="sh-kw">null</span> || intervals.<span class="sh-call">size</span>() == <span class="sh-lit">0</span>) <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+
+        <span class="sh-comment">// sort by start time</span>
+        intervals.<span class="sh-call">sort</span>((a, b) -&gt; a.start - b.start);
+
+        <span class="sh-type">PriorityQueue</span>&lt;<span class="sh-type">Integer</span>&gt; minHeap = <span class="sh-kw">new</span> <span class="sh-type">PriorityQueue</span>&lt;&gt;();
+
+        <span class="sh-kw">for</span> (<span class="sh-type">Interval</span> meeting : intervals) {
+            <span class="sh-comment">// if room is free</span>
+            <span class="sh-kw">if</span> (!minHeap.<span class="sh-call">isEmpty</span>() &amp;&amp; minHeap.<span class="sh-call">peek</span>() &lt;= meeting.start) {
+                minHeap.<span class="sh-call">poll</span>();
+            }
+
+            <span class="sh-comment">// allocate room</span>
+            minHeap.<span class="sh-call">add</span>(meeting.end);
+        }
+
+        <span class="sh-kw">return</span> minHeap.<span class="sh-call">size</span>();
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why the heap's final size is the answer.</strong> Every <code>add</code> represents "this room is now booked." Every <code>poll</code> represents "an existing room came free in time, reuse it." So the heap only grows when we genuinely had to spin up a new room. After processing every meeting, the heap holds one entry per room ever opened — equal to the peak concurrent meetings, which is exactly the rooms required.
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why <code>&lt;=</code> and not <code>&lt;</code>.</strong> The problem treats <code>(0, 8)</code> ending and <code>(8, 10)</code> starting as <em>not</em> a conflict — the meeting that ends at 8 vacates the room exactly when the next meeting starts. <code>peek() &lt;= meeting.start</code> captures that "boundary touch" correctly. If the problem treated <code>(0, 8) / (8, 10)</code> as overlapping, you'd switch to a strict <code>&lt;</code>.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough — <code>intervals = [(0, 40), (5, 10), (15, 20)]</code></h2>
+                    <p>Already sorted by start. The expected answer is <code>2</code> (room 1 holds <code>(0,40)</code>; room 2 holds <code>(5,10)</code> then <code>(15,20)</code>).</p>
+                    <div class="ascii-block">step | meeting   | heap before | peek &lt;= start? | action                       | heap after
+-----+-----------+-------------+-----------------+------------------------------+------------
+  1  | (0,  40)  | []          | n/a (empty)     | add 40                       | [40]
+  2  | (5,  10)  | [40]        | 40 &lt;= 5  → no  | add 10                       | [10, 40]
+  3  | (15, 20)  | [10, 40]    | 10 &lt;= 15 → yes | poll 10, then add 20         | [20, 40]
+
+heap size at the end = 2  ✓</div>
+                    <p>Notice how <code>(15,20)</code> reused the room that <code>(5,10)</code> just vacated, so the heap stayed at size 2 instead of climbing to 3.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Edge cases</h2>
+                    <ul>
+                        <li><strong>Empty input.</strong> The upfront <code>null/size==0</code> guard returns <code>0</code> directly.</li>
+                        <li><strong>One meeting.</strong> Single <code>add</code>, heap size <code>1</code>, answer <code>1</code>.</li>
+                        <li><strong>Boundary touch — <code>(0,8)</code> then <code>(8,10)</code>.</strong> After processing <code>(0,8)</code>, heap is <code>[8]</code>. For <code>(8,10)</code>: <code>8 &lt;= 8</code> → poll, then add <code>10</code>. Heap stays size <code>1</code>. ✓ (no new room).</li>
+                        <li><strong>All meetings overlap.</strong> No <code>poll</code> ever fires, heap grows to size <code>n</code> — answer <code>n</code>.</li>
+                        <li><strong>Identical start times.</strong> Sort tie-breaker doesn't matter; whichever order we visit them, both will end up booking rooms (the heap is empty for the first, and the second sees <code>peek() = first.end &gt; common start</code>, so no reuse).</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <ul>
+                        <li>Time: <code>O(n log n)</code> — the sort dominates; the heap loop is <code>n</code> iterations of <code>O(log n)</code> each.</li>
+                        <li>Space: <code>O(n)</code> — the heap can hold up to one entry per concurrently active room (worst case <code>n</code> if all meetings overlap).</li>
+                    </ul>
+                    <div class="callout" role="note">
+                        <strong>Equivalent classic alternative — two-pointer sweep.</strong> Instead of a heap, build two sorted arrays: all start times and all end times, each sorted ascending. Walk both with pointers <code>s, e</code>; if <code>start[s] &lt; end[e]</code> a meeting begins before any ends — increment a <code>rooms</code> counter and advance <code>s</code>. Otherwise a room frees up — decrement (or just advance <code>e</code> while tracking max). The maximum value of <code>rooms</code> during the sweep is the answer. Same <code>O(n log n)</code> from the two sorts, but no heap needed.
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Cross-list note.</strong> This same problem (LC 253) also lives in your <em>Blind 75</em> list as row #67 with a placeholder solution link. The min-heap solution above ports over verbatim — same algorithm, same complexity — so you can mirror this page when you get to it.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
