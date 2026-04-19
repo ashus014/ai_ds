@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>1275 — Find Winner on a Tic Tac Toe Game — Microsoft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e1b4b;
+            font-weight: 600;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            -webkit-text-fill-color: #1e1b4b;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #4c1d95;
+            font-size: 1.12em;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        .section h3.spaced { margin-top: 22px; }
+        .section h4 {
+            color: #1e1b4b;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        .section ul { margin: 0 0 16px 1.15em; padding: 0; color: #444; line-height: 1.65; }
+        .callout {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            color: #5d4037;
+            font-size: 0.95em;
+            line-height: 1.55;
+        }
+        .ascii-block {
+            margin: 10px 0 14px;
+            padding: 14px 16px;
+            background: #1e1b4b;
+            color: #e0e7ff;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            margin-bottom: 4px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 52%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .code-window-actions { margin-left: auto; z-index: 2; }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #bd93f9; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .offscreen-copy {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: pre;
+            border: 0;
+        }
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            font-size: 0.95em;
+        }
+        table.summary-table th, table.summary-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e8eaf6;
+            vertical-align: top;
+        }
+        table.summary-table th {
+            background: #ede9fe;
+            color: #4c1d95;
+            font-weight: 700;
+        }
+        table.summary-table tr:last-child td { border-bottom: 0; }
+        table.summary-table td code { font-size: 0.9em; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .code-window-body { font-size: 11.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../../top-microsoft-questions.html" class="back-link">← Top Microsoft Questions</a>
+                <a href="../../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>1275. Find Winner on a Tic Tac Toe Game</h1>
+                <p>Two players (A and B) take turns placing marks on a 3×3 board, A first. Given the chronological list of moves, return <code>"A"</code> or <code>"B"</code> if that player has won, <code>"Draw"</code> if all 9 moves are played and nobody won, or <code>"Pending"</code> if the game is incomplete.</p>
+                <span class="meta">Microsoft · Easy</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p><strong>Hint:</strong> After each move, the only winning lines we have to recheck are the ones that pass through the cell that was just played: <em>that row</em>, <em>that column</em>, and (only if it sits on a diagonal) the matching diagonal. Two flavors:</p>
+                    <ul>
+                        <li><strong>Board sim:</strong> keep a literal <code>char[3][3]</code>, place the mark, then read three cells in each candidate line.</li>
+                        <li><strong>Counter trick:</strong> keep just <code>rowCount[3]</code>, <code>colCount[3]</code>, <code>mainDiagonal</code>, <code>antiDiagonal</code>. Use <code>+1</code> for A, <code>-1</code> for B; whoever first drives any of those counters to <code>±3</code> has won.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Answers</h2>
+                    <h3>✅ Board simulation — place &amp; check the four lines through the move</h3>
+                    <p>Build an empty 3×3 board, alternate <code>X</code> and <code>O</code> as you replay the moves, and after each placement check the row, the column, and (when applicable) the two diagonals through that cell. Return as soon as someone wins. If you exhaust all <code>moves</code> without a winner, it's <code>"Draw"</code> when 9 moves were played, otherwise <code>"Pending"</code>.</p>
+                    <textarea id="copy-buffer-sol" class="offscreen-copy" readonly aria-label="Java source for copy">class Solution {
+    public String tictactoe(int[][] moves) {
+
+        // create empty board
+        char[][] board = new char[3][3];
+
+        // fill with space
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board[i][j] = ' ';
+            }
+        }
+
+        char currentPlayer = 'X'; // A starts
+
+        for (int[] move : moves) {
+            int row = move[0];
+            int col = move[1];
+
+            // place mark
+            board[row][col] = currentPlayer;
+
+            // check if current player wins
+            if (checkWin(board, row, col, currentPlayer)) {
+                return currentPlayer == 'X' ? "A" : "B";
+            }
+
+            // switch player
+            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        }
+
+        if (moves.length == 9) return "Draw";
+
+        return "Pending";
+    }
+
+    // function to check win
+    private boolean checkWin(char[][] board, int row, int col, char player) {
+
+        // check row
+        if (board[row][0] == player &&
+            board[row][1] == player &&
+            board[row][2] == player) {
+            return true;
+        }
+
+        // check column
+        if (board[0][col] == player &&
+            board[1][col] == player &&
+            board[2][col] == player) {
+            return true;
+        }
+
+        // check main diagonal
+        if (row == col &&
+            board[0][0] == player &&
+            board[1][1] == player &&
+            board[2][2] == player) {
+            return true;
+        }
+
+        // check anti diagonal
+        if (row + col == 2 &&
+            board[0][2] == player &&
+            board[1][1] == player &&
+            board[2][0] == player) {
+            return true;
+        }
+
+        return false;
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — board simulation">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">✅ Solution.java — board simulation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-sol" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-type">String</span> <span class="sh-call">tictactoe</span>(<span class="sh-kw">int</span>[][] moves) {
+
+        <span class="sh-comment">// create empty board</span>
+        <span class="sh-kw">char</span>[][] board = <span class="sh-kw">new</span> <span class="sh-kw">char</span>[<span class="sh-lit">3</span>][<span class="sh-lit">3</span>];
+
+        <span class="sh-comment">// fill with space</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span> i = <span class="sh-lit">0</span>; i &lt; <span class="sh-lit">3</span>; i++) {
+            <span class="sh-kw">for</span> (<span class="sh-kw">int</span> j = <span class="sh-lit">0</span>; j &lt; <span class="sh-lit">3</span>; j++) {
+                board[i][j] = <span class="sh-lit">' '</span>;
+            }
+        }
+
+        <span class="sh-kw">char</span> currentPlayer = <span class="sh-lit">'X'</span>; <span class="sh-comment">// A starts</span>
+
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] move : moves) {
+            <span class="sh-kw">int</span> row = move[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> col = move[<span class="sh-lit">1</span>];
+
+            <span class="sh-comment">// place mark</span>
+            board[row][col] = currentPlayer;
+
+            <span class="sh-comment">// check if current player wins</span>
+            <span class="sh-kw">if</span> (<span class="sh-call">checkWin</span>(board, row, col, currentPlayer)) {
+                <span class="sh-kw">return</span> currentPlayer == <span class="sh-lit">'X'</span> ? <span class="sh-lit">"A"</span> : <span class="sh-lit">"B"</span>;
+            }
+
+            <span class="sh-comment">// switch player</span>
+            currentPlayer = (currentPlayer == <span class="sh-lit">'X'</span>) ? <span class="sh-lit">'O'</span> : <span class="sh-lit">'X'</span>;
+        }
+
+        <span class="sh-kw">if</span> (moves.length == <span class="sh-lit">9</span>) <span class="sh-kw">return</span> <span class="sh-lit">"Draw"</span>;
+
+        <span class="sh-kw">return</span> <span class="sh-lit">"Pending"</span>;
+    }
+
+    <span class="sh-comment">// function to check win</span>
+    <span class="sh-kw">private</span> <span class="sh-kw">boolean</span> <span class="sh-call">checkWin</span>(<span class="sh-kw">char</span>[][] board, <span class="sh-kw">int</span> row, <span class="sh-kw">int</span> col, <span class="sh-kw">char</span> player) {
+
+        <span class="sh-comment">// check row</span>
+        <span class="sh-kw">if</span> (board[row][<span class="sh-lit">0</span>] == player &amp;&amp;
+            board[row][<span class="sh-lit">1</span>] == player &amp;&amp;
+            board[row][<span class="sh-lit">2</span>] == player) {
+            <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+        }
+
+        <span class="sh-comment">// check column</span>
+        <span class="sh-kw">if</span> (board[<span class="sh-lit">0</span>][col] == player &amp;&amp;
+            board[<span class="sh-lit">1</span>][col] == player &amp;&amp;
+            board[<span class="sh-lit">2</span>][col] == player) {
+            <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+        }
+
+        <span class="sh-comment">// check main diagonal</span>
+        <span class="sh-kw">if</span> (row == col &amp;&amp;
+            board[<span class="sh-lit">0</span>][<span class="sh-lit">0</span>] == player &amp;&amp;
+            board[<span class="sh-lit">1</span>][<span class="sh-lit">1</span>] == player &amp;&amp;
+            board[<span class="sh-lit">2</span>][<span class="sh-lit">2</span>] == player) {
+            <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+        }
+
+        <span class="sh-comment">// check anti diagonal</span>
+        <span class="sh-kw">if</span> (row + col == <span class="sh-lit">2</span> &amp;&amp;
+            board[<span class="sh-lit">0</span>][<span class="sh-lit">2</span>] == player &amp;&amp;
+            board[<span class="sh-lit">1</span>][<span class="sh-lit">1</span>] == player &amp;&amp;
+            board[<span class="sh-lit">2</span>][<span class="sh-lit">0</span>] == player) {
+            <span class="sh-kw">return</span> <span class="sh-kw">true</span>;
+        }
+
+        <span class="sh-kw">return</span> <span class="sh-kw">false</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why only the lines through <code>(row, col)</code>?</strong> A win can only be created by the move just played, so any winning line that includes the new cell is a candidate; any line that doesn't include this cell hasn't changed since the previous move. That cuts the per-move check from "all 8 lines" to "at most 4 lines."
+                    </div>
+
+                    <h3 class="spaced">Smarter approach — counters with <code>+1 / -1</code></h3>
+                    <p>Skip the board entirely. Score A as <code>+1</code> and B as <code>-1</code>. Maintain four running tallies: <code>rowCount[row]</code>, <code>colCount[col]</code>, <code>mainDiagonal</code> (cells with <code>row == col</code>), and <code>antiDiagonal</code> (cells with <code>row + col == 2</code>). After each move, if any of those reaches <code>+3</code>, A wins; if <code>-3</code>, B wins. Same <code>±3</code> shortcut works because A always plays <code>+1</code> and B always plays <code>-1</code>.</p>
+                    <textarea id="copy-buffer-fast" class="offscreen-copy" readonly aria-label="Java optimised source for copy">class Solution {
+    public String tictactoe(int[][] moves) {
+
+        // store count of marks in each row and column
+        int[] rowCount = new int[3];
+        int[] colCount = new int[3];
+
+        // store count for diagonals
+        int mainDiagonal = 0;
+        int antiDiagonal = 0;
+
+        // A = +1, B = -1
+        int currentPlayer = 1;
+
+        // go through each move
+        for (int[] move : moves) {
+
+            // move[0] = row, move[1] = column
+            int row = move[0];
+            int col = move[1];
+
+            // update row and column counts
+            rowCount[row] += currentPlayer;
+            colCount[col] += currentPlayer;
+
+            // if cell is on main diagonal (top-left to bottom-right)
+            if (row == col) {
+                mainDiagonal += currentPlayer;
+            }
+
+            // if cell is on anti diagonal (top-right to bottom-left)
+            if (row + col == 2) {
+                antiDiagonal += currentPlayer;
+            }
+
+            // check if current player wins
+            if (Math.abs(rowCount[row]) == 3 ||
+                Math.abs(colCount[col]) == 3 ||
+                Math.abs(mainDiagonal) == 3 ||
+                Math.abs(antiDiagonal) == 3) {
+
+                // return winner
+                return currentPlayer == 1 ? "A" : "B";
+            }
+
+            // switch player (A -> B or B -> A)
+            currentPlayer *= -1;
+        }
+
+        // if all 9 moves played and no winner → Draw
+        if (moves.length == 9) {
+            return "Draw";
+        }
+
+        // otherwise game is still going on
+        return "Pending";
+    }
+}</textarea>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Solution.java — counter trick">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — counter trick (no board)</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-fast" title="Copy solution">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-type">String</span> <span class="sh-call">tictactoe</span>(<span class="sh-kw">int</span>[][] moves) {
+
+        <span class="sh-comment">// store count of marks in each row and column</span>
+        <span class="sh-kw">int</span>[] rowCount = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[<span class="sh-lit">3</span>];
+        <span class="sh-kw">int</span>[] colCount = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[<span class="sh-lit">3</span>];
+
+        <span class="sh-comment">// store count for diagonals</span>
+        <span class="sh-kw">int</span> mainDiagonal = <span class="sh-lit">0</span>;
+        <span class="sh-kw">int</span> antiDiagonal = <span class="sh-lit">0</span>;
+
+        <span class="sh-comment">// A = +1, B = -1</span>
+        <span class="sh-kw">int</span> currentPlayer = <span class="sh-lit">1</span>;
+
+        <span class="sh-comment">// go through each move</span>
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] move : moves) {
+
+            <span class="sh-comment">// move[0] = row, move[1] = column</span>
+            <span class="sh-kw">int</span> row = move[<span class="sh-lit">0</span>];
+            <span class="sh-kw">int</span> col = move[<span class="sh-lit">1</span>];
+
+            <span class="sh-comment">// update row and column counts</span>
+            rowCount[row] += currentPlayer;
+            colCount[col] += currentPlayer;
+
+            <span class="sh-comment">// if cell is on main diagonal (top-left to bottom-right)</span>
+            <span class="sh-kw">if</span> (row == col) {
+                mainDiagonal += currentPlayer;
+            }
+
+            <span class="sh-comment">// if cell is on anti diagonal (top-right to bottom-left)</span>
+            <span class="sh-kw">if</span> (row + col == <span class="sh-lit">2</span>) {
+                antiDiagonal += currentPlayer;
+            }
+
+            <span class="sh-comment">// check if current player wins</span>
+            <span class="sh-kw">if</span> (<span class="sh-type">Math</span>.<span class="sh-call">abs</span>(rowCount[row]) == <span class="sh-lit">3</span> ||
+                <span class="sh-type">Math</span>.<span class="sh-call">abs</span>(colCount[col]) == <span class="sh-lit">3</span> ||
+                <span class="sh-type">Math</span>.<span class="sh-call">abs</span>(mainDiagonal) == <span class="sh-lit">3</span> ||
+                <span class="sh-type">Math</span>.<span class="sh-call">abs</span>(antiDiagonal) == <span class="sh-lit">3</span>) {
+
+                <span class="sh-comment">// return winner</span>
+                <span class="sh-kw">return</span> currentPlayer == <span class="sh-lit">1</span> ? <span class="sh-lit">"A"</span> : <span class="sh-lit">"B"</span>;
+            }
+
+            <span class="sh-comment">// switch player (A -&gt; B or B -&gt; A)</span>
+            currentPlayer *= -<span class="sh-lit">1</span>;
+        }
+
+        <span class="sh-comment">// if all 9 moves played and no winner → Draw</span>
+        <span class="sh-kw">if</span> (moves.length == <span class="sh-lit">9</span>) {
+            <span class="sh-kw">return</span> <span class="sh-lit">"Draw"</span>;
+        }
+
+        <span class="sh-comment">// otherwise game is still going on</span>
+        <span class="sh-kw">return</span> <span class="sh-lit">"Pending"</span>;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="callout" role="note">
+                        <strong>Why <code>±3</code> works.</strong> Players strictly alternate <em>and</em> can never overwrite a cell, so along any line each cell contributes either <code>+1</code> (A) or <code>-1</code> (B) — and <em>only one player can fill all three cells of a single line</em>. The line's tally therefore reaches <code>+3</code> only when A fills it, and <code>-3</code> only when B does. The mixed cases (like a row of <code>+1, -1, +1 = +1</code>) never reach <code>±3</code>, which is exactly the property we want.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Walkthrough — <code>moves = [[0,0],[2,0],[1,1],[2,1],[2,2]]</code></h2>
+                    <p>A wins on the main diagonal <code>(0,0) → (1,1) → (2,2)</code>. Trace of the counter version:</p>
+                    <div class="ascii-block">player | move  | rowCount | colCount | mainDiag | antiDiag | check ±3?
+-------+-------+----------+----------+----------+----------+-----------
+   A   | (0,0) | [+1,0,0] | [+1,0,0] |    +1    |    0     | no
+   B   | (2,0) | [+1,0,-1]| [ 0,0,0] |    +1    |   -1     | no   (B added -1 to row 2 and col 0)
+   A   | (1,1) | [+1,+1,-1]|[ 0,+1,0]|    +2    |    0     | no   (A on main diag)
+   B   | (2,1) | [+1,+1,-2]|[ 0, 0,0]|    +2    |   -1     | no
+   A   | (2,2) | [+1,+1,-1]|[ 0, 0,+1]|   +3    |   -1     | YES → A wins</div>
+                    <p>(I tracked col counts above as a per-column delta after each move — you can read them column-by-column.) The first time any tally hits <code>±3</code> is on A's third move, and we immediately return <code>"A"</code>.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Complexity</h2>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Approach</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Space</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>✅ Board simulation</td>
+                                <td><code>O(m)</code> — at most 9 moves, each does a constant 4-line check (≤12 cell reads)</td>
+                                <td><code>O(1)</code> — fixed 3×3 board</td>
+                            </tr>
+                            <tr>
+                                <td>Counter trick</td>
+                                <td><code>O(m)</code> — each move is <code>O(1)</code> arithmetic, no scanning of cells</td>
+                                <td><code>O(1)</code> — two arrays of size 3 plus two scalars</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 12px; color: #555; font-size: 0.95em;">Both are technically <code>O(m)</code> with constant extra space; the counter version just shaves the constant factor and skips ever building or reading a board.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    ta.select();
+                    ta.setSelectionRange(0, ta.value.length);
+                    var text = ta.value;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
