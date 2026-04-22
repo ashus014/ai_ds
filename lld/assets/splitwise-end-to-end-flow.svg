@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="820" viewBox="0 0 1700 820" role="img" aria-labelledby="title desc">
+  <title id="title">Splitwise End-to-End Flow</title>
+  <desc id="desc">Sequence flow among User, Splitwise, ExpenseController, SplitFactory, ExpenseSplit, BalanceSheetController, and UserExpenseBalanceSheet.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#e8edf6" />
+    </marker>
+    <style>
+      .bg { fill: #020914; }
+      .actor-box { fill: #1f232b; stroke: #9097a3; stroke-width: 1.2; }
+      .actor-text { fill: #f1f5fb; font: 600 28px 'Segoe UI', Tahoma, sans-serif; text-anchor: middle; dominant-baseline: middle; }
+      .lifeline { stroke: #d9dfeb; stroke-width: 2; }
+      .msg { stroke: #e8edf6; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .msg-dashed { stroke: #e8edf6; stroke-width: 2.2; stroke-dasharray: 9 7; fill: none; marker-end: url(#arrow); }
+      .msg-label { fill: #e8edf6; font: 500 28px 'Segoe UI', Tahoma, sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1700" height="820" rx="8" />
+
+  <!-- top actor boxes -->
+  <rect class="actor-box" x="50" y="40" width="150" height="64" rx="4" />
+  <rect class="actor-box" x="290" y="40" width="160" height="64" rx="4" />
+  <rect class="actor-box" x="500" y="40" width="210" height="64" rx="4" />
+  <rect class="actor-box" x="790" y="40" width="160" height="64" rx="4" />
+  <rect class="actor-box" x="1020" y="40" width="150" height="64" rx="4" />
+  <rect class="actor-box" x="1220" y="40" width="220" height="64" rx="4" />
+  <rect class="actor-box" x="1490" y="40" width="200" height="64" rx="4" />
+
+  <text class="actor-text" x="125" y="72">User</text>
+  <text class="actor-text" x="370" y="72">Splitwise</text>
+  <text class="actor-text" x="605" y="72">ExpenseController</text>
+  <text class="actor-text" x="870" y="72">SplitFactory</text>
+  <text class="actor-text" x="1095" y="72">ExpenseSplit</text>
+  <text class="actor-text" x="1330" y="72">BalanceSheetController</text>
+  <text class="actor-text" x="1590" y="72">UserExpenseBalanceSheet</text>
+
+  <!-- lifelines -->
+  <line class="lifeline" x1="125" y1="104" x2="125" y2="690" />
+  <line class="lifeline" x1="370" y1="104" x2="370" y2="690" />
+  <line class="lifeline" x1="605" y1="104" x2="605" y2="690" />
+  <line class="lifeline" x1="870" y1="104" x2="870" y2="690" />
+  <line class="lifeline" x1="1095" y1="104" x2="1095" y2="690" />
+  <line class="lifeline" x1="1330" y1="104" x2="1330" y2="690" />
+  <line class="lifeline" x1="1590" y1="104" x2="1590" y2="690" />
+
+  <!-- messages -->
+  <line class="msg" x1="125" y1="150" x2="370" y2="150" />
+  <text class="msg-label" x="247" y="138">Add expense (group/direct)</text>
+
+  <line class="msg" x1="370" y1="195" x2="605" y2="195" />
+  <text class="msg-label" x="487" y="183">createExpense(...)</text>
+
+  <line class="msg" x1="605" y1="240" x2="870" y2="240" />
+  <text class="msg-label" x="737" y="228">getSplitObject(splitType)</text>
+
+  <line class="msg-dashed" x1="870" y1="285" x2="605" y2="285" />
+  <text class="msg-label" x="737" y="273">ExpenseSplit implementation</text>
+
+  <line class="msg" x1="605" y1="330" x2="1095" y2="330" />
+  <text class="msg-label" x="850" y="318">validateRequest(splitList, totalAmount)</text>
+
+  <line class="msg-dashed" x1="1095" y1="375" x2="605" y2="375" />
+  <text class="msg-label" x="850" y="363">validation result</text>
+
+  <line class="msg-dashed" x1="605" y1="420" x2="370" y2="420" />
+  <text class="msg-label" x="487" y="408">Expense created</text>
+
+  <line class="msg" x1="370" y1="470" x2="1330" y2="470" />
+  <text class="msg-label" x="850" y="458">updateUserExpenseBalanceSheet(expense)</text>
+
+  <line class="msg" x1="1330" y1="515" x2="1590" y2="515" />
+  <text class="msg-label" x="1460" y="503">update balances (owe/getBack)</text>
+
+  <line class="msg-dashed" x1="1590" y1="560" x2="1330" y2="560" />
+  <text class="msg-label" x="1460" y="548">updated balances</text>
+
+  <line class="msg-dashed" x1="1330" y1="605" x2="370" y2="605" />
+  <text class="msg-label" x="850" y="593">balance sheet updated</text>
+
+  <line class="msg-dashed" x1="370" y1="650" x2="125" y2="650" />
+  <text class="msg-label" x="247" y="638">showBalanceSheetOfUser</text>
+
+  <!-- bottom actor boxes -->
+  <rect class="actor-box" x="50" y="690" width="150" height="64" rx="4" />
+  <rect class="actor-box" x="290" y="690" width="160" height="64" rx="4" />
+  <rect class="actor-box" x="500" y="690" width="210" height="64" rx="4" />
+  <rect class="actor-box" x="790" y="690" width="160" height="64" rx="4" />
+  <rect class="actor-box" x="1020" y="690" width="150" height="64" rx="4" />
+  <rect class="actor-box" x="1220" y="690" width="220" height="64" rx="4" />
+  <rect class="actor-box" x="1490" y="690" width="200" height="64" rx="4" />
+
+  <text class="actor-text" x="125" y="722">User</text>
+  <text class="actor-text" x="370" y="722">Splitwise</text>
+  <text class="actor-text" x="605" y="722">ExpenseController</text>
+  <text class="actor-text" x="870" y="722">SplitFactory</text>
+  <text class="actor-text" x="1095" y="722">ExpenseSplit</text>
+  <text class="actor-text" x="1330" y="722">BalanceSheetController</text>
+  <text class="actor-text" x="1590" y="722">UserExpenseBalanceSheet</text>
+</svg>

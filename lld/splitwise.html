@@ -163,6 +163,27 @@
         table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
         table tr:last-child td { border-bottom: none; }
         table tr:hover { background: #f5f5f5; }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
         code {
             background: #e8eaf6;
             padding: 2px 6px;
@@ -217,6 +238,7 @@
             pre.code-block { font-size: 0.75em; }
         }
     </style>
+    <link rel="stylesheet" href="../hld/diagram-zoom.css">
     <link rel="stylesheet" href="../topic-progress.css">
 </head>
 <body>
@@ -1268,6 +1290,13 @@ public class UserController {
                     <p class="callout"><strong>What this file does:</strong> Manages user lifecycle and lookup operations.</p>
 
                 </div>
+                <div class="section">
+                    <h2>End-to-End Flow</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/splitwise-end-to-end-flow.svg" alt="Sequence flow from User to Splitwise, ExpenseController, SplitFactory, ExpenseSplit, BalanceSheetController, and UserExpenseBalanceSheet, covering expense creation, validation, balance updates, and balance sheet response." width="1700" height="820" loading="lazy">
+                        <figcaption>End-to-end Splitwise flow for request handling, split validation, and balance sheet update propagation.</figcaption>
+                    </figure>
+                </div>
             </div>
         </div>
     </div>
@@ -1439,6 +1468,7 @@ public class UserController {
             });
         })();
     </script>
+    <script src="../hld/diagram-zoom.js" defer></script>
     <script src="../topic-progress.js" defer></script>
 </body>
 </html>
