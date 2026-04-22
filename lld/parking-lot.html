@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Parking Lot — LLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .header-repo { margin-top: 20px; }
+        .header-repo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98em;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .header-repo a:hover {
+            background: rgba(255, 255, 255, 0.32);
+            transform: translateY(-1px);
+        }
+        .section a.repo-inline {
+            color: #5a67d8;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .section a.repo-inline:hover { color: #764ba2; }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p, .section li { line-height: 1.65; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        ol {
+            margin-left: 24px;
+            padding-left: 14px;
+            margin-bottom: 15px;
+        }
+        ol li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #764ba2;
+            margin: 20px 0 8px;
+        }
+        pre.code-block {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            border: 1px solid #313244;
+        }
+        pre.code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            display: block;
+            white-space: pre;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        }
+        .tok-comment { color: #7f8c98; }
+        .tok-keyword { color: #ff7ab2; font-weight: 600; }
+        .tok-type { color: #82aaff; }
+        .tok-string { color: #c3e88d; }
+        .tok-number { color: #f78c6c; }
+        .tok-annotation { color: #89ddff; }
+        .tok-literal { color: #ffcb6b; font-weight: 600; }
+        .tok-method { color: #ffd580; }
+        .callout {
+            background: #e8eaf6;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 0.98em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+            pre.code-block { font-size: 0.75em; }
+        }
+    </style>
+    <link rel="stylesheet" href="../hld/diagram-zoom.css">
+    <link rel="stylesheet" href="../topic-progress.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../lld.html" class="back-link">← Back to LLD</a>
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Parking Lot</h1>
+                <p>Low-Level Design — multi-level parking, gates, spot allocation, and pricing</p>
+                <span class="date-badge">April 22, 2026</span>
+                <p class="header-repo">
+                    <a href="https://github.com/ashus014/system-design/tree/main/LLD/parkingLot" target="_blank" rel="noopener noreferrer">GitHub — full source (LLD/parkingLot)</a>
+                </p>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Design a multi-level parking lot with entry and exit gates, ticket generation, spot allocation, cost computation, payment handling, and strategy-based spot lookup and pricing.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Parking Lot File Content (Formatted)</h2>
+                    <p><code>parkingLot/ParkingLot.md</code></p>
+
+                    <h3>Goals</h3>
+                    <ol>
+                        <li>The parking lot should have multiple floors where customers can park their cars.</li>
+                        <li>The parking lot should have multiple entry and exit points.</li>
+                        <li>Customers can collect a parking ticket from the entry points and can pay the parking fee at the exit points on their way out.</li>
+                        <li>Customers can pay the tickets at the automated exit panel or to the parking attendant.</li>
+                        <li>Customers can pay via both cash and credit cards.</li>
+                        <li>Customers should also be able to pay the parking fee at the customer info portal on each floor. If the customer has paid at the info portal, they do not have to pay at the exit.</li>
+                        <li>The system should not allow more vehicles than the maximum capacity of the parking lot. If the parking is full, the system should show a message at the entrance panel and on the parking display board on the ground floor.</li>
+                        <li>Each parking floor will have many parking spots. The system should support multiple types of parking spots such as Compact, Large, Handicapped, Motorcycle, etc.</li>
+                        <li>The parking lot should have some parking spots specified for electric cars. These spots should have an electric panel through which customers can pay and charge their vehicles.</li>
+                        <li>The system should support parking for different types of vehicles like car, truck, van, motorcycle, etc.</li>
+                        <li>Each parking floor should have a display board showing any free parking spot for each spot type.</li>
+                        <li>The system should support a per-hour parking fee model. For example, customers have to pay $4 for the first hour, $3.5 for the second and third hours, and $2.5 for all the remaining hours.</li>
+                    </ol>
+
+                    <h3>Parking Lot Structure</h3>
+                    <ol>
+                        <li>Entry Gate</li>
+                        <li>Exit Gate</li>
+                        <li>Parking Building</li>
+                        <li>Level 1</li>
+                        <li>2 Wheeler Parking Spot</li>
+                        <li>4 Wheeler Parking Spot</li>
+                        <li>Level 2</li>
+                        <li>Large Vehicle Parking Spot</li>
+                        <li>4 Wheeler Parking Spot</li>
+                    </ol>
+
+                    <h3>System Flow</h3>
+                    <pre class="code-block"><code>graph LR
+    U((User)) --&gt; EG[Entry Gate]
+    U --&gt; EXG[Exit Gate]
+
+    subgraph Entry Actions
+        EG --&gt; FPS[Find Parking Spot]
+        EG --&gt; GT[Generate Ticket]
+        EG --&gt; UPSE[Update Parking Spot]
+    end
+
+    UPSE --&gt; PL[(Parking Lot)]
+
+    subgraph Exit Actions
+        EXG --&gt; CC[Cost Calculation]
+        EXG --&gt; P[Payment]
+        EXG --&gt; UPSX[Update Parking Spot]
+        UPSX -- Free --&gt; PL
+    end</code></pre>
+
+                    <h3>Flow Description</h3>
+                    <p><strong>User</strong> interacts with:</p>
+                    <ol>
+                        <li><strong>Entry Gate</strong></li>
+                        <li>Find Parking Spot</li>
+                        <li>Generate Ticket</li>
+                        <li>Update Parking Spot (which updates the Parking Lot)</li>
+                        <li><strong>Exit Gate</strong></li>
+                        <li>Cost Calculation</li>
+                        <li>Payment</li>
+                        <li>Update Parking Spot -&gt; Free (which updates the Parking Lot)</li>
+                    </ol>
+                    <p><strong>Parking Lot</strong>: State is updated by actions at both the Entry and Exit Gates.</p>
+
+                    <h3>Major Objects</h3>
+                    <ol>
+                        <li>Vehicle</li>
+                        <li>Parking Spot</li>
+                        <li>Parking Level</li>
+                        <li>Entry Gate</li>
+                        <li>Exit Gate</li>
+                        <li>Ticket</li>
+                        <li>Payment</li>
+                    </ol>
+
+                    <h3>Class Design</h3>
+                    <h3>Vehicle</h3>
+                    <ul><li>vehicleNumber : String</li><li>vehicleType : VehicleType</li></ul>
+                    <h3>VehicleType (Enum)</h3>
+                    <ul><li>FOUR_WHEELER</li><li>TWO_WHEELER</li></ul>
+                    <h3>ParkingSpot</h3>
+                    <ul><li>spotId : String</li><li>isFree : boolean</li><li>isSpotFree() : boolean</li><li>occupySpot() : void</li><li>releaseSpot() : void</li></ul>
+                    <h3>ParkingSpotManager (Abstract Class)</h3>
+                    <p>Intelligent object which helps in managing parking spots like add, remove, park, unPark, search free spot, etc.</p>
+                    <ul><li>park() : ParkingSpot</li><li>unPark(ParkingSpot spot) : void</li><li>hasFreeSpot() : boolean</li></ul>
+                    <h3>TwoWheelerParkingSpotManager extends ParkingSpotManager</h3>
+                    <ul><li>spots : List&lt;ParkingSpot&gt;</li><li>strategy : ParkingSpotLookupStrategy</li><li>lock : ReentrantLock</li><li>park() : ParkingSpot</li><li>unPark(ParkingSpot spot) : void</li><li>hasFreeSpot() : boolean</li></ul>
+                    <h3>FourWheelerParkingSpotManager extends ParkingSpotManager</h3>
+                    <ul><li>spots : List&lt;ParkingSpot&gt;</li><li>strategy : ParkingSpotLookupStrategy</li><li>lock : ReentrantLock</li><li>park() : ParkingSpot</li><li>unPark(ParkingSpot spot) : void</li><li>hasFreeSpot() : boolean</li></ul>
+                    <h3>ParkingSpotLookupStrategy (Interface)</h3>
+                    <ul><li>selectSpot(List&lt;ParkingSpot&gt; spots) : ParkingSpot</li></ul>
+                    <h3>RandomSpotLookupStrategy extends ParkingSpotLookupStrategy</h3>
+                    <ul><li>selectSpot(List&lt;ParkingSpot&gt; spots) : ParkingSpot</li></ul>
+                    <h3>NearestToEntryGateLookupStrategy extends ParkingSpotLookupStrategy</h3>
+                    <ul><li>selectSpot(List&lt;ParkingSpot&gt; spots) : ParkingSpot</li></ul>
+                    <h3>ParkingLevel</h3>
+                    <ul><li>levelNumber : int</li><li>managers : Map&lt;VehicleType, ParkingSpotManager&gt;</li><li>hasAvailability() : boolean</li><li>park(VehicleType type) : ParkingSpot</li><li>unPark(VehicleType type, ParkingSpot spot) : void</li></ul>
+                    <h3>ParkingBuilding</h3>
+                    <ul><li>levels : List&lt;ParkingLevel&gt;</li><li>allocate(Vehicle vehicle) : Ticket</li><li>release(Ticket ticket) : void</li></ul>
+                    <h3>ParkingLot</h3>
+                    <ul><li>building : ParkingBuilding</li><li>entranceGate : EntranceGate</li><li>exitGate : ExitGate</li><li>vehicleArrives(Vehicle vehicle) : Ticket</li><li>vehicleExits(Ticket ticket, Payment payment) : void</li></ul>
+                    <h3>EntranceGate</h3>
+                    <ul><li>enter(ParkingBuilding building, Vehicle vehicle) : Ticket</li></ul>
+                    <h3>Ticket</h3>
+                    <ul><li>vehicle : Vehicle</li><li>level : ParkingLevel</li><li>spot : ParkingSpot</li><li>entryTime : LocalDateTime</li></ul>
+                    <h3>Exit Gate (Responsibilities)</h3>
+                    <p>Three things happen at Exit Gate:</p>
+                    <ul><li>Based on ticket, cost computation</li><li>Payment</li><li>On payment success, release of the reserved spot</li></ul>
+                    <h3>ExitGate</h3>
+                    <ul><li>costComputation : CostComputation</li><li>exit(ParkingBuilding building, Ticket ticket, Payment payment) : void</li></ul>
+                    <h3>CostComputation</h3>
+                    <ul><li>pricingStrategy : PricingStrategy</li><li>compute(Ticket ticket) : double</li></ul>
+                    <h3>PricingStrategy</h3>
+                    <ul><li>calculate(Ticket ticket) : double</li><li>FixedPricingStrategy</li><li>HourlyPricingStrategy</li></ul>
+
+                    <h3>End-to-End Flow</h3>
+                    <pre class="code-block"><code>sequenceDiagram
+    participant U as User
+    participant EG as EntranceGate
+    participant PB as ParkingBuilding
+    participant PL as ParkingLevel
+    participant PSM as ParkingSpotManager
+    participant LKP as ParkingSpotLookupStrategy
+    participant PS as ParkingSpot
+    participant EXG as ExitGate
+    participant CC as CostComputation
+    participant PR as PricingStrategy
+
+    U-&gt;&gt;EG: enter(building, vehicle)
+    EG-&gt;&gt;PB: allocate(vehicle)
+    PB-&gt;&gt;PL: park(vehicleType)
+    PL-&gt;&gt;PSM: park()
+    PSM-&gt;&gt;LKP: selectSpot(spots)
+    LKP--&gt;&gt;PSM: selected spot
+    PSM-&gt;&gt;PS: occupySpot()
+    PB--&gt;&gt;EG: Ticket
+    EG--&gt;&gt;U: Ticket
+
+    U-&gt;&gt;EXG: exit(building, ticket, payment)
+    EXG-&gt;&gt;CC: compute(ticket)
+    CC-&gt;&gt;PR: calculate(ticket)
+    PR--&gt;&gt;CC: fee
+    CC--&gt;&gt;EXG: fee
+    EXG-&gt;&gt;PB: release(ticket)
+    PB-&gt;&gt;PL: unPark(vehicleType, spot)
+    PL-&gt;&gt;PSM: unPark(spot)
+    PSM-&gt;&gt;PS: releaseSpot()
+    EXG--&gt;&gt;U: Exit complete</code></pre>
+                </div>
+
+                <div class="section">
+                    <h2>Parking Lot File Hierarchy</h2>
+                    <pre class="code-block"><code>
+parkingLot
+├── ParkingLot.md
+└── code
+    ├── building
+    │   ├── ParkingBuilding.java
+    │   └── ParkingLevel.java
+    ├── cost
+    │   └── CostComputation.java
+    ├── demo
+    │   └── ParkingLotDemo.java
+    ├── enums
+    │   └── VehicleType.java
+    ├── factory
+    ├── gate
+    │   ├── EntranceGate.java
+    │   └── ExitGate.java
+    ├── manager
+    │   ├── FourWheelerParkingSpotManager.java
+    │   ├── ParkingSpotManager.java
+    │   └── TwoWheelerParkingSpotManager.java
+    ├── model
+    │   ├── Payment.java
+    │   ├── Ticket.java
+    │   └── Vehicle.java
+    ├── parkinglot
+    │   └── ParkingLot.java
+    ├── portal
+    ├── spot
+    │   └── ParkingSpot.java
+    └── strategy
+        ├── lookup
+        │   ├── NearestToEntryGateLookupStrategy.java
+        │   ├── ParkingSpotLookupStrategy.java
+        │   └── RandomSpotLookupStrategy.java
+        └── pricing
+            ├── FixedPricingStrategy.java
+            ├── HourlyPricingStrategy.java
+            └── PricingStrategy.java
+</code></pre>
+                </div>
+
+                <div class="section">
+                    <h2>Repository Source Code</h2>
+                    <p>Exact Java files copied from the local Parking Lot repo tree, with a short explanation after each file.</p>
+
+                    <div class="code-label">code/building/ParkingBuilding.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.building;
+
+import LLD.parkingLot.code.model.Ticket;
+import LLD.parkingLot.code.model.Vehicle;
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ParkingBuilding {
+    private final List&lt;ParkingLevel&gt; levels;
+
+    public ParkingBuilding(List&lt;ParkingLevel&gt; levels) {
+        if (levels == null || levels.isEmpty()) {
+            throw new IllegalArgumentException("Levels cannot be null or empty");
+        }
+        this.levels = new ArrayList&lt;&gt;(levels);
+    }
+
+    public Ticket allocate(Vehicle vehicle) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle cannot be null");
+        }
+
+        for (ParkingLevel level : levels) {
+            ParkingSpot allocatedSpot = level.park(vehicle.getVehicleType());
+            if (allocatedSpot != null) {
+                return new Ticket(vehicle, level, allocatedSpot);
+            }
+        }
+
+        throw new IllegalStateException("Parking is full for vehicle type: " + vehicle.getVehicleType());
+    }
+
+    public void release(Ticket ticket) {
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket cannot be null");
+        }
+        ticket.getLevel().unPark(ticket.getVehicle().getVehicleType(), ticket.getSpot());
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Coordinates parking levels to allocate and release spots for incoming and outgoing vehicles.</p>
+
+                    <div class="code-label">code/building/ParkingLevel.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.building;
+
+import LLD.parkingLot.code.enums.VehicleType;
+import LLD.parkingLot.code.manager.ParkingSpotManager;
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+public class ParkingLevel {
+    private final int levelNumber;
+    private final Map&lt;VehicleType, ParkingSpotManager&gt; managers;
+
+    public ParkingLevel(int levelNumber, Map&lt;VehicleType, ParkingSpotManager&gt; managers) {
+        if (levelNumber &lt;= 0) {
+            throw new IllegalArgumentException("Level number must be positive");
+        }
+        if (managers == null || managers.isEmpty()) {
+            throw new IllegalArgumentException("Managers cannot be null or empty");
+        }
+        this.levelNumber = levelNumber;
+        this.managers = new EnumMap&lt;&gt;(managers);
+    }
+
+    public int getLevelNumber() {
+        return levelNumber;
+    }
+
+    public boolean hasAvailability() {
+        return managers.values().stream().anyMatch(ParkingSpotManager::hasFreeSpot);
+    }
+
+    public ParkingSpot park(VehicleType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Vehicle type cannot be null");
+        }
+
+        ParkingSpotManager manager = managers.get(type);
+        if (manager == null) {
+            return null;
+        }
+        return manager.park();
+    }
+
+    public void unPark(VehicleType type, ParkingSpot spot) {
+        if (type == null) {
+            throw new IllegalArgumentException("Vehicle type cannot be null");
+        }
+
+        ParkingSpotManager manager = managers.get(type);
+        if (manager == null) {
+            throw new IllegalArgumentException("No manager registered for vehicle type: " + type);
+        }
+        manager.unPark(spot);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Represents one parking floor and delegates parking operations to the right spot manager by vehicle type.</p>
+
+                    <div class="code-label">code/cost/CostComputation.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.cost;
+
+import LLD.parkingLot.code.model.Ticket;
+import LLD.parkingLot.code.strategy.pricing.PricingStrategy;
+
+public class CostComputation {
+    private final PricingStrategy pricingStrategy;
+
+    public CostComputation(PricingStrategy pricingStrategy) {
+        if (pricingStrategy == null) {
+            throw new IllegalArgumentException("Pricing strategy cannot be null");
+        }
+        this.pricingStrategy = pricingStrategy;
+    }
+
+    public double compute(Ticket ticket) {
+        return pricingStrategy.calculate(ticket);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Calculates parking charges by delegating fee logic to a pricing strategy.</p>
+
+                    <div class="code-label">code/demo/ParkingLotDemo.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.demo;
+
+import LLD.parkingLot.code.building.ParkingBuilding;
+import LLD.parkingLot.code.building.ParkingLevel;
+import LLD.parkingLot.code.cost.CostComputation;
+import LLD.parkingLot.code.enums.VehicleType;
+import LLD.parkingLot.code.gate.EntranceGate;
+import LLD.parkingLot.code.gate.ExitGate;
+import LLD.parkingLot.code.manager.FourWheelerParkingSpotManager;
+import LLD.parkingLot.code.manager.ParkingSpotManager;
+import LLD.parkingLot.code.manager.TwoWheelerParkingSpotManager;
+import LLD.parkingLot.code.model.Payment;
+import LLD.parkingLot.code.model.Ticket;
+import LLD.parkingLot.code.model.Vehicle;
+import LLD.parkingLot.code.parkinglot.ParkingLot;
+import LLD.parkingLot.code.spot.ParkingSpot;
+import LLD.parkingLot.code.strategy.lookup.NearestToEntryGateLookupStrategy;
+import LLD.parkingLot.code.strategy.lookup.ParkingSpotLookupStrategy;
+import LLD.parkingLot.code.strategy.lookup.RandomSpotLookupStrategy;
+import LLD.parkingLot.code.strategy.pricing.HourlyPricingStrategy;
+
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
+public class ParkingLotDemo {
+
+    public static void main(String[] args) throws InterruptedException {
+        ParkingLot parkingLot = buildParkingLot();
+
+        Vehicle bike1 = new Vehicle("MH12AA1001", VehicleType.TWO_WHEELER);
+        Vehicle bike2 = new Vehicle("MH12AA1002", VehicleType.TWO_WHEELER);
+        Vehicle car1 = new Vehicle("DL01BB2001", VehicleType.FOUR_WHEELER);
+
+        Ticket bike1Ticket = parkingLot.vehicleArrives(bike1);
+        Ticket bike2Ticket = parkingLot.vehicleArrives(bike2);
+        Ticket car1Ticket = parkingLot.vehicleArrives(car1);
+
+        System.out.println("Bike1 parked at level " + bike1Ticket.getLevel().getLevelNumber() + " spot " + bike1Ticket.getSpot().getSpotId());
+        System.out.println("Bike2 parked at level " + bike2Ticket.getLevel().getLevelNumber() + " spot " + bike2Ticket.getSpot().getSpotId());
+        System.out.println("Car1 parked at level " + car1Ticket.getLevel().getLevelNumber() + " spot " + car1Ticket.getSpot().getSpotId());
+
+        Thread.sleep(2000);
+
+        CostComputation costComputation = new CostComputation(new HourlyPricingStrategy());
+        double bike1Fee = costComputation.compute(bike1Ticket);
+
+        Payment bike1Payment = new Payment("CASH", bike1Fee, true);
+        parkingLot.vehicleExits(bike1Ticket, bike1Payment);
+        System.out.println("Bike1 exited after payment: " + bike1Fee);
+    }
+
+    private static ParkingLot buildParkingLot() {
+        ParkingSpotLookupStrategy nearestStrategy = new NearestToEntryGateLookupStrategy();
+        ParkingSpotLookupStrategy randomStrategy = new RandomSpotLookupStrategy();
+
+        ParkingLevel level1 = buildLevel1(nearestStrategy);
+        ParkingLevel level2 = buildLevel2(randomStrategy);
+
+        ParkingBuilding building = new ParkingBuilding(Arrays.asList(level1, level2));
+        EntranceGate entranceGate = new EntranceGate();
+        ExitGate exitGate = new ExitGate(new CostComputation(new HourlyPricingStrategy()));
+
+        return new ParkingLot(building, entranceGate, exitGate);
+    }
+
+    private static ParkingLevel buildLevel1(ParkingSpotLookupStrategy strategy) {
+        List&lt;ParkingSpot&gt; twoWheelerSpots = Arrays.asList(
+                new ParkingSpot("L1-TW-01"),
+                new ParkingSpot("L1-TW-02")
+        );
+
+        List&lt;ParkingSpot&gt; fourWheelerSpots = Arrays.asList(
+                new ParkingSpot("L1-FW-01"),
+                new ParkingSpot("L1-FW-02")
+        );
+
+        ParkingSpotManager twoWheelerManager = new TwoWheelerParkingSpotManager(twoWheelerSpots, strategy);
+        ParkingSpotManager fourWheelerManager = new FourWheelerParkingSpotManager(fourWheelerSpots, strategy);
+
+        Map&lt;VehicleType, ParkingSpotManager&gt; managers = new EnumMap&lt;&gt;(VehicleType.class);
+        managers.put(VehicleType.TWO_WHEELER, twoWheelerManager);
+        managers.put(VehicleType.FOUR_WHEELER, fourWheelerManager);
+        return new ParkingLevel(1, managers);
+    }
+
+    private static ParkingLevel buildLevel2(ParkingSpotLookupStrategy strategy) {
+        List&lt;ParkingSpot&gt; twoWheelerSpots = Arrays.asList(
+                new ParkingSpot("L2-TW-01")
+        );
+
+        List&lt;ParkingSpot&gt; fourWheelerSpots = Arrays.asList(
+                new ParkingSpot("L2-FW-01"),
+                new ParkingSpot("L2-FW-02")
+        );
+
+        ParkingSpotManager twoWheelerManager = new TwoWheelerParkingSpotManager(twoWheelerSpots, strategy);
+        ParkingSpotManager fourWheelerManager = new FourWheelerParkingSpotManager(fourWheelerSpots, strategy);
+
+        Map&lt;VehicleType, ParkingSpotManager&gt; managers = new EnumMap&lt;&gt;(VehicleType.class);
+        managers.put(VehicleType.TWO_WHEELER, twoWheelerManager);
+        managers.put(VehicleType.FOUR_WHEELER, fourWheelerManager);
+        return new ParkingLevel(2, managers);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Demo entry point that wires the parking lot objects together and runs a sample flow.</p>
+
+                    <div class="code-label">code/enums/VehicleType.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.enums;
+
+public enum VehicleType {
+    FOUR_WHEELER,
+    TWO_WHEELER
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Defines the supported vehicle categories used across parking and pricing logic.</p>
+
+                    <div class="code-label">code/gate/EntranceGate.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.gate;
+
+import LLD.parkingLot.code.building.ParkingBuilding;
+import LLD.parkingLot.code.model.Ticket;
+import LLD.parkingLot.code.model.Vehicle;
+
+public class EntranceGate {
+
+    public Ticket enter(ParkingBuilding building, Vehicle vehicle) {
+        if (building == null) {
+            throw new IllegalArgumentException("Parking building cannot be null");
+        }
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle cannot be null");
+        }
+        return building.allocate(vehicle);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Handles vehicle entry and requests ticket allocation from the parking building.</p>
+
+                    <div class="code-label">code/gate/ExitGate.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.gate;
+
+import LLD.parkingLot.code.building.ParkingBuilding;
+import LLD.parkingLot.code.cost.CostComputation;
+import LLD.parkingLot.code.model.Payment;
+import LLD.parkingLot.code.model.Ticket;
+
+public class ExitGate {
+    private final CostComputation costComputation;
+
+    public ExitGate(CostComputation costComputation) {
+        if (costComputation == null) {
+            throw new IllegalArgumentException("Cost computation cannot be null");
+        }
+        this.costComputation = costComputation;
+    }
+
+    public void exit(ParkingBuilding building, Ticket ticket, Payment payment) {
+        if (building == null) {
+            throw new IllegalArgumentException("Parking building cannot be null");
+        }
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket cannot be null");
+        }
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment cannot be null");
+        }
+
+        double totalFee = costComputation.compute(ticket);
+        if (!payment.isSuccessful() || payment.getAmount() &lt; totalFee) {
+            throw new IllegalArgumentException("Payment failed or insufficient amount. Required fee: " + totalFee);
+        }
+
+        building.release(ticket);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Handles vehicle exit, computes charges, triggers payment, and releases the reserved spot.</p>
+
+                    <div class="code-label">code/manager/FourWheelerParkingSpotManager.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.manager;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+import LLD.parkingLot.code.strategy.lookup.ParkingSpotLookupStrategy;
+
+import java.util.List;
+
+public class FourWheelerParkingSpotManager extends ParkingSpotManager {
+
+    public FourWheelerParkingSpotManager(List&lt;ParkingSpot&gt; spots, ParkingSpotLookupStrategy strategy) {
+        super(spots, strategy);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Manages available parking spots and allocation logic for four-wheelers.</p>
+
+                    <div class="code-label">code/manager/ParkingSpotManager.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.manager;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+import LLD.parkingLot.code.strategy.lookup.ParkingSpotLookupStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+
+public abstract class ParkingSpotManager {
+    protected final List&lt;ParkingSpot&gt; spots;
+    protected final ParkingSpotLookupStrategy strategy;
+    protected final ReentrantLock lock;
+
+    protected ParkingSpotManager(List&lt;ParkingSpot&gt; spots, ParkingSpotLookupStrategy strategy) {
+        if (spots == null || spots.isEmpty()) {
+            throw new IllegalArgumentException("Spots cannot be null or empty");
+        }
+        if (strategy == null) {
+            throw new IllegalArgumentException("Strategy cannot be null");
+        }
+        this.spots = new ArrayList&lt;&gt;(spots);
+        this.strategy = strategy;
+        this.lock = new ReentrantLock(true);
+    }
+
+    public ParkingSpot park() {
+        lock.lock();
+        try {
+            ParkingSpot selected = strategy.selectSpot(spots);
+            if (selected == null) {
+                return null;
+            }
+            selected.occupySpot();
+            return selected;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void unPark(ParkingSpot spot) {
+        if (spot == null) {
+            throw new IllegalArgumentException("Spot cannot be null");
+        }
+
+        lock.lock();
+        try {
+            if (!spots.contains(spot)) {
+                throw new IllegalArgumentException("Spot does not belong to this manager: " + spot.getSpotId());
+            }
+            if (!spot.isSpotFree()) {
+                spot.releaseSpot();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean hasFreeSpot() {
+        return spots.stream().anyMatch(ParkingSpot::isSpotFree);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Base abstraction for parking spot management operations like park, unpark, and availability checks.</p>
+
+                    <div class="code-label">code/manager/TwoWheelerParkingSpotManager.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.manager;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+import LLD.parkingLot.code.strategy.lookup.ParkingSpotLookupStrategy;
+
+import java.util.List;
+
+public class TwoWheelerParkingSpotManager extends ParkingSpotManager {
+
+    public TwoWheelerParkingSpotManager(List&lt;ParkingSpot&gt; spots, ParkingSpotLookupStrategy strategy) {
+        super(spots, strategy);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Manages available parking spots and allocation logic for two-wheelers.</p>
+
+                    <div class="code-label">code/model/Payment.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.model;
+
+public class Payment {
+    private final String paymentMode;
+    private final double amount;
+    private final boolean successful;
+
+    public Payment(String paymentMode, double amount, boolean successful) {
+        if (paymentMode == null || paymentMode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Payment mode cannot be null or empty");
+        }
+        if (amount &lt; 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        this.paymentMode = paymentMode;
+        this.amount = amount;
+        this.successful = successful;
+    }
+
+    public String getPaymentMode() {
+        return paymentMode;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Represents payment details used during ticket settlement at exit.</p>
+
+                    <div class="code-label">code/model/Ticket.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.model;
+
+import LLD.parkingLot.code.building.ParkingLevel;
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.time.LocalDateTime;
+
+public class Ticket {
+    private final Vehicle vehicle;
+    private final ParkingLevel level;
+    private final ParkingSpot spot;
+    private final LocalDateTime entryTime;
+
+    public Ticket(Vehicle vehicle, ParkingLevel level, ParkingSpot spot) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle cannot be null");
+        }
+        if (level == null) {
+            throw new IllegalArgumentException("Parking level cannot be null");
+        }
+        if (spot == null) {
+            throw new IllegalArgumentException("Parking spot cannot be null");
+        }
+        this.vehicle = vehicle;
+        this.level = level;
+        this.spot = spot;
+        this.entryTime = LocalDateTime.now();
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public ParkingLevel getLevel() {
+        return level;
+    }
+
+    public ParkingSpot getSpot() {
+        return spot;
+    }
+
+    public LocalDateTime getEntryTime() {
+        return entryTime;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Stores the parking assignment details for a vehicle, including spot and entry time.</p>
+
+                    <div class="code-label">code/model/Vehicle.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.model;
+
+import LLD.parkingLot.code.enums.VehicleType;
+
+import java.util.Objects;
+
+public class Vehicle {
+    private final String vehicleNumber;
+    private final VehicleType vehicleType;
+
+    public Vehicle(String vehicleNumber, VehicleType vehicleType) {
+        if (vehicleNumber == null || vehicleNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Vehicle number cannot be null or empty");
+        }
+        if (vehicleType == null) {
+            throw new IllegalArgumentException("Vehicle type cannot be null");
+        }
+        this.vehicleNumber = vehicleNumber.trim();
+        this.vehicleType = vehicleType;
+    }
+
+    public String getVehicleNumber() {
+        return vehicleNumber;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Vehicle vehicle = (Vehicle) obj;
+        return Objects.equals(vehicleNumber, vehicle.vehicleNumber) &amp;&amp; vehicleType == vehicle.vehicleType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vehicleNumber, vehicleType);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Represents an incoming vehicle with its identifying data and type.</p>
+
+                    <div class="code-label">code/parkinglot/ParkingLot.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.parkinglot;
+
+import LLD.parkingLot.code.building.ParkingBuilding;
+import LLD.parkingLot.code.gate.EntranceGate;
+import LLD.parkingLot.code.gate.ExitGate;
+import LLD.parkingLot.code.model.Payment;
+import LLD.parkingLot.code.model.Ticket;
+import LLD.parkingLot.code.model.Vehicle;
+
+public class ParkingLot {
+    private final ParkingBuilding building;
+    private final EntranceGate entranceGate;
+    private final ExitGate exitGate;
+
+    public ParkingLot(ParkingBuilding building, EntranceGate entranceGate, ExitGate exitGate) {
+        if (building == null) {
+            throw new IllegalArgumentException("Parking building cannot be null");
+        }
+        if (entranceGate == null) {
+            throw new IllegalArgumentException("Entrance gate cannot be null");
+        }
+        if (exitGate == null) {
+            throw new IllegalArgumentException("Exit gate cannot be null");
+        }
+
+        this.building = building;
+        this.entranceGate = entranceGate;
+        this.exitGate = exitGate;
+    }
+
+    public Ticket vehicleArrives(Vehicle vehicle) {
+        return entranceGate.enter(building, vehicle);
+    }
+
+    public void vehicleExits(Ticket ticket, Payment payment) {
+        exitGate.exit(building, ticket, payment);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Top-level parking lot aggregate that wires the building and entry and exit flows together.</p>
+
+                    <div class="code-label">code/spot/ParkingSpot.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.spot;
+
+public class ParkingSpot {
+    private final String spotId;
+    private boolean isFree;
+
+    public ParkingSpot(String spotId) {
+        if (spotId == null || spotId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Spot ID cannot be null or empty");
+        }
+        this.spotId = spotId;
+        this.isFree = true;
+    }
+
+    public String getSpotId() {
+        return spotId;
+    }
+
+    public boolean isSpotFree() {
+        return isFree;
+    }
+
+    public synchronized void occupySpot() {
+        if (!isFree) {
+            throw new IllegalStateException("Spot is already occupied: " + spotId);
+        }
+        this.isFree = false;
+    }
+
+    public synchronized void releaseSpot() {
+        if (isFree) {
+            throw new IllegalStateException("Spot is already free: " + spotId);
+        }
+        this.isFree = true;
+    }
+
+    @Override
+    public String toString() {
+        return "ParkingSpot{" +
+                "spotId='" + spotId + '\'' +
+                ", isFree=" + isFree +
+                '}';
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Represents an individual parking spot and its occupancy state.</p>
+
+                    <div class="code-label">code/strategy/lookup/NearestToEntryGateLookupStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.lookup;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.util.Comparator;
+import java.util.List;
+
+public class NearestToEntryGateLookupStrategy implements ParkingSpotLookupStrategy {
+
+    @Override
+    public ParkingSpot selectSpot(List&lt;ParkingSpot&gt; spots) {
+        if (spots == null || spots.isEmpty()) {
+            return null;
+        }
+
+        return spots.stream()
+                .filter(ParkingSpot::isSpotFree)
+                .min(Comparator.comparing(ParkingSpot::getSpotId))
+                .orElse(null);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Chooses the nearest available parking spot according to the lookup policy.</p>
+
+                    <div class="code-label">code/strategy/lookup/ParkingSpotLookupStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.lookup;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.util.List;
+
+public interface ParkingSpotLookupStrategy {
+    ParkingSpot selectSpot(List&lt;ParkingSpot&gt; spots);
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Strategy interface for selecting a free spot from a list of parking spots.</p>
+
+                    <div class="code-label">code/strategy/lookup/RandomSpotLookupStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.lookup;
+
+import LLD.parkingLot.code.spot.ParkingSpot;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+public class RandomSpotLookupStrategy implements ParkingSpotLookupStrategy {
+
+    @Override
+    public ParkingSpot selectSpot(List&lt;ParkingSpot&gt; spots) {
+        if (spots == null || spots.isEmpty()) {
+            return null;
+        }
+
+        List&lt;ParkingSpot&gt; freeSpots = spots.stream()
+                .filter(ParkingSpot::isSpotFree)
+                .collect(Collectors.toList());
+
+        if (freeSpots.isEmpty()) {
+            return null;
+        }
+
+        int randomIndex = ThreadLocalRandom.current().nextInt(freeSpots.size());
+        return freeSpots.get(randomIndex);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Chooses a free parking spot using a random selection policy.</p>
+
+                    <div class="code-label">code/strategy/pricing/FixedPricingStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.pricing;
+
+import LLD.parkingLot.code.model.Ticket;
+
+public class FixedPricingStrategy implements PricingStrategy {
+    private final double fixedAmount;
+
+    public FixedPricingStrategy(double fixedAmount) {
+        if (fixedAmount &lt; 0) {
+            throw new IllegalArgumentException("Fixed amount cannot be negative");
+        }
+        this.fixedAmount = fixedAmount;
+    }
+
+    @Override
+    public double calculate(Ticket ticket) {
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket cannot be null");
+        }
+        return fixedAmount;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Implements a fixed-fee pricing model for parking tickets.</p>
+
+                    <div class="code-label">code/strategy/pricing/HourlyPricingStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.pricing;
+
+import LLD.parkingLot.code.model.Ticket;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+public class HourlyPricingStrategy implements PricingStrategy {
+    private static final double FIRST_HOUR_RATE = 4.0;
+    private static final double SECOND_AND_THIRD_HOUR_RATE = 3.5;
+    private static final double REMAINING_HOUR_RATE = 2.5;
+
+    @Override
+    public double calculate(Ticket ticket) {
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket cannot be null");
+        }
+
+        LocalDateTime exitTime = LocalDateTime.now();
+        long totalMinutes = Duration.between(ticket.getEntryTime(), exitTime).toMinutes();
+        long hours = Math.max(1, (totalMinutes + 59) / 60);
+
+        double fee = FIRST_HOUR_RATE;
+        if (hours &gt; 1) {
+            long secondThirdHours = Math.min(2, hours - 1);
+            fee += secondThirdHours * SECOND_AND_THIRD_HOUR_RATE;
+        }
+        if (hours &gt; 3) {
+            fee += (hours - 3) * REMAINING_HOUR_RATE;
+        }
+        return fee;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Implements an hourly pricing model for parking tickets.</p>
+
+                    <div class="code-label">code/strategy/pricing/PricingStrategy.java</div>
+                    <pre class="code-block"><code>
+package LLD.parkingLot.code.strategy.pricing;
+
+import LLD.parkingLot.code.model.Ticket;
+
+public interface PricingStrategy {
+    double calculate(Ticket ticket);
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Strategy interface for calculating parking fees from ticket data.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const KEYWORDS = new Set([
+                "abstract", "assert", "break", "case", "catch", "class", "const", "continue",
+                "default", "do", "else", "enum", "extends", "final", "finally", "for", "if",
+                "implements", "import", "instanceof", "interface", "new", "package", "private",
+                "protected", "public", "return", "static", "super", "switch", "this", "throw",
+                "throws", "try", "void", "while", "var", "record", "sealed", "permits"
+            ]);
+            const LITERALS = new Set(["true", "false", "null"]);
+            const PRIMITIVES = new Set([
+                "byte", "short", "int", "long", "float", "double", "boolean", "char"
+            ]);
+            const COMMON_TYPES = new Set([
+                "String", "Integer", "Double", "Long", "Boolean", "List", "Map", "Set",
+                "Optional", "ArrayList", "HashMap", "HashSet", "System"
+            ]);
+
+            function isIdentifierStart(ch) {
+                return /[A-Za-z_$]/.test(ch);
+            }
+
+            function isIdentifierPart(ch) {
+                return /[A-Za-z0-9_$]/.test(ch);
+            }
+
+            function escapeHtml(str) {
+                return str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+            }
+
+            function tokenizeJava(source) {
+                const tokens = [];
+                let i = 0;
+
+                while (i < source.length) {
+                    const ch = source[i];
+                    const next = source[i + 1];
+
+                    if (/\s/.test(ch)) {
+                        const start = i;
+                        while (i < source.length && /\s/.test(source[i])) i++;
+                        tokens.push({ type: "ws", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "/" && next === "/") {
+                        const start = i;
+                        i += 2;
+                        while (i < source.length && source[i] !== "\n") i++;
+                        tokens.push({ type: "comment", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "/" && next === "*") {
+                        const start = i;
+                        i += 2;
+                        while (i < source.length && !(source[i] === "*" && source[i + 1] === "/")) i++;
+                        i = Math.min(i + 2, source.length);
+                        tokens.push({ type: "comment", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === '"' || ch === "'") {
+                        const quote = ch;
+                        const start = i;
+                        i++;
+                        while (i < source.length) {
+                            if (source[i] === "\\") {
+                                i += 2;
+                                continue;
+                            }
+                            if (source[i] === quote) {
+                                i++;
+                                break;
+                            }
+                            i++;
+                        }
+                        tokens.push({ type: "string", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "@") {
+                        const start = i;
+                        i++;
+                        while (i < source.length && isIdentifierPart(source[i])) i++;
+                        tokens.push({ type: "annotation", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (/[0-9]/.test(ch)) {
+                        const start = i;
+                        while (i < source.length && /[0-9_]/.test(source[i])) i++;
+                        if (source[i] === "." && /[0-9]/.test(source[i + 1])) {
+                            i++;
+                            while (i < source.length && /[0-9_]/.test(source[i])) i++;
+                        }
+                        tokens.push({ type: "number", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (isIdentifierStart(ch)) {
+                        const start = i;
+                        i++;
+                        while (i < source.length && isIdentifierPart(source[i])) i++;
+                        const word = source.slice(start, i);
+
+                        if (KEYWORDS.has(word) || PRIMITIVES.has(word)) {
+                            tokens.push({ type: "keyword", value: word });
+                        } else if (LITERALS.has(word)) {
+                            tokens.push({ type: "literal", value: word });
+                        } else if (COMMON_TYPES.has(word) || /^[A-Z][A-Za-z0-9_]*$/.test(word)) {
+                            tokens.push({ type: "type", value: word });
+                        } else {
+                            tokens.push({ type: "identifier", value: word });
+                        }
+                        continue;
+                    }
+
+                    tokens.push({ type: "plain", value: ch });
+                    i++;
+                }
+
+                return tokens;
+            }
+
+            function nextNonWs(tokens, idx) {
+                for (let i = idx + 1; i < tokens.length; i++) {
+                    if (tokens[i].type !== "ws") return tokens[i];
+                }
+                return null;
+            }
+
+            function highlight(source) {
+                const tokens = tokenizeJava(source);
+                return tokens.map((token, idx) => {
+                    let cls = "";
+                    if (token.type === "identifier") {
+                        const next = nextNonWs(tokens, idx);
+                        if (next && next.value === "(") cls = "tok-method";
+                    } else if (token.type === "comment") {
+                        cls = "tok-comment";
+                    } else if (token.type === "keyword") {
+                        cls = "tok-keyword";
+                    } else if (token.type === "type") {
+                        cls = "tok-type";
+                    } else if (token.type === "string") {
+                        cls = "tok-string";
+                    } else if (token.type === "number") {
+                        cls = "tok-number";
+                    } else if (token.type === "annotation") {
+                        cls = "tok-annotation";
+                    } else if (token.type === "literal") {
+                        cls = "tok-literal";
+                    }
+
+                    const text = escapeHtml(token.value);
+                    return cls ? `<span class="${cls}">${text}</span>` : text;
+                }).join("");
+            }
+
+            document.querySelectorAll("pre.code-block > code").forEach((block) => {
+                block.innerHTML = highlight(block.textContent || "");
+            });
+        })();
+    </script>
+    <script src="../hld/diagram-zoom.js" defer></script>
+    <script src="../topic-progress.js" defer></script>
+</body>
+</html>
