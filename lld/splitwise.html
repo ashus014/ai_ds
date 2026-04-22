@@ -236,6 +236,209 @@
                 </div>
 
                 <div class="section">
+                    <h2>Splitwise File Content (Formatted)</h2>
+                    <p><code>splitwise/splitwise.md</code></p>
+
+                    <h3>Step 1: Requirement Gathering</h3>
+                    <ol>
+                        <li>Add friends capability</li>
+                        <li>Add / manage group</li>
+                        <li>Add / manage friends inside a group</li>
+                        <li>Add / manage expense inside a group / without a group</li>
+                        <li>Split expense capability (<code>equal</code>, <code>unequal</code>, <code>percentage</code>)</li>
+                        <li>Balance sheet of each user</li>
+                    </ol>
+
+                    <h3>Step 2: Object Modeling</h3>
+                    <ol>
+                        <li>Splitwise</li>
+                        <li>User</li>
+                        <li>Group</li>
+                        <li>Expense</li>
+                        <li>Split</li>
+                        <li>BalanceSheet</li>
+                    </ol>
+
+                    <h3>Step 3: Classes and Attributes</h3>
+
+                    <h3>SplitType (Enum)</h3>
+                    <ul>
+                        <li>EQUAL</li>
+                        <li>UNEQUAL</li>
+                        <li>PERCENTAGE</li>
+                    </ul>
+
+                    <h3>Split</h3>
+                    <ul>
+                        <li>user : User</li>
+                        <li>amount : Double</li>
+                    </ul>
+
+                    <h3>Expense</h3>
+                    <ul>
+                        <li>id : String</li>
+                        <li>description : String</li>
+                        <li>amount : Double</li>
+                        <li>paidBy : User</li>
+                        <li>splitType : SplitType</li>
+                        <li>splitDetails : List&lt;Split&gt;</li>
+                    </ul>
+
+                    <h3>User</h3>
+                    <ul>
+                        <li>id : String</li>
+                        <li>name : String</li>
+                        <li>userExpenseBalanceSheet : UserExpenseBalanceSheet</li>
+                    </ul>
+
+                    <h3>Group</h3>
+                    <ul>
+                        <li>id : String</li>
+                        <li>name : String</li>
+                        <li>user : List&lt;User&gt;</li>
+                        <li>expense : List&lt;Expense&gt;</li>
+                        <li>expenseController : ExpenseController</li>
+                    </ul>
+
+                    <h3>Step 4: Identify Methods for Each Class</h3>
+
+                    <p>Expense can be created from two places:</p>
+                    <ol>
+                        <li>From group</li>
+                        <li>Directly between users</li>
+                    </ol>
+
+                    <p>To create an expense we need:</p>
+                    <ul>
+                        <li>amount</li>
+                        <li>paidBy</li>
+                        <li>splitType</li>
+                        <li>splits</li>
+                        <li>description</li>
+                    </ul>
+
+                    <h3>UserController</h3>
+                    <ul>
+                        <li>list : List&lt;User&gt;</li>
+                        <li>CRUD operations for User</li>
+                    </ul>
+
+                    <h3>UserExpenseBalanceSheet</h3>
+                    <ul>
+                        <li>friendBalance : Map&lt;User, Balance&gt;</li>
+                        <li>totalExpense : Double</li>
+                        <li>totalPayments : Double</li>
+                        <li>totalOwe : Double</li>
+                        <li>totalGetBack : Double</li>
+                    </ul>
+
+                    <h3>BalanceSheetController</h3>
+                    <ul>
+                        <li>updateUserExpenseBalanceSheet</li>
+                        <li>showBalanceSheetOfUser</li>
+                    </ul>
+
+                    <h3>Balance</h3>
+                    <ul>
+                        <li>amountOwe : Double</li>
+                        <li>amountGetBack : Double</li>
+                    </ul>
+
+                    <h3>GroupController</h3>
+                    <ul>
+                        <li>list : List&lt;Group&gt;</li>
+                        <li>CRUD operations for Group</li>
+                    </ul>
+
+                    <h3>ExpenseController</h3>
+                    <pre class="code-block"><code>createExpense(
+  String expenseId,
+  String description,
+  Double expenseAmount,
+  List&lt;Split&gt; splitDetails,
+  ExpenseSplitType splitType,
+  User paidByUser
+)</code></pre>
+
+                    <h3>SplitFactory</h3>
+                    <ul>
+                        <li>getSplitObject(ExpenseSplitType splitType)</li>
+                    </ul>
+
+                    <h3>ExpenseSplit (Interface)</h3>
+                    <ul>
+                        <li>validateRequest(List&lt;Split&gt; splitList, Double totalAmount)</li>
+                        <li>equalSplit()</li>
+                        <li>unequalSplit()</li>
+                        <li>percentageSplit()</li>
+                    </ul>
+
+                    <h3>Splitwise</h3>
+                    <ul>
+                        <li>userController : UserController</li>
+                        <li>groupController : GroupController</li>
+                        <li>expenseController : ExpenseController</li>
+                    </ul>
+
+                    <h3>End-to-End Flow</h3>
+                    <pre class="code-block"><code>sequenceDiagram
+    participant U as User
+    participant SW as Splitwise
+    participant EC as ExpenseController
+    participant SF as SplitFactory
+    participant ES as ExpenseSplit
+    participant BSC as BalanceSheetController
+    participant UBS as UserExpenseBalanceSheet
+
+    U-&gt;&gt;SW: Add expense (group/direct)
+    SW-&gt;&gt;EC: createExpense(...)
+    EC-&gt;&gt;SF: getSplitObject(splitType)
+    SF--&gt;&gt;EC: ExpenseSplit implementation
+    EC-&gt;&gt;ES: validateRequest(splitList, totalAmount)
+    ES--&gt;&gt;EC: validation result
+    EC--&gt;&gt;SW: Expense created
+    SW-&gt;&gt;BSC: updateUserExpenseBalanceSheet(expense)
+    BSC-&gt;&gt;UBS: update balances (owe/getBack)
+    UBS--&gt;&gt;BSC: updated balances
+    BSC--&gt;&gt;SW: balance sheet updated
+    SW--&gt;&gt;U: showBalanceSheetOfUser</code></pre>
+                </div>
+
+                <div class="section">
+                    <h2>Splitwise File Hierarchy</h2>
+                    <p><code>/Users/ashusingh/Documents/Codes/system-design/LLD/splitwise</code></p>
+                    <pre class="code-block"><code>splitwise
+|-- Balance.java
+|-- BalanceSheetController.java
+|-- Main.java
+|-- Splitwise.java
+|-- UserExpenseBalanceSheet.java
+|-- expense
+|   |-- Expense.java
+|   |-- ExpenseController.java
+|   |-- ExpenseSplitType.java
+|   |-- SplitFactory.java
+|   |-- SplitStrategyRegistry.java
+|   `-- split
+|       |-- EqualExpenseSplit.java
+|       |-- ExpenseSplit.java
+|       |-- PercentageExpenseSplit.java
+|       |-- Split.java
+|       `-- UnequalExpenseSplit.java
+|-- group
+|   |-- Group.java
+|   `-- GroupController.java
+|-- repositoryOptional
+|   |-- GroupRepository.java
+|   |-- InMemoryGroupRepository.java
+|   |-- InMemoryUserRepository.java
+|   `-- UserRepository.java
+|-- splitwise.md
+`-- user
+    |-- User.java
+    `-- UserController.java</code></pre>
+                </div>
+                <div class="section">
                     <h2>Repository Source Code (as-is)</h2>
                     <p>Exact Java files copied from the local Splitwise repo tree, with a short explanation after each file.</p>
 
