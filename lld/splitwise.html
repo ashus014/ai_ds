@@ -182,8 +182,18 @@
             background: transparent;
             padding: 0;
             color: inherit;
+            display: block;
+            white-space: pre;
             font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
         }
+        .tok-comment { color: #7f8c98; }
+        .tok-keyword { color: #ff7ab2; font-weight: 600; }
+        .tok-type { color: #82aaff; }
+        .tok-string { color: #c3e88d; }
+        .tok-number { color: #f78c6c; }
+        .tok-annotation { color: #89ddff; }
+        .tok-literal { color: #ffcb6b; font-weight: 600; }
+        .tok-method { color: #ffd580; }
         .callout {
             background: #e8eaf6;
             border-left: 4px solid #667eea;
@@ -750,6 +760,174 @@ public class Splitwise {
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            const KEYWORDS = new Set([
+                "abstract", "assert", "break", "case", "catch", "class", "const", "continue",
+                "default", "do", "else", "enum", "extends", "final", "finally", "for", "if",
+                "implements", "import", "instanceof", "interface", "new", "package", "private",
+                "protected", "public", "return", "static", "super", "switch", "this", "throw",
+                "throws", "try", "void", "while", "var", "record", "sealed", "permits"
+            ]);
+            const LITERALS = new Set(["true", "false", "null"]);
+            const PRIMITIVES = new Set([
+                "byte", "short", "int", "long", "float", "double", "boolean", "char"
+            ]);
+            const COMMON_TYPES = new Set([
+                "String", "Integer", "Double", "Long", "Boolean", "List", "Map", "Set",
+                "Optional", "ArrayList", "HashMap", "HashSet", "System"
+            ]);
+
+            function isIdentifierStart(ch) {
+                return /[A-Za-z_$]/.test(ch);
+            }
+
+            function isIdentifierPart(ch) {
+                return /[A-Za-z0-9_$]/.test(ch);
+            }
+
+            function escapeHtml(str) {
+                return str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+            }
+
+            function tokenizeJava(source) {
+                const tokens = [];
+                let i = 0;
+
+                while (i < source.length) {
+                    const ch = source[i];
+                    const next = source[i + 1];
+
+                    if (/\s/.test(ch)) {
+                        const start = i;
+                        while (i < source.length && /\s/.test(source[i])) i++;
+                        tokens.push({ type: "ws", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "/" && next === "/") {
+                        const start = i;
+                        i += 2;
+                        while (i < source.length && source[i] !== "\n") i++;
+                        tokens.push({ type: "comment", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "/" && next === "*") {
+                        const start = i;
+                        i += 2;
+                        while (i < source.length && !(source[i] === "*" && source[i + 1] === "/")) i++;
+                        i = Math.min(i + 2, source.length);
+                        tokens.push({ type: "comment", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === '"' || ch === "'") {
+                        const quote = ch;
+                        const start = i;
+                        i++;
+                        while (i < source.length) {
+                            if (source[i] === "\\") {
+                                i += 2;
+                                continue;
+                            }
+                            if (source[i] === quote) {
+                                i++;
+                                break;
+                            }
+                            i++;
+                        }
+                        tokens.push({ type: "string", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (ch === "@") {
+                        const start = i;
+                        i++;
+                        while (i < source.length && isIdentifierPart(source[i])) i++;
+                        tokens.push({ type: "annotation", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (/[0-9]/.test(ch)) {
+                        const start = i;
+                        while (i < source.length && /[0-9_]/.test(source[i])) i++;
+                        if (source[i] === "." && /[0-9]/.test(source[i + 1])) {
+                            i++;
+                            while (i < source.length && /[0-9_]/.test(source[i])) i++;
+                        }
+                        tokens.push({ type: "number", value: source.slice(start, i) });
+                        continue;
+                    }
+
+                    if (isIdentifierStart(ch)) {
+                        const start = i;
+                        i++;
+                        while (i < source.length && isIdentifierPart(source[i])) i++;
+                        const word = source.slice(start, i);
+
+                        if (KEYWORDS.has(word) || PRIMITIVES.has(word)) {
+                            tokens.push({ type: "keyword", value: word });
+                        } else if (LITERALS.has(word)) {
+                            tokens.push({ type: "literal", value: word });
+                        } else if (COMMON_TYPES.has(word) || /^[A-Z][A-Za-z0-9_]*$/.test(word)) {
+                            tokens.push({ type: "type", value: word });
+                        } else {
+                            tokens.push({ type: "identifier", value: word });
+                        }
+                        continue;
+                    }
+
+                    tokens.push({ type: "plain", value: ch });
+                    i++;
+                }
+
+                return tokens;
+            }
+
+            function nextNonWs(tokens, idx) {
+                for (let i = idx + 1; i < tokens.length; i++) {
+                    if (tokens[i].type !== "ws") return tokens[i];
+                }
+                return null;
+            }
+
+            function highlight(source) {
+                const tokens = tokenizeJava(source);
+                return tokens.map((token, idx) => {
+                    let cls = "";
+                    if (token.type === "identifier") {
+                        const next = nextNonWs(tokens, idx);
+                        if (next && next.value === "(") cls = "tok-method";
+                    } else if (token.type === "comment") {
+                        cls = "tok-comment";
+                    } else if (token.type === "keyword") {
+                        cls = "tok-keyword";
+                    } else if (token.type === "type") {
+                        cls = "tok-type";
+                    } else if (token.type === "string") {
+                        cls = "tok-string";
+                    } else if (token.type === "number") {
+                        cls = "tok-number";
+                    } else if (token.type === "annotation") {
+                        cls = "tok-annotation";
+                    } else if (token.type === "literal") {
+                        cls = "tok-literal";
+                    }
+
+                    const text = escapeHtml(token.value);
+                    return cls ? `<span class="${cls}">${text}</span>` : text;
+                }).join("");
+            }
+
+            document.querySelectorAll("pre.code-block > code").forEach((block) => {
+                block.innerHTML = highlight(block.textContent || "");
+            });
+        })();
+    </script>
     <script src="../topic-progress.js" defer></script>
 </body>
 </html>
