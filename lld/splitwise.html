@@ -386,376 +386,1145 @@
                 </div>
 
                 <div class="section">
-                    <h2>Reference implementation (Java skeleton)</h2>
-                    <p>Documented stubs aligned with the steps below. The canonical codebase is on GitHub: <a class="repo-inline" href="https://github.com/ashus014/system-design/tree/main/LLD/splitwise" target="_blank" rel="noopener noreferrer">github.com/ashus014/system-design — LLD/splitwise</a>.</p>
+                    <h2>Repository README (as-is)</h2>
+                    <p>Copied from local source: <code>/Users/ashusingh/Documents/Codes/system-design/README.md</code>.</p>
 
-                    <div class="code-label">ExpenseSplitType.java</div>
-                    <pre class="code-block"><code>/**
- * How the expense total is divided among participants.
- */
+                    <div class="code-label">README.md (repo root)</div>
+                    <pre class="code-block"><code>
+# System Design &amp; LLD Preparation Tracker
+
+---
+
+## Low-Level Design (LLD)
+
+| # | Problem / System | Date | Context |
+|---|------------------|------|---------|
+| 1 | Parking Lot | June 03, 2025 | — |
+| 2 | Vending Machine | — | — |
+| 3 | Elevator System | June 04, 2025 | — |
+| 4 | LRU Cache | — | Microsoft Feb 27, 2026 |
+| 5 | Chess Game | — | — |
+| 6 | Snake and Ladders | — | — |
+| 7 | Splitwise | January 07, 2026 | — |
+| 8 | Logging Framework | — | — |
+| 9 | Hotel Management System | — | — |
+| 10 | Movie Ticket Booking System | — | — |
+| 11 | Ludo | — | — |
+| 12 | Tic-Tac-Toe | June 04, 2025 | — |
+| 13 | StackOverflow | January 12, 2026 | Amazon SDE-III Interview |
+| 14 | Stock Exchange (Order Matching Engine – LLD, Simplified) | — | — |
+| 15 | Helicopter Booking Application | — | Microsoft Feb 14, 2026 |
+
+---
+
+## High-Level Design (HLD)
+
+### Concepts
+
+| # | Topic | Date |
+|---|------|------|
+| 1 | Consistent Hashing | May 30, 2025 |
+
+---
+
+### System Design Problems
+
+| # | System | Date / Context |
+|---|--------|----------------|
+| 1 | Rate Limiter | June 14, 2025 |
+| 2 | URL Shortener | March 14, 2026 |
+| 3 | Web Crawler | — |
+| 4 | Notification System | Goldman Sachs VP Interview (Dec 2025) |
+| 5 | News Feed System (Instagram / X / FB) | March 15, 2026 |
+| 6 | WhatsApp Design (1:1, Group) | March 17, 2026 |
+| 7 | Search Autocomplete System | — |
+| 8 | YouTube / Netflix | March 14, 2026 |
+| 9 | Google Drive | — |
+| 10 | Uber |  March 15, 2026 |
+| 11 | Tinder | — |
+| 12 | Spotify | Nov 22, 2025 |
+| 13 | BookMyShow | March 14, 2026 |
+| 14 | Airbnb/Goibibo | March 14, 2026 |
+| 15 | Flipkart | March 14, 2026 |
+| 16 | LeetCode | — |
+| 17 | Logging System | March 18, 2026 |
+| 18 | Zoom | — |
+| 19 | Google Pay | — |
+| 20 | Nearby Friends | — |
+| 21 | Google Maps | — |
+| 22 | Ad Click Event Aggregator | — |
+| 23 | Real-time Gaming Leaderboard | — |
+| 24 | Stock Exchange | Amazon SDE-II Interview |
+| 25 | Coupon Management System | January 08, 2026 (learn myself) |
+| 26 | Elevator System | January 13, 2026 (Amazon SDE-III Interview) |
+| 27 | Zomato / Swiggy / UberEats | March 18, 2026 |
+| 28 | Zerodha / Groww | - |
+
+---
+
+## Database Design
+
+| # | System | Reference |
+|---|--------|-----------|
+| 1 | Ticket Management System | https://chatgpt.com/share/6843f192-3410-8006-ba83-8391a5c67bb9 |
+
+---
+
+## References
+
+- **Rate Limiter**  
+  https://bytebytego.com/courses/system-design-interview/design-a-rate-limiter
+
+---
+
+## Design Pattern Note: Strategy vs Factory
+
+Great question. Short version: **Strategy is for choosing behavior**, **Factory is for creating objects**.
+
+For your parking lot case:
+
+1. What varies is algorithm/behavior
+- Spot selection can be random or nearest.
+- Pricing can be hourly or fixed.
+- That is exactly Strategy pattern territory.
+
+2. You want to swap behavior without changing manager/cost code
+- `ParkingSpotManager` just calls `strategy.selectSpot(...)`.
+- `CostComputation` just calls `pricingStrategy.calculate(...)`.
+- This keeps core classes closed for modification, open for extension.
+
+3. Factory alone does not solve runtime algorithm flexibility
+- A factory can create `RandomSpotLookupStrategy` or `NearestToEntryGateLookupStrategy`, but after creation, the flexibility still comes from Strategy.
+- So factory is an optional helper; strategy is the core design need here.
+
+4. Best mental model
+- Use Strategy when you ask: **“How should this be done?”**
+- Use Factory when you ask: **“Who will instantiate this object?”**
+
+### More Examples
+
+1. Parking lot spot allocation
+- Strategy: `NearestToEntryGateLookupStrategy`, `RandomSpotLookupStrategy`
+- Factory (optional): `ParkingSpotLookupStrategyFactory` that returns one of the above based on config
+
+2. Parking lot pricing
+- Strategy: `HourlyPricingStrategy`, `FixedPricingStrategy`
+- Factory (optional): `PricingStrategyFactory` to create pricing strategy based on parking lot policy
+
+3. Payment processing
+- Strategy: `CreditCardPayment`, `UPIPayment`, `CashPayment` implement same payment behavior contract
+- Factory: chooses payment object from payment mode input
+
+4. Notification sending
+- Strategy: `EmailNotification`, `SMSNotification`, `PushNotification`
+- Factory: picks notifier object from user preference/channel
+
+5. File parsing
+- Strategy: `CsvParser`, `JsonParser`, `XmlParser`
+- Factory: selects parser by file extension/content type
+
+6. Discount calculation in e-commerce
+- Strategy: `NoDiscount`, `CouponDiscount`, `FestivalDiscount`, `MembershipDiscount`
+- Factory: returns discount strategy from campaign rules
+
+### Practical Rule
+- If new requirement says “support one more algorithm/mode,” think **Strategy** first.
+- If new requirement says “instantiate the right class based on input/config,” add **Factory** on top.
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> This is the top-level repository README.</p>
+
+                    <div class="code-label">LLD/splitwise/splitwise.md</div>
+                    <pre class="code-block"><code>
+# Splitwise LLD
+
+## Step 1: Requirement Gathering
+1. Add friends capability
+2. Add / manage group
+3. Add / manage friends inside a group
+4. Add / manage expense inside a group / without a group
+5. Split expense capability (`equal`, `unequal`, `percentage`)
+6. Balance sheet of each user
+
+---
+
+## Step 2: Object Modeling
+1. Splitwise
+2. User
+3. Group
+4. Expense
+5. Split
+6. BalanceSheet
+
+---
+
+## Step 3: Classes and Attributes
+
+### SplitType (Enum)
+- EQUAL
+- UNEQUAL
+- PERCENTAGE
+
+### Split
+- user : User
+- amount : Double
+
+### Expense
+- id : String
+- description : String
+- amount : Double
+- paidBy : User
+- splitType : SplitType
+- splitDetails : List&lt;Split&gt;
+
+### User
+- id : String
+- name : String
+- userExpenseBalanceSheet : UserExpenseBalanceSheet
+
+### Group
+- id : String
+- name : String
+- user : List&lt;User&gt;
+- expense : List&lt;Expense&gt;
+- expenseController : ExpenseController
+
+---
+
+## Step 4: Identify Methods for Each Class
+
+Expense can be created from two places:
+1. From group
+2. Directly between users
+
+To create an expense we need:
+- amount
+- paidBy
+- splitType
+- splits
+- description
+
+### UserController
+- list : List&lt;User&gt;
+- CRUD operations for User
+
+### UserExpenseBalanceSheet
+- friendBalance : Map&lt;User, Balance&gt;
+- totalExpense : Double
+- totalPayments : Double
+- totalOwe : Double
+- totalGetBack : Double
+
+### BalanceSheetController
+- updateUserExpenseBalanceSheet
+- showBalanceSheetOfUser
+
+### Balance
+- amountOwe : Double
+- amountGetBack : Double
+
+### GroupController
+- list : List&lt;Group&gt;
+- CRUD operations for Group
+
+### ExpenseController
+- createExpense(
+  String expenseId,
+  String description,
+  Double expenseAmount,
+  List&lt;Split&gt; splitDetails,
+  ExpenseSplitType splitType,
+  User paidByUser
+  )
+
+### SplitFactory
+- getSplitObject(ExpenseSplitType splitType)
+
+### ExpenseSplit (Interface)
+- validateRequest(List&lt;Split&gt; splitList, Double totalAmount)
+  - equalSplit()
+  - unequalSplit()
+  - percentageSplit()
+
+### Splitwise
+- userController : UserController
+- groupController : GroupController
+- expenseController : ExpenseController
+
+---
+
+## End-to-End Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant SW as Splitwise
+    participant EC as ExpenseController
+    participant SF as SplitFactory
+    participant ES as ExpenseSplit
+    participant BSC as BalanceSheetController
+    participant UBS as UserExpenseBalanceSheet
+
+    U-&gt;&gt;SW: Add expense (group/direct)
+    SW-&gt;&gt;EC: createExpense(...)
+    EC-&gt;&gt;SF: getSplitObject(splitType)
+    SF--&gt;&gt;EC: ExpenseSplit implementation
+    EC-&gt;&gt;ES: validateRequest(splitList, totalAmount)
+    ES--&gt;&gt;EC: validation result
+    EC--&gt;&gt;SW: Expense created
+    SW-&gt;&gt;BSC: updateUserExpenseBalanceSheet(expense)
+    BSC-&gt;&gt;UBS: update balances (owe/getBack)
+    UBS--&gt;&gt;BSC: updated balances
+    BSC--&gt;&gt;SW: balance sheet updated
+    SW--&gt;&gt;U: showBalanceSheetOfUser
+```
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> This is the Splitwise-specific design/readme markdown from your local repository.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Repository Source Code (as-is)</h2>
+                    <p>Exact Java files copied from the local Splitwise repo tree, with a short explanation after each file.</p>
+
+                    <div class="code-label">Balance.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise;
+
+public class Balance {
+
+    double amountOwe;
+    double amountGetBack;
+
+    public double getAmountOwe() {
+        return amountOwe;
+    }
+
+    public void setAmountOwe(double amountOwe) {
+        this.amountOwe = amountOwe;
+    }
+
+    public double getAmountGetBack() {
+        return amountGetBack;
+    }
+
+    public void setAmountGetBack(double amountGetBack) {
+        this.amountGetBack = amountGetBack;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Tracks pairwise debt numbers for a user: amount owed and amount to get back.</p>
+
+                    <div class="code-label">BalanceSheetController.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise;
+
+import LLD.splitwise.expense.split.Split;
+import LLD.splitwise.user.User;
+
+import java.util.List;
+import java.util.Map;
+
+public class BalanceSheetController {
+
+    /**
+     * Update all balance sheets when an expense is created.
+     *
+     * Note: `UserExpenseBalanceSheet` no longer contains `totalPayment` or `totalYourExpense` fields by design.
+     * We only maintain per-counterparty balances and two totals: `totalYouOwe` and `totalYouGetBack`.
+     */
+    public void updateUserExpenseBalanceSheet(User expensePaidBy, List&lt;Split&gt; splits, double totalExpenseAmount){
+
+        // payer's sheet
+        UserExpenseBalanceSheet paidByUserExpenseSheet = expensePaidBy.getUserExpenseBalanceSheet();
+
+        // For each split, update pairwise balances between payer and the split user
+        for(Split split : splits) {
+
+            // the user who owes in this split
+            User userOwe = split.getUser();
+            UserExpenseBalanceSheet oweUserExpenseSheet = userOwe.getUserExpenseBalanceSheet();
+            double oweAmount = split.getAmountOwe();
+
+            // If payer and owe-user are the same person, it's the payer's own share -&gt; no counterparty update required
+            if(expensePaidBy.getUserId().equals(userOwe.getUserId())){
+                // intentionally no-op: we do not track totalYourExpense anymore
+                continue;
+            }
+
+            // -----------------------------
+            // Updates to the payer's (paidBy) sheet
+            // -----------------------------
+
+            // Increment the payer's total expected to get back from others
+            paidByUserExpenseSheet.setTotalYouGetBack(paidByUserExpenseSheet.getTotalYouGetBack() + oweAmount);
+
+            // Ensure there is a Balance entry for this counterparty on the payer's sheet
+            Balance userOweBalance;
+            if(paidByUserExpenseSheet.getFriendsBalance().containsKey(userOwe.getUserId())) {
+                userOweBalance = paidByUserExpenseSheet.getFriendsBalance().get(userOwe.getUserId());
+            }
+            else {
+                userOweBalance = new Balance();
+                paidByUserExpenseSheet.getFriendsBalance().put(userOwe.getUserId(), userOweBalance);
+            }
+
+            // Increment the amount the payer expects to get back from this user
+            userOweBalance.setAmountGetBack(userOweBalance.getAmountGetBack() + oweAmount);
+
+
+            // -----------------------------
+            // Updates to the owe-user's sheet
+            // -----------------------------
+
+            // The user who owes increases their "you owe" total
+            oweUserExpenseSheet.setTotalYouOwe(oweUserExpenseSheet.getTotalYouOwe() + oweAmount);
+
+            Balance userPaidBalance;
+            if(oweUserExpenseSheet.getFriendsBalance().containsKey(expensePaidBy.getUserId())){
+                userPaidBalance = oweUserExpenseSheet.getFriendsBalance().get(expensePaidBy.getUserId());
+            }
+            else{
+                userPaidBalance = new Balance();
+                oweUserExpenseSheet.getFriendsBalance().put(expensePaidBy.getUserId(), userPaidBalance);
+            }
+
+            // Increment the amount this user owes to the payer
+            userPaidBalance.setAmountOwe(userPaidBalance.getAmountOwe() + oweAmount);
+        }
+    }
+
+    public void showBalanceSheetOfUser(User user){
+
+        System.out.println("---------------------------------------");
+
+        System.out.println("Balance sheet of user : " + user.getUserId());
+
+        UserExpenseBalanceSheet userExpenseBalanceSheet =  user.getUserExpenseBalanceSheet();
+
+        // Only show the retained totals
+        System.out.println("TotalGetBack: " + userExpenseBalanceSheet.getTotalYouGetBack());
+        System.out.println("TotalYourOwe: " + userExpenseBalanceSheet.getTotalYouOwe());
+        for(Map.Entry&lt;String, Balance&gt; entry : userExpenseBalanceSheet.getFriendsBalance().entrySet()){
+
+            String userID = entry.getKey();
+            Balance balance = entry.getValue();
+
+            System.out.println("userID:" + userID + " YouGetBack:" + balance.getAmountGetBack() + " YouOwe:" + balance.getAmountOwe());
+        }
+
+        System.out.println("---------------------------------------");
+
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Applies each expense to user balance sheets and prints per-user summaries.</p>
+
+                    <div class="code-label">Main.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise;
+
+public class Main {
+
+    public static void main(String[] args){
+
+        Splitwise splitwise = new Splitwise();
+        splitwise.demo();
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Demo entry point that wires the system and runs sample Splitwise flows.</p>
+
+                    <div class="code-label">Splitwise.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise;
+
+import LLD.splitwise.expense.ExpenseSplitType;
+import LLD.splitwise.expense.ExpenseController;
+import LLD.splitwise.expense.split.Split;
+import LLD.splitwise.group.Group;
+import LLD.splitwise.group.GroupController;
+import LLD.splitwise.user.User;
+import LLD.splitwise.user.UserController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Splitwise {
+
+    UserController userController;
+    GroupController groupController;
+    BalanceSheetController balanceSheetController;
+    ExpenseController expenseController;
+
+    public Splitwise(){
+        userController = new UserController();
+        groupController = new GroupController();
+        balanceSheetController = new BalanceSheetController();
+        expenseController = new ExpenseController();
+    }
+
+    public void demo(){
+
+        setupUserAndGroup();
+
+        //Step1: add members to the group
+        Group group = groupController.getGroup("G1001");
+        group.addMember(userController.getUser("U2001"));
+        group.addMember(userController.getUser("U3001"));
+
+        //Step2. create an expense inside a group
+        List&lt;Split&gt; splits = new ArrayList&lt;&gt;();
+        Split split1 = new Split(userController.getUser("U1001"), 300);
+        Split split2 = new Split(userController.getUser("U2001"), 300);
+        Split split3 = new Split(userController.getUser("U3001"), 300);
+        splits.add(split1);
+        splits.add(split2);
+        splits.add(split3);
+        group.createExpense("Exp1001", "Breakfast", 900, splits, ExpenseSplitType.EQUAL, userController.getUser("U1001"));
+
+        List&lt;Split&gt; splits2 = new ArrayList&lt;&gt;();
+        Split splits2_1 = new Split(userController.getUser("U1001"), 400);
+        Split splits2_2 = new Split(userController.getUser("U2001"), 100);
+        splits2.add(splits2_1);
+        splits2.add(splits2_2);
+        group.createExpense("Exp1002", "Lunch", 500, splits2, ExpenseSplitType.UNEQUAL, userController.getUser("U2001"));
+
+        // Step3: Direct (non-group) expense: U2001 paid for U1001 (U1001 owes U2001)
+        List&lt;Split&gt; directSplits = new ArrayList&lt;&gt;();
+        directSplits.add(new Split(userController.getUser("U1001"), 50));
+        expenseController.createExpense("Exp2001", "Taxi (personal)", 50, directSplits, ExpenseSplitType.UNEQUAL, userController.getUser("U2001"));
+
+        for(User user : userController.getAllUsers()) {
+            balanceSheetController.showBalanceSheetOfUser(user);
+        }
+    }
+
+    public void setupUserAndGroup(){
+
+        //onboard user to splitwise app
+        addUsersToSplitwiseApp();
+
+        //create a group by user1
+        User user1 = userController.getUser("U1001");
+        groupController.createNewGroup("G1001", "Outing with Friends", user1);
+    }
+
+    private void addUsersToSplitwiseApp(){
+
+        //adding User1
+        User user1 = new User("U1001", "User1");
+
+        //adding User2
+        User user2 = new User ("U2001", "User2");
+
+        //adding User3
+        User user3 = new User ("U3001", "User3");
+
+        userController.addUser(user1);
+        userController.addUser(user2);
+        userController.addUser(user3);
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Facade that initializes and exposes core controllers used by the application.</p>
+
+                    <div class="code-label">UserExpenseBalanceSheet.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class UserExpenseBalanceSheet {
+
+    Map&lt;String, Balance&gt; friendsBalance;
+
+    double totalYouOwe;
+    double totalYouGetBack;
+
+    public UserExpenseBalanceSheet(){
+
+        friendsBalance = new HashMap&lt;&gt;();
+        totalYouOwe = 0;
+        totalYouGetBack = 0;
+    }
+
+    public Map&lt;String, Balance&gt; getFriendsBalance() {
+        return friendsBalance;
+    }
+
+    public double getTotalYouOwe() {
+        return totalYouOwe;
+    }
+
+    public void setTotalYouOwe(double totalYouOwe) {
+        this.totalYouOwe = totalYouOwe;
+    }
+
+    public double getTotalYouGetBack() {
+        return totalYouGetBack;
+    }
+
+    public void setTotalYouGetBack(double totalYouGetBack) {
+        this.totalYouGetBack = totalYouGetBack;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Stores aggregate totals and friend-wise balances for one user.</p>
+
+                    <div class="code-label">expense/Expense.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense;
+
+
+import LLD.splitwise.expense.split.Split;
+import LLD.splitwise.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Expense {
+    String expenseId;
+    String description;
+    double expenseAmount;
+    User paidByUser;
+    ExpenseSplitType splitType;
+    List&lt;Split&gt; splitDetails = new ArrayList&lt;&gt;();
+
+    public Expense(String expenseId, double expenseAmount, String description,
+                   User paidByUser, ExpenseSplitType splitType, List&lt;Split&gt; splitDetails) {
+
+        this.expenseId = expenseId;
+        this.expenseAmount = expenseAmount;
+        this.description = description;
+        this.paidByUser = paidByUser;
+        this.splitType = splitType;
+        this.splitDetails.addAll(splitDetails);
+
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Domain model for an expense, including payer, amount, split type, and split details.</p>
+
+                    <div class="code-label">expense/ExpenseController.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense;
+
+import LLD.splitwise.BalanceSheetController;
+import LLD.splitwise.expense.split.ExpenseSplit;
+import LLD.splitwise.expense.split.Split;
+import LLD.splitwise.user.User;
+
+import java.util.List;
+
+public class ExpenseController {
+
+    BalanceSheetController balanceSheetController;
+    public ExpenseController(){
+        balanceSheetController = new BalanceSheetController();
+    }
+
+    public Expense createExpense(String expenseId, String description, double expenseAmount,
+                                 List&lt;Split&gt; splitDetails, ExpenseSplitType splitType, User paidByUser){
+//      USING FACTORY PATTERN
+        ExpenseSplit expenseSplit = SplitFactory.getSplitObject(splitType);
+
+//        USING STRATEGY PATTERN
+
+//        ExpenseSplit expenseSplit = SplitStrategyRegistry.getInstance().getStrategy(splitType);
+//        if (expenseSplit == null) {
+//            throw new IllegalArgumentException("No strategy registered for split type: " + splitType);
+//        }
+
+        expenseSplit.validateSplitRequest(splitDetails, expenseAmount);
+
+        Expense expense = new Expense(expenseId, expenseAmount, description, paidByUser, splitType, splitDetails);
+
+        balanceSheetController.updateUserExpenseBalanceSheet(paidByUser, splitDetails, expenseAmount);
+
+        return expense;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Creates expenses, validates split requests, and updates balance sheets.</p>
+
+                    <div class="code-label">expense/ExpenseSplitType.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense;
+
 public enum ExpenseSplitType {
     EQUAL,
     UNEQUAL,
     PERCENTAGE
-}</code></pre>
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Enum of supported split styles: equal, unequal, and percentage.</p>
 
-                    <div class="code-label">ExpenseSplit.java</div>
-                    <pre class="code-block"><code>import java.util.List;
+                    <div class="code-label">expense/SplitFactory.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense;
 
-/**
- * Strategy for validating split lines before an {@link Expense} is recorded.
- */
-public interface ExpenseSplit {
-    void validateRequest(List&lt;Split&gt; splitList, double totalAmount);
-}</code></pre>
+import LLD.splitwise.expense.split.EqualExpenseSplit;
+import LLD.splitwise.expense.split.ExpenseSplit;
+import LLD.splitwise.expense.split.PercentageExpenseSplit;
+import LLD.splitwise.expense.split.UnequalExpenseSplit;
 
-                    <div class="code-label">SplitFactory.java</div>
-                    <pre class="code-block"><code>/**
- * Returns the correct split validator for the requested type.
- */
-public final class SplitFactory {
-
-    private SplitFactory() {}
+public class SplitFactory {
 
     public static ExpenseSplit getSplitObject(ExpenseSplitType splitType) {
-        return switch (splitType) {
-            case EQUAL -&gt; new EqualExpenseSplit();
-            case UNEQUAL -&gt; new UnequalExpenseSplit();
-            case PERCENTAGE -&gt; new PercentageExpenseSplit();
-        };
-    }
-}</code></pre>
 
-                    <div class="code-label">EqualExpenseSplit.java (example)</div>
-                    <pre class="code-block"><code>import java.util.List;
-
-public final class EqualExpenseSplit implements ExpenseSplit {
-    @Override
-    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
-        if (splitList == null || splitList.isEmpty()) {
-            throw new IllegalArgumentException("Splits required");
-        }
-        double share = totalAmount / splitList.size();
-        for (Split s : splitList) {
-            if (Math.abs(s.getAmount() - share) &gt; 1e-6) {
-                throw new IllegalArgumentException("Equal split: each share must be " + share);
-            }
+        switch (splitType) {
+            case EQUAL:
+                return new EqualExpenseSplit();
+            case UNEQUAL:
+                return new UnequalExpenseSplit();
+            case PERCENTAGE:
+                return new PercentageExpenseSplit();
+            default:
+                return null;
         }
     }
-}</code></pre>
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Returns the split validator implementation for a given split type.</p>
 
-                    <div class="code-label">Split.java</div>
-                    <pre class="code-block"><code>public class Split {
-    private final User user;
-    private double amount;
+                    <div class="code-label">expense/SplitStrategyRegistry.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense;
 
-    public Split(User user, double amount) {
-        this.user = user;
-        this.amount = amount;
-    }
+import LLD.splitwise.expense.split.EqualExpenseSplit;
+import LLD.splitwise.expense.split.ExpenseSplit;
+import LLD.splitwise.expense.split.PercentageExpenseSplit;
+import LLD.splitwise.expense.split.UnequalExpenseSplit;
 
-    public User getUser() { return user; }
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
-}</code></pre>
-
-                    <div class="code-label">Expense.java</div>
-                    <pre class="code-block"><code>import java.util.List;
-
-public class Expense {
-    private final String id;
-    private final String description;
-    private final double amount;
-    private final User paidBy;
-    private final ExpenseSplitType splitType;
-    private final List&lt;Split&gt; splitDetails;
-
-    public Expense(String id, String description, double amount, User paidBy,
-                   ExpenseSplitType splitType, List&lt;Split&gt; splitDetails) {
-        this.id = id;
-        this.description = description;
-        this.amount = amount;
-        this.paidBy = paidBy;
-        this.splitType = splitType;
-        this.splitDetails = splitDetails;
-    }
-
-    public String getId() { return id; }
-    public String getDescription() { return description; }
-    public double getAmount() { return amount; }
-    public User getPaidBy() { return paidBy; }
-    public ExpenseSplitType getSplitType() { return splitType; }
-    public List&lt;Split&gt; getSplitDetails() { return splitDetails; }
-}</code></pre>
-
-                    <div class="code-label">ExpenseController.java</div>
-                    <pre class="code-block"><code>import java.util.ArrayList;
-import java.util.List;
-
-public class ExpenseController {
-    private final List&lt;Expense&gt; expenses = new ArrayList&lt;&gt;();
-    private final BalanceSheetController balanceSheetController;
-
-    public ExpenseController(BalanceSheetController balanceSheetController) {
-        this.balanceSheetController = balanceSheetController;
-    }
-
-    /**
-     * Creates an expense (group or non-group). Validates splits, stores expense, updates balances.
-     */
-    public Expense createExpense(String expenseId, String description, double expenseAmount,
-                                 List&lt;Split&gt; splitDetails, ExpenseSplitType splitType,
-                                 User paidByUser) {
-        ExpenseSplit splitter = SplitFactory.getSplitObject(splitType);
-        splitter.validateRequest(splitDetails, expenseAmount);
-
-        Expense expense = new Expense(expenseId, description, expenseAmount,
-                paidByUser, splitType, splitDetails);
-        expenses.add(expense);
-        balanceSheetController.updateUserExpenseBalanceSheet(expense);
-        return expense;
-    }
-
-                    public List&lt;Expense&gt; getExpenses() {
-        return List.copyOf(expenses);
-    }
-}</code></pre>
-
-                    <div class="code-label">UnequalExpenseSplit.java</div>
-                    <pre class="code-block"><code>import java.util.List;
-
-/** Split amounts must sum to {@code totalAmount}. */
-public final class UnequalExpenseSplit implements ExpenseSplit {
-    @Override
-    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
-        double sum = splitList.stream().mapToDouble(Split::getAmount).sum();
-        if (Math.abs(sum - totalAmount) &gt; 1e-6) {
-            throw new IllegalArgumentException("Unequal splits must sum to total: " + totalAmount);
-        }
-    }
-}</code></pre>
-
-                    <div class="code-label">PercentageExpenseSplit.java</div>
-                    <pre class="code-block"><code>import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link Split#getAmount()} holds percentage for each user; must sum to 100.
- * You can convert to currency in the controller after validation.
+ * Registry that provides ExpenseSplit strategy instances for each ExpenseSplitType.
+ * Strategies are registered as stateless singletons and can be retrieved concurrently.
  */
-public final class PercentageExpenseSplit implements ExpenseSplit {
-    @Override
-    public void validateRequest(List&lt;Split&gt; splitList, double totalAmount) {
-        double pct = splitList.stream().mapToDouble(Split::getAmount).sum();
-        if (Math.abs(pct - 100.0) &gt; 1e-6) {
-            throw new IllegalArgumentException("Percentages must sum to 100");
+public class SplitStrategyRegistry {
+
+    private final Map&lt;ExpenseSplitType, ExpenseSplit&gt; registry = new ConcurrentHashMap&lt;&gt;();
+
+    private static final SplitStrategyRegistry INSTANCE = new SplitStrategyRegistry();
+
+    private SplitStrategyRegistry() {
+        // register built-in strategies
+        registry.put(ExpenseSplitType.EQUAL, new EqualExpenseSplit());
+        registry.put(ExpenseSplitType.UNEQUAL, new UnequalExpenseSplit());
+        registry.put(ExpenseSplitType.PERCENTAGE, new PercentageExpenseSplit());
+    }
+
+    public static SplitStrategyRegistry getInstance() {
+        return INSTANCE;
+    }
+
+    public ExpenseSplit getStrategy(ExpenseSplitType type) {
+        ExpenseSplit strategy = registry.get(type);
+        if (strategy == null) {
+            throw new IllegalArgumentException("Unsupported split type: " + type);
         }
-    }
-}</code></pre>
-
-                    <div class="code-label">Balance.java</div>
-                    <pre class="code-block"><code>public class Balance {
-    private double amountOwe;
-    private double amountGetBack;
-
-    public double getAmountOwe() { return amountOwe; }
-    public void addOwe(double v) { amountOwe += v; }
-    public double getAmountGetBack() { return amountGetBack; }
-    public void addGetBack(double v) { amountGetBack += v; }
-}</code></pre>
-
-                    <div class="code-label">UserExpenseBalanceSheet.java</div>
-                    <pre class="code-block"><code>import java.util.HashMap;
-import java.util.Map;
-
-public class UserExpenseBalanceSheet {
-    private final Map&lt;User, Balance&gt; friendBalance = new HashMap&lt;&gt;();
-    private double totalExpense;
-    private double totalPayments;
-    private double totalOwe;
-    private double totalGetBack;
-
-    public Map&lt;User, Balance&gt; getFriendBalance() { return friendBalance; }
-    public double getTotalExpense() { return totalExpense; }
-    public void addTotalExpense(double v) { totalExpense += v; }
-    public double getTotalPayments() { return totalPayments; }
-    public void addTotalPayments(double v) { totalPayments += v; }
-    public double getTotalOwe() { return totalOwe; }
-    public void addTotalOwe(double v) { totalOwe += v; }
-    public double getTotalGetBack() { return totalGetBack; }
-    public void addTotalGetBack(double v) { totalGetBack += v; }
-
-    private Balance balanceFor(User u) {
-        return friendBalance.computeIfAbsent(u, x -&gt; new Balance());
+        return strategy;
     }
 
-    /** User {@code owes} paid {@code amount} toward {@code creditor}. */
-    public void owe(User creditor, double amount) {
-        balanceFor(creditor).addOwe(amount);
-        addTotalOwe(amount);
+    public void registerStrategy(ExpenseSplitType type, ExpenseSplit strategy) {
+        registry.put(type, strategy);
     }
+}
 
-    /** User is owed {@code amount} by {@code debtor}. */
-    public void getBack(User debtor, double amount) {
-        balanceFor(debtor).addGetBack(amount);
-        addTotalGetBack(amount);
-    }
-}</code></pre>
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Registry-based resolver for split strategy implementations.</p>
 
-                    <div class="code-label">User.java</div>
-                    <pre class="code-block"><code>public class User {
-    private final String id;
-    private final String name;
-    private final UserExpenseBalanceSheet userExpenseBalanceSheet;
+                    <div class="code-label">expense/split/EqualExpenseSplit.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense.split;
 
-    public User(String id, String name) {
-        this.id = id;
-        this.name = name;
-        this.userExpenseBalanceSheet = new UserExpenseBalanceSheet();
-    }
-
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public UserExpenseBalanceSheet getUserExpenseBalanceSheet() {
-        return userExpenseBalanceSheet;
-    }
-}</code></pre>
-
-                    <div class="code-label">BalanceSheetController.java</div>
-                    <pre class="code-block"><code>/**
- * For each expense: payer should "get back" others' shares; each non-payer "owes" their share to payer.
- */
-public class BalanceSheetController {
-
-    public void updateUserExpenseBalanceSheet(Expense expense) {
-        User paidBy = expense.getPaidBy();
-        paidBy.getUserExpenseBalanceSheet().addTotalPayments(expense.getAmount());
-        paidBy.getUserExpenseBalanceSheet().addTotalExpense(expense.getAmount());
-
-        for (Split split : expense.getSplitDetails()) {
-            User participant = split.getUser();
-            double share = split.getAmount();
-            participant.getUserExpenseBalanceSheet().addTotalExpense(share);
-
-            if (participant.equals(paidBy)) {
-                continue;
-            }
-            participant.getUserExpenseBalanceSheet().owe(paidBy, share);
-            paidBy.getUserExpenseBalanceSheet().getBack(participant, share);
-        }
-    }
-
-    public void showBalanceSheetOfUser(User user) {
-        UserExpenseBalanceSheet sheet = user.getUserExpenseBalanceSheet();
-        System.out.println("--- Balance sheet: " + user.getName() + " ---");
-        System.out.println("Total paid (as payer): " + sheet.getTotalPayments());
-        System.out.println("Total expense (your share): " + sheet.getTotalExpense());
-        sheet.getFriendBalance().forEach((friend, bal) -&gt;
-                System.out.println(" vs " + friend.getName()
-                        + " | owe=" + bal.getAmountOwe()
-                        + " getBack=" + bal.getAmountGetBack()));
-    }
-}</code></pre>
-
-                    <div class="code-label">UserController.java</div>
-                    <pre class="code-block"><code>import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class UserController {
-    private final List&lt;User&gt; users = new ArrayList&lt;&gt;();
+public class EqualExpenseSplit implements ExpenseSplit{
 
-    public User createUser(String id, String name) {
-        User u = new User(id, name);
-        users.add(u);
-        return u;
+    @Override
+    public void validateSplitRequest(List&lt;Split&gt; splitList, double totalAmount) {
+
+        //validate total amount in splits of each user is equal and overall equals to totalAmount or not
+        double amountShouldBePresent = totalAmount/splitList.size();
+        for(Split split: splitList) {
+            if(split.getAmountOwe() != amountShouldBePresent) {
+                //throw exception
+            }
+        }
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Validates that every participant has the same share for equal splits.</p>
+
+                    <div class="code-label">expense/split/ExpenseSplit.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense.split;
+
+import java.util.List;
+
+public interface ExpenseSplit {
+
+    public void validateSplitRequest(List&lt;Split&gt; splitList, double totalAmount);
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Strategy interface for split validation rules.</p>
+
+                    <div class="code-label">expense/split/PercentageExpenseSplit.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense.split;
+
+import java.util.List;
+
+public class PercentageExpenseSplit implements ExpenseSplit {
+    @Override
+    public void validateSplitRequest(List&lt;Split&gt; splitList, double totalAmount) {
+
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Validates percentage-based splits (typically percentages summing to 100).</p>
+
+                    <div class="code-label">expense/split/Split.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense.split;
+
+
+import LLD.splitwise.user.User;
+
+public class Split {
+
+    private final User user;
+    private final double amountOwe;
+
+    public Split(User user, double amountOwe){
+        this.user = user;
+        this.amountOwe = amountOwe;
     }
 
-    public Optional&lt;User&gt; getUser(String id) {
-        return users.stream().filter(u -&gt; u.getId().equals(id)).findFirst();
+    public User getUser() {
+        return user;
     }
 
-    public List&lt;User&gt; listUsers() {
-        return List.copyOf(users);
+    public double getAmountOwe() {
+        return amountOwe;
     }
-}</code></pre>
 
-                    <div class="code-label">Group.java</div>
-                    <pre class="code-block"><code>import java.util.ArrayList;
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Represents one participant line item in an expense split.</p>
+
+                    <div class="code-label">expense/split/UnequalExpenseSplit.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.expense.split;
+
+import java.util.List;
+
+public class UnequalExpenseSplit implements ExpenseSplit{
+
+    @Override
+    public void validateSplitRequest(List&lt;Split&gt; splitList, double totalAmount) {
+
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Validates custom amount splits by checking total consistency.</p>
+
+                    <div class="code-label">group/Group.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.group;
+
+import LLD.splitwise.expense.Expense;
+import LLD.splitwise.expense.ExpenseController;
+import LLD.splitwise.expense.ExpenseSplitType;
+import LLD.splitwise.expense.split.Split;
+import LLD.splitwise.user.User;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
-    private final String id;
-    private final String name;
-    private final List&lt;User&gt; users = new ArrayList&lt;&gt;();
-    private final List&lt;Expense&gt; expenses = new ArrayList&lt;&gt;();
-    private final ExpenseController expenseController;
 
-    public Group(String id, String name, ExpenseController expenseController) {
-        this.id = id;
-        this.name = name;
-        this.expenseController = expenseController;
+    String groupId;
+    String groupName;
+    List&lt;User&gt; groupMembers;
+
+    List&lt;Expense&gt; expenseList;
+
+    ExpenseController expenseController;
+
+     public Group(){
+        groupMembers = new ArrayList&lt;&gt;();
+        expenseList = new ArrayList&lt;&gt;();
+        expenseController = new ExpenseController();
     }
 
-    public void addMember(User u) { users.add(u); }
-    public List&lt;User&gt; getUsers() { return List.copyOf(users); }
-    public List&lt;Expense&gt; getExpenses() { return List.copyOf(expenses); }
-    public ExpenseController getExpenseController() { return expenseController; }
-
-    public Expense addExpense(String expenseId, String description, double amount,
-                              List&lt;Split&gt; splits, ExpenseSplitType type, User paidBy) {
-        Expense e = expenseController.createExpense(expenseId, description, amount, splits, type, paidBy);
-        expenses.add(e);
-        return e;
+    //add member to group
+    public void addMember(User member){
+        groupMembers.add(member);
     }
-}</code></pre>
 
-                    <div class="code-label">GroupController.java</div>
-                    <pre class="code-block"><code>import java.util.ArrayList;
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Expense createExpense(String expenseId, String description, double expenseAmount,
+                                 List&lt;Split&gt; splitDetails, ExpenseSplitType splitType, User paidByUser) {
+
+        Expense expense = expenseController.createExpense(expenseId, description, expenseAmount, splitDetails, splitType, paidByUser);
+        expenseList.add(expense);
+        return expense;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Group aggregate containing members, group expenses, and group-level expense creation flow.</p>
+
+                    <div class="code-label">group/GroupController.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.group;
+
+import LLD.splitwise.user.User;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class GroupController {
-    private final List&lt;Group&gt; groups = new ArrayList&lt;&gt;();
 
-    public Group createGroup(String id, String name, ExpenseController expenseController) {
-        Group g = new Group(id, name, expenseController);
-        groups.add(g);
-        return g;
+    List&lt;Group&gt; groupList;
+
+    public GroupController(){
+        groupList = new ArrayList&lt;&gt;();
     }
 
-    public Optional&lt;Group&gt; getGroup(String id) {
-        return groups.stream().filter(g -&gt; g.getId().equals(id)).findFirst();
+    //create group
+    public void createNewGroup(String groupId, String groupName, User createdByUser) {
+
+        //create a new group
+        Group group = new Group();
+        group.setGroupId(groupId);
+        group.setGroupName(groupName);
+
+        //add the user into the group, as it is created by the USER
+        group.addMember(createdByUser);
+
+        //add the group in the list of overall groups
+        groupList.add(group);
     }
 
-    public List&lt;Group&gt; listGroups() {
-        return List.copyOf(groups);
-    }
-}</code></pre>
+    public Group getGroup(String groupId){
 
-                    <div class="code-label">Splitwise.java (facade)</div>
-                    <pre class="code-block"><code>/**
- * Top-level API: owns controllers used by the app / demo runner.
+        for(Group group: groupList) {
+
+            if(group.getGroupId().equals(groupId)){
+                return group;
+            }
+        }
+        return null;
+    }
+
+}
+
+
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Manages group lifecycle and lookup operations.</p>
+
+                    <div class="code-label">repositoryOptional/GroupRepository.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.repositoryOptional;
+
+import LLD.splitwise.group.Group;
+import java.util.List;
+
+/**
+ * Optional group repository interface.
+ *
+ * NOTE: This interface and its in-memory implementations are provided for demo and
+ * interview discussion purposes (to illustrate persistence and scaling). In production
+ * you would implement this against a durable store and add transactions, backups, and
+ * sharding as required.
  */
-public class Splitwise {
-    private final UserController userController;
-    private final GroupController groupController;
-    private final ExpenseController expenseController;
-    private final BalanceSheetController balanceSheetController;
+public interface GroupRepository {
+    void addGroup(Group group);
+    Group getGroup(String groupId);
+    List&lt;Group&gt; getAllGroups();
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Repository abstraction for persisting and querying groups.</p>
 
-    public Splitwise() {
-        this.balanceSheetController = new BalanceSheetController();
-        this.expenseController = new ExpenseController(balanceSheetController);
-        this.userController = new UserController();
-        this.groupController = new GroupController();
+                    <div class="code-label">repositoryOptional/InMemoryGroupRepository.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.repositoryOptional;
+
+import LLD.splitwise.group.Group;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+public class InMemoryGroupRepository implements GroupRepository {
+
+    private final ConcurrentMap&lt;String, Group&gt; groups = new ConcurrentHashMap&lt;&gt;();
+
+    @Override
+    public void addGroup(Group group) {
+        if (group == null) return;
+        groups.put(group.getGroupId(), group);
     }
 
-    public UserController getUserController() { return userController; }
-    public GroupController getGroupController() { return groupController; }
-    public ExpenseController getExpenseController() { return expenseController; }
-    public BalanceSheetController getBalanceSheetController() { return balanceSheetController; }
-}</code></pre>
+    @Override
+    public Group getGroup(String groupId) {
+        return groups.get(groupId);
+    }
 
-                    <p class="callout"><strong>Note:</strong> For <code>PERCENTAGE</code> splits, validate percentages in <code>PercentageExpenseSplit</code>, then convert each line to a rupee/dollar amount before calling <code>createExpense</code>, or perform conversion inside <code>ExpenseController</code> after validation. Thread-safety, persistence, and settlement (simplifying debts) are out of scope for this LLD sketch.</p>
+    @Override
+    public List&lt;Group&gt; getAllGroups() {
+        return new ArrayList&lt;&gt;(groups.values());
+    }
+}
+
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> In-memory implementation of group repository operations.</p>
+
+                    <div class="code-label">repositoryOptional/InMemoryUserRepository.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.repositoryOptional;
+
+import LLD.splitwise.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+/**
+ * Optional in-memory user repository.
+ *
+ * NOTE: This is a convenience/demo implementation intended for local/in-memory use and
+ * for interview discussions about scaling. In production you would replace this with
+ * a persistent, distributed store (RDBMS/NoSQL) or a caching layer (Redis) and add
+ * persistence, transactions, and durability guarantees.
+ */
+public class InMemoryUserRepository implements UserRepository {
+
+    private final ConcurrentMap&lt;String, User&gt; users = new ConcurrentHashMap&lt;&gt;();
+
+    @Override
+    public void addUser(User user) {
+        if (user == null) return;
+        users.put(user.getUserId(), user);
+    }
+
+    @Override
+    public User getUser(String userId) {
+        return users.get(userId);
+    }
+
+    @Override
+    public List&lt;User&gt; getAllUsers() {
+        return new ArrayList&lt;&gt;(users.values());
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> In-memory implementation of user repository operations.</p>
+
+                    <div class="code-label">repositoryOptional/UserRepository.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.repositoryOptional;
+
+import LLD.splitwise.user.User;
+import java.util.List;
+
+/**
+ * Optional user repository interface.
+ *
+ * NOTE: This interface and its in-memory implementations are included for demo and
+ * interview discussions around persistence and scaling. In a production system you
+ * would implement durable storage, transactions, and appropriate sharding/replication.
+ */
+public interface UserRepository {
+    void addUser(User user);
+    User getUser(String userId);
+    List&lt;User&gt; getAllUsers();
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Repository abstraction for persisting and querying users.</p>
+
+                    <div class="code-label">user/User.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.user;
+
+import LLD.splitwise.UserExpenseBalanceSheet;
+
+public class User {
+
+    String userId;
+    String userName;
+    UserExpenseBalanceSheet userExpenseBalanceSheet;
+
+    public User(String id, String userName){
+        this.userId = id;
+        this.userName = userName;
+        userExpenseBalanceSheet = new UserExpenseBalanceSheet();
+    }
+    public String getUserId() {
+        return userId;
+    }
+
+    public UserExpenseBalanceSheet getUserExpenseBalanceSheet() {
+        return userExpenseBalanceSheet;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> User entity with identity/profile and personal expense balance sheet.</p>
+
+                    <div class="code-label">user/UserController.java</div>
+                    <pre class="code-block"><code>
+package LLD.splitwise.user;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserController {
+
+    List&lt;User&gt; userList;
+
+    public UserController(){
+        userList = new ArrayList&lt;&gt;();
+    }
+
+    //add user
+    public void addUser(User user) {
+        userList.add(user);
+    }
+
+    public User getUser(String userID) {
+
+        for (User user : userList) {
+            if (user.getUserId().equals(userID)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public List&lt;User&gt; getAllUsers(){
+        return userList;
+    }
+}
+</code></pre>
+                    <p class="callout"><strong>What this file does:</strong> Manages user lifecycle and lookup operations.</p>
+
                 </div>
             </div>
         </div>
