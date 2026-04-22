@@ -137,6 +137,14 @@
             font-weight: bold;
             font-size: 1.2em;
         }
+        ol {
+            margin-left: 24px;
+            padding-left: 14px;
+            margin-bottom: 15px;
+        }
+        ol li {
+            margin-bottom: 10px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -380,33 +388,10 @@
                         <li>expenseController : ExpenseController</li>
                     </ul>
 
-                    <h3>End-to-End Flow</h3>
-                    <pre class="code-block"><code>sequenceDiagram
-    participant U as User
-    participant SW as Splitwise
-    participant EC as ExpenseController
-    participant SF as SplitFactory
-    participant ES as ExpenseSplit
-    participant BSC as BalanceSheetController
-    participant UBS as UserExpenseBalanceSheet
-
-    U-&gt;&gt;SW: Add expense (group/direct)
-    SW-&gt;&gt;EC: createExpense(...)
-    EC-&gt;&gt;SF: getSplitObject(splitType)
-    SF--&gt;&gt;EC: ExpenseSplit implementation
-    EC-&gt;&gt;ES: validateRequest(splitList, totalAmount)
-    ES--&gt;&gt;EC: validation result
-    EC--&gt;&gt;SW: Expense created
-    SW-&gt;&gt;BSC: updateUserExpenseBalanceSheet(expense)
-    BSC-&gt;&gt;UBS: update balances (owe/getBack)
-    UBS--&gt;&gt;BSC: updated balances
-    BSC--&gt;&gt;SW: balance sheet updated
-    SW--&gt;&gt;U: showBalanceSheetOfUser</code></pre>
                 </div>
 
                 <div class="section">
                     <h2>Splitwise File Hierarchy</h2>
-                    <p><code>/Users/ashusingh/Documents/Codes/system-design/LLD/splitwise</code></p>
                     <pre class="code-block"><code>splitwise
 |-- Balance.java
 |-- BalanceSheetController.java
@@ -439,7 +424,7 @@
     `-- UserController.java</code></pre>
                 </div>
                 <div class="section">
-                    <h2>Repository Source Code (as-is)</h2>
+                    <h2>Repository Source Code</h2>
                     <p>Exact Java files copied from the local Splitwise repo tree, with a short explanation after each file.</p>
 
                     <div class="code-label">Balance.java</div>
