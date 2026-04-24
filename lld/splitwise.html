@@ -240,6 +240,13 @@
     </style>
     <link rel="stylesheet" href="../hld/diagram-zoom.css">
     <link rel="stylesheet" href="../topic-progress.css">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <style>
+        .mermaid { display: flex; justify-content: center; margin: 20px 0; }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -265,6 +272,23 @@
                     <p>Model a bill-splitting app: friends, groups, expenses with equal / unequal / percentage splits, and per-user balance sheets. Expenses can be created from a group or directly between users; controllers orchestrate CRUD and delegate split validation to a strategy-style <code>ExpenseSplit</code> implementation from <code>SplitFactory</code>.</p>
                 </div>
 
+                <div class="diagram-figure">
+                    <div class="mermaid">
+                        graph TD
+                            Customer((Customer))
+                            Admin((Admin))
+                            
+                            Customer --> AE(Add Expense)
+                            Customer --> MG(Manage Groups)
+                            Customer --> VB(View Balance Sheet)
+                            Customer --> SU(Settle Up)
+                            
+                            Admin --> MU(Manage Users)
+                            Admin --> SM(System Monitoring)
+                    </div>
+                    <figcaption>Figure 1: Splitwise System Use Case Diagram - Primary user and admin interactions.</figcaption>
+                </div>
+
                 <div class="section">
                     <h2>Splitwise File Content (Formatted)</h2>
                     <p><code>splitwise/splitwise.md</code></p>
@@ -288,6 +312,11 @@
                         <li>Split</li>
                         <li>BalanceSheet</li>
                     </ol>
+
+                    <div class="diagram-figure">
+                        <img src="assets/splitwise-class-diagram.png" alt="Splitwise Class Diagram">
+                        <figcaption>Figure 2: Splitwise UML Class Diagram - Core entities, controllers, and split strategies.</figcaption>
+                    </div>
 
                     <h3>Step 3: Classes and Attributes</h3>
 
@@ -1291,11 +1320,30 @@ public class UserController {
 
                 </div>
                 <div class="section">
-                    <h2>End-to-End Flow</h2>
-                    <figure class="diagram-figure">
-                        <img src="assets/splitwise-end-to-end-flow.svg" alt="Sequence flow from User to Splitwise, ExpenseController, SplitFactory, ExpenseSplit, BalanceSheetController, and UserExpenseBalanceSheet, covering expense creation, validation, balance updates, and balance sheet response." width="1457" height="673" loading="lazy">
-                        <figcaption>End-to-end Splitwise flow for request handling, split validation, and balance sheet update propagation.</figcaption>
-                    </figure>
+                    <h2>Flow Diagram</h2>
+                    <div class="diagram-figure">
+                        <div class="mermaid">
+                            sequenceDiagram
+                                participant U as User
+                                participant EC as ExpenseController
+                                participant SF as SplitFactory
+                                participant ES as ExpenseSplit
+                                participant BC as BalanceSheetController
+                                participant UBS as UserExpenseBalanceSheet
+
+                                U->>EC: createExpense(details)
+                                EC->>SF: getSplitObject(splitType)
+                                SF-->>EC: expenseSplit
+                                EC->>ES: validateRequest(splits, amount)
+                                ES-->>EC: isValid
+                                EC->>BC: updateBalanceSheet(payer, splits, amount)
+                                BC->>UBS: update balances
+                                UBS-->>BC: success
+                                BC-->>EC: success
+                                EC-->>U: expense created
+                        </div>
+                        <figcaption>Figure 3: Splitwise Sequence Diagram - Expense creation and balance update flow.</figcaption>
+                    </div>
                 </div>
             </div>
         </div>
