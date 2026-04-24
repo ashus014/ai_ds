@@ -178,55 +178,109 @@
                         mindmap
                           root((Java 17 Features))
                             Language Enhancements
+                              Records (DTOs)
                               Sealed Classes
-                              Pattern Matching (Switch)
+                              Pattern Matching (Switch & instanceof)
+                              Switch Expressions
+                              Text Blocks
                             Performance & Memory
+                              ZGC (Low Latency)
                               Strict FP Semantics
                               Vector API (Incubator)
                               Foreign Memory API
                             Security
                               Strong Encapsulation
                               Deserialization Filters
-                              Security Manager Deprecated
                             Platform Support
                               macOS ARM64 (M1/M2)
                               Metal API Rendering
                     </div>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Mindmap of major feature categories in Java 17 LTS</p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Updated mindmap including Records, Text Blocks, and modern Switch</p>
                 </div>
 
                 <div class="section">
-                    <h2>Language Enhancements</h2>
-                    <h3>Sealed Classes</h3>
-                    <p>Controls which classes can extend or implement a class/interface, enhancing security and maintainability.</p>
-                    <ul>
-                        <li><strong>Example:</strong> A <code>Shape</code> class sealed to only allow <code>Square</code> and <code>Circle</code> subclasses.</li>
-                        <li>Prevents unauthorized subclassing in external libraries.</li>
-                    </ul>
+                    <h2>Language Enhancements: The Migration Impact</h2>
+                    
+                    <h3>1. Records (The Game Changer for DTOs)</h3>
+                    <p>Perfect for API responses and Microservices. Records are immutable by default and eliminate boilerplate code like Lombok.</p>
+                    <div class="code-label">Before Java 17 (The Pain)</div>
+                    <pre class="code-block"><code>class User {
+    private final String name;
+    private final int age;
 
-                    <h3>Pattern Matching (JEP 406)</h3>
-                    <p>Introduces pattern matching for <code>switch</code> expressions (Preview in 17).</p>
-                    <ul>
-                        <li>Simplifies type checking and casting, reducing boilerplate code.</li>
-                        <li>Currently supports reference types (not primitives or generics like <code>List</code>).</li>
-                    </ul>
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    // Plus: Getters, equals(), hashCode(), toString() ... 😵
+}</code></pre>
+                    <div class="code-label">Java 17+ (The Records Way)</div>
+                    <pre class="code-block"><code>record User(String name, int age) {} </code></pre>
+                    <p class="callout">👉 <strong>Why this matters:</strong> Java auto-generates everything. It reduces boilerplate and makes your data models safe and predictable.</p>
+
+                    <h3>2. Sealed Classes (Controlled Inheritance)</h3>
+                    <p>You can now explicitly control which classes are allowed to extend your class, making your domain model safe.</p>
+                    <div class="code-label">Java 17+ Implementation</div>
+                    <pre class="code-block"><code>sealed class Shape permits Circle, Rectangle {}
+
+final class Circle extends Shape {}
+final class Rectangle extends Shape {}
+
+// Error: class Triangle extends Shape {} // Not permitted!</code></pre>
+
+                    <h3>3. Pattern Matching for instanceof</h3>
+                    <p>Cleaner code and significantly fewer casting bugs.</p>
+                    <div class="code-label">Before Java 17</div>
+                    <pre class="code-block"><code>if (obj instanceof String) {
+    String s = (String) obj; // Manual casting required
+    System.out.println(s.length());
+}</code></pre>
+                    <div class="code-label">Java 17+</div>
+                    <pre class="code-block"><code>if (obj instanceof String s) {
+    System.out.println(s.length()); // Variable 's' is automatically cast
+}</code></pre>
+
+                    <h3>4. Switch Expressions (Modern Switch)</h3>
+                    <p>No more fall-through bugs and returns values directly.</p>
+                    <div class="code-label">Java 17+</div>
+                    <pre class="code-block"><code>String result = switch (day) {
+    case MONDAY, FRIDAY -> "Work";
+    case SUNDAY -> "Rest";
+    default -> "Unknown";
+};</code></pre>
+
+                    <h3>5. Text Blocks (Multi-line Strings)</h3>
+                    <p>Super clean for JSON, SQL queries, and logs.</p>
+                    <div class="code-label">Before Java 17</div>
+                    <pre class="code-block"><code>String json = "{\n" +
+              "  \"name\": \"Ashu\"\n" +
+              "}";</code></pre>
+                    <div class="code-label">Java 17+</div>
+                    <pre class="code-block"><code>String json = """
+{
+  "name": "Ashu"
+}
+""";</code></pre>
                 </div>
 
                 <div class="section">
-                    <h2>Performance & Memory Improvements</h2>
+                    <h2>Performance, Memory & GC Improvements</h2>
+                    <h3>ZGC (Zero Garbage Collector)</h3>
+                    <p>Improved low-latency GC, reducing pause times significantly for large-scale systems.</p>
+                    <p class="callout">💡 <strong>Interview line:</strong> "Java 17 improved low-latency collectors like ZGC, bringing pause times down to sub-milliseconds even for massive heaps."</p>
+                    
                     <ul>
-                        <li><strong>Strict Floating-Point Semantics (JEP 306):</strong> Enforces consistent floating-point behavior across platforms for reproducible results (e.g., financial calculations).</li>
-                        <li><strong>Vector API (Incubator):</strong> Enables SIMD (Single Instruction Multiple Data) operations for parallel data processing with single CPU instructions.</li>
-                        <li><strong>Foreign Function & Memory API (Incubator):</strong> A safer, faster replacement for JNI to call native code and manage off-heap memory with automatic cleanup via <code>try-with-resources</code>.</li>
+                        <li><strong>Strict Floating-Point Semantics (JEP 306):</strong> Enforces consistent floating-point behavior across platforms.</li>
+                        <li><strong>Vector API (Incubator):</strong> SIMD support for parallel data processing.</li>
+                        <li><strong>Foreign Function & Memory API (Incubator):</strong> Safer native code interaction.</li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>Security & Encapsulation</h2>
                     <ul>
-                        <li><strong>Strong Encapsulation (JEP 403):</strong> Restricts access to internal JDK classes (e.g., <code>sun.misc.Unsafe</code>) and removes reflection APIs that bypass encapsulation.</li>
-                        <li><strong>Security Manager Deprecation:</strong> Being phased out in favor of modern protocols like OAuth2 and container-level security.</li>
-                        <li><strong>Improved Deserialization Filtering:</strong> Introduces custom filters to restrict classes allowed to be deserialized, mitigating injection attacks.</li>
+                        <li><strong>Strong Encapsulation (JEP 403):</strong> Internal JDK APIs are now strongly hidden. This forces better coding practices and avoids "unsafe" hacks that bypass the JVM level security.</li>
+                        <li><strong>Deserialization Filters:</strong> Mitigates injection attacks by restricting allowed classes during deserialization.</li>
                     </ul>
                 </div>
 
