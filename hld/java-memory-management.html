@@ -136,6 +136,20 @@
             font-size: 0.9em;
         }
         .highlight { color: #764ba2; font-weight: 600; }
+        .diagram-container {
+            margin: 20px 0 35px 0;
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -163,6 +177,11 @@
                     <p>Java memory management focuses on how the Java Virtual Machine (JVM) allocates and manages memory during program execution. It involves dividing memory into Stack and Heap, managing the lifecycle of variables, and utilizing the Garbage Collector (GC) to reclaim memory automatically.</p>
                 </div>
 
+                <div class="diagram-container">
+                    <img src="assets/java-memory-management.png" alt="Java Memory Management Architecture Diagram">
+                    <p style="margin-top: 15px; font-style: italic; color: #666;">Figure 1: JVM Memory Architecture Overview</p>
+                </div>
+
                 <div class="section">
                     <h2>JVM Memory Division</h2>
                     <h3>Stack Memory</h3>
@@ -179,6 +198,14 @@
                         <li>Stores objects and string literals (in the String Pool).</li>
                         <li><span class="highlight">Shared</span> across all threads.</li>
                         <li>Larger than stack memory and divided into Young and Old generations.</li>
+                    </ul>
+
+                    <h3>String Pool (Intern Pool)</h3>
+                    <ul>
+                        <li>A special memory region within the <span class="highlight">Heap</span> (since Java 7) that stores string literals.</li>
+                        <li><strong>Memory Optimization:</strong> Ensures that only one copy of each unique string literal is stored, saving significant memory.</li>
+                        <li><strong>Mechanism:</strong> When a string literal is created (e.g., <code>String s = "Java";</code>), the JVM checks the pool. If it exists, the reference to the pooled instance is returned; otherwise, a new instance is added.</li>
+                        <li><strong>Manual Interning:</strong> The <code>intern()</code> method can be used to manually place strings into the pool.</li>
                     </ul>
 
                     <h3>MetaSpace (Non-Heap)</h3>
