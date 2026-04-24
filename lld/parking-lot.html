@@ -265,6 +265,11 @@
                     <p>Design a multi-level parking lot with entry and exit gates, ticket generation, spot allocation, cost computation, payment handling, and strategy-based spot lookup and pricing.</p>
                 </div>
 
+                <div class="diagram-figure">
+                    <img src="assets/parking-lot-use-case-diagram.png" alt="Parking Lot Use Case Diagram">
+                    <figcaption>Figure 1: Parking Lot System Use Case Diagram - Actors and primary interactions.</figcaption>
+                </div>
+
                 <div class="section">
                     <h2>Parking Lot File Content (Formatted)</h2>
                     <p><code>parkingLot/ParkingLot.md</code></p>
@@ -343,6 +348,11 @@
                         <li>Payment</li>
                     </ol>
 
+                    <div class="diagram-figure">
+                        <img src="assets/parking-lot-class-diagram.png" alt="Parking Lot Class Diagram">
+                        <figcaption>Figure 2: Parking Lot UML Class Diagram - Core entities and their relationships.</figcaption>
+                    </div>
+
                     <h3>Class Design</h3>
                     <h3>Vehicle</h3>
                     <ul><li>vehicleNumber : String</li><li>vehicleType : VehicleType</li></ul>
@@ -384,6 +394,10 @@
                     <ul><li>calculate(Ticket ticket) : double</li><li>FixedPricingStrategy</li><li>HourlyPricingStrategy</li></ul>
 
                     <h3>End-to-End Flow</h3>
+                    <div class="diagram-figure">
+                        <img src="assets/parking-lot-sequence-diagram.png" alt="Parking Lot Sequence Diagram">
+                        <figcaption>Figure 3: Parking Lot Sequence Diagram - Arrival and Exit workflow.</figcaption>
+                    </div>
                     <pre class="code-block"><code>sequenceDiagram
     participant U as User
     participant EG as EntranceGate
