@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Java Memory Management - HLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .highlight { color: #764ba2; font-weight: 600; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+    <link rel="stylesheet" href="../topic-progress.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../hld.html" class="back-link">← Back to HLD</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Java Memory Management</h1>
+                <p>Comprehensive guide to JVM Memory, Stack/Heap, and Garbage Collection</p>
+                <span class="date-badge">Completed: 24 April 2026</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Java memory management focuses on how the Java Virtual Machine (JVM) allocates and manages memory during program execution. It involves dividing memory into Stack and Heap, managing the lifecycle of variables, and utilizing the Garbage Collector (GC) to reclaim memory automatically.</p>
+                </div>
+
+                <div class="section">
+                    <h2>JVM Memory Division</h2>
+                    <h3>Stack Memory</h3>
+                    <ul>
+                        <li>Stores temporary variables, primitive data types, and method call frames (stack frames).</li>
+                        <li>Each thread has its own <span class="highlight">isolated stack memory</span>.</li>
+                        <li>Stores references to Heap objects, not the objects themselves.</li>
+                        <li>Variables live within a scope; on exit, they are destroyed in <span class="highlight">LIFO (Last-In-First-Out)</span> order.</li>
+                        <li>Exhaustion leads to <code>StackOverflowError</code>.</li>
+                    </ul>
+
+                    <h3>Heap Memory</h3>
+                    <ul>
+                        <li>Stores objects and string literals (in the String Pool).</li>
+                        <li><span class="highlight">Shared</span> across all threads.</li>
+                        <li>Larger than stack memory and divided into Young and Old generations.</li>
+                    </ul>
+
+                    <h3>MetaSpace (Non-Heap)</h3>
+                    <ul>
+                        <li>Stores class metadata, constants, and static variables.</li>
+                        <li>Located outside the Heap and is <span class="highlight">expandable</span>, replacing the old PermGen.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Memory Characteristics</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Memory Type</th><th>Stores</th><th>Characteristics</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Stack</strong></td>
+                                <td>Primitive variables, references, method frames</td>
+                                <td>Per thread, temporary, scope-bound, LIFO cleanup</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Heap</strong></td>
+                                <td>Objects, string literals, class metadata (MetaSpace)</td>
+                                <td>Shared, larger, divided into Young/Old Gen</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MetaSpace</strong></td>
+                                <td>Class metadata, constants, static variables</td>
+                                <td>Separate from Heap, expandable</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Lifecycle and Scope</h2>
+                    <ul>
+                        <li>Variables exist only within their scope; once the scope ends, variables and references in the stack are deleted.</li>
+                        <li>When a method finishes, its <span class="highlight">stack frame</span> is removed.</li>
+                        <li>References pointing to Heap objects are deleted as scopes end, but actual objects remain in the Heap until garbage collected.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Garbage Collection (GC)</h2>
+                    <p>Reclaims memory by deleting Heap objects that are no longer referenced. JVM manages when GC runs; <code>System.gc()</code> is only a request, not a guarantee.</p>
+                    <h3>Reference Types</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Reference Type</th><th>Description</th><th>Impact on GC</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Strong Reference</strong></td>
+                                <td>Default type (<code>Person p = new Person();</code>)</td>
+                                <td>Object is NOT collected as long as strong ref exists</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Weak Reference</strong></td>
+                                <td>Created via <code>WeakReference</code> class</td>
+                                <td>GC collects immediately if no strong refs exist</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Soft Reference</strong></td>
+                                <td>Created via <code>SoftReference</code> class</td>
+                                <td>Collected only when memory is low (urgent need)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phantom Reference</strong></td>
+                                <td>Created via <code>PhantomReference</code> class</td>
+                                <td>Used for scheduling post-mortem cleanup actions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Heap Generations</h2>
+                    <h3>Young Generation</h3>
+                    <ul>
+                        <li><strong>Eden Space:</strong> Where new objects are created.</li>
+                        <li><strong>Survivor Spaces (S0, S1):</strong> Store objects that survive minor GC cycles.</li>
+                    </ul>
+                    <h3>Old Generation (Tenured)</h3>
+                    <ul>
+                        <li>Stores long-lived objects promoted from the Young Generation.</li>
+                        <li>GC runs less frequently (Major GC) but takes more time.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Garbage Collection Algorithms</h2>
+                    <table>
+                        <thead>
+                            <tr><th>GC Type</th><th>Description</th><th>Characteristics</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mark and Sweep</strong></td>
+                                <td>Marks unreferenced objects and removes them</td>
+                                <td>Basic algorithm for many implementations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mark and Sweep with Compaction</strong></td>
+                                <td>Compacts remaining objects after sweeping</td>
+                                <td>Avoids memory fragmentation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Serial GC</strong></td>
+                                <td>Single-threaded cleanup</td>
+                                <td>Simple but causes long pause times</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Parallel GC</strong></td>
+                                <td>Multiple threads run in parallel</td>
+                                <td>Default in Java 8; reduces pause time</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CMS (Concurrent Mark Sweep)</strong></td>
+                                <td>Runs concurrently with application threads</td>
+                                <td>Minimizes pauses; no compaction</td>
+                            </tr>
+                            <tr>
+                                <td><strong>G1 GC (Garbage First)</strong></td>
+                                <td>Compacts memory and runs concurrently</td>
+                                <td>Modern default; balances latency and throughput</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><em>Stop-the-world pause:</em> All application threads pause during GC, impacting performance.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Young Generation GC Process</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Step</th><th>Action</th><th>Result</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. Creation</td>
+                                <td>New objects created in Eden</td>
+                                <td>Eden fills with objects</td>
+                            </tr>
+                            <tr>
+                                <td>2. Minor GC</td>
+                                <td>Mark and Sweep in Young Gen</td>
+                                <td>Unreferenced objects marked for deletion</td>
+                            </tr>
+                            <tr>
+                                <td>3. Sweep</td>
+                                <td>Surviving objects moved to S0/S1</td>
+                                <td>Age incremented for survivors</td>
+                            </tr>
+                            <tr>
+                                <td>4. Next GC</td>
+                                <td>New objects in Eden; Sweep again</td>
+                                <td>Survivors moved alternately between S0 and S1; age +1</td>
+                            </tr>
+                            <tr>
+                                <td>5. Promotion</td>
+                                <td>Objects reach age threshold (e.g., 3)</td>
+                                <td>Objects promoted to Old Generation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>Stack is fast, temporary, and per-thread. Heap is shared and stores all objects.</li>
+                        <li>Garbage Collector automates cleanup, freeing developers from manual management.</li>
+                        <li>Heap is split into Young and Old generations for efficient GC.</li>
+                        <li>Modern algorithms like G1 minimize pause times and improve throughput.</li>
+                        <li>MetaSpace provides expandable space for class metadata, preventing old OOM issues.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../topic-progress.js" defer></script>
+</body>
+</html>
