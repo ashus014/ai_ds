@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Tic Tac Toe — LLD Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .header-repo { margin-top: 20px; }
+        .header-repo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98em;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .header-repo a:hover {
+            background: rgba(255, 255, 255, 0.32);
+            transform: translateY(-1px);
+        }
+        .section a.repo-inline {
+            color: #5a67d8;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .section a.repo-inline:hover { color: #764ba2; }
+        .content { padding: 40px; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .section h3:first-child { margin-top: 0; }
+        .section p, .section li { line-height: 1.65; }
+        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
+        ul li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        ol {
+            margin-left: 24px;
+            padding-left: 14px;
+            margin-bottom: 15px;
+        }
+        ol li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f5f5f5; }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #764ba2;
+            margin: 20px 0 8px;
+        }
+        pre.code-block {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 18px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            border: 1px solid #313244;
+        }
+        pre.code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            display: block;
+            white-space: pre;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        }
+        .tok-comment { color: #7f8c98; }
+        .tok-keyword { color: #ff7ab2; font-weight: 600; }
+        .tok-type { color: #82aaff; }
+        .tok-string { color: #c3e88d; }
+        .tok-number { color: #f78c6c; }
+        .tok-annotation { color: #89ddff; }
+        .tok-literal { color: #ffcb6b; font-weight: 600; }
+        .tok-method { color: #ffd580; }
+        .callout {
+            background: #e8eaf6;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 0.98em;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            table { font-size: 0.9em; }
+            table th, table td { padding: 8px; }
+            pre.code-block { font-size: 0.75em; }
+        }
+    </style>
+    <link rel="stylesheet" href="../hld/diagram-zoom.css">
+    <link rel="stylesheet" href="../topic-progress.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <div class="nav-links">
+                <a href="../lld.html" class="back-link">← Back to LLD</a>
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Tic Tac Toe</h1>
+                <p>Low-Level Design — flexible board size, multi-player support, and extensible pieces</p>
+                <span class="date-badge">April 26, 2026</span>
+                <p class="header-repo">
+                    <a href="https://github.com/ashus014/system-design/blob/main/LLD/ticTakToe/TicTacToe.md" target="_blank" rel="noopener noreferrer">GitHub — full source (LLD/ticTakToe/TicTacToe.md)</a>
+                </p>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Summary</h2>
+                    <p>Design a scalable Tic-Tac-Toe game that supports a variable board size (N x N), multiple players, and extensible playing pieces. The system handles game state management, turn-based logic, and win-condition detection.</p>
+                </div>
+
+                <div class="diagram-figure">
+                    <img src="assets/tic-tac-toe-use-case-diagram.png" alt="Tic Tac Toe Use Case Diagram">
+                    <figcaption>Figure 1: Tic Tac Toe System Use Case Diagram - Primary actors and game interactions.</figcaption>
+                </div>
+
+                <div class="section">
+                    <h2>Requirements & Goals</h2>
+                    <ol>
+                        <li><strong>Flexible Board Size</strong>: The game should support board sizes like 3x3, 4x4, up to NxN.</li>
+                        <li><strong>Multiple Players</strong>: Support for 2 or more players using different pieces (X, O, etc.).</li>
+                        <li><strong>Piece Extensibility</strong>: Playing pieces should be extensible to support different shapes, colors, or rendering logic in the future.</li>
+                        <li><strong>Win Detection</strong>: Efficiently check for win conditions in rows, columns, and diagonals.</li>
+                        <li><strong>Draw Detection</strong>: Handle cases where the board is full and no player has won.</li>
+                        <li><strong>Turn Management</strong>: Maintain a queue of players to manage turns sequentially.</li>
+                    </ol>
+
+                    <h3>System Flow</h3>
+                    <pre class="code-block"><code>sequenceDiagram
+    participant Main
+    participant Game as TicTacToeGame
+    participant Board
+    participant Player
+
+    Main->>Game: initGame(size, players)
+    Main->>Game: startGame()
+    
+    loop until gameStatus != IN_PROGRESS
+        Game->>Board: printBoard()
+        Game->>Game: poll player from Deque
+        Game->>Player: makeMove(board, scanner)
+        Player-->>Game: return Move
+        Game->>Board: addPiece(row, col, piece)
+        Game->>Game: add player back to Deque
+        Game->>Board: checkGameStatus()
+        Board-->>Game: return GameStatus
+    end
+    
+    Game->>Board: printBoard()
+    Game->>Main: displayResult()</code></pre>
+
+                    <div class="diagram-figure">
+                        <img src="assets/tic-tac-toe-class-diagram.png" alt="Tic Tac Toe Class Diagram">
+                        <figcaption>Figure 2: Tic Tac Toe UML Class Diagram - Core entities and relationships.</figcaption>
+                    </div>
+
+                    <h3>Major Objects</h3>
+                    <ol>
+                        <li><strong>PlayingPiece</strong>: Enum or Class representing the piece type (X, O).</li>
+                        <li><strong>Board</strong>: Manages the N x N grid and piece placement.</li>
+                        <li><strong>Player</strong>: Abstract base class for different player types (Human, AI).</li>
+                        <li><strong>Move</strong>: Captures the coordinates and piece for a single turn.</li>
+                        <li><strong>GameStatus</strong>: Tracks the current state (In Progress, Win, Draw).</li>
+                        <li><strong>TicTacToeGame</strong>: Orchestrates the game flow and player turns.</li>
+                    </ol>
+
+                    <h3>Class Design</h3>
+                    <h3>Board</h3>
+                    <ul>
+                        <li><code>size : int</code></li>
+                        <li><code>board : PlayingPiece[][]</code></li>
+                        <li><code>addPiece(int r, int c, PlayingPiece piece) : boolean</code></li>
+                        <li><code>getFreeCells() : List&lt;int[]&gt;</code></li>
+                        <li><code>checkGameStatus() : GameStatus</code></li>
+                    </ul>
+
+                    <h3>Player (Abstract)</h3>
+                    <ul>
+                        <li><code>name : String</code></li>
+                        <li><code>piece : PlayingPiece</code></li>
+                        <li><code>makeMove(Board, Scanner) : Move</code></li>
+                    </ul>
+
+                    <h3>TicTacToeGame</h3>
+                    <ul>
+                        <li><code>players : Deque&lt;Player&gt;</code></li>
+                        <li><code>gameBoard : Board</code></li>
+                        <li><code>initGame(int size, List&lt;Player&gt; players)</code></li>
+                        <li><code>startGame()</code></li>
+                    </ul>
+
+                    <div class="diagram-figure">
+                        <img src="assets/tic-tac-toe-sequence-diagram.png" alt="Tic Tac Toe Sequence Diagram">
+                        <figcaption>Figure 3: Tic Tac Toe Sequence Diagram - End-to-end game loop.</figcaption>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Source Code Implementation</h2>
+                    <p>Core Java files implementing the Tic-Tac-Toe LLD. Detailed design notes can be found in <a href="https://github.com/ashus014/system-design/blob/main/LLD/ticTakToe/TicTacToe.md" target="_blank" class="repo-inline">TicTacToe.md</a>.</p>
+
+                    <div class="code-label">Board.java</div>
+                    <pre class="code-block"><code>
+package LLD.ticTakToe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Board {
+    private int size;
+    private PlayingPiece[][] board;
+
+    public Board(int size) {
+        this.size = size;
+        this.board = new PlayingPiece[size][size];
+    }
+
+    public boolean addPiece(int row, int col, PlayingPiece piece) {
+        if (row < 0 || row >= size || col < 0 || col >= size || board[row][col] != null) {
+            return false;
+        }
+        board[row][col] = piece;
+        return true;
+    }
+
+    public List<int[]> getFreeCells() {
+        List<int[]> freeCells = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == null) {
+                    freeCells.add(new int[]{i, j});
+                }
+            }
+        }
+        return freeCells;
+    }
+
+    public GameStatus checkGameStatus() {
+        // Check rows, columns and diagonals
+        for (int i = 0; i < size; i++) {
+            if (checkLine(i, 0, 0, 1)) return getWinnerStatus(board[i][0]);
+            if (checkLine(0, i, 1, 0)) return getWinnerStatus(board[0][i]);
+        }
+        if (checkLine(0, 0, 1, 1)) return getWinnerStatus(board[0][0]);
+        if (checkLine(0, size - 1, 1, -1)) return getWinnerStatus(board[0][size - 1]);
+
+        if (getFreeCells().isEmpty()) return GameStatus.DRAW;
+        return GameStatus.IN_PROGRESS;
+    }
+
+    private boolean checkLine(int startRow, int startCol, int rowDelta, int colDelta) {
+        PlayingPiece first = board[startRow][startCol];
+        if (first == null) return false;
+        for (int i = 1; i < size; i++) {
+            if (board[startRow + i * rowDelta][startCol + i * colDelta] != first) return false;
+        }
+        return true;
+    }
+
+    private GameStatus getWinnerStatus(PlayingPiece piece) {
+        return piece == PlayingPiece.X ? GameStatus.PLAYER_X_WINS : GameStatus.PLAYER_O_WINS;
+    }
+}
+</code></pre>
+
+                    <div class="code-label">TicTacToeGame.java</div>
+                    <pre class="code-block"><code>
+package LLD.ticTakToe;
+
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+public class TicTacToeGame {
+    private Deque<Player> players;
+    private Board gameBoard;
+    private GameStatus gameStatus;
+    private Scanner scanner;
+
+    public TicTacToeGame(Scanner scanner) {
+        this.players = new LinkedList<>();
+        this.gameStatus = GameStatus.IN_PROGRESS;
+        this.scanner = scanner;
+    }
+
+    public void startGame() {
+        while (gameStatus == GameStatus.IN_PROGRESS) {
+            gameBoard.printBoard();
+            Player currentPlayer = players.pollFirst();
+            
+            boolean moveSuccess = false;
+            while (!moveSuccess) {
+                Move move = currentPlayer.makeMove(gameBoard, scanner);
+                moveSuccess = gameBoard.addPiece(move.getRow(), move.getCol(), move.getPiece());
+            }
+
+            players.addLast(currentPlayer);
+            gameStatus = gameBoard.checkGameStatus();
+        }
+        displayResult();
+    }
+}
+</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            function escapeHtml(text) {
+                return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            function tokenizeJava(code) {
+                const keywords = ["package", "import", "public", "private", "protected", "class", "interface", "enum", "extends", "implements", "new", "return", "if", "else", "for", "while", "do", "switch", "case", "default", "break", "continue", "throw", "throws", "try", "catch", "finally", "instanceof", "static", "final", "abstract", "synchronized", "volatile", "transient", "native", "strictfp", "boolean", "byte", "char", "short", "int", "long", "float", "double", "void"];
+                const literals = ["true", "false", "null"];
+                const tokens = [];
+                let i = 0;
+
+                while (i < code.length) {
+                    const ch = code[i];
+
+                    if (/\s/.test(ch)) {
+                        let ws = "";
+                        while (i < code.length && /\s/.test(code[i])) ws += code[i++];
+                        tokens.push({ type: "ws", value: ws });
+                        continue;
+                    }
+
+                    if (ch === "/" && code[i + 1] === "/") {
+                        let comment = "";
+                        while (i < code.length && code[i] !== "\n") comment += code[i++];
+                        tokens.push({ type: "comment", value: comment });
+                        continue;
+                    }
+
+                    if (ch === '"') {
+                        let str = '"';
+                        i++;
+                        while (i < code.length && code[i] !== '"') str += code[i++];
+                        if (i < code.length) str += code[i++];
+                        tokens.push({ type: "string", value: str });
+                        continue;
+                    }
+
+                    if (/[0-9]/.test(ch)) {
+                        let num = "";
+                        while (i < code.length && /[0-9.]/.test(code[i])) num += code[i++];
+                        tokens.push({ type: "number", value: num });
+                        continue;
+                    }
+
+                    if (/[a-zA-Z_$]/.test(ch)) {
+                        let word = "";
+                        while (i < code.length && /[a-zA-Z0-9_$]/.test(code[i])) word += code[i++];
+                        if (keywords.includes(word)) {
+                            tokens.push({ type: "keyword", value: word });
+                        } else if (literals.includes(word)) {
+                            tokens.push({ type: "literal", value: word });
+                        } else if (word[0] === word[0].toUpperCase()) {
+                            tokens.push({ type: "type", value: word });
+                        } else {
+                            tokens.push({ type: "identifier", value: word });
+                        }
+                        continue;
+                    }
+
+                    tokens.push({ type: "plain", value: ch });
+                    i++;
+                }
+                return tokens;
+            }
+
+            function nextNonWs(tokens, idx) {
+                for (let i = idx + 1; i < tokens.length; i++) {
+                    if (tokens[i].type !== "ws") return tokens[i];
+                }
+                return null;
+            }
+
+            function highlight(source) {
+                const tokens = tokenizeJava(source);
+                return tokens.map((token, idx) => {
+                    let cls = "";
+                    if (token.type === "identifier") {
+                        const next = nextNonWs(tokens, idx);
+                        if (next && next.value === "(") cls = "tok-method";
+                    } else if (token.type === "comment") {
+                        cls = "tok-comment";
+                    } else if (token.type === "keyword") {
+                        cls = "tok-keyword";
+                    } else if (token.type === "type") {
+                        cls = "tok-type";
+                    } else if (token.type === "string") {
+                        cls = "tok-string";
+                    } else if (token.type === "number") {
+                        cls = "tok-number";
+                    } else if (token.type === "annotation") {
+                        cls = "tok-annotation";
+                    } else if (token.type === "literal") {
+                        cls = "tok-literal";
+                    }
+                    const text = escapeHtml(token.value);
+                    return cls ? `<span class="${cls}">${text}</span>` : text;
+                }).join("");
+            }
+
+            document.querySelectorAll("pre.code-block > code").forEach((block) => {
+                block.innerHTML = highlight(block.textContent || "");
+            });
+        })();
+    </script>
+    <script src="../hld/diagram-zoom.js" defer></script>
+    <script src="../topic-progress.js" defer></script>
+</body>
+</html>
