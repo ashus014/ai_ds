@@ -68,7 +68,8 @@
                 var li = it.li;
                 if (li.querySelector(':scope > .done-cell input')) return;
 
-                var slno = idx + 1;
+                var customNum = li.getAttribute('data-num');
+                var slno = customNum ? customNum : (idx + 1);
                 var td = document.createElement('span');
                 td.className = 'done-cell';
                 var inp = document.createElement('input');
