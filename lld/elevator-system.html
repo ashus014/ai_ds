@@ -71,6 +71,25 @@
             font-size: 0.95em;
             margin-top: 15px;
         }
+        .header-repo { margin-top: 20px; }
+        .header-repo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98em;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .header-repo a:hover {
+            background: rgba(255, 255, 255, 0.32);
+            transform: translateY(-1px);
+        }
         .content { padding: 60px 40px; text-align: center; }
         .link-card {
             background: #f8f9fa;
@@ -113,6 +132,9 @@
                 <h1>Elevator System</h1>
                 <p>Low-Level Design — request scheduling, floor management, and state transitions</p>
                 <span class="date-badge">April 26, 2026</span>
+                <p class="header-repo">
+                    <a href="https://github.com/ashus014/system-design/blob/302c9105954d11ede1062d1511bfe7990ea2056e/LLD/elevatorSystem/Elevator.md" target="_blank" rel="noopener noreferrer">GitHub — full source (LLD/elevatorSystem/Elevator.md)</a>
+                </p>
             </div>
             <div class="content">
                 <div class="link-card">
