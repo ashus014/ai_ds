@@ -369,6 +369,13 @@
                         </li>
                         <li><strong>If payment fails:</strong> The entry in Redis will automatically be deleted once the TTL expires. No cron job or manual cleanup is required.</li>
                     </ol>
+
+                    <h3>Final Architecture</h3>
+                    <figure class="diagram-figure">
+                        <img src="assets/ticket-booking-final-architecture.png" alt="Final Architecture: Multi-instance Search Service and single instance Booking Service with full data flow">
+                        <figcaption>The <strong>Final Architecture</strong> of the Ticket Booking Application. Note the scaling of the Search Service to handle higher read volume.</figcaption>
+                    </figure>
+                    <p>In a real-world scenario, the rate of <strong>read requests</strong> (searching and viewing events) is significantly higher than the rate of <strong>write requests</strong> (actual bookings). To handle this imbalance, we scale the <strong>Search Service</strong> horizontally with multiple instances, while the <strong>Booking Service</strong> may require fewer instances but higher consistency guarantees.</p>
                 </div>
 
                 <div class="section">
