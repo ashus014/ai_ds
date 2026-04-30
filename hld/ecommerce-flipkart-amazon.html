@@ -202,12 +202,10 @@
 
                 <div class="section">
                     <h2>Non-Functional Requirements</h2>
-                    <ul>
-                        <li><strong>Scale:</strong> 100 million Daily Active Users (DAU); high read traffic (search) vs. low write traffic (purchases).</li>
-                        <li><strong>Latency:</strong> Search results in &lt; 200ms; Product details in &lt; 100ms.</li>
-                        <li><strong>Availability:</strong> Search and Product View must be highly available (Availability over Consistency).</li>
-                        <li><strong>Consistency:</strong> Inventory, Checkout, and Payment must be highly consistent (Consistency over Availability).</li>
-                        <li><strong>Fault Tolerance:</strong> System should be resilient to microservice failures.</li>
+                        <ul>
+                        <li><strong>Scale:</strong> 10 million Monthly Active Users (MAU) and 10 orders/second.</li>
+                        <li><strong>CAP Theorem:</strong> Highly available for searching and viewing items; highly consistent for placing orders and payment.</li>
+                        <li><strong>Latency:</strong> ~200ms while searching the product.</li>
                     </ul>
                 </div>
 
