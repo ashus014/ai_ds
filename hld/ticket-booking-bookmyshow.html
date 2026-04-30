@@ -142,6 +142,7 @@
         }
     </style>
     <link rel="stylesheet" href="../topic-progress.css">
+    <link rel="stylesheet" href="diagram-zoom.css">
 </head>
 <body>
     <div class="wrapper">
@@ -232,6 +233,10 @@
 
                 <div class="section">
                     <h2>High-Level System Design</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/ticket-booking-hld-diagram.png" alt="High-Level Design: Clients to API Gateway, routing to Search, Event, and Booking Services, and connecting to the Database">
+                        <figcaption>Architecture overview showing request routing from <strong>Clients</strong> through the <strong>API Gateway</strong> to specialized microservices (Search, Event, Booking), all persisting state to the central <strong>Database</strong>.</figcaption>
+                    </figure>
                     <ul>
                         <li><strong>Architecture:</strong> Microservices for scalability</li>
                         <li><strong>Clients:</strong> Mobile/web users</li>
@@ -336,6 +341,7 @@
             </div>
         </div>
     </div>
+    <script src="diagram-zoom.js" defer></script>
     <script src="../topic-progress.js" defer></script>
 </body>
 </html>
