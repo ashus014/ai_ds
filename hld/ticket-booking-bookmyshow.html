@@ -378,22 +378,7 @@
                     <p>In a real-world scenario, the rate of <strong>read requests</strong> (searching and viewing events) is significantly higher than the rate of <strong>write requests</strong> (actual bookings). To handle this imbalance, we scale the <strong>Search Service</strong> horizontally with multiple instances, while the <strong>Booking Service</strong> may require fewer instances but higher consistency guarantees.</p>
                 </div>
 
-                <div class="section">
-                    <h2>Booking Service &amp; Concurrency Handling</h2>
-                    <p><strong>Two-step booking:</strong></p>
-                    <ol style="list-style: decimal; margin-left: 25px; margin-bottom: 15px;">
-                        <li style="margin-bottom: 8px;"><strong>Reserve seats</strong> — Temporary lock (5–10 min)</li>
-                        <li style="margin-bottom: 8px;"><strong>Confirm booking</strong> — After successful payment</li>
-                    </ol>
-                    <h3>Avoiding Race Conditions (Double Booking)</h3>
-                    <ul>
-                        <li><strong>Redis cluster with TTL</strong> as distributed lock for seat reservations</li>
-                        <li>Seat reserved → entry in Redis with 10-minute expiry</li>
-                        <li>Payment success → remove Redis lock, update persistent DB</li>
-                        <li>Payment fails or timeout → Redis auto-releases lock (no cron job)</li>
-                        <li>Eliminates unreliability of periodic cron jobs scanning for expired reservations</li>
-                    </ul>
-                </div>
+
 
                 <div class="section">
                     <h2>Handling Traffic Spikes</h2>
