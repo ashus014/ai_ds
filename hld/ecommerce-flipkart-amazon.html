@@ -201,6 +201,17 @@
                 </div>
 
                 <div class="section">
+                    <h2>Core Entities</h2>
+                    <ul>
+                        <li><strong>User</strong>: Represents customers, includes profile and authentication data.</li>
+                        <li><strong>Product</strong>: Metadata such as title, description, price, images, inventory count, and reviews.</li>
+                        <li><strong>Cart</strong>: Holds selected product IDs with quantities for a user before checkout.</li>
+                        <li><strong>Order</strong>: Captures finalized purchase details, status, payment reference, and shipping information.</li>
+                        <li><strong>Checkout</strong>: Orchestrates validation of cart, payment processing, inventory deduction, and order creation.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
                     <h2>Non-Functional Requirements</h2>
                         <ul>
                         <li><strong>Scale:</strong> 10 million Monthly Active Users (MAU) and 10 orders/second.</li>
