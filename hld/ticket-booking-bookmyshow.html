@@ -298,7 +298,8 @@
                         <li><strong>Availability:</strong> To store event-related data (metadata of movies, actors, etc.), we use a NoSQL database like <strong>Cassandra DB</strong> because it is highly available.</li>
                         <li><strong>Search Optimization:</strong> While Cassandra is write-optimized, it is not ideal for complex reads/searches. For optimized searching, we use <strong>Elastic Search</strong>.</li>
                     </ul>
-                    <p><em>Open Question:</em> Now the question is, how would the data from Cassandra reach Elastic Search?</p>
+
+
 
                     <h3>Database Schema</h3>
                     <h4>Event (Cassandra)</h4>
@@ -316,6 +317,7 @@
 - title
 - actors[]
 - seat[]</div>
+                    <p style="margin-top: 20px;"><strong>Open Question:</strong> Now the question is, how would the data from Cassandra reach Elastic Search?</p>
                 </div>
 
                 <div class="section">
