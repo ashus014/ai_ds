@@ -330,7 +330,7 @@
                     </div>
 
                     <p>To ingest the data, we can use an <strong>Ingestor Service</strong> or a <strong>CDC (Change Data Capture)</strong> pipeline. Whenever there is a change in the Cassandra DB, a change event will get triggered and would automatically get ingested into Elasticsearch, so that all the real-time data from Cassandra is available in Elasticsearch.</p>
-                    <p><em>Note:</em> You see there are some real-time attributes present in the Cassandra DB that require this synchronization.</p>
+                    <p>You see there are some realtime attributes present in the Cassandra DB. For example, whenever a booking is made and a seat is filled, the seats other users are viewing should no longer be shown as available. In this case, the <strong>Booking Service</strong> updates the Cassandra DB. Since Cassandra is write-optimized, it persists that change very quickly, and a CDC event is triggered to update the search index.</p>
                 </div>
 
                 <div class="section">
