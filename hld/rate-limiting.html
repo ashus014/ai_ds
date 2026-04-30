@@ -136,6 +136,29 @@
         }
     </style>
     <link rel="stylesheet" href="../topic-progress.css">
+    <link rel="stylesheet" href="diagram-zoom.css">
+    <style>
+        .diagram-figure {
+            margin: 30px 0;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            cursor: zoom-in;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -314,12 +337,20 @@
                         <li>Fixed Window Counter is simple but suffers from burst problems at window edges.</li>
                         <li>Sliding Window Log and Sliding Window Counter improve accuracy by smoothing the counting over time, mitigating burst issues.</li>
                         <li>Proper tuning of parameters (bucket sizes, refill rates, queue length) is crucial for optimal performance.</li>
-                        <li><strong>HTTP 429 Too Many Requests</strong> is the standard error code for rejecting excess requests.</li>
                     </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Full System Overview</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/rate-limiter-full-overview.png" alt="Rate Limiting Full Overview Diagram">
+                        <figcaption>Comprehensive overview of Rate Limiting concepts, algorithms, and system architecture.</figcaption>
+                    </figure>
                 </div>
             </div>
         </div>
     </div>
+    <script src="diagram-zoom.js"></script>
     <script src="../topic-progress.js" defer></script>
 </body>
 </html>
