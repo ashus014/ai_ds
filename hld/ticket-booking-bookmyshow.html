@@ -161,6 +161,18 @@
             color: #555;
             line-height: 1.5;
         }
+        .pre-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
     </style>
     <link rel="stylesheet" href="../topic-progress.css">
     <link rel="stylesheet" href="diagram-zoom.css">
@@ -275,28 +287,35 @@
 
                 <div class="section">
                     <h2>Low-Level Design — Data Storage</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Database</th><th>Data Stored</th><th>Strengths</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Cassandra (NoSQL)</td><td>Event metadata</td><td>High availability, write-optimized</td></tr>
-                            <tr><td>PostgreSQL/MySQL</td><td>Booking, payment info</td><td>Strong consistency</td></tr>
-                            <tr><td>Elasticsearch</td><td>Search index</td><td>Low-latency, flexible search</td></tr>
-                        </tbody>
-                    </table>
-                    <h3>Search Optimization</h3>
+                    <figure class="diagram-figure">
+                        <img src="assets/ticket-booking-lld-storage.png" alt="LLD Data Storage: Search Service to Elasticsearch, Event Service to Cassandra, Booking Service to MySQL/Postgres">
+                        <figcaption>Low-level data storage architecture. <strong>MySQL/Postgres</strong> ensures strong consistency for bookings. <strong>Cassandra</strong> provides high availability for event metadata. <strong>Elasticsearch</strong> is used for optimized, low-latency search results.</figcaption>
+                    </figure>
+
+                    <h3>Storage Strategy</h3>
                     <ul>
-                        <li>Cassandra write-optimized but not ideal for complex search</li>
-                        <li><strong>Elasticsearch</strong> for fast, flexible search</li>
-                        <li><strong>CDC pipeline</strong> syncs Cassandra → Elasticsearch in near real-time</li>
+                        <li><strong>Consistency:</strong> Whenever we need to make anything consistent in a DB (like booking and payments), blindly go for <strong>MySQL/Postgres DB</strong>.</li>
+                        <li><strong>Availability:</strong> To store event-related data (metadata of movies, actors, etc.), we use a NoSQL database like <strong>Cassandra DB</strong> because it is highly available.</li>
+                        <li><strong>Search Optimization:</strong> While Cassandra is write-optimized, it is not ideal for complex reads/searches. For optimized searching, we use <strong>Elastic Search</strong>.</li>
                     </ul>
-                    <h3>CDC Pipeline Flow</h3>
-                    <ul>
-                        <li>Cassandra changes captured by <strong>Debezium</strong></li>
-                        <li>Events streamed via <strong>Kafka</strong></li>
-                        <li>Data ingested into Elasticsearch for instant search updates</li>
-                    </ul>
+                    <p><em>Open Question:</em> Now the question is, how would the data from Cassandra reach Elastic Search?</p>
+
+                    <h3>Database Schema</h3>
+                    <h4>Event (Cassandra)</h4>
+                    <div class="pre-block">Event
+- id
+- venue
+- artistId
+- name
+- description
+- seat[]</div>
+
+                    <h4>Movie (Cassandra)</h4>
+                    <div class="pre-block">Movie
+- id
+- title
+- actors[]
+- seat[]</div>
                 </div>
 
                 <div class="section">
@@ -337,7 +356,7 @@
                             <tr><td>Search Engine</td><td>Elasticsearch</td><td>Low-latency search</td></tr>
                             <tr><td>Booking Data</td><td>PostgreSQL/MySQL</td><td>Strong consistency</td></tr>
                             <tr><td>Booking Concurrency</td><td>Redis with TTL locks</td><td>Distributed seat reservation locking</td></tr>
-                            <tr><td>Data Sync</td><td>CDC (Debezium + Kafka)</td><td>Near real-time sync to Elasticsearch</td></tr>
+
                             <tr><td>API Gateway</td><td>Auth, rate limiting</td><td>Traffic and security management</td></tr>
                             <tr><td>Peak Traffic</td><td>Kafka queue</td><td>Throttling high demand</td></tr>
                         </tbody>
@@ -350,7 +369,7 @@
                         <li><strong>Separation of concerns</strong> in microservices enhances scalability and maintainability</li>
                         <li><strong>CAP trade-offs</strong> per use case: availability for search, consistency for booking</li>
                         <li><strong>Redis TTL</strong> for seat locks provides clean concurrency control without cron jobs</li>
-                        <li><strong>Elasticsearch + CDC</strong> enables fast search over large event datasets</li>
+                        <li><strong>Elasticsearch</strong> enables fast search over large event datasets</li>
                         <li><strong>Kafka queue</strong> for peak traffic ensures stability during high demand</li>
                     </ul>
                 </div>
