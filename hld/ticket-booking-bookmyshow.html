@@ -174,14 +174,18 @@
                 <div class="section">
                     <h2>Non-Functional Requirements</h2>
                     <ul>
-                        <li><strong>Scale:</strong> Up to 100 million daily active users</li>
-                        <li><strong>CAP Theorem:</strong>
+                        <li><strong>Scale:</strong> 100 million Daily Active Users (DAU)</li>
+                        <li><strong>CAP Theorem Strategy:</strong>
                             <ul>
-                                <li><strong>High availability</strong> for search and viewing</li>
-                                <li><strong>High consistency</strong> for booking to avoid double booking</li>
+                                <li><strong>Availability:</strong> Critical for search and event browsing so users can always discover tickets.</li>
+                                <li><strong>Consistency:</strong> Critical for the booking process to ensure no two users can book the same seat.</li>
                             </ul>
                         </li>
-                        <li><strong>Trade-off:</strong> Search prioritizes availability; booking prioritizes consistency</li>
+                    </ul>
+                    <p>Based on these requirements, we decide which parts of the application prioritize availability vs. consistency:</p>
+                    <ul>
+                        <li><strong>Search and Viewing:</strong> Should be <strong>highly available</strong> to handle massive traffic and provide a smooth browsing experience.</li>
+                        <li><strong>Seat Selection and Booking:</strong> Must be <strong>highly consistent</strong> at the time of booking to prevent race conditions and double bookings.</li>
                     </ul>
                 </div>
 
