@@ -208,12 +208,26 @@
                     <h2>API Design</h2>
                     <p>API designs are often a 1-to-1 mapping of the functional requirements. If the functional requirements are written clearly, the API design becomes straightforward and easy to implement without issues.</p>
                     <ul>
-                        <li><strong>GET <code>/search</code>:</strong> Params — event title, location (lat/long), date; returns paginated event IDs and metadata</li>
-                        <li><strong>GET <code>/event/{eventId}</code>:</strong> Returns event metadata including seat availability</li>
-                        <li><strong>POST <code>/booking/reserve</code>:</strong> Input list of seat IDs; temporary reservation (5–10 min)</li>
-                        <li><strong>POST <code>/booking/confirm</code>:</strong> Input booking ID + payment details; finalizes booking</li>
+                        <li><strong>1. Search Events:</strong>
+                            <br><code>GET /v1/search?q={searchTerm}&amp;location={location}&amp;date={date}</code>
+                            <br>Returns: <code>List&lt;EventId&gt;</code> (Paginated matches)
+                        </li>
+                        <li><strong>2. View Event Details:</strong>
+                            <br><code>GET /v1/event/{eventId}</code>
+                            <br>Returns: <code>Event Details, Location, Seats[]</code>
+                        </li>
+                        <li><strong>3. Book Ticket (Two-Step Process):</strong>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>Reserve Seats:</strong> <code>POST /v1/booking/reserve</code>
+                                    <br>Body: <code>{ "seats": List&lt;Seat&gt; }</code> → Returns: <code>BookingID</code>
+                                </li>
+                                <li><strong>Confirm Booking:</strong> <code>POST /v1/booking/confirm</code>
+                                    <br>Body: <code>{ "bookingId": String, "paymentDetails": Object }</code>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
-                    <p>User ID passed in request headers for authentication.</p>
+                    <p style="margin-top: 15px;"><em>Note: User ID is passed in request headers for authentication.</em></p>
                 </div>
 
                 <div class="section">
