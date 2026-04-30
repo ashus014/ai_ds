@@ -332,6 +332,14 @@ lockExpiresAt  = &lt;timestamp&gt;</div>
                 </div>
 
                 <div class="section">
+                    <h2>Basic HLD Diagram</h2>
+                    <figure class="diagram-figure">
+                        <img src="assets/coupon-management-basic-hld.png" alt="Basic HLD Diagram: Flow between Admin, User, API Gateway, Services, Redis, and Database">
+                        <figcaption>Initial high-level design showing the core request flows. <strong>Admin</strong> creates coupons via the <strong>Generation Service</strong>, which uses <strong>Redis</strong> for atomic unique ID generation. <strong>Users</strong> search, lock, and redeem coupons via the <strong>Search</strong> and <strong>Redeem</strong> services respectively. A <strong>Cron Job</strong> handles background tasks like expiration cleanup.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="section">
                     <h2>High-level architecture (final draft)</h2>
                     <figure class="diagram-figure">
                         <img src="assets/coupon-management-hld-architecture.png" alt="Architecture: Admin and User to API Gateway; Search Service to Elasticsearch; Coupon Generation Service to Redis global counter, Database, and Elasticsearch; Coupon Redeem Service to Redis coupon lock, Database, and Elasticsearch">
