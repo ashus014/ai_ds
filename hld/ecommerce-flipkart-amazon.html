@@ -210,29 +210,29 @@
                         <li><strong>Latency:</strong> ~200ms while searching the product.</li>
                     </ul>
                 </div>
+
                 <div class="section">
                     <h2>Core Entities</h2>
                     <ul>
-                        <li><strong>User</strong>: Represents customers, includes profile and authentication data.</li>
-                        <li><strong>Product</strong>: Metadata such as title, description, price, images, inventory count, and reviews.</li>
-                        <li><strong>Cart</strong>: Holds selected product IDs with quantities for a user before checkout.</li>
-                        <li><strong>Order</strong>: Captures finalized purchase details, status, payment reference, and shipping information.</li>
-                        <li><strong>Checkout</strong>: Orchestrates validation of cart, payment processing, inventory deduction, and order creation.</li>
+                        <li><strong>User:</strong> Represents customers, includes profile and authentication data.</li>
+                        <li><strong>Product:</strong> Metadata such as title, description, price, images, inventory count, and reviews.</li>
+                        <li><strong>Cart:</strong> Holds selected product IDs with quantities for a user before checkout.</li>
+                        <li><strong>Order:</strong> Captures finalized purchase details, status, payment reference, and shipping information.</li>
+                        <li><strong>Checkout:</strong> Orchestrates validation of cart, payment processing, inventory deduction, and order creation.</li>
                     </ul>
-                </div>
                 </div>
 
                 <div class="section">
                     <h2>API Design</h2>
                     <ul>
-                        <li><strong>Search Products:</strong> <code>GET /v1/product/search?q={searchTerm}</code> – Returns a paginated list of matching <code>ProductId</code>s.</li>
-                        <li><strong>Get Product Details:</strong> <code>GET /v1/product/{productId}</code> – Returns full product details in JSON.</li>
-                        <li><strong>Add to Cart:</strong> <code>POST /v1/cart/add</code> – Header: <code>userId</code>. Body: <code>{ "productId": "...", "quantity": n }</code>. Returns <code>cartId</code>.</li>
-                        <li><strong>Checkout:</strong> <code>POST /v1/checkout</code> – Body includes list of <code>{ productId, quantity, price }</code>. Returns <code>orderId</code>.</li>
-                        <li><strong>Payment:</strong> <code>POST /v1/payment</code> – Body: <code>{ "orderId": "...", "paymentDetails": { ... } }</code>. Returns confirmation.</li>
-                        <li><strong>Order Status:</strong> <code>GET /v1/status/{orderId}</code> – Returns current order status.</li>
+                        <li><strong>Search Products:</strong> <code>GET /v1/product/search?q={searchTerm}</code> → Returns a paginated list of <code>ProductId</code>s.</li>
+                        <li><strong>View Product Details:</strong> <code>GET /v1/product/{productId}</code> → Returns full product details in JSON format.</li>
+                        <li><strong>Add to Cart:</strong> <code>POST /v1/cart/add</code> → Body: <code>{ productId }</code> | Header: <code>userId</code> | Returns: <code>cartId</code>.</li>
+                        <li><strong>Checkout:</strong> <code>POST /v1/checkout</code> → Body: <code>{ productIds, quantities, prices }</code> → Returns <code>orderId</code>.</li>
+                        <li><strong>Payment Processing:</strong> <code>POST /v1/payment</code> → Body: <code>{ orderId, paymentDetails }</code> → Returns confirmation status.</li>
+                        <li><strong>Order Status:</strong> <code>GET /v1/status/{orderId}</code> → Returns current status of the order.</li>
                     </ul>
-                    <p>Additional cart operations (update, delete) can be discussed verbally with the interviewer.</p>
+                    <p><em>Note: Minor operations like updating or deleting items from the cart can be discussed verbally to save time.</em></p>
                 </div>
                 <div class="section">
                     <h2>Design Steps Timeline</h2>
@@ -271,22 +271,7 @@
                     </table>
                 </div>
 
-                <div class="section">
-                    <h2>API Endpoints Overview</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Endpoint</th><th>Method</th><th>Input</th><th>Output</th><th>Purpose</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><code>/search</code></td><td>GET</td><td>Search term (query param)</td><td>Paginated product metadata</td><td>Search products</td></tr>
-                            <tr><td><code>/product/{id}</code></td><td>GET</td><td>Product ID</td><td>Full product details</td><td>View product</td></tr>
-                            <tr><td><code>/cart</code></td><td>POST</td><td>User ID (header), product ID + quantity</td><td>Cart ID</td><td>Add to cart</td></tr>
-                            <tr><td><code>/checkout</code></td><td>POST</td><td>Cart info (products, quantities, prices)</td><td>Order ID</td><td>Checkout</td></tr>
-                            <tr><td><code>/payment</code></td><td>POST</td><td>Payment metadata + order ID</td><td>Payment confirmation</td><td>Process payment</td></tr>
-                            <tr><td><code>/order/status</code></td><td>GET</td><td>Order ID</td><td>Order status</td><td>Check status</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+
 
                 <div class="section">
                     <h2>Low-Level Design Highlights</h2>
