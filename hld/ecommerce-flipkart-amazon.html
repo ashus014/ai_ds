@@ -225,14 +225,14 @@
                 <div class="section">
                     <h2>API Design</h2>
                     <ul>
-                        <li><strong>Search Products:</strong> <code>GET /v1/product/search?q={searchTerm}</code> → Returns a paginated list of <code>ProductId</code>s.</li>
-                        <li><strong>View Product Details:</strong> <code>GET /v1/product/{productId}</code> → Returns full product details in JSON format.</li>
-                        <li><strong>Add to Cart:</strong> <code>POST /v1/cart/add</code> → Body: <code>{ productId }</code> | Header: <code>userId</code> | Returns: <code>cartId</code>.</li>
-                        <li><strong>Checkout:</strong> <code>POST /v1/checkout</code> → Body: <code>{ productIds, quantities, prices }</code> → Returns <code>orderId</code>.</li>
-                        <li><strong>Payment Processing:</strong> <code>POST /v1/payment</code> → Body: <code>{ orderId, paymentDetails }</code> → Returns confirmation status.</li>
-                        <li><strong>Order Status:</strong> <code>GET /v1/status/{orderId}</code> → Returns current status of the order.</li>
+                        <li><strong>Search Product:</strong> <code>GET /v1/product/search?q={searchTerm}</code> → Returns a paginated <code>List<ProductId></code> based on title or name.</li>
+                        <li><strong>View Product Details:</strong> <code>GET /v1/product/{productId}</code> → Returns full product details (JSON) such as description, image, etc.</li>
+                        <li><strong>Add to Cart:</strong> <code>POST /v1/cart/add</code> → Body: <code>{ productId, quantity }</code> | Header: <code>userId</code> | Returns: <code>cartId</code>.</li>
+                        <li><strong>Checkout:</strong> <code>POST /v1/checkout</code> → Body: <code>{ all productIds with qty & price }</code> → Returns: <code>orderId</code>.</li>
+                        <li><strong>Payment:</strong> <code>POST /v1/payment</code> → Body: <code>{ orderId, paymentDetails }</code> → Returns: <code>confirmation</code>.</li>
+                        <li><strong>Check Order Status:</strong> <code>GET /v1/status/{orderId}</code> → Returns the current status of the order.</li>
                     </ul>
-                    <p><em>Note: Minor operations like updating or deleting items from the cart can be discussed verbally to save time.</em></p>
+                    <p><em>Note: Additional operations like "Update Cart" or "Delete Item from Cart" are minor and can be discussed verbally to save time.</em></p>
                 </div>
                 <div class="section">
                     <h2>Design Steps Timeline</h2>
