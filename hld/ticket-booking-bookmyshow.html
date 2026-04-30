@@ -348,6 +348,26 @@
                     </figure>
                     <p>One approach would be to mark a seat as <strong>reserved</strong>. If the user does not complete the payment for the booked seat within 10 minutes, the seat should be released. To implement this, we could introduce a <strong>Cron Job</strong> that scans the database every minute to find and release expired reservations.</p>
                     <p><strong>Downside:</strong> The major drawback is that the cron job would have to scan the <em>entire</em> dataset every minute, which is inefficient and does not scale well for large databases. This is generally not considered a good solution for high-traffic systems.</p>
+
+                    <h4>2. Redis Cluster Approach</h4>
+                    <figure class="diagram-figure">
+                        <img src="assets/consistency-redis-cluster.png" alt="Consistency via Redis Cluster: Booking service using Redis TTL for seat locks">
+                        <figcaption>Optimized consistency using a <strong>Redis Cluster</strong> with TTL-based locks. This approach avoids the need for expensive database scans.</figcaption>
+                    </figure>
+                    <p>In this approach, whenever a new request arrives at the <strong>Booking Service</strong>, we check if the requested seats are already locked in <strong>Redis</strong>. If not, we know no other user is currently booking those seats. We then save the seat information in the Redis Cluster with a <strong>TTL (Time-To-Live) of 10 minutes</strong>.</p>
+                    <p>The flow proceeds as follows:</p>
+                    <ol style="list-style: decimal; margin-left: 25px; margin-bottom: 15px;">
+                        <li>If seats are available, lock them in Redis (TTL: 10m).</li>
+                        <li>Call the <strong>Payment Service</strong>.</li>
+                        <li><strong>If payment is successful:</strong>
+                            <ul style="list-style: disc; margin-left: 20px;">
+                                <li>Remove the entry from Redis.</li>
+                                <li>Update <strong>MySQL/Postgres</strong> to finalize the booking.</li>
+                                <li>Update <strong>Cassandra</strong> metadata, triggering the <strong>CDC pipeline</strong>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>If payment fails:</strong> The entry in Redis will automatically be deleted once the TTL expires. No cron job or manual cleanup is required.</li>
+                    </ol>
                 </div>
 
                 <div class="section">
