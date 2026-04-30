@@ -184,6 +184,11 @@
                     <h3>Rate Limiting Definition</h3>
                     <p>Controls the number of requests a server can handle in a given time window to prevent server crashes or performance degradation.</p>
 
+                    <figure class="diagram-figure">
+                        <img src="assets/rate-limiter-architecture.png" alt="Rate Limiter System Architecture">
+                        <figcaption><strong>High-Level Architecture</strong>: Showing the Rate Limiter layer between clients and backend servers, utilizing Redis for efficient counting.</figcaption>
+                    </figure>
+
                     <h3>Typical Scenario</h3>
                     <p>Multiple users send requests to a server, which processes them and sends responses.</p>
 
@@ -252,11 +257,23 @@
 
                     <h3>Token Bucket Algorithm</h3>
                     <p><strong>Mechanism:</strong> Tokens represent permission to process requests. Bucket has a capacity (e.g., 5 tokens) and refills tokens at a fixed rate (e.g., 3 tokens per second). Each incoming request requires a token; if available, request proceeds; if not, request is rejected (429 error).</p>
+                    
+                    <figure class="diagram-figure">
+                        <img src="assets/token-bucket-algorithm.png" alt="Token Bucket Algorithm Diagram">
+                        <figcaption>The <strong>Token Bucket Algorithm</strong>: Tokens are refilled at a constant rate, allowing for bursts of traffic up to the bucket's capacity.</figcaption>
+                    </figure>
+
                     <p><strong>Burst Handling:</strong> Allows short bursts if tokens are available, making it flexible and widely used in production (e.g., Amazon, Stripe APIs).</p>
                     <p><strong>Challenges:</strong> Requires tuning bucket capacity and refill rate based on server capacity.</p>
 
                     <h3>Leaky Bucket Algorithm</h3>
                     <p><strong>Mechanism:</strong> Requests queue up in a bucket. Requests are processed at a fixed rate regardless of incoming burst size. If bucket fills, excess requests are dropped.</p>
+
+                    <figure class="diagram-figure">
+                        <img src="assets/leaky-bucket-algorithm.png" alt="Leaky Bucket Algorithm Diagram">
+                        <figcaption>The <strong>Leaky Bucket Algorithm</strong>: Requests enter a queue and "leak" out at a steady rate, smoothing out bursts into a constant flow.</figcaption>
+                    </figure>
+
                     <p><strong>Analogy:</strong> Like a shower controlling water flow from an overhead tank to prevent flooding.</p>
                     <p><strong>Suitable Use Cases:</strong> When stable outflow rate is necessary.</p>
                     <p><strong>Challenges:</strong> Tuning queue size and processing rate; risk of request starvation under heavy bursts.</p>
@@ -340,11 +357,9 @@
                     </ul>
                 </div>
 
-                <div class="section">
-                    <h2>Full System Overview</h2>
                     <figure class="diagram-figure">
-                        <img src="assets/rate-limiter-full-overview.png" alt="Rate Limiting Full Overview Diagram">
-                        <figcaption>Comprehensive overview of Rate Limiting concepts, algorithms, and system architecture.</figcaption>
+                        <img src="assets/window-counter-algorithms.png" alt="Fixed vs Sliding Window Counter Algorithms">
+                        <figcaption>Comparison of <strong>Fixed Window</strong> vs. <strong>Sliding Window</strong>: Illustrating how sliding windows solve the 'edge burst' problem at window boundaries.</figcaption>
                     </figure>
                 </div>
             </div>
