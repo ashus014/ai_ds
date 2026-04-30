@@ -347,8 +347,9 @@
                         <figcaption>Consistency check using a <strong>Cron Job</strong> to release seats if payment is not completed within 10 minutes.</figcaption>
                     </figure>
                     <p>One approach would be to mark a seat as <strong>reserved</strong>. If the user does not complete the payment for the booked seat within 10 minutes, the seat should be released. To implement this, we could introduce a <strong>Cron Job</strong> that scans the database every minute to find and release expired reservations.</p>
+                    <br>
                     <p><strong>Downside:</strong> The major drawback is that the cron job would have to scan the <em>entire</em> dataset every minute, which is inefficient and does not scale well for large databases. This is generally not considered a good solution for high-traffic systems.</p>
-
+                    <br>
                     <h4>2. Redis Cluster Approach</h4>
                     <figure class="diagram-figure">
                         <img src="assets/consistency-redis-cluster.png" alt="Consistency via Redis Cluster: Booking service using Redis TTL for seat locks">
