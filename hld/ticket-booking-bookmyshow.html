@@ -381,12 +381,15 @@
 
 
                 <div class="section">
-                    <h2>Handling Traffic Spikes</h2>
-                    <ul>
-                        <li>High-demand events (e.g., concerts) → <strong>waiting queue</strong> via <strong>Kafka</strong></li>
-                        <li>Incoming booking requests enqueued to manage load</li>
-                        <li>Sequential dequeue for orderly processing; prevents system overload</li>
-                    </ul>
+                    <h2>Handling Traffic Spikes (Waiting Queue)</h2>
+                    <p>In the event of a high-demand scenario (e.g., a popular pop star's concert), there can be a huge surge in incoming traffic. Directly hitting the <strong>Booking Service</strong> could overwhelm the system.</p>
+                    
+                    <figure class="diagram-figure">
+                        <img src="assets/high-traffic-kafka-queue.png" alt="High Traffic Handling: API Gateway to Kafka waiting queue to Booking Service">
+                        <figcaption>Architecture for handling <strong>v.v.high traffic</strong> using a <strong>Kafka Waiting Queue</strong>.</figcaption>
+                    </figure>
+
+                    <p>To manage this surge, we introduce a <strong>waiting queue</strong> using <strong>Kafka</strong>. Instead of processing requests immediately, all incoming booking requests are placed into this queue. The Booking Service then consumes requests from the queue at a sustainable rate. Users are notified of their position in the queue and can proceed to the booking, payment, and confirmation steps once it is their turn.</p>
                 </div>
 
                 <div class="section">
