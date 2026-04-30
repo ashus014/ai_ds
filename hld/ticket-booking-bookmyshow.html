@@ -298,9 +298,6 @@
                         <li><strong>Availability:</strong> To store event-related data (metadata of movies, actors, etc.), we use a NoSQL database like <strong>Cassandra DB</strong> because it is highly available.</li>
                         <li><strong>Search Optimization:</strong> While Cassandra is write-optimized, it is not ideal for complex reads/searches. For optimized searching, we use <strong>Elastic Search</strong>.</li>
                     </ul>
-
-
-
                     <h3>Database Schema</h3>
                     <h4>Event (Cassandra)</h4>
                     <div class="pre-block">Event
@@ -318,6 +315,22 @@
 - actors[]
 - seat[]</div>
                     <p style="margin-top: 20px;"><strong>Open Question:</strong> Now the question is, how would the data from Cassandra reach Elastic Search?</p>
+                    
+                    <figure class="diagram-figure">
+                        <img src="assets/ticket-booking-cdc-pipeline.png" alt="CDC Pipeline: Cassandra to Elasticsearch data sync">
+                        <figcaption>Data synchronization via <strong>CDC (Change Data Capture)</strong>. Changes in Cassandra are captured and ingested into Elasticsearch for real-time search availability.</figcaption>
+                    </figure>
+
+                    <h3>Data Ingestion & Sync</h3>
+                    <p>Although the data for both Cassandra and Elasticsearch would be the same, we must write some <strong>ingestion jobs</strong> to move the data from Cassandra to Elasticsearch. This is because the choice of database that we have taken here, Cassandra, is not optimized for searching.</p>
+                    
+                    <div class="section" style="background: #fff; border: 1px solid #e0e0e0; margin-top: 20px;">
+                        <p><strong>Que:</strong> Why are we even going with Cassandra Database instead of MySQL or PostgresDB?</p>
+                        <p><strong>Ans:</strong> Even if we were going with MySQL, we would have to go with partitioning or indexing on data. We might put an index on the title, but in the case of Elasticsearch, the user has the flexibility to put indexing on Title, Date, Location, etc. simultaneously.</p>
+                    </div>
+
+                    <p>To ingest the data, we can use an <strong>Ingestor Service</strong> or a <strong>CDC (Change Data Capture)</strong> pipeline. Whenever there is a change in the Cassandra DB, a change event will get triggered and would automatically get ingested into Elasticsearch, so that all the real-time data from Cassandra is available in Elasticsearch.</p>
+                    <p><em>Note:</em> You see there are some real-time attributes present in the Cassandra DB that require this synchronization.</p>
                 </div>
 
                 <div class="section">
