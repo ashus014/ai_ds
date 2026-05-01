@@ -335,6 +335,22 @@
                         <h3 style="color: #673ab7;">Handling Concurrency & Fault Tolerance</h3>
 
                         <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-payment-fault-tolerance-sketch.png" alt="Fault Tolerance in Payment Flow">
+                            <figcaption>The Challenge of Distributed Transactions: Potential Points of Failure</figcaption>
+                        </figure>
+
+                        <p>The current <strong>Checkout/Payment service</strong> handles multiple critical operations concurrently: interacting with the 3rd-party gateway, updating the Payment DB, the Order DB, and the Inventory Service. In a high-traffic system, this "synchronous" approach poses significant risks to <strong>fault tolerance</strong>.</p>
+                        
+                        <p><strong>The Problem:</strong> Since these operations are part of a single logical transaction, a failure in one can lead to inconsistent states. For example:
+                            <ul>
+                                <li>Payment is successful, but the system fails to update the <strong>Inventory</strong>.</li>
+                                <li>User has purchased the product, but the <strong>Order DB</strong> update fails, leaving the user with no record of their purchase.</li>
+                            </ul>
+                        </p>
+
+                        <p><strong>The Solution: Kafka Integration</strong></p>
+
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
                             <img src="ecommerce-final-lld-architecture.png" alt="Final Event-Driven LLD Architecture">
                             <figcaption>Final LLD: Decoupled Checkout Flow using Kafka Consumers</figcaption>
                         </figure>
