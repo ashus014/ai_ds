@@ -135,6 +135,16 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        .sub-section { margin-top: 30px; }
+        .schema-list {
+            background: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 600;
+            color: #444;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
@@ -250,27 +260,34 @@
                 </div>
 
                 <div class="section">
-                    <h2>Low-Level Design Highlights</h2>
-                    <ul>
-                        <li><strong>User Service:</strong> MySQL for structured user data</li>
-                        <li><strong>Product Service:</strong> MongoDB for flexible metadata; images in S3/CDN</li>
-                        <li><strong>Search Service:</strong> ElasticSearch synced via CDC (Kafka) from Product DB</li>
-                        <li><strong>Cart Service:</strong> PostgreSQL (cart_id, user_id, product_ids, quantities); price fetched from Product Service for freshness</li>
-                        <li><strong>Checkout flow:</strong>
-                            <ul>
-                                <li>Validate inventory via Inventory Service before payment</li>
-                                <li>Payment via Payment Service + third-party gateway</li>
-                                <li>Kafka events post-payment: update Order DB, Inventory DB, Notification Service</li>
-                            </ul>
-                        </li>
-                        <li><strong>Inventory Service:</strong>
-                            <ul>
-                                <li>Source-of-truth in PostgreSQL</li>
-                                <li>Redis cache to reduce DB load; write-through or CDC for consistency</li>
-                                <li>Redis distributed lock with TTL for limited-stock concurrent purchases</li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <h2>Low-Level Design</h2>
+
+                    <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                        <img src="ecommerce-lld-sketch.png" alt="Low-Level E-commerce Design">
+                        <figcaption>Low-Level Architecture: Database Schemas and Image Optimization Flow</figcaption>
+                    </figure>
+
+                    <div class="sub-section">
+                        <h3 style="color: #d32f2f;">User Service</h3>
+                        <p>Once a user lands on our site, they have to login/signup. The data is simple but must be <strong>consistent</strong>, so we'll save all customer metadata in a <strong>MySQL DB</strong>.</p>
+                        <ul class="schema-list">
+                            <li><strong>User:</strong> { name, email, password, mobile, address[] }</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #388e3c;">Search Service</h3>
+                        <p>With an NFR of ~200ms latency, we need an optimized searching algorithm. Scanning the entire database for every request is highly inefficient. We use <strong>ElasticSearch</strong> (synced via CDC) to provide high-performance full-text search, similar to our Ticket Booking system.</p>
+                    </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #1976d2;">Product DB & Image Optimization</h3>
+                        <p>We choose <strong>MongoDB (Document DB)</strong> to store product info in JSON format. This provides the <strong>flexible schema</strong> needed as product details vary significantly across categories.</p>
+                        <p><strong>Image Strategy:</strong> Storing large images (e.g., 2MB) directly in the DB is ineffective. Instead, we use <strong>S3 (Blob Storage)</strong> to store the source images. For maximum performance, we use a <strong>CDN (Content Delivery Network)</strong> to store replicas near the user. The backend simply sends the image URL to the Frontend, which then fetches the actual image from the CDN, ensuring a super-quick UI rendering experience.</p>
+                        <ul class="schema-list">
+                            <li><strong>Product:</strong> { productId, name, description, category, price, qty, urls[], currency }</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="section">
