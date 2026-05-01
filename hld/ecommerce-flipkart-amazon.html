@@ -402,6 +402,17 @@
                         
                         <p><strong>Locking Mechanism:</strong> When a user tries to buy an iPhone, we first check the inventory. If stock is available, we acquire a lock on that product. In our design, the lock is placed on <strong>ProductId, UserId, and Quantity</strong>, combined with a <strong>TTL (Time-To-Live)</strong>. The TTL ensures that if a user doesn't complete the purchase within a certain time, the lock automatically expires and the stock becomes available again. When another user checks the inventory, the system sees the item is already locked in Redis, causing their checkout attempt to fail immediately, thus preventing overselling and ensuring a fair process.</p>
                     </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #9c27b0;">Order Status Service</h3>
+
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-order-status-sketch.png" alt="Order Status Flow">
+                            <figcaption>Order Status Tracking: Fetching from Order DB</figcaption>
+                        </figure>
+
+                        <p>To check the status of an order, the system calls the <strong>Order Status Service</strong>. This service simply queries the <strong>Order DB</strong> using the <code>OrderId</code> to retrieve the current status (e.g., Pending, Processing, Shipped, Delivered) and returns it to the user.</p>
+                    </div>
                 </div>
 
                 <div class="section">
