@@ -430,6 +430,19 @@
                             <li><strong>CDC Pipeline:</strong> Use a <strong>Change Data Capture (CDC)</strong> pipeline to asynchronously update Redis whenever the Inventory DB is modified, ensuring cache freshness without increasing request latency.</li>
                         </ul>
                     </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #009688;">Product Catalog Synchronization</h3>
+
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-product-inventory-sync-sketch.png" alt="Product Inventory Sync">
+                            <figcaption>Real-time Catalog Sync: Updating Product DB via Inventory CDC</figcaption>
+                        </figure>
+
+                        <p>We have a <code>quantity</code> field in the <strong>Product DB</strong> (MongoDB) used for display and search filtering. While the <strong>Inventory DB</strong> is updated in real-time during checkout, the Product DB must also stay synchronized to prevent displaying outdated stock levels to users.</p>
+                        
+                        <p><strong>Synchronization Mechanism:</strong> To solve this, we use a <strong>CDC (Change Data Capture) pipeline</strong>. Whenever there is a change in the Inventory DB, the CDC pipeline captures the update and applies it to the Product DB in real-time. This is more efficient than a traditional <strong>Cron Job</strong> as it avoids redundant processing and ensures near-instant synchronization across the entire catalog.</p>
+                    </div>
                 </div>
 
                 <div class="section">
