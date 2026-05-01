@@ -284,6 +284,9 @@
                         <h3 style="color: #1976d2;">Product DB & Image Optimization</h3>
                         <p>We choose <strong>MongoDB (Document DB)</strong> to store product info in JSON format. This provides the <strong>flexible schema</strong> needed as product details vary significantly across categories.</p>
                         <p><strong>Image Strategy:</strong> Storing large images (e.g., 2MB) directly in the DB is ineffective. Instead, we use <strong>S3 (Blob Storage)</strong> to store the source images. For maximum performance, we use a <strong>CDN (Content Delivery Network)</strong> to store replicas near the user. The backend simply sends the image URL to the Frontend, which then fetches the actual image from the CDN, ensuring a super-quick UI rendering experience.</p>
+                        <p style="background: #fff3e0; padding: 10px; border-radius: 4px; border-left: 4px solid #ff9800;">
+                            <strong>Note on Inventory:</strong> While <code>qty</code> is mentioned as product metadata, saving real-time quantity within MongoDB (or any general database) is <strong>not an optimal solution</strong> for high-concurrency systems.
+                        </p>
                         <ul class="schema-list">
                             <li><strong>Product:</strong> { productId, name, description, category, price, qty, urls[], currency }</li>
                         </ul>
