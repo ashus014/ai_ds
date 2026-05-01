@@ -372,6 +372,26 @@
                         <p><strong>Why this approach?</strong><br>
                         By leveraging Kafka's high availability and durability, we ensure that every critical event in the Checkout process is captured. This drastically reduces the rate of failure and ensures system-wide consistency through <strong>eventual consistency</strong>, even if individual services experience temporary downtime.</p>
                     </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #4caf50;">Notification Service</h3>
+                        <p>Once an order is placed successfully (or fails), we must notify the user. We introduce a dedicated <strong>Notification Service</strong> that reads from the Kafka broker. It listens for checkout events and sends real-time updates (Email/SMS/Push) to the user regarding their order status.</p>
+                    </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #2196f3;">Order DB</h3>
+                        
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-final-lld-with-notifications.png" alt="Complete LLD with Notifications">
+                            <figcaption>Complete Low-Level Design: Event-Driven Flow with Notification Service</figcaption>
+                        </figure>
+
+                        <p>The <strong>Order DB</strong> is a critical part of the system that tracks the lifecycle of a purchase. Since order data must be <strong>highly consistent</strong>, we choose <strong>MySQL</strong> for its ACID compliance and reliable transaction support.</p>
+                        <ul class="schema-list">
+                            <li><strong>Order:</strong> { orderId, userId, Items (productId, qty, price, currency), total, paymentId, status }</li>
+                        </ul>
+                    </div>
+                </div>
                 </div>
 
                 <div class="section">
