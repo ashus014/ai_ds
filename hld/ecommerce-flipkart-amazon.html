@@ -396,46 +396,7 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h2>Concurrency and Race Condition Handling</h2>
-                    <ul>
-                        <li>Multiple checkouts can query inventory for limited-stock items simultaneously</li>
-                        <li><strong>Redis distributed lock</strong> ensures only one process decrements inventory per product</li>
-                        <li>Lock TTL (e.g., 30 sec–1 min) to avoid deadlocks</li>
-                        <li>If lock held by another process → request fails gracefully; user notified of unavailability</li>
-                    </ul>
-                </div>
 
-                <div class="section">
-                    <h2>Database Choices Summary</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Component</th><th>Database</th><th>Reason</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>User Service</td><td>MySQL</td><td>Structured, consistent user data</td></tr>
-                            <tr><td>Product Service</td><td>MongoDB</td><td>Flexible schema for diverse product metadata</td></tr>
-                            <tr><td>Search Service</td><td>ElasticSearch</td><td>Fast full-text search</td></tr>
-                            <tr><td>Cart Service</td><td>PostgreSQL</td><td>Consistent cart items and quantities</td></tr>
-                            <tr><td>Inventory Service</td><td>PostgreSQL</td><td>Strong consistency for inventory counts</td></tr>
-                            <tr><td>Payment Service</td><td>PostgreSQL</td><td>Payment transaction records</td></tr>
-                            <tr><td>Order Service</td><td>MySQL</td><td>Consistent order tracking</td></tr>
-                            <tr><td>Cache Layer</td><td>Redis</td><td>Reduce DB load; distributed locks for concurrency</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="section">
-                    <h2>Key Insights</h2>
-                    <ul>
-                        <li>Balance consistency and availability per CAP theorem</li>
-                        <li>Microservices with clear separation enhance scalability and maintainability</li>
-                        <li>Event-driven (Kafka) decouples services; improves reliability in payment/order flows</li>
-                        <li>ElasticSearch and Redis critical for search and caching at scale</li>
-                        <li>Concurrency handling for limited stock prevents overselling and builds trust</li>
-                        <li>Design addresses latency, scalability, and fault tolerance</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
