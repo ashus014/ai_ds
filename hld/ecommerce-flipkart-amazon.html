@@ -306,6 +306,30 @@
                             <li><strong>Cart:</strong> { cartId, userId, Products[] -> (productId, qty) }</li>
                         </ul>
                     </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #607d8b;">Checkout & Inventory Service</h3>
+
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-checkout-lld-sketch.png" alt="Checkout & Inventory Flow">
+                            <figcaption>Checkout Flow: Inventory Validation and Post-Payment Updates</figcaption>
+                        </figure>
+
+                        <p>The <strong>Checkout Service</strong> is the most critical component. It orchestrates the transition from cart selection to finalized payment. Before any payment is processed, the system must verify that the requested quantities are still available.</p>
+                        
+                        <p><strong>Inventory Service:</strong> We introduce a dedicated service to manage stock availability. It uses a <strong>PostgreSQL database</strong> (Source of Truth for quantity, indexed on <code>productId</code>) to ensure high consistency. This prevents issues where a user attempts to buy items that were in their cart but have since sold out.</p>
+
+                        <p><strong>Post-Payment Flow:</strong> Once the <strong>Payment Service</strong> confirms a successful transaction through the 3rd-party gateway:</p>
+                        <ul>
+                            <li><strong>Payment DB:</strong> Updated with transaction status (success/fail).</li>
+                            <li><strong>Order DB:</strong> Finalized order details are saved for user tracking.</li>
+                            <li><strong>Inventory DB:</strong> Stock is officially decremented to reflect the purchase.</li>
+                        </ul>
+
+                        <ul class="schema-list">
+                            <li><strong>Inventory DB (Postgres):</strong> { productId [indexed], available_qty [Source of Truth] }</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="section">
