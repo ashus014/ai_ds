@@ -413,6 +413,23 @@
 
                         <p>To check the status of an order, the system calls the <strong>Order Status Service</strong>. This service simply queries the <strong>Order DB</strong> using the <code>OrderId</code> to retrieve the current status (e.g., Pending, Processing, Shipped, Delivered) and returns it to the user.</p>
                     </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #607d8b;">Inventory Resiliency & Caching Policy</h3>
+
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-inventory-resiliency-sketch.png" alt="Inventory Resiliency Architecture">
+                            <figcaption>Inventory Resiliency: Redis Cluster and CDC Synchronization</figcaption>
+                        </figure>
+
+                        <p>To make the system highly resilient and avoid the <strong>Inventory DB</strong> becoming a single point of failure (SPOF), we implement a <strong>Redis Cluster</strong> in front of the database. This significantly reduces the load on the primary DB by serving quantity checks from high-speed cache.</p>
+                        
+                        <p><strong>Consistency Strategies:</strong> To manage the cache effectively, we can use:</p>
+                        <ul>
+                            <li><strong>Write-Through Caching:</strong> The Inventory Service updates both the database and the Redis cache simultaneously whenever a change occurs.</li>
+                            <li><strong>CDC Pipeline:</strong> Use a <strong>Change Data Capture (CDC)</strong> pipeline to asynchronously update Redis whenever the Inventory DB is modified, ensuring cache freshness without increasing request latency.</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="section">
