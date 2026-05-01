@@ -263,8 +263,8 @@
                     <h2>Low-Level Design</h2>
 
                     <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
-                        <img src="ecommerce-lld-sketch.png" alt="Low-Level E-commerce Design">
-                        <figcaption>Low-Level Architecture: Database Schemas and Image Optimization Flow</figcaption>
+                        <img src="ecommerce-lld-sketch-v2.png" alt="Low-Level E-commerce Design">
+                        <figcaption>Low-Level Architecture: Database Schemas, Cart Flow, and Image Optimization</figcaption>
                     </figure>
 
                     <div class="sub-section">
@@ -289,6 +289,15 @@
                         </p>
                         <ul class="schema-list">
                             <li><strong>Product:</strong> { productId, name, description, category, price, qty, urls[], currency }</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section">
+                        <h3 style="color: #ff9800;">Cart Service</h3>
+                        <p>When a user selects a product, they choose the quantity and save it to the cart. To ensure a <strong>consistent system</strong>, we choose a <strong>PostgreSQL database</strong>.</p>
+                        <p><strong>Price Freshness:</strong> We do <strong>not</strong> save the product price in the Cart DB because it fluctuates. Instead, whenever the cart is refreshed or accessed, the Cart Service calls the <strong>Product DB</strong> to fetch the latest price and recalculates the total cost. This ensures the user always sees the most accurate pricing during checkout.</p>
+                        <ul class="schema-list">
+                            <li><strong>Cart:</strong> { cartId, userId, Products[] -> (productId, qty) }</li>
                         </ul>
                     </div>
                 </div>
