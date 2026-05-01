@@ -234,44 +234,6 @@
                     </ul>
                     <p><em>Note: Additional operations like "Update Cart" or "Delete Item from Cart" are minor and can be discussed verbally to save time.</em></p>
                 </div>
-                <div class="section">
-                    <h2>Design Steps Timeline</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Step</th><th>Description</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1. Requirement Gathering</td><td>Functional &amp; non-functional; clarify scope</td></tr>
-                            <tr><td>2. Core Entities</td><td>User, Product, Cart, Orders, Checkout</td></tr>
-                            <tr><td>3. API Design</td><td>REST endpoints for search, product, cart, checkout, payment, order status</td></tr>
-                            <tr><td>4. High-Level Design</td><td>Microservices, API Gateway, Load Balancer</td></tr>
-                            <tr><td>5. Low-Level Design</td><td>DB choices, schema, ElasticSearch, Redis, concurrency, Kafka</td></tr>
-                            <tr><td>6. Limited Stock</td><td>Redis distributed locking for concurrent purchases</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="section">
-                    <h2>Core Microservices</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Microservice</th><th>Responsibility</th><th>Database</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>User Service</td><td>Signup/login, metadata, authentication</td><td>MySQL</td></tr>
-                            <tr><td>Product Service</td><td>Product metadata (description, category, quantity, price, images)</td><td>MongoDB</td></tr>
-                            <tr><td>Search Service</td><td>Product search by keyword/title</td><td>ElasticSearch</td></tr>
-                            <tr><td>Cart Service</td><td>Cart items and quantities</td><td>PostgreSQL</td></tr>
-                            <tr><td>Checkout Service</td><td>Validate cart, initiate order placement</td><td>—</td></tr>
-                            <tr><td>Payment Service</td><td>Payment processing, third-party gateway</td><td>PostgreSQL</td></tr>
-                            <tr><td>Inventory Service</td><td>Track and update inventory with strong consistency</td><td>PostgreSQL</td></tr>
-                            <tr><td>Order Status Service</td><td>Order tracking</td><td>MySQL</td></tr>
-                            <tr><td>Notification Service</td><td>Order/payment status notifications</td><td>—</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-
 
                 <div class="section">
                     <h2>Low-Level Design Highlights</h2>
