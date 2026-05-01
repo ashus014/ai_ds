@@ -392,7 +392,15 @@
                         </ul>
                     <div class="sub-section">
                         <h3 style="color: #f44336;">Handling Flash Sales & Race Conditions</h3>
+                        
+                        <figure class="diagram-figure" onclick="openModal(this.querySelector('img').src)">
+                            <img src="ecommerce-redis-lock-sketch.png" alt="Redis Lock for Limited Stock">
+                            <figcaption>Managing Purchase of Limited Stock Items using Redis Distributed Locking</figcaption>
+                        </figure>
+
                         <p>Per requirement, the service should handle 10 purchases/second, so we need to scale the checkout service accordingly. Assume a sale is going on, and we have only one iPhone in the warehouse and 10,000 users are planning to purchase that iPhone at a particular time. All requests land into 10 different instances of the checkout service we have at that moment. And all instances will see that 1 iPhone is still there. All instances will move to the payment service. This would be a very bad user experience, and we would have to handle the race scenario explicitly. To handle this type of scenario, we will use <strong>Redis Lock</strong>.</p>
+                        
+                        <p><strong>Locking Mechanism:</strong> When a user tries to buy an iPhone, we first check the inventory. If stock is available, we acquire a lock on that product. In our design, the lock is placed on <strong>ProductId, UserId, and Quantity</strong>, combined with a <strong>TTL (Time-To-Live)</strong>. The TTL ensures that if a user doesn't complete the purchase within a certain time, the lock automatically expires and the stock becomes available again. When another user checks the inventory, the system sees the item is already locked in Redis, causing their checkout attempt to fail immediately, thus preventing overselling and ensuring a fair process.</p>
                     </div>
                 </div>
 
