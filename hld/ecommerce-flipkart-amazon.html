@@ -390,6 +390,9 @@
                         <ul class="schema-list">
                             <li><strong>Order:</strong> { orderId, userId, Items (productId, qty, price, currency), total, paymentId, status }</li>
                         </ul>
+                    <div class="sub-section">
+                        <h3 style="color: #f44336;">Handling Flash Sales & Race Conditions</h3>
+                        <p>Per requirement, the service should handle 10 purchases/second, so we need to scale the checkout service accordingly. Assume a sale is going on, and we have only one iPhone in the warehouse and 10,000 users are planning to purchase that iPhone at a particular time. All requests land into 10 different instances of the checkout service we have at that moment. And all instances will see that 1 iPhone is still there. All instances will move to the payment service. This would be a very bad user experience, and we would have to handle the race scenario explicitly. To handle this type of scenario, we will use <strong>Redis Lock</strong>.</p>
                     </div>
                 </div>
 
