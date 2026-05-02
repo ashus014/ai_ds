@@ -175,9 +175,9 @@
                 <div class="section">
                     <h2>Non-Functional Requirements</h2>
                     <ul>
-                        <li><strong>Scale:</strong> ~200 million users globally, ~10,000 videos (~1 hour each)</li>
-                        <li><strong>CAP:</strong> Prioritize high availability for viewing; strong consistency for payment and subscription only</li>
-                        <li><strong>Latency:</strong> Zero or minimal buffering for seamless playback</li>
+                        <li><strong>Scale:</strong> 200 Million users, 10K videos on Netflix (~1 hour each).</li>
+                        <li><strong>CAP Theorem (Availability >>> Consistency):</strong> For OTTs, we need high availability over consistency because whenever a user comes to the application, it should be up and running with practically zero downtime so that it doesn't interrupt the watching experience. However, we do need a strongly consistent system for the payment and subscription modules, but not for the video module (Netflix takes time to upload and process videos).</li>
+                        <li><strong>Latency:</strong> Very critical requirement; users should be able to view videos with nominal or zero latency. There should not be any buffering, ensuring a seamless experience.</li>
                     </ul>
                 </div>
 
