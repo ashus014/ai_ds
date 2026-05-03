@@ -193,20 +193,29 @@
 
                 <div class="section">
                     <h2>API Design Overview</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Details</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><code>/register</code></td><td>POST</td><td>User registration</td><td>Input: name, email, password</td></tr>
-                            <tr><td><code>/login</code>, <code>/logout</code>, <code>/updateProfile</code></td><td>GET/POST</td><td>Auth &amp; profile management</td><td>—</td></tr>
-                            <tr><td><code>/subscriptions</code></td><td>GET</td><td>Fetch subscription plans</td><td>Output: list of plans</td></tr>
-                            <tr><td><code>/subscribe</code></td><td>POST</td><td>User subscribes to plan</td><td>Input: user ID, plan ID</td></tr>
-                            <tr><td><code>/search</code></td><td>GET</td><td>Search movies/shows by title or genre</td><td>Output: paginated video metadata</td></tr>
-                            <tr><td><code>/video/{videoId}/metadata</code></td><td>GET</td><td>Video metadata</td><td>Output: video metadata JSON</td></tr>
-                            <tr><td><code>/video/{videoId}/play</code></td><td>GET</td><td>Stream video for playback</td><td>Output: video chunks/manifest</td></tr>
-                        </tbody>
-                    </table>
+                    <p style="margin-bottom: 15px; font-weight: 500; color: #555;">API design is very easy to do if functional requirements are captured properly.</p>
+                    
+                    <h3>1. User should be able to create an account and opt for a subscription</h3>
+                    <ul>
+                        <li><strong>POST <code>/v1/user/register/</code></strong> — (+ additional endpoints for login/logout/update)</li>
+                        <li><em>To see the subscription models present:</em><br>
+                        <strong>GET <code>/v1/subscription/plans</code></strong> — Returns all subscription plans.</li>
+                        <li><em>Once the user likes any subscription plan, they buy that plan:</em><br>
+                        <strong>POST <code>/v1/subscription</code></strong> — POST BODY: <code>{ user metadata + subscriptionID }</code>.<br>
+                        <span style="color: #667eea; font-weight: 500; font-size: 0.9em;">This completes the API design of the first requirement.</span></li>
+                    </ul>
+
+                    <h3>2. User should be able to search movies, shows on video titles and names</h3>
+                    <ul>
+                        <li><strong>GET <code>/v1/videos/search?q={name}</code></strong> — Returns a partial list <code>List&lt;VideoId&gt;</code> with Pagination.</li>
+                        <li><em>Now, the user can click on any one video from the search criteria to see the complete details of the video:</em><br>
+                        <strong>GET <code>/v1/video/{videoId}</code></strong> — Returns the video metadata (JSON).</li>
+                    </ul>
+
+                    <h3>3. Now, once the user sees the video they can click play to watch the video</h3>
+                    <ul>
+                        <li><strong>GET <code>/v1/video/play/{videoID}</code></strong> — Start the video playback.</li>
+                    </ul>
                 </div>
 
                 <div class="section">
