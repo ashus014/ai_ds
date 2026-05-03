@@ -11,17 +11,19 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            color: #333;
         }
-        .wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
+        .wrapper { width: 100%; max-width: 900px; }
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 15px 30px;
             border-radius: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -48,128 +50,62 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 36px 28px 44px;
+            padding: 50px 40px;
         }
         .page-title-row {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
         .page-title-row img { width: 36px; height: 36px; object-fit: contain; }
-        .main-container h1 {
+        .main-container h2 {
             color: #667eea;
-            font-size: 1.85em;
+            font-size: 2em;
             margin: 0;
             text-align: center;
         }
-        .sub {
-            text-align: center;
-            color: #555;
-            margin-bottom: 22px;
-            line-height: 1.5;
-            max-width: 680px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .table-wrap {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 720px;
-            font-size: 0.92em;
-        }
-        thead th {
-            background: #667eea;
-            color: white;
-            padding: 12px 10px;
-            text-align: left;
-            font-weight: 600;
-        }
-        tbody td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-        tbody tr:hover td { background: #f8f9ff; }
-        tr.cat-row td {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.12) 100%);
-            font-weight: 700;
-            color: #4a3a6b;
-            padding: 14px 12px;
-            border-bottom: 2px solid #667eea;
-        }
-        td.slno {
-            font-weight: 700;
+        .courses-title {
             color: #764ba2;
-            width: 3.25rem;
-            text-align: center;
-        }
-        td.stmt { font-weight: 500; }
-        td.date-cell { color: #888; font-size: 0.9em; }
-        td.linkcell a {
-            color: #667eea;
+            font-size: 1.3em;
             font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .courses-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .course-item {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .course-item a {
             text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        td.linkcell a:hover { text-decoration: underline; }
-        
-        #studyProgressMount { margin-bottom: 18px; }
-        .study-progress-summary { text-align: center; }
-        .study-progress-label {
-            font-weight: 600;
-            color: #4a3a6b;
-            margin-bottom: 8px;
-            font-size: 1.05em;
+        .course-item .date-tag {
+            font-size: 0.85em;
+            color: #999;
+            margin-left: 10px;
         }
-        .study-progress-bar-wrap {
-            height: 10px;
-            background: #e8eaf6;
-            border-radius: 999px;
-            overflow: hidden;
-            max-width: 360px;
-            margin: 0 auto;
+        .course-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-left-color: #764ba2;
+            padding-left: 20px;
         }
-        .study-progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 999px;
-            width: 0%;
-            transition: width 0.25s ease;
-        }
-        th.col-done, td.done-cell {
-            width: 3rem;
-            text-align: center;
-            vertical-align: middle;
-        }
-        td.done-cell input {
-            width: 1.15rem;
-            height: 1.15rem;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-        tbody tr.row-solved:not(.cat-row) td {
-            background-color: #c8e6c9 !important;
-        }
-        tbody tr.row-solved:not(.cat-row) td:first-child {
-            box-shadow: inset 4px 0 0 #66bb6a;
-        }
-        tbody tr.row-solved:not(.cat-row):hover td {
-            background-color: #a5d6a7 !important;
-        }
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 15px; }
-            .main-container { padding: 24px 16px; }
-        }
+        .course-item .arrow { color: #667eea; }
+        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
     </style>
+    <link rel="stylesheet" href="topic-progress.css">
 </head>
-<body data-study-track="mustKnowAlgorithms">
+<body>
     <div class="wrapper">
         <nav class="navbar">
             <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
@@ -178,72 +114,59 @@
         <div class="main-container">
             <div class="page-title-row">
                 <img src="assets/brand-must-know-algorithms.svg" width="36" height="36" alt="" decoding="async">
-                <h1>Must Know Algorithms</h1>
+                <h2>Must Know Algorithms</h2>
             </div>
-            <p class="sub">Core algorithms with annotated code. Use the tick box to track your progress.</p>
             
             <div id="studyProgressMount" aria-live="polite"></div>
             
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col">Sl No</th>
-                            <th scope="col">Algorithm</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Link</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="cat-row"><td colspan="4">Graph Algorithms</td></tr>
-                        <tr>
-                            <td class="slno">1</td>
-                            <td class="stmt">Topological sort</td>
-                            <td class="date-cell">Apr 3, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/topological-sort.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">2</td>
-                            <td class="stmt">Kahn's algorithm</td>
-                            <td class="date-cell">Apr 3, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/kahns-algorithm.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">3</td>
-                            <td class="stmt">Bipartite graph</td>
-                            <td class="date-cell">Apr 4, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/bipartite-graph.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">4</td>
-                            <td class="stmt">Prim's Algorithm for Minimum Spanning Tree (MST)</td>
-                            <td class="date-cell">Apr 4, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/prims-algorithm.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">5</td>
-                            <td class="stmt">Detect Cycle in Graph using Disjoint Set Union (DSU)</td>
-                            <td class="date-cell">Apr 5, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/detect-cycle-using-dsu.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">6</td>
-                            <td class="stmt">Kruskal's Algorithm for Minimum Spanning Tree (MST)</td>
-                            <td class="date-cell">Apr 5, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/kruskals-algorithm-mst.html">Read</a></td>
-                        </tr>
-                        <tr>
-                            <td class="slno">7</td>
-                            <td class="stmt">Dijkstra's Algorithm on Undirected Weighted Graph</td>
-                            <td class="date-cell">Apr 5, 2026</td>
-                            <td class="linkcell"><a href="must-know-algorithms/dijkstras-algorithm.html">Read</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div class="courses-title">Graph Algorithms</div>
+            <ul class="courses-list">
+                <li class="course-item" data-num="1">
+                    <a href="must-know-algorithms/topological-sort.html">
+                        <span>Topological sort <span class="date-tag">— Apr 3, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="2">
+                    <a href="must-know-algorithms/kahns-algorithm.html">
+                        <span>Kahn's algorithm <span class="date-tag">— Apr 3, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="3">
+                    <a href="must-know-algorithms/bipartite-graph.html">
+                        <span>Bipartite graph <span class="date-tag">— Apr 4, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="4">
+                    <a href="must-know-algorithms/prims-algorithm.html">
+                        <span>Prim's Algorithm for Minimum Spanning Tree (MST) <span class="date-tag">— Apr 4, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="5">
+                    <a href="must-know-algorithms/detect-cycle-using-dsu.html">
+                        <span>Detect Cycle in Graph using Disjoint Set Union (DSU) <span class="date-tag">— Apr 5, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="6">
+                    <a href="must-know-algorithms/kruskals-algorithm-mst.html">
+                        <span>Kruskal's Algorithm for Minimum Spanning Tree (MST) <span class="date-tag">— Apr 5, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item" data-num="7">
+                    <a href="must-know-algorithms/dijkstras-algorithm.html">
+                        <span>Dijkstra's Algorithm on Undirected Weighted Graph <span class="date-tag">— Apr 5, 2026</span></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
     
-    <script src="study-tracker.js" defer></script>
+    <script src="topic-progress.js" defer></script>
 </body>
 </html>

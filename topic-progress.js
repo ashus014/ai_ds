@@ -60,7 +60,7 @@
                 if (!a) return;
                 var href = (a.getAttribute('href') || '').trim();
                 if (!href || href.indexOf('http') === 0 || href.indexOf('//') === 0) return;
-                if (href.indexOf('hld/') !== 0 && href.indexOf('lld/') !== 0) return;
+                if (href.indexOf('hld/') !== 0 && href.indexOf('lld/') !== 0 && href.indexOf('must-know-algorithms/') !== 0) return;
                 rows.push({ li: li, a: a, id: href });
             });
 
