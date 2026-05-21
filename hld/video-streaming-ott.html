@@ -224,6 +224,13 @@
                     <figure class="diagram-figure" style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: block;">
                         <img src="assets/video-streaming-hld-architecture.png" alt="Video Streaming High Level Architecture" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     </figure>
+                    <p style="margin-top: 15px; margin-bottom: 15px;">The entry point to our backend is a combined <strong>Load Balancer &amp; API Gateway</strong> layer. It coordinates critical ingress operations:</p>
+                    <ul>
+                        <li><strong>Load Balancing:</strong> Automatically routes client traffic across backend service instances using a <strong>Round Robin</strong> algorithm.</li>
+                        <li><strong>User Authentication &amp; Authorization:</strong> Validates user credentials and access permissions to ensure only subscribed users can access content.</li>
+                        <li><strong>System Routing:</strong> Dynamically routes incoming HTTP requests to their corresponding downstream microservices (e.g., User Service, Subscription Service, Search Service, Play Service).</li>
+                        <li><strong>Rate Limiting:</strong> Prevents service overload and protects APIs against denial-of-service (DDoS) attacks by throttling excessive requests.</li>
+                    </ul>
                 </div>
 
                 <div class="section">
