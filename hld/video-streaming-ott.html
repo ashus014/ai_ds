@@ -231,6 +231,18 @@
                         <li><strong>System Routing:</strong> Dynamically routes incoming HTTP requests to their corresponding downstream microservices (e.g., User Service, Subscription Service, Search Service, Play Service).</li>
                         <li><strong>Rate Limiting:</strong> Prevents service overload and protects APIs against denial-of-service (DDoS) attacks by throttling excessive requests.</li>
                     </ul>
+
+                    <p style="margin-top: 25px; margin-bottom: 15px;">Behind the gateway, the system is decomposed into specialized, decoupled microservices and infrastructure components:</p>
+                    <ul>
+                        <li><strong>User Service:</strong> When a user lands on the website, the API Gateway routes registration and login requests here. It manages user profiles, authentication details, and account settings in the User DB.</li>
+                        <li><strong>Subscription Service:</strong> Handles user enrollment for subscription plans. This service processes transactions via a third-party <strong>Payment Gateway</strong>. Upon successful payment, it updates the user's subscription status and registers them with the correct subscription ID inside the User DB.</li>
+                        <li><strong>Search Service:</strong> Enables users to query for movies and TV shows based on titles, genres, or names. It queries a highly optimized search database (e.g., Elasticsearch) to return quick paginated results.</li>
+                        <li><strong>Play Service:</strong> Once a user finds a movie via the search criteria, they request to watch it. The Play Service coordinates playback by fetching the video's streaming manifest file (HLS/DASH) detailing the locations of video chunks for various resolutions.</li>
+                        <li><strong>Uploader Service (Internal):</strong> Handles internal video uploads by content administrators. It stores raw video files and static thumbnails in Blob Storage, triggering the encoding pipeline.</li>
+                        <li><strong>Blob Storage (S3):</strong> Stores raw source video uploads, static thumbnails, and the final chunked/encoded video segments in multiple resolutions (e.g., 480p, 720p, 1080p, 4K).</li>
+                        <li><strong>CDN (Content Delivery Network):</strong> Geographically distributes and caches encoded video chunks closer to clients, reducing playback latency and preventing buffering.</li>
+                        <li><strong>Kafka (Message Queue):</strong> Decouples asynchronous workflows. For example, when a user successfully buys a subscription, a payment success event is published to Kafka so other services (e.g., notification, billing, analytics) can consume it.</li>
+                    </ul>
                 </div>
 
                 <div class="section">
