@@ -240,8 +240,6 @@
                         <li><strong>Play Service:</strong> Once a user finds a movie via the search criteria, they request to watch it. The Play Service coordinates playback by fetching the video's streaming manifest file (HLS/DASH) detailing the locations of video chunks for various resolutions.</li>
                         <li><strong>Uploader Service (Internal):</strong> Handles internal video uploads by content administrators. It stores raw video files and static thumbnails in Blob Storage, triggering the encoding pipeline.</li>
                         <li><strong>Blob Storage (S3):</strong> Stores raw source video uploads, static thumbnails, and the final chunked/encoded video segments in multiple resolutions (e.g., 480p, 720p, 1080p, 4K).</li>
-                        <li><strong>CDN (Content Delivery Network):</strong> Geographically distributes and caches encoded video chunks closer to clients, reducing playback latency and preventing buffering.</li>
-                        <li><strong>Kafka (Message Queue):</strong> Decouples asynchronous workflows. For example, when a user successfully buys a subscription, a payment success event is published to Kafka so other services (e.g., notification, billing, analytics) can consume it.</li>
                     </ul>
                 </div>
 
