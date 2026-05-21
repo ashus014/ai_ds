@@ -243,6 +243,33 @@
                     </ul>
                 </div>
 
+                <div class="section">
+                    <h2>Low-Level Design</h2>
+                    <figure class="diagram-figure" style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: block;">
+                        <img src="assets/video-streaming-lld-architecture.png" alt="Video Streaming Low Level Architecture" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    </figure>
+
+                    <h3>User Service</h3>
+                    <p>The User Service handles user authentication and authorization. It persists all user data in our application, storing user profile metadata securely inside the User DB.</p>
+
+                    <h3>User DB</h3>
+                    <p>Since the user account data is relatively simple but demands high consistency and availability, we use a relational <strong>MySQL</strong> database. The schema structure is structured as follows:</p>
+                    
+                    <ul style="margin-top: 10px;">
+                        <li><strong>User (MySQL Table):</strong>
+                            <ul>
+                                <li><code>name</code></li>
+                                <li><code>email</code> (Unique)</li>
+                                <li><code>password</code> (Hashed)</li>
+                                <li><code>subscription_status</code></li>
+                                <li><code>expiry_date</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <p style="margin-top: 15px;">When a user logs in to the application, their login credentials are validated against the User DB. If authentication is successful, the service generates and shares a <strong>JWT token</strong> with the client. The client includes this JWT token in the headers of all subsequent API calls to other backend microservices.</p>
+                </div>
+
             </div>
         </div>
     </div>
