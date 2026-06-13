@@ -655,6 +655,42 @@
                 "
               />
             </figure>
+
+            <h3>Search Service</h3>
+            <p>
+              Since here we are searching over a DB, based on title and genre,
+              so search would be query intensive because here we have to scan all
+              the DB to find out the matching video/movies for user. And that
+              approach is not at all optimal.
+            </p>
+            <p>
+              So we will use elastic search, so from search service we will call
+              elastic search and that elastic search will talk to the video db.
+              And would return the relevant content to the user. And we know that
+              elastic is highly optimised for search. And we know that from video
+              db to elastic we will use CDC pipeline.
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-search-service-hld.png"
+                alt="Video Streaming Search Service HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
           </div>
         </div>
       </div>
