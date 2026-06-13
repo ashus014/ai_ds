@@ -561,14 +561,40 @@
               <strong>GET <code>/v1/subscription/plans</code></strong> which will
               return all the subscription which is stored in the database, based
               on that subscription list the user will try to opt for a particular
-              subscription. Once the user confirm a particular subscription he
-              will land to a payment service. Where user has to put all payment
-              related credentials and once user clicks on pay, internally we call
-              an external third-party service called payment gateway. Where actual
+              subscription.
+            </p>
+
+            <h3>Payment Service</h3>
+            <p>
+              Once the user confirm a particular subscription he will land to a
+              payment service. Where user has to put all payment related
+              credentials and once user clicks on pay, internally we call an
+              external third-party service called payment gateway. Where actual
               payment with the bank will happen here and based on the status of
               the payment. A notification or acknowledgment will come from gateway
               to our payment service that payment is either successful or failed.
             </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-payment-service-hld.png"
+                alt="Video Streaming Payment Service HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
 
             <h3>Payment DB</h3>
             <p>
