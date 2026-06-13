@@ -747,6 +747,45 @@
               done based on the video protocol that we are following in this
               system design.
             </p>
+            <p>The chunker service do this -</p>
+            <ul>
+              <li>Splits video into small segments (2-10s)</li>
+              <li>
+                Creates a manifest file
+                <ul>
+                  <li>m3u8 format for HLS</li>
+                  <li>mpd format for DASH</li>
+                </ul>
+              </li>
+            </ul>
+            <p>Also saves the file into videoDB.</p>
+
+            <h3>Video DB</h3>
+            <p>
+              The best DB that we can use is mongoDB, we can assume that different
+              video have different schema, eg, video , playlist, etc.
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-chunker-videodb-hld.png"
+                alt="Video Streaming Chunker and Video DB HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
 
             <h3>Video Processing Concepts</h3>
             <p>Most common platform we use is -</p>
