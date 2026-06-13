@@ -911,6 +911,24 @@
                 "
               />
             </figure>
+
+            <h3>Now End to End Play Service Flow</h3>
+            <p>
+              Whenever we click on play button, request comes to play service, the
+              play service tries to pickup the manifest file for the video data
+              from video DB, if receives the file, once the file is received it
+              sends the response to the client.
+            </p>
+            <p>
+              Now everything is on the client on how it will play the video,
+            </p>
+            <p>
+              Once the client receives the manifest file, it first calculate the
+              bandwidth of the system. Based on that calculation it calls the
+              video segment from the server after it completes an iframe, iframe
+              can be any arbitrary number, eg - 6 seconds, once the iframe is
+              over the client makes another request of another segment.
+            </p>
           </div>
         </div>
       </div>
