@@ -778,6 +778,79 @@
               And later using video compressor the video is compressed into
               multiple bitrates, eg - 480p, 720p, 1080p, 4k etc
             </p>
+            <p>
+              And once the video is compressed successful it is again put into
+              the s3 bucket.
+            </p>
+            <p>
+              Now next major issue is, once the video is cut into chunks, how do
+              it understand that which chunk comes after which. There should be
+              a linkage between them. Otherwise video can't be stitch together.
+            </p>
+            <p>
+              To maintain the video sequence, we create a manifest file. It is a
+              data in .xml where we keep the sequence of each and every file in
+              the system.
+            </p>
+            <p>This is just an example of a manifest file,</p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-m3u8-manifest-example.png"
+                alt="Video Streaming m3u8 Manifest File Example"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
+
+            <p>
+              The chunker service is the one who create the manifest file.
+            </p>
+            <p>Once the manifest file one part is done.</p>
+            <p>
+              The compressor service compress video in further resolution, based
+              on the resolution we are supporting, we are creating a playlist.
+            </p>
+            <p>
+              If we are supporting a lower resolution, we are having a lower
+              playlist, depending on the resolution we use a playlist. The
+              playlist is is basically the sequence of the video chunks in
+              different resolutions.
+            </p>
+            <p>Depending on the bandwidth the video segment is called.</p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-m3u8-playlist-example.png"
+                alt="Video Streaming m3u8 Playlist Example"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
 
             <figure
               class="diagram-figure"
