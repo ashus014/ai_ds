@@ -1,301 +1,618 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../favicon.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="../favicon.png" />
     <title>Video Streaming (Netflix/YouTube) - HLD Notes</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+      .wrapper {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .navbar-brand {
+        font-size: 1.5em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+      }
+      .back-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+      .back-link:hover {
+        color: #764ba2;
+      }
+      .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.95;
+        margin-bottom: 8px;
+      }
+      .date-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.95em;
+        margin-top: 15px;
+      }
+      .content {
+        padding: 40px;
+      }
+      .section {
+        margin-bottom: 35px;
+        padding: 25px;
+        background: #f8f9fa;
+        border-left: 5px solid #667eea;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+      .section:hover {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+      }
+      .section h2 {
+        color: #667eea;
+        font-size: 1.6em;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+      }
+      .section h2::before {
+        content: "📌";
+        margin-right: 10px;
+        font-size: 1.2em;
+      }
+      .section h3 {
+        color: #764ba2;
+        font-size: 1.2em;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 8px;
+      }
+      .section h3:first-child {
+        margin-top: 0;
+      }
+      ul {
+        list-style: none;
+        margin-left: 20px;
+        margin-bottom: 15px;
+      }
+      ul li {
+        position: relative;
+        margin-bottom: 10px;
+        line-height: 1.6;
+        padding-left: 25px;
+      }
+      ul li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      table th {
+        background: #667eea;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+      }
+      table td {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      table tr:last-child td {
+        border-bottom: none;
+      }
+      table tr:hover {
+        background: #f5f5f5;
+      }
+      code {
+        background: #e8eaf6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      @media (max-width: 768px) {
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .navbar-brand {
-            font-size: 1.5em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .back-link:hover { color: #764ba2; }
-        .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
-        .header p { font-size: 1.1em; opacity: 0.95; margin-bottom: 8px; }
-        .date-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.95em;
-            margin-top: 15px;
-        }
-        .content { padding: 40px; }
-        .section {
-            margin-bottom: 35px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-left: 5px solid #667eea;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        .section:hover {
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
-            transform: translateX(5px);
-        }
-        .section h2 {
-            color: #667eea;
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .section h2::before { content: "📌"; margin-right: 10px; font-size: 1.2em; }
-        .section h3 {
-            color: #764ba2;
-            font-size: 1.2em;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 8px;
-        }
-        .section h3:first-child { margin-top: 0; }
-        ul { list-style: none; margin-left: 20px; margin-bottom: 15px; }
-        ul li {
-            position: relative;
-            margin-bottom: 10px;
-            line-height: 1.6;
-            padding-left: 25px;
-        }
-        ul li::before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.2em;
+          flex-direction: column;
+          gap: 15px;
         }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
+          font-size: 0.9em;
         }
-        table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
+        table th,
+        table td {
+          padding: 8px;
         }
-        table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
-        table tr:last-child td { border-bottom: none; }
-        table tr:hover { background: #f5f5f5; }
-        code {
-            background: #e8eaf6;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 15px; }
-            table { font-size: 0.9em; }
-            table th, table td { padding: 8px; }
-        }
+      }
     </style>
-    <link rel="stylesheet" href="../topic-progress.css">
-    <link rel="stylesheet" href="diagram-zoom.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../topic-progress.css" />
+    <link rel="stylesheet" href="diagram-zoom.css" />
+  </head>
+  <body>
     <div class="wrapper">
-        <nav class="navbar">
-            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
-            <a href="../hld.html" class="back-link">← Back to HLD</a>
-            <a href="../index.html" class="back-link">← Back to Home</a>
-        </nav>
-        <div class="container">
-            <div class="header">
-                <h1>Video Streaming (Netflix/YouTube)</h1>
-                <p>OTT Platform System Design — HLD Notes</p>
-                <span class="date-badge">Completed: 14 March 2026</span>
-            </div>
-            <div class="content">
-                <div class="section">
-                    <h2>Summary</h2>
-                    <p>An OTT platform is a service that delivers digital content, like movies and TV shows, directly to consumers via the internet. This is one of the simplest High-Level Designs (HLDs) you can get. We will go ahead with the Netflix model where a user can't see anything for free; the user has to register and then select and pay for a subscription, then only are they allowed to watch content. This guide covers video processing, backend architecture, API design, and streaming protocols.</p>
-                </div>
-
-                <div class="section">
-                    <h2>Functional Requirements</h2>
-                    <ul>
-                        <li><strong>User registration and subscription:</strong> User should be able to create an account and opt for a subscription.</li>
-                        <li><strong>Content search:</strong> User should be able to search and find movies/shows based on video title or names.</li>
-                        <li><strong>Video playback:</strong> Users can watch videos in different resolutions (480p, 720p, 1080p, 4K, etc.).</li>
-                        <li><strong>Recommendation engine (Out of Scope):</strong> Since this involves majorly AI/ML components, the interviewer would typically say let's keep that out of scope.</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>Non-Functional Requirements</h2>
-                    <ul>
-                        <li><strong>Scale:</strong> 200 Million users, 10K videos on Netflix (~1 hour each).</li>
-                        <li><strong>CAP Theorem (Availability >>> Consistency):</strong> For OTTs, we need high availability over consistency because whenever a user comes to the application, it should be up and running with practically zero downtime so that it doesn't interrupt the watching experience. However, we do need a strongly consistent system for the payment and subscription modules, but not for the video module (Netflix takes time to upload and process videos).</li>
-                        <li><strong>Latency:</strong> Very critical requirement; users should be able to view videos with nominal or zero latency. There should not be any buffering, ensuring a seamless experience.</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>Core Entities</h2>
-                    <ul>
-                        <li><strong>User</strong></li>
-                        <li><strong>User Metadata</strong> — Info of subscription plan etc.</li>
-                        <li><strong>Video</strong></li>
-                        <li><strong>Video metadata</strong> — Static images (for thumbnails) + description</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>API Design Overview</h2>
-                    <p style="margin-bottom: 15px; font-weight: 500; color: #555;">API design is very easy to do if functional requirements are captured properly.</p>
-                    
-                    <h3>1. User should be able to create an account and opt for a subscription</h3>
-                    <ul>
-                        <li><strong>POST <code>/v1/user/register/</code></strong> — (+ additional endpoints for login/logout/update)</li>
-                        <li><em>To see the subscription models present:</em><br>
-                        <strong>GET <code>/v1/subscription/plans</code></strong> — Returns all subscription plans.</li>
-                        <li><em>Once the user likes any subscription plan, they buy that plan:</em><br>
-                        <strong>POST <code>/v1/subscription</code></strong> — POST BODY: <code>{ user metadata + subscriptionID }</code>.<br>
-                        <span style="color: #667eea; font-weight: 500; font-size: 0.9em;">This completes the API design of the first requirement.</span></li>
-                    </ul>
-
-                    <h3>2. User should be able to search movies, shows on video titles and names</h3>
-                    <ul>
-                        <li><strong>GET <code>/v1/videos/search?q={name}</code></strong> — Returns a partial list <code>List&lt;VideoId&gt;</code> with Pagination.</li>
-                        <li><em>Now, the user can click on any one video from the search criteria to see the complete details of the video:</em><br>
-                        <strong>GET <code>/v1/video/{videoId}</code></strong> — Returns the video metadata (JSON).</li>
-                    </ul>
-
-                    <h3>3. Now, once the user sees the video they can click play to watch the video</h3>
-                    <ul>
-                        <li><strong>GET <code>/v1/video/play/{videoID}</code></strong> — Start the video playback.</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>High-Level System Architecture</h2>
-                    <figure class="diagram-figure" style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: block;">
-                        <img src="assets/video-streaming-hld-architecture.png" alt="Video Streaming High Level Architecture" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    </figure>
-                    <p style="margin-top: 15px; margin-bottom: 15px;">The entry point to our backend is a combined <strong>Load Balancer &amp; API Gateway</strong> layer. It coordinates critical ingress operations:</p>
-                    <ul>
-                        <li><strong>Load Balancing:</strong> Automatically routes client traffic across backend service instances using a <strong>Round Robin</strong> algorithm.</li>
-                        <li><strong>User Authentication &amp; Authorization:</strong> Validates user credentials and access permissions to ensure only subscribed users can access content.</li>
-                        <li><strong>System Routing:</strong> Dynamically routes incoming HTTP requests to their corresponding downstream microservices (e.g., User Service, Subscription Service, Search Service, Play Service).</li>
-                        <li><strong>Rate Limiting:</strong> Prevents service overload and protects APIs against denial-of-service (DDoS) attacks by throttling excessive requests.</li>
-                    </ul>
-
-                    <p style="margin-top: 25px; margin-bottom: 15px;">Behind the gateway, the system is decomposed into specialized, decoupled microservices and infrastructure components:</p>
-                    <ul>
-                        <li><strong>User Service:</strong> When a user lands on the website, the API Gateway routes registration and login requests here. It manages user profiles, authentication details, and account settings in the User DB.</li>
-                        <li><strong>Subscription Service:</strong> Handles user enrollment for subscription plans. This service processes transactions via a third-party <strong>Payment Gateway</strong>. Upon successful payment, it updates the user's subscription status and registers them with the correct subscription ID inside the User DB.</li>
-                        <li><strong>Search Service:</strong> Enables users to query for movies and TV shows based on titles, genres, or names. It queries a highly optimized search database (e.g., Elasticsearch) to return quick paginated results.</li>
-                        <li><strong>Play Service:</strong> Once a user finds a movie via the search criteria, they request to watch it. The Play Service coordinates playback by fetching the video's streaming manifest file (HLS/DASH) detailing the locations of video chunks for various resolutions.</li>
-                        <li><strong>Uploader Service (Internal):</strong> Handles internal video uploads by content administrators. It stores raw video files and static thumbnails in Blob Storage, triggering the encoding pipeline.</li>
-                        <li><strong>Blob Storage (S3):</strong> Stores raw source video uploads, static thumbnails, and the final chunked/encoded video segments in multiple resolutions (e.g., 480p, 720p, 1080p, 4K).</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>Low-Level Design</h2>
-                    <figure class="diagram-figure" style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: block;">
-                        <img src="assets/video-streaming-lld-architecture.png" alt="Video Streaming Low Level Architecture" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    </figure>
-
-                    <h3>User Service</h3>
-                    <p>The User Service handles user authentication and authorization. It persists all user data in our application, storing user profile metadata securely inside the User DB.</p>
-
-                    <h3>User DB</h3>
-                    <p>Since the user account data is relatively simple but demands high consistency and availability, we use a relational <strong>MySQL</strong> database. The schema structure is structured as follows:</p>
-                    
-                    <ul style="margin-top: 10px;">
-                        <li><strong>User (MySQL Table):</strong>
-                            <ul>
-                                <li><code>name</code></li>
-                                <li><code>email</code> (Unique)</li>
-                                <li><code>password</code> (Hashed)</li>
-                                <li><code>subscription_status</code></li>
-                                <li><code>expiry_date</code></li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <p style="margin-top: 15px;">When a user logs in to the application, their login credentials are validated against the User DB. If authentication is successful, the service generates and shares a <strong>JWT token</strong> with the client. The client includes this JWT token in the headers of all subsequent API calls to other backend microservices.</p>
-
-                    <h3>Subscription Service</h3>
-                    <p>Now in the video streaming service HLD, now we'll talk about Subscription Service. As soon as user logs in to the application, the user will try to see what are the subscription available in the system.</p>
-
-                    <figure class="diagram-figure" style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: block;">
-                        <img src="assets/video-streaming-subscription-service-hld.png" alt="Video Streaming Subscription Service HLD" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    </figure>
-
-                    <h3>Subscription DB</h3>
-                    <p>To store all the subscription we need a subscription database, to store all the subscription. Subscription Service talks to subscription database. All the subscription relation metadata would be stored in that database. Since in this case it is simple straightforward data, we'll use <strong>MySQL</strong> database. The schema structure is structured as follows:</p>
-
-                    <ul style="margin-top: 10px;">
-                        <li><strong>Subscription (MySQL Table):</strong>
-                            <ul>
-                                <li><code>subscriptionId</code></li>
-                                <li><code>name</code></li>
-                                <li><code>price</code></li>
-                                <li><code>currency</code></li>
-                                <li><code>validity</code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
+      <nav class="navbar">
+        <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+        <a href="../hld.html" class="back-link">← Back to HLD</a>
+        <a href="../index.html" class="back-link">← Back to Home</a>
+      </nav>
+      <div class="container">
+        <div class="header">
+          <h1>Video Streaming (Netflix/YouTube)</h1>
+          <p>OTT Platform System Design — HLD Notes</p>
+          <span class="date-badge">Completed: 14 March 2026</span>
         </div>
+        <div class="content">
+          <div class="section">
+            <h2>Summary</h2>
+            <p>
+              An OTT platform is a service that delivers digital content, like
+              movies and TV shows, directly to consumers via the internet. This
+              is one of the simplest High-Level Designs (HLDs) you can get. We
+              will go ahead with the Netflix model where a user can't see
+              anything for free; the user has to register and then select and
+              pay for a subscription, then only are they allowed to watch
+              content. This guide covers video processing, backend architecture,
+              API design, and streaming protocols.
+            </p>
+          </div>
+
+          <div class="section">
+            <h2>Functional Requirements</h2>
+            <ul>
+              <li>
+                <strong>User registration and subscription:</strong> User should
+                be able to create an account and opt for a subscription.
+              </li>
+              <li>
+                <strong>Content search:</strong> User should be able to search
+                and find movies/shows based on video title or names.
+              </li>
+              <li>
+                <strong>Video playback:</strong> Users can watch videos in
+                different resolutions (480p, 720p, 1080p, 4K, etc.).
+              </li>
+              <li>
+                <strong>Recommendation engine (Out of Scope):</strong> Since
+                this involves majorly AI/ML components, the interviewer would
+                typically say let's keep that out of scope.
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>Non-Functional Requirements</h2>
+            <ul>
+              <li>
+                <strong>Scale:</strong> 200 Million users, 10K videos on Netflix
+                (~1 hour each).
+              </li>
+              <li>
+                <strong>CAP Theorem (Availability >>> Consistency):</strong> For
+                OTTs, we need high availability over consistency because
+                whenever a user comes to the application, it should be up and
+                running with practically zero downtime so that it doesn't
+                interrupt the watching experience. However, we do need a
+                strongly consistent system for the payment and subscription
+                modules, but not for the video module (Netflix takes time to
+                upload and process videos).
+              </li>
+              <li>
+                <strong>Latency:</strong> Very critical requirement; users
+                should be able to view videos with nominal or zero latency.
+                There should not be any buffering, ensuring a seamless
+                experience.
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>Core Entities</h2>
+            <ul>
+              <li><strong>User</strong></li>
+              <li>
+                <strong>User Metadata</strong> — Info of subscription plan etc.
+              </li>
+              <li><strong>Video</strong></li>
+              <li>
+                <strong>Video metadata</strong> — Static images (for thumbnails)
+                + description
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>API Design Overview</h2>
+            <p style="margin-bottom: 15px; font-weight: 500; color: #555">
+              API design is very easy to do if functional requirements are
+              captured properly.
+            </p>
+
+            <h3>
+              1. User should be able to create an account and opt for a
+              subscription
+            </h3>
+            <ul>
+              <li>
+                <strong>POST <code>/v1/user/register/</code></strong> — (+
+                additional endpoints for login/logout/update)
+              </li>
+              <li>
+                <em>To see the subscription models present:</em><br />
+                <strong>GET <code>/v1/subscription/plans</code></strong> —
+                Returns all subscription plans.
+              </li>
+              <li>
+                <em
+                  >Once the user likes any subscription plan, they buy that
+                  plan:</em
+                ><br />
+                <strong>POST <code>/v1/subscription</code></strong> — POST BODY:
+                <code>{ user metadata + subscriptionID }</code>.<br />
+                <span style="color: #667eea; font-weight: 500; font-size: 0.9em"
+                  >This completes the API design of the first requirement.</span
+                >
+              </li>
+            </ul>
+
+            <h3>
+              2. User should be able to search movies, shows on video titles and
+              names
+            </h3>
+            <ul>
+              <li>
+                <strong>GET <code>/v1/videos/search?q={name}</code></strong> —
+                Returns a partial list <code>List&lt;VideoId&gt;</code> with
+                Pagination.
+              </li>
+              <li>
+                <em
+                  >Now, the user can click on any one video from the search
+                  criteria to see the complete details of the video:</em
+                ><br />
+                <strong>GET <code>/v1/video/{videoId}</code></strong> — Returns
+                the video metadata (JSON).
+              </li>
+            </ul>
+
+            <h3>
+              3. Now, once the user sees the video they can click play to watch
+              the video
+            </h3>
+            <ul>
+              <li>
+                <strong>GET <code>/v1/video/play/{videoID}</code></strong> —
+                Start the video playback.
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>High-Level System Architecture</h2>
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-hld-architecture.png"
+                alt="Video Streaming High Level Architecture"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
+            <p style="margin-top: 15px; margin-bottom: 15px">
+              The entry point to our backend is a combined
+              <strong>Load Balancer &amp; API Gateway</strong> layer. It
+              coordinates critical ingress operations:
+            </p>
+            <ul>
+              <li>
+                <strong>Load Balancing:</strong> Automatically routes client
+                traffic across backend service instances using a
+                <strong>Round Robin</strong> algorithm.
+              </li>
+              <li>
+                <strong>User Authentication &amp; Authorization:</strong>
+                Validates user credentials and access permissions to ensure only
+                subscribed users can access content.
+              </li>
+              <li>
+                <strong>System Routing:</strong> Dynamically routes incoming
+                HTTP requests to their corresponding downstream microservices
+                (e.g., User Service, Subscription Service, Search Service, Play
+                Service).
+              </li>
+              <li>
+                <strong>Rate Limiting:</strong> Prevents service overload and
+                protects APIs against denial-of-service (DDoS) attacks by
+                throttling excessive requests.
+              </li>
+            </ul>
+
+            <p style="margin-top: 25px; margin-bottom: 15px">
+              Behind the gateway, the system is decomposed into specialized,
+              decoupled microservices and infrastructure components:
+            </p>
+            <ul>
+              <li>
+                <strong>User Service:</strong> When a user lands on the website,
+                the API Gateway routes registration and login requests here. It
+                manages user profiles, authentication details, and account
+                settings in the User DB.
+              </li>
+              <li>
+                <strong>Subscription Service:</strong> Handles user enrollment
+                for subscription plans. This service processes transactions via
+                a third-party <strong>Payment Gateway</strong>. Upon successful
+                payment, it updates the user's subscription status and registers
+                them with the correct subscription ID inside the User DB.
+              </li>
+              <li>
+                <strong>Search Service:</strong> Enables users to query for
+                movies and TV shows based on titles, genres, or names. It
+                queries a highly optimized search database (e.g., Elasticsearch)
+                to return quick paginated results.
+              </li>
+              <li>
+                <strong>Play Service:</strong> Once a user finds a movie via the
+                search criteria, they request to watch it. The Play Service
+                coordinates playback by fetching the video's streaming manifest
+                file (HLS/DASH) detailing the locations of video chunks for
+                various resolutions.
+              </li>
+              <li>
+                <strong>Uploader Service (Internal):</strong> Handles internal
+                video uploads by content administrators. It stores raw video
+                files and static thumbnails in Blob Storage, triggering the
+                encoding pipeline.
+              </li>
+              <li>
+                <strong>Blob Storage (S3):</strong> Stores raw source video
+                uploads, static thumbnails, and the final chunked/encoded video
+                segments in multiple resolutions (e.g., 480p, 720p, 1080p, 4K).
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>Low-Level Design</h2>
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-lld-architecture.png"
+                alt="Video Streaming Low Level Architecture"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
+
+            <h3>User Service</h3>
+            <p>
+              The User Service handles user authentication and authorization. It
+              persists all user data in our application, storing user profile
+              metadata securely inside the User DB.
+            </p>
+
+            <h3>User DB</h3>
+            <p>
+              Since the user account data is relatively simple but demands high
+              consistency and availability, we use a relational
+              <strong>MySQL</strong> database. The schema structure is
+              structured as follows:
+            </p>
+
+            <ul style="margin-top: 10px">
+              <li>
+                <strong>User (MySQL Table):</strong>
+                <ul>
+                  <li><code>name</code></li>
+                  <li><code>email</code> (Unique)</li>
+                  <li><code>password</code> (Hashed)</li>
+                  <li><code>subscription_status</code></li>
+                  <li><code>expiry_date</code></li>
+                </ul>
+              </li>
+            </ul>
+
+            <p style="margin-top: 15px">
+              When a user logs in to the application, their login credentials
+              are validated against the User DB. If authentication is
+              successful, the service generates and shares a
+              <strong>JWT token</strong> with the client. The client includes
+              this JWT token in the headers of all subsequent API calls to other
+              backend microservices.
+            </p>
+
+            <h3>Subscription Service</h3>
+            <p>
+              Now in the video streaming service HLD, now we'll talk about
+              Subscription Service. As soon as user logs in to the application,
+              the user will try to see what are the subscription available in
+              the system.
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-subscription-service-hld.png"
+                alt="Video Streaming Subscription Service HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
+
+            <h3>Subscription DB</h3>
+            <p>
+              To store all the subscription we need a subscription database, to
+              store all the subscription. Subscription Service talks to
+              subscription database. All the subscription relation metadata
+              would be stored in that database. Since in this case it is simple
+              straightforward data, we'll use <strong>MySQL</strong> database.
+              The schema structure is structured as follows:
+            </p>
+
+            <ul style="margin-top: 10px">
+              <li>
+                <strong>Subscription (MySQL Table):</strong>
+                <ul>
+                  <li><code>subscriptionId</code></li>
+                  <li><code>name</code></li>
+                  <li><code>price</code></li>
+                  <li><code>currency</code></li>
+                  <li><code>validity</code></li>
+                </ul>
+              </li>
+            </ul>
+
+            <p style="margin-top: 15px">
+              So now once the user logs in, it will fetch all the subscription
+              from this endpoint
+              <strong>GET <code>/v1/subscription/plans</code></strong> which will
+              return all the subscription which is stored in the database, based
+              on that subscription list the user will try to opt for a particular
+              subscription. Once the user confirm a particular subscription he
+              will land to a payment service. Where user has to put all payment
+              related credentials and once user clicks on pay, internally we call
+              an external third-party service called payment gateway. Where actual
+              payment with the bank will happen here and based on the status of
+              the payment. A notification or acknowledgment will come from gateway
+              to our payment service that payment is either successful or failed.
+            </p>
+
+            <h3>Payment DB</h3>
+            <p>
+              And once the payment is successful or failed we have to save that
+              info in a database. We'll have one more database called payment
+              database. And payment database should be highly consistent, so
+              we'll use <strong>MySQL</strong> database. This is how payment
+              schema would look like:
+            </p>
+
+            <ul style="margin-top: 10px">
+              <li>
+                <strong>Payment (MySQL Table):</strong>
+                <ul>
+                  <li><code>paymentID</code></li>
+                  <li><code>userId</code></li>
+                  <li><code>amount</code></li>
+                  <li><code>current</code></li>
+                  <li><code>time</code></li>
+                </ul>
+              </li>
+            </ul>
+
+            <p style="margin-top: 15px">
+              Also, this is the schema of User DB:
+            </p>
+
+            <ul style="margin-top: 10px">
+              <li>
+                <strong>User (MySQL Table):</strong>
+                <ul>
+                  <li><code>name</code></li>
+                  <li><code>email</code> (Unique)</li>
+                  <li><code>password</code> (Hashed)</li>
+                  <li><code>subscription_status</code></li>
+                  <li><code>expiry_date</code></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="../topic-progress.js" defer></script>
     <script src="diagram-zoom.js"></script>
-</body>
+  </body>
 </html>
