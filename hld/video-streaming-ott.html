@@ -747,6 +747,58 @@
               done based on the video protocol that we are following in this
               system design.
             </p>
+
+            <h3>Video Processing Concepts</h3>
+            <p>Most common platform we use is -</p>
+            <ul>
+              <li><strong>HLS</strong> (HTTP live streaming)</li>
+              <li><strong>DASH</strong> (Dynamic Adaptive Streaming over HTTP)</li>
+            </ul>
+            <p>
+              Based on the bandwidth of the device we stream the video
+              accordingly.
+            </p>
+            <ul>
+              <li>
+                The video is divided into small chunk segments of 10 to 20
+                seconds
+              </li>
+            </ul>
+            <p>
+              Then video encoder service comes in to play, which process the
+              video based on the protocol we're following,
+            </p>
+            <p>
+              Let's say if we are following HLS, the video can go with .mp4
+              version if we are using DASH protocol then we have to go with .ts
+              extension.
+            </p>
+            <p>The video to be encoded in H264 format.</p>
+            <p>
+              And later using video compressor the video is compressed into
+              multiple bitrates, eg - 480p, 720p, 1080p, 4k etc
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-video-processing-concepts-hld.png"
+                alt="Video Streaming Video Processing Concepts HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
           </div>
         </div>
       </div>
