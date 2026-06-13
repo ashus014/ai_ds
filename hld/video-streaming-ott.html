@@ -618,6 +618,43 @@
                 </ul>
               </li>
             </ul>
+
+            <h3>Event Driven Architecture</h3>
+            <p>
+              So once the payment is done, we have to send notification to the
+              user that the payment was successful and you have successfully
+              opted for a particular plan. Also we have to update the db of the
+              user, so in future when he login in he can see what is the
+              subscription status and when it will end. And to perform both the
+              activity concurrently we have to go with the event driven
+              architecture. So for subscription service we will simply call a
+              kafka service. Once the payment is done successful. We will send
+              the event to the kafka broker. From kafka we will call
+              notification service that the payment was successful. And also we
+              have to update the user db. To update the user db, we have to
+              write the consumer service.
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-event-driven-architecture-hld.png"
+                alt="Video Streaming Event Driven Architecture HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
           </div>
         </div>
       </div>
