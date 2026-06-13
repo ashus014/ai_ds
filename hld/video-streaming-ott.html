@@ -559,10 +559,10 @@
             <p style="margin-top: 15px">
               So now once the user logs in, it will fetch all the subscription
               from this endpoint
-              <strong>GET <code>/v1/subscription/plans</code></strong> which will
-              return all the subscription which is stored in the database, based
-              on that subscription list the user will try to opt for a particular
-              subscription.
+              <strong>GET <code>/v1/subscription/plans</code></strong> which
+              will return all the subscription which is stored in the database,
+              based on that subscription list the user will try to opt for a
+              particular subscription.
             </p>
 
             <h3>Payment Service</h3>
@@ -572,8 +572,9 @@
               credentials and once user clicks on pay, internally we call an
               external third-party service called payment gateway. Where actual
               payment with the bank will happen here and based on the status of
-              the payment. A notification or acknowledgment will come from gateway
-              to our payment service that payment is either successful or failed.
+              the payment. A notification or acknowledgment will come from
+              gateway to our payment service that payment is either successful
+              or failed.
             </p>
 
             <figure
@@ -659,16 +660,16 @@
             <h3>Search Service</h3>
             <p>
               Since here we are searching over a DB, based on title and genre,
-              so search would be query intensive because here we have to scan all
-              the DB to find out the matching video/movies for user. And that
-              approach is not at all optimal.
+              so search would be query intensive because here we have to scan
+              all the DB to find out the matching video/movies for user. And
+              that approach is not at all optimal.
             </p>
             <p>
               So we will use elastic search, so from search service we will call
               elastic search and that elastic search will talk to the video db.
-              And would return the relevant content to the user. And we know that
-              elastic is highly optimised for search. And we know that from video
-              db to elastic we will use CDC pipeline.
+              And would return the relevant content to the user. And we know
+              that elastic is highly optimised for search. And we know that from
+              video db to elastic we will use CDC pipeline.
             </p>
 
             <figure
@@ -693,9 +694,7 @@
             </figure>
 
             <h3>Play Service</h3>
-            <p>
-              This is the most imp service —
-            </p>
+            <p>This is the most imp service —</p>
             <p>
               In HLD we discussed that once the user search content from the
               database, we are simply play button, and request directly going to
@@ -704,16 +703,49 @@
               practically that's not possible.
             </p>
             <p>
-              Let's say we are watching 4k movie, so size will be video for 1 hour
-              would be around 40 GB, so for 2 and half hour would be 100 gb, so
-              when we're playing that video it's not possible that that 100 gb
-              will be downloaded in near real time. Because bandwidth is not
-              possible, so we have to do something efficient, be it high or low
-              bandwidth we should have smooth experience, we have already seen in
-              youtube that while playing any video for first few seconds the video
-              is a bit blurry, but the quality of video keeps increasing if we
-              keep watching. In this way our view experience keeps changing, based
-              on internet speed, but the video should not have any buffering.
+              Let's say we are watching 4k movie, so size will be video for 1
+              hour would be around 40 GB, so for 2 and half hour would be 100
+              gb, so when we're playing that video it's not possible that that
+              100 gb will be downloaded in near real time. Because bandwidth is
+              not possible, so we have to do something efficient, be it high or
+              low bandwidth we should have smooth experience, we have already
+              seen in youtube that while playing any video for first few seconds
+              the video is a bit blurry, but the quality of video keeps
+              increasing if we keep watching. In this way our view experience
+              keeps changing, based on internet speed, but the video should not
+              have any buffering.
+            </p>
+
+            <p>
+              So what happens in real world that, once the video is uploaded by
+              backend team, the video are first processed before we send the
+              video to client to watch.
+            </p>
+
+            <h3>Uploader Service</h3>
+            <p>
+              So the uploader service is used by OTT backend team, the team does
+              two activities,
+            </p>
+            <p>
+              They upload the actual metadata data of the video in video db and
+              upload actual video and actual thumbnail in the blob storage,
+              i.e., s3 bucket, and once the video is uploaded it goes into a
+              processing server, in processing server it encounter a server
+              called chunker,
+            </p>
+
+            <h4>Chunker</h4>
+            <p>
+              The role is that it split the video in to small chunks, the entire
+              video get piece into 100 chunks with the help of chunker service.
+              Once the video is placed in S3 the chunker gets notification and
+              chunker service starts it's work by dividing in 2 to 10 sec
+              segments. And puts that into a streaming platform eg kafka for
+              further processing. From this kafka broker, there would be another
+              service, that will be encoding the video. And encoding would be
+              done based on the video protocol that we are following in this
+              system design.
             </p>
           </div>
         </div>
