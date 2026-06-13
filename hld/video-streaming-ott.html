@@ -273,7 +273,19 @@
                     <p>Now in the video streaming service HLD, now we'll talk about Subscription Service. As soon as user logs in to the application, the user will try to see what are the subscription available in the system.</p>
 
                     <h3>Subscription DB</h3>
-                    <p>To store all the subscription we need a subscription database, to store all the subscription. Subscription Service talks to subscription database. All the subscription relation metadata would be stored in that database. Since in this case it is simple straightforward data, we'll use <strong>MySQL</strong> database.</p>
+                    <p>To store all the subscription we need a subscription database, to store all the subscription. Subscription Service talks to subscription database. All the subscription relation metadata would be stored in that database. Since in this case it is simple straightforward data, we'll use <strong>MySQL</strong> database. The schema structure is structured as follows:</p>
+
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Subscription (MySQL Table):</strong>
+                            <ul>
+                                <li><code>subscriptionId</code></li>
+                                <li><code>name</code></li>
+                                <li><code>price</code></li>
+                                <li><code>currency</code></li>
+                                <li><code>validity</code></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
 
             </div>
