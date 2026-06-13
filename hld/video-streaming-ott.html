@@ -929,6 +929,72 @@
               can be any arbitrary number, eg - 6 seconds, once the iframe is
               over the client makes another request of another segment.
             </p>
+
+            <h3>Final Optimisation</h3>
+            <p>
+              Our front end after every 6 seconds calls s3 bucket to fetch the
+              next segment, here the request again needs to travel from LB to play
+              service to s3 bucket, and that introduces a major latency.
+            </p>
+            <p>
+              Most majorly watched movies are kept in local CDN, so instead of
+              calling s3 we call CDN, so all local CDN would have the most watch
+              video in that region. In case there is a miss in CDN, it would
+              internally call S3 bucket. And keep it in the cache.
+            </p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-final-optimisation-hld.png"
+                alt="Video Streaming Final Optimisation HLD"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
+
+            <h3>Redis Cache</h3>
+            <p>
+              Also once more enhancement we can do, instead of calling VideoDB
+              again and again we can cache all the data in redis cluster, instead
+              of going to videoDB to fetch the manifest file. We can simply get it
+              from redis cluster so that the first initial load time is reduced.
+            </p>
+
+            <h3>Difference between HLS and DASH</h3>
+            <p>Also this is a difference between HLS and DASH</p>
+
+            <figure
+              class="diagram-figure"
+              style="
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                display: block;
+              "
+            >
+              <img
+                src="assets/video-streaming-hls-vs-dash-comparison.png"
+                alt="Video Streaming HLS vs DASH Comparison"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                "
+              />
+            </figure>
           </div>
         </div>
       </div>
