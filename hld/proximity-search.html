@@ -135,12 +135,34 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.9em; }
             table th, table td { padding: 8px; }
         }
     </style>
+    <link rel="stylesheet" href="diagram-zoom.css">
     <link rel="stylesheet" href="../topic-progress.css">
 </head>
 <body>
@@ -172,6 +194,10 @@
                         <li>Each quadrant subdivided recursively until fine granularity (one or few data points)</li>
                         <li>Leaf nodes represent actual data points or small clusters</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/proximity-search-quadtree-geohashing.png" alt="Quadtree for geohashing: world map subdivided into quadrants at each level, tree structure with nodes 0–3, quadrant encoding (top-left=0, top-right=1, bottom-left=2, bottom-right=3), and example geohashes for San Francisco, New York, London, and Tokyo">
+                        <figcaption>Quadtree subdivision: each level adds 2 bits of precision by splitting space into four quadrants — the foundation for spatial indexing and proximity search.</figcaption>
+                    </figure>
                     <h3>Pros</h3>
                     <ul><li>Simple to explain in interviews</li></ul>
                     <h3>Cons</h3>
@@ -196,6 +222,10 @@
                         <li>Subdivide recursively; each step encoded as a character forming the geohash string</li>
                         <li>Nearby locations share similar geohash prefixes; last character change = adjacent areas</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/proximity-search-geohashing-how-it-works.png" alt="Geohashing how it works: quadtree space partitioning, world map at increasing precision levels, bit interleaving of latitude and longitude into base-32 characters, alphabet, city examples, and precision table by geohash length">
+                        <figcaption>Geohashing encodes lat/long into a short base-32 string via recursive quadtree subdivision — each character adds 5 bits of precision and preserves locality through shared prefixes.</figcaption>
+                    </figure>
                     <h3>Advantages</h3>
                     <ul>
                         <li>Easy to compute and compare geohash strings for proximity</li>
