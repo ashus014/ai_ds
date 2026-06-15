@@ -140,12 +140,34 @@
             font-size: 0.9em;
         }
         .keywords { font-size: 0.95em; color: #555; line-height: 1.6; }
+        .diagram-figure {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .diagram-figure img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .diagram-figure figcaption {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
             table { font-size: 0.85em; }
             table th, table td { padding: 8px; }
         }
     </style>
+    <link rel="stylesheet" href="diagram-zoom.css">
     <link rel="stylesheet" href="../topic-progress.css">
 </head>
 <body>
@@ -228,6 +250,10 @@
                             </tbody>
                         </table>
                     </div>
+                    <figure class="diagram-figure">
+                        <img src="assets/real-time-applications-websockets-polling-sse.png" alt="WebSockets vs Polling vs Server-Sent Events: full-duplex WebSocket handshake and messaging, client-initiated polling loop, SSE server-push over HTTP, comparison table, and use-case summary">
+                        <figcaption>Three approaches to real-time communication — WebSockets (full-duplex), Polling (client pulls on an interval), and SSE (server pushes over one HTTP connection).</figcaption>
+                    </figure>
                 </div>
 
                 <div class="section">
@@ -356,6 +382,7 @@
             </div>
         </div>
     </div>
+    <script src="diagram-zoom.js" defer></script>
     <script src="../topic-progress.js" defer></script>
 </body>
 </html>
