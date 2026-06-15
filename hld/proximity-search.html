@@ -247,6 +247,10 @@
                         <li>Spatial functions (e.g., <code>ST_DWithin</code>) for radius queries</li>
                         <li>Combine spatial queries with indexing and other DB features</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/proximity-search-postgis.png" alt="PostgreSQL with GIS extension (PostGIS): architecture, spatial data types, example table and queries, GiST spatial indexing, ST_DWithin proximity search, and ecosystem integrations">
+                        <figcaption>PostGIS turns PostgreSQL into a spatial database — store geometries, index with GiST, and run proximity queries like <code>ST_DWithin</code> alongside standard SQL.</figcaption>
+                    </figure>
                     <h3>Advantages</h3>
                     <ul>
                         <li>Mature, well-supported</li>
@@ -267,6 +271,10 @@
                         <li>Out-of-the-box full-text and fuzzy search</li>
                         <li>No extra extension installation</li>
                     </ul>
+                    <figure class="diagram-figure">
+                        <img src="assets/proximity-search-elasticsearch-geolocation.png" alt="Elasticsearch with geolocation: architecture, geo_point mapping, indexing, geo_distance and geo_bounding_box queries, geohash grid aggregations, indexing strategies, and Kibana Maps visualization">
+                        <figcaption>Elasticsearch stores and indexes location data with <code>geo_point</code> fields — run <code>geo_distance</code>, bounding box, and polygon queries at scale, with Kibana Maps for visualization.</figcaption>
+                    </figure>
                     <h3>Advantages</h3>
                     <ul>
                         <li>Easy integration</li>
