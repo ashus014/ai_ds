@@ -215,8 +215,7 @@
                 </div>
                 <div class="section">
                     <h2>Code</h2>
-                    <p>Copy the full solution in one click from the window toolbar.</p>
-                    <textarea id="copy-buffer" class="offscreen-copy" readonly aria-label="Full Java source for copy">class Solution {
+                    <script type="text/plain" id="copy-buffer">class Solution {
     public boolean containsDuplicate(int[] nums) {
         
         Set<Integer> set = new HashSet<>();
@@ -230,7 +229,7 @@
         }
         return false;
     }
-}</textarea>
+}</script>
                     <div class="snippet-surface">
                         <div class="code-window" aria-label="Contains duplicate Java">
                             <div class="code-window-titlebar">
@@ -272,9 +271,7 @@
             if (!btn || !ta) return;
             var label = 'Copy all';
             btn.addEventListener('click', function () {
-                ta.select();
-                ta.setSelectionRange(0, ta.value.length);
-                var text = ta.value;
+                var text = ta.textContent;
                 function ok() {
                     btn.textContent = 'Copied!';
                     setTimeout(function () { btn.textContent = label; }, 2000);
