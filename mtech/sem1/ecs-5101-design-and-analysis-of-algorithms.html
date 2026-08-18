@@ -36,12 +36,7 @@
             background-clip: text;
             text-decoration: none;
         }
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
+        .back-link { color: #667eea; text-decoration: none; font-weight: 500; }
         .back-link:hover { color: #764ba2; }
         .main-content {
             background: white;
@@ -59,12 +54,8 @@
             border-radius: 20px;
             margin-bottom: 15px;
         }
-        .main-content h1 {
-            color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        .semester-tag { color: #999; font-size: 1em; margin-bottom: 35px; }
+        .main-content h1 { color: #667eea; font-size: 2.2em; margin-bottom: 8px; }
+        .meta-row { color: #777; font-size: 0.95em; margin-bottom: 30px; }
         .section { margin-bottom: 40px; }
         .section h2 {
             color: #764ba2;
@@ -79,11 +70,7 @@
             font-size: 1.05em;
         }
         .section ul { list-style: none; margin-top: 10px; }
-        .section li {
-            padding-left: 24px;
-            position: relative;
-            margin-bottom: 8px;
-        }
+        .section li { padding-left: 24px; position: relative; margin-bottom: 8px; }
         .section li:before {
             content: "→";
             position: absolute;
@@ -91,16 +78,35 @@
             color: #667eea;
             font-weight: bold;
         }
-        .placeholder-box {
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .info-card {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
             border-left: 4px solid #667eea;
-            padding: 20px;
+            padding: 14px 16px;
             border-radius: 8px;
-            color: #555;
         }
+        .info-card .label { font-size: 0.8em; color: #777; margin-bottom: 4px; }
+        .info-card .value { font-weight: 600; color: #333; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        th {
+            padding: 14px;
+            text-align: left;
+            border: 1px solid #ddd;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        td { padding: 12px; border: 1px solid #ddd; color: #333; }
+        tr:nth-child(even) { background: #f9f9f9; }
         @media (max-width: 768px) {
             .main-content { padding: 30px 20px; }
             .navbar { flex-direction: column; gap: 15px; }
+            .main-content h1 { font-size: 1.6em; }
         }
     </style>
 </head>
@@ -114,27 +120,77 @@
         <div class="main-content">
             <span class="course-code-badge">ECS 5101</span>
             <h1>Design and Analysis of Algorithms</h1>
-            <p class="semester-tag">Semester 1 · Core Course</p>
+            <p class="meta-row">Semester 1 · Core Course · Online</p>
 
-            <div class="section">
-                <h2>Overview</h2>
-                <p>Study of algorithm design techniques, complexity analysis, and fundamental data structures used to solve computational problems efficiently.</p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="label">Course Credit</div>
+                    <div class="value">L-T-P-C: 3-0-2-4</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Learning Mode</div>
+                    <div class="value">Online</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Assessment</div>
+                    <div class="value">Quiz / Assignment / ESE</div>
+                </div>
             </div>
 
             <div class="section">
-                <h2>Topics</h2>
+                <h2>Learning Objectives</h2>
+                <p>The objective of this course is to equip students with a solid understanding of data structures and algorithms, enabling them to design, analyze, and implement efficient algorithms to solve complex computational problems. The course covers fundamental topics such as data structures, complexity analysis, sorting and searching techniques, problem-solving strategies, graph algorithms, and advanced topics like string matching, FFT-DFT, and approximation algorithms. By the end of the course, students will have developed the skills to critically analyze algorithm efficiency and apply advanced algorithms in practical scenarios.</p>
+            </div>
+
+            <div class="section">
+                <h2>Course Description</h2>
+                <p>This course will provide basic understanding of methods to solve problems on computers. It will also provide an overview to analyze those theoretically.</p>
+            </div>
+
+            <div class="section">
+                <h2>Course Outline</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Topic (from syllabus)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Data structures: linked list, stack, queue, tree, balanced tree, graph</td></tr>
+                            <tr><td>2</td><td>Complexity analysis: Big O, omega, theta notation; solving recurrence relation; master theorem</td></tr>
+                            <tr><td>3</td><td>Sorting and searching: Quick sort, merge sort, heap sort; Sorting in linear time; Ordered statistics</td></tr>
+                            <tr><td>4</td><td>Problem solving strategies: recursion, dynamic programming, branch and bound, backtracking, greedy, divide and conquer</td></tr>
+                            <tr><td>5</td><td>Graph algorithms: BFS, DFS, Shortest path, MST, Network flow</td></tr>
+                            <tr><td>6</td><td>NP-completeness</td></tr>
+                            <tr><td>7</td><td>Advanced topics: string matching, FFT-DFT, basics of approximation and randomized algorithms</td></tr>
+                            <tr><td>8</td><td>Lab Component: Implementation of above topics</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Learning Outcomes</h2>
                 <ul>
-                    <li>Asymptotic analysis — Big-O, Big-Θ, Big-Ω</li>
-                    <li>Divide and conquer, greedy algorithms, dynamic programming</li>
-                    <li>Graph algorithms — BFS, DFS, shortest paths, MST</li>
-                    <li>Sorting and searching algorithms</li>
-                    <li>NP-completeness and approximation algorithms</li>
+                    <li>Use linked lists, stacks, queues, trees, balanced trees, and graphs.</li>
+                    <li>Analyze algorithm complexity and solve recurrence relations.</li>
+                    <li>Implement Quick sort, Merge sort, Heap sort, and linear time sorting methods.</li>
+                    <li>Apply recursion, dynamic programming, branch and bound, backtracking, greedy, and divide-and-conquer methods.</li>
+                    <li>Implement BFS, DFS, shortest path algorithms, MST, and network flow algorithms.</li>
+                    <li>Comprehend NP-completeness and its significance.</li>
                 </ul>
             </div>
 
             <div class="section">
-                <h2>Notes &amp; Resources</h2>
-                <div class="placeholder-box">Lecture notes, assignments, and reference materials will be added here as the semester progresses.</div>
+                <h2>Suggested Reading</h2>
+                <ul>
+                    <li>Mark Allen Weiss, <em>Data Structures and Algorithms in C++</em>, Addison Wesley, 2003.</li>
+                    <li>Adam Drozdek, <em>Data Structures and Algorithms in C++</em>, Brooks and Cole, 2001.</li>
+                    <li>Aho, Hopcroft and Ullmann, <em>Data Structures and Algorithm</em>, Addison Wesley, 1984.</li>
+                    <li>Cormen, Leiserson, Rivest, Stein — <em>Introduction to Algorithms</em>.</li>
+                </ul>
             </div>
         </div>
     </div>
