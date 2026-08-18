@@ -81,6 +81,19 @@
             align-items: center;
             justify-content: space-between;
         }
+        .course-name { display: block; font-weight: 600; margin-bottom: 4px; }
+        .course-code { display: block; font-size: 0.9em; color: #777; font-weight: 400; }
+        .elective-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 0.7em;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
         .course-item:hover {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
             border-left-color: #764ba2;
@@ -121,17 +134,53 @@
                 </li>
             </ul>
 
-            <div class="courses-title">Electives</div>
-            <ul class="courses-list">
-                <!-- Elective 1 -->
+            <div class="courses-title">Semester 1</div>
+            <ul class="courses-list" style="margin-bottom: 30px;">
                 <li class="course-item">
-                    <a href="Elective1_Advanced_ML.html">
-                        <span>Elective 1: Advanced ML</span>
+                    <a href="sem1/ecs-5101-design-and-analysis-of-algorithms.html">
+                        <span>
+                            <span class="course-name">Design and Analysis of Algorithms</span>
+                            <span class="course-code">ECS 5101</span>
+                        </span>
                         <span class="arrow">→</span>
                     </a>
                 </li>
-                <!-- Elective 2 - Add when available: <li class="course-item"><a href="elective-2.html"><span>Elective 2: ...</span><span class="arrow">→</span></a></li> -->
-                <!-- Elective 3 - Add when available: <li class="course-item"><a href="elective-3.html"><span>Elective 3: ...</span><span class="arrow">→</span></a></li> -->
+                <li class="course-item">
+                    <a href="sem1/ecs-5102-foundations-of-computer-systems.html">
+                        <span>
+                            <span class="course-name">Foundations of Computer Systems</span>
+                            <span class="course-code">ECS 5102</span>
+                        </span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item">
+                    <a href="sem1/emc-5103-probability-and-statistics.html">
+                        <span>
+                            <span class="course-name">Probability and Statistics</span>
+                            <span class="course-code">EMC 5103</span>
+                        </span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item">
+                    <a href="sem1/ehs-5104-technical-writing-and-soft-skills.html">
+                        <span>
+                            <span class="course-name">Technical Writing and Soft Skill / Capstone Project</span>
+                            <span class="course-code">EHS 5104</span>
+                        </span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+                <li class="course-item">
+                    <a href="sem1/advanced-machine-learning.html">
+                        <span>
+                            <span class="course-name">Advance Machine Learning <span class="elective-badge">Elective</span></span>
+                            <span class="course-code">Semester 1 Elective</span>
+                        </span>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
