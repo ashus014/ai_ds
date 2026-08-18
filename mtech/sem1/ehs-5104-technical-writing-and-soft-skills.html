@@ -64,6 +64,11 @@
             border-bottom: 2px solid #667eea;
             padding-bottom: 10px;
         }
+        .section h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin: 20px 0 10px;
+        }
         .section p, .section li {
             color: #333;
             line-height: 1.8;
@@ -92,14 +97,17 @@
         }
         .info-card .label { font-size: 0.8em; color: #777; margin-bottom: 4px; }
         .info-card .value { font-weight: 600; color: #333; }
-        .note-box {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-            color: #555;
-            line-height: 1.7;
+        table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        th {
+            padding: 14px;
+            text-align: left;
+            border: 1px solid #ddd;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
+        td { padding: 12px; border: 1px solid #ddd; color: #333; vertical-align: top; }
+        tr:nth-child(even) { background: #f9f9f9; }
         @media (max-width: 768px) {
             .main-content { padding: 30px 20px; }
             .navbar { flex-direction: column; gap: 15px; }
@@ -116,8 +124,8 @@
         </nav>
         <div class="main-content">
             <span class="course-code-badge">EHS 5104</span>
-            <h1>Technical Writing and Soft Skill / Capstone Project</h1>
-            <p class="meta-row">Semester 1 · Core Course</p>
+            <h1>Technical Writing and Soft Skills</h1>
+            <p class="meta-row">Semester 1 · Core Course · Lectures and Tutorials</p>
 
             <div class="info-grid">
                 <div class="info-card">
@@ -125,37 +133,129 @@
                     <div class="value">L-T-P-C: 1-2-2-4</div>
                 </div>
                 <div class="info-card">
-                    <div class="label">From Curriculum</div>
-                    <div class="value">Semester I</div>
+                    <div class="label">Learning Mode</div>
+                    <div class="value">Lectures and Tutorials</div>
                 </div>
                 <div class="info-card">
-                    <div class="label">Note</div>
-                    <div class="value">Capstone optional*</div>
+                    <div class="label">Assessment</div>
+                    <div class="value">Tutorial 20% · Mid 30% · Assignment 10% · ESE 40%</div>
                 </div>
             </div>
 
             <div class="section">
-                <h2>From Curriculum</h2>
-                <p>Listed in Semester I of the Executive M.Tech in AI &amp; Data Science Engineering curriculum (2024).</p>
+                <h2>Learning Objectives</h2>
+                <p>Soft skills are the traits, characteristics, habits, and skills needed to survive and thrive in the modern work world. This course teaches how to develop the skills that can make the difference between a lacklustre career that tops out at middle management versus one that lands you in the executive suite.</p>
+                <p>This course aims to help the students:</p>
                 <ul>
-                    <li>Subject Code: <strong>EHS 5104</strong></li>
-                    <li>Title: Technical Writing and Soft Skill / Capstone Project</li>
-                    <li>Credits: L-T-P-C = <strong>1-2-2-4</strong></li>
+                    <li>Gain a comprehensive understanding of communication skills for workplace interaction</li>
+                    <li>Attain proficiency in written and oral language</li>
+                    <li>Develop teamwork skills</li>
+                    <li>Foster decision making</li>
+                    <li>Strengthen analytical and thinking skills</li>
+                    <li>Develop leadership skills</li>
+                    <li>Acquire techniques for time management, problem solving and emotional intelligence</li>
                 </ul>
             </div>
 
             <div class="section">
-                <h2>Capstone Project</h2>
-                <div class="note-box">
-                    Per the curriculum note: <strong>Capstone Project (Optional)</strong> — online industry case study.
+                <h2>Course Description</h2>
+                <p>This academic course on soft skills aims to equip students with skills necessary for the professional world. By focusing on essential principles and providing practical experiences, students develop their soft skills. Through interactive discussions and exercises, students enhance critical thinking and adaptability in diverse contexts.</p>
+                <p>Upon completion, students will excel in formal presentations, group discussions, and persuasive writing, enhancing their verbal and non-verbal proficiency.</p>
+            </div>
+
+            <div class="section">
+                <h2>Course Outline</h2>
+                <h3>Section A: Theoretical Component</h3>
+                <div style="overflow-x: auto; margin-bottom: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Topic (from syllabus)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Unit 1</td>
+                                <td><strong>Communication skills</strong> — Barriers to communication; Verbal communication (oral and written); Non-verbal communication; Interpersonal communication; Email etiquette; Power to listen; Ethical considerations in communication; Intercultural communication; Comprehension; Creative and critical writing</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 2</td>
+                                <td><strong>Team Building</strong> — Conflict resolution; Mediation; Accountability; Collaboration; Empathy; Building rapport; Cultural awareness; Dealing with people; Group and teams, group formation, group decision making; Types of teams and models of team effectiveness; Negotiation techniques</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 3</td>
+                                <td><strong>Leadership</strong> — Leader vs Managers; Core values of leadership; Leadership styles; Theories of Leadership; Leadership models; Vision and its articulation and implementation; Goal setting and performance management; Ethical leadership; Power bases and power tactics</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 4</td>
+                                <td><strong>Personality Development and Stress Management</strong> — Theories of Personality development (Freud, Jung, Eysenck, Carl Rogers and Maslow); Personality frameworks such as MBTI, Big Five and personality assessment; Reasons and Remedies of Stress</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 5</td>
+                                <td><strong>Thinking</strong> — Critical Thinking; Reasoning: Deductive and Inductive; Analytical skills; Brainstorming; Strategic thinking; Creative thinking; Lateral Thinking; EQ and IQ</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 6</td>
+                                <td><strong>Problem Solving</strong> — What is a problem?; Identifying a problem; Data collection methods and tools; 5 Whys; Drill down technique; Cause and effect diagram; Prioritizing problem (Pareto's principle); Generating solutions; Making decisions; Implementing solutions; Evaluating solutions</td>
+                            </tr>
+                            <tr>
+                                <td>Unit 7</td>
+                                <td><strong>Time Management</strong> — What is Time Management?; Time Management Strategies; Stumbling Blocks in Time Management; Task Prioritization and Delegation; Technology and Time Management</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Section B: Tutorial Component</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Topic (from syllabus)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Unit I</td><td>Group Discussion</td></tr>
+                            <tr><td>Unit II</td><td>Oral presentation</td></tr>
+                            <tr><td>Unit III</td><td>Designing and Using PPTs — solo and group presentation</td></tr>
+                            <tr><td>Unit IV</td><td>Critical writing practice</td></tr>
+                            <tr><td>Unit V</td><td>Analytical writing practice</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <div class="section">
-                <h2>Detailed Syllabus</h2>
-                <div class="note-box">
-                    A detailed course outline for EHS 5104 is not included in the published M.Tech AI&amp;DSE syllabus PDF (only the curriculum row appears). Content will be updated when the full subject syllabus is available.
-                </div>
+                <h2>Learning Outcomes</h2>
+                <ul>
+                    <li>Develop a comprehensive understanding of what constitutes soft skills</li>
+                    <li>Attain proficiency in communication for the workplace</li>
+                    <li>Enhance skills in dealing with decision making and problem solving</li>
+                    <li>Cultivate problem solving and thinking skills</li>
+                    <li>Strengthen leadership skills</li>
+                    <li>Expand one's self-concept as a leader</li>
+                    <li>Incorporate feedback into developing commitments and plans</li>
+                    <li>Acquire valuable interview techniques, preparing comprehensively, understanding the interview process, and demonstrating effective interview skills</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Suggested Reading</h2>
+                <ul>
+                    <li>Paul Bailey. <em>Creative Thinking: Finding Solutions Out of the Box</em>. Speedy Publishing, 2013.</li>
+                    <li>Edward de Bono. <em>The Six Thinking Hats</em>. Penguin, 2018.</li>
+                    <li>Jeff Butterfield. <em>Soft Skills for Everyone</em>. Cengage Learning, 2010 (4th rpt 2013).</li>
+                    <li>Ivory Dorsey. <em>Soft Skills for Hard Times: A Handbook for High Achievers</em>. Xlibris Corporation, 2004.</li>
+                    <li>Laura J. Gurak and John M. Lannon. <em>Strategies for Technical Communication in the Work Place</em>. Pearson, 2012.</li>
+                    <li>Patrick Lensioni. <em>The Dysfunctions of a Team – Leadership Fable</em>. Wiley India, 2006.</li>
+                    <li>Richard Koch. <em>The 80/20 Principle</em>. Crown, 1999.</li>
+                    <li>Mikael Krogerus and Roman Tschäppeler. <em>The Decision Book – 50 Models for Strategic Thinking</em>. Profile Books, 2023.</li>
+                    <li>Carl Patterson. <em>Critical Thinking and Problem Solving</em>. Atlantic Publishers, 2020.</li>
+                    <li>Francis S. J. Peter. <em>Soft Skills and Professional Communication</em>. Tata McGraw-Hill, 2012.</li>
+                    <li>Simon Sinek. <em>Leaders Eat Last</em>. Penguin, 2014.</li>
+                </ul>
             </div>
         </div>
     </div>
