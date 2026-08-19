@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 5 — WLLN &amp; CLT | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 5 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Weak Law of Large Numbers &amp; Central Limit Theorem</h1>
+
+            <div class="section">
+                <h2>1. Sample Mean</h2>
+                <p>Given i.i.d. X₁, X₂, …, Xₙ with E[Xᵢ] = μ and Var(Xᵢ) = σ²:</p>
+                <div class="formula">X̄ₙ = (1/n) Σ Xᵢ &nbsp;&nbsp; E[X̄ₙ] = μ &nbsp;&nbsp; Var(X̄ₙ) = σ²/n</div>
+            </div>
+
+            <div class="section">
+                <h2>2. Weak Law of Large Numbers (WLLN)</h2>
+                <div class="formula">X̄ₙ →ᵖ μ &nbsp; as n → ∞</div>
+                <p><strong>Meaning:</strong> As sample size grows, the sample mean converges to the true population mean.</p>
+                <p><strong>Proof sketch:</strong> By Chebyshev: P(|X̄ₙ − μ| ≥ ε) ≤ σ²/(nε²) → 0</p>
+                <div class="tip"><strong>ML relevance:</strong> Justifies using sample averages to estimate population parameters. Foundation of Monte Carlo methods.</div>
+            </div>
+
+            <div class="section">
+                <h2>3. Central Limit Theorem (CLT)</h2>
+                <div class="formula">(X̄ₙ − μ) / (σ/√n) →ᵈ N(0,1) &nbsp; as n → ∞</div>
+                <p>Equivalently: X̄ₙ ≈ N(μ, σ²/n) for large n</p>
+                <p><strong>Key insight:</strong> Regardless of the original distribution of Xᵢ, the sample mean is approximately Normal for large n.</p>
+                <div class="example">
+                    <strong>Example:</strong> Xᵢ ~ Uniform(0,1), μ=0.5, σ²=1/12.<br>
+                    For n=100: X̄ₙ ≈ N(0.5, 1/1200).<br>
+                    P(X̄ₙ &gt; 0.55) ≈ P(Z &gt; (0.55−0.5)/√(1/1200)) = P(Z &gt; 1.73) ≈ 0.042
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>4. Sum Version of CLT</h2>
+                <div class="formula">Sₙ = Σ Xᵢ ≈ N(nμ, nσ²) &nbsp; for large n</div>
+                <p>Standardize: (Sₙ − nμ)/(σ√n) → N(0,1)</p>
+            </div>
+
+            <div class="section">
+                <h2>5. When to Use CLT</h2>
+                <ul>
+                    <li>n ≥ 30 is a common rule of thumb (if distribution isn't too skewed)</li>
+                    <li>Approximate P(a &lt; X̄ₙ &lt; b) using Normal distribution</li>
+                    <li>Approximate binomial with Normal: Bin(n,p) ≈ N(np, np(1−p)) when np and n(1−p) ≥ 5</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>6. Exam Checklist</h2>
+                <ul>
+                    <li>State WLLN and CLT precisely</li>
+                    <li>Standardize and use Z-tables</li>
+                    <li>Approximate binomial probabilities via Normal</li>
+                    <li>Find required n for a given accuracy on X̄ₙ</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="04-inequalities-and-convergence.html">← Previous</a>
+                <a href="06-point-estimation.html">Next: Point Estimation →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

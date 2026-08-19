@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 6 — Point Estimation | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 6 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Point Estimation — MLE, MVUE, Rao-Cramér</h1>
+
+            <div class="section">
+                <h2>1. What is an Estimator?</h2>
+                <p>A <strong>statistic</strong> θ̂ = g(X₁,…,Xₙ) used to estimate unknown parameter θ.</p>
+                <ul>
+                    <li><strong>Point estimate:</strong> single value (e.g., X̄ₙ estimates μ)</li>
+                    <li><strong>Estimator vs estimate:</strong> θ̂ is the rule; θ̂ = 3.2 is the computed value</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>2. Properties of Estimators</h2>
+                <h3>Unbiasedness</h3>
+                <div class="formula">E[θ̂] = θ &nbsp; for all θ</div>
+                <p>Example: X̄ₙ is unbiased for μ. Sample variance S² = Σ(Xᵢ−X̄)²/(n−1) is unbiased for σ².</p>
+
+                <h3>Mean Squared Error (MSE)</h3>
+                <div class="formula">MSE(θ̂) = E[(θ̂ − θ)²] = Var(θ̂) + [Bias(θ̂)]²</div>
+
+                <h3>Efficiency</h3>
+                <p>Among unbiased estimators, the one with smallest variance is most efficient.</p>
+
+                <h3>Consistency</h3>
+                <div class="formula">θ̂ₙ →ᵖ θ &nbsp; as n → ∞</div>
+            </div>
+
+            <div class="section">
+                <h2>3. MVUE — Minimum Variance Unbiased Estimator</h2>
+                <p>The unbiased estimator with the smallest possible variance.</p>
+                <p>If θ̂ is a sufficient statistic and unbiased, it is MVUE (by Lehmann-Scheffé theorem).</p>
+            </div>
+
+            <div class="section">
+                <h2>4. Rao-Cramér (Cramér-Rao) Lower Bound</h2>
+                <p>For unbiased θ̂ under regularity conditions:</p>
+                <div class="formula">Var(θ̂) ≥ 1 / I(θ)</div>
+                <p>where I(θ) = Fisher Information:</p>
+                <div class="formula">I(θ) = E[(∂/∂θ log L(θ))²] = −E[∂²/∂θ² log L(θ)]</div>
+                <p>An estimator achieving this bound is <strong>efficient</strong>. MLE often achieves it asymptotically.</p>
+            </div>
+
+            <div class="section">
+                <h2>5. Maximum Likelihood Estimation (MLE)</h2>
+                <p>Choose θ that maximizes the likelihood of observed data:</p>
+                <div class="formula">L(θ) = Π f(xᵢ; θ) &nbsp;&nbsp; θ̂_MLE = argmax L(θ) = argmax log L(θ)</div>
+                <table>
+                    <tr><th>Distribution</th><th>Parameter</th><th>MLE</th></tr>
+                    <tr><td>Bernoulli(p)</td><td>p</td><td>p̂ = (Σxᵢ)/n = sample proportion</td></tr>
+                    <tr><td>Normal(μ, σ²)</td><td>μ</td><td>μ̂ = X̄ₙ</td></tr>
+                    <tr><td>Normal(μ, σ²)</td><td>σ²</td><td>σ̂² = Σ(Xᵢ−X̄)²/n</td></tr>
+                    <tr><td>Poisson(λ)</td><td>λ</td><td>λ̂ = X̄ₙ</td></tr>
+                    <tr><td>Exponential(λ)</td><td>λ</td><td>λ̂ = 1/X̄ₙ</td></tr>
+                </table>
+                <p><strong>Invariance property:</strong> If θ̂ is MLE of θ, then g(θ̂) is MLE of g(θ).</p>
+                <div class="tip"><strong>ML relevance:</strong> MLE is how neural network weights are trained (maximize likelihood of data under the model).</div>
+            </div>
+
+            <div class="section">
+                <h2>6. MLE Procedure</h2>
+                <ol style="margin-left:20px; line-height:2;">
+                    <li>Write likelihood L(θ) = Π f(xᵢ; θ)</li>
+                    <li>Take log: ℓ(θ) = Σ log f(xᵢ; θ)</li>
+                    <li>Differentiate: dℓ/dθ = 0</li>
+                    <li>Solve for θ̂</li>
+                    <li>Verify it's a maximum (second derivative &lt; 0)</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h2>7. Exam Checklist</h2>
+                <ul>
+                    <li>Check if estimator is unbiased</li>
+                    <li>Compute MSE = Variance + Bias²</li>
+                    <li>Derive MLE for common distributions</li>
+                    <li>State Rao-Cramér bound and check efficiency</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="05-wlln-and-clt.html">← Previous</a>
+                <a href="07-confidence-intervals.html">Next: Confidence Intervals →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

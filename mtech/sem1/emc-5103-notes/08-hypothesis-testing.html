@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 8 — Hypothesis Testing | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 8 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Hypothesis Testing &amp; Neyman-Pearson Lemma</h1>
+
+            <div class="section">
+                <h2>1. Framework</h2>
+                <ul>
+                    <li><strong>H₀ (Null hypothesis):</strong> status quo, no effect (e.g., μ = μ₀)</li>
+                    <li><strong>H₁ (Alternative):</strong> what we want to detect (e.g., μ ≠ μ₀)</li>
+                    <li><strong>Test statistic:</strong> computed from data (e.g., Z = (X̄−μ₀)/(σ/√n))</li>
+                    <li><strong>Rejection region:</strong> values of test statistic that lead to rejecting H₀</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>2. Types of Errors</h2>
+                <table>
+                    <tr><th></th><th>H₀ True</th><th>H₀ False</th></tr>
+                    <tr><td><strong>Fail to reject H₀</strong></td><td>✓ Correct</td><td>Type II Error (β)</td></tr>
+                    <tr><td><strong>Reject H₀</strong></td><td>Type I Error (α)</td><td>✓ Correct (Power = 1−β)</td></tr>
+                </table>
+                <ul>
+                    <li><strong>Level of significance α:</strong> P(Type I error) = P(reject H₀ | H₀ true)</li>
+                    <li><strong>Power:</strong> P(reject H₀ | H₁ true) = 1 − β</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>3. p-value</h2>
+                <p>Probability of observing a test statistic at least as extreme as the one computed, assuming H₀ is true.</p>
+                <div class="formula">Reject H₀ if p-value &lt; α</div>
+                <ul>
+                    <li>Two-tailed: p = 2·P(Z &gt; |z_obs|)</li>
+                    <li>One-tailed right: p = P(Z &gt; z_obs)</li>
+                    <li>One-tailed left: p = P(Z &lt; z_obs)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>4. Common Tests</h2>
+                <table>
+                    <tr><th>Test</th><th>Statistic</th><th>When to use</th></tr>
+                    <tr><td>Z-test (mean)</td><td>Z = (X̄−μ₀)/(σ/√n)</td><td>σ known, large n</td></tr>
+                    <tr><td>t-test (mean)</td><td>t = (X̄−μ₀)/(S/√n)</td><td>σ unknown</td></tr>
+                    <tr><td>Z-test (proportion)</td><td>Z = (p̂−p₀)/√(p₀(1−p₀)/n)</td><td>Large n</td></tr>
+                    <tr><td>χ² test</td><td>χ² = Σ(O−E)²/E</td><td>Goodness of fit</td></tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>5. Neyman-Pearson Lemma</h2>
+                <p>For testing H₀: θ = θ₀ vs H₁: θ = θ₁, the <strong>most powerful test</strong> at level α rejects H₀ when:</p>
+                <div class="formula">L(θ₁) / L(θ₀) &gt; k</div>
+                <p>where k is chosen so P(reject H₀ | H₀) = α.</p>
+                <p><strong>Meaning:</strong> Reject H₀ when the likelihood ratio favors H₁ sufficiently. This gives the Likelihood Ratio Test (LRT).</p>
+                <div class="formula">λ = L(θ₀) / L(θ̂_MLE) &nbsp;&nbsp; Reject H₀ if λ &lt; k</div>
+            </div>
+
+            <div class="section">
+                <h2>6. Testing Procedure (Step by Step)</h2>
+                <ol style="margin-left:20px; line-height:2;">
+                    <li>State H₀ and H₁</li>
+                    <li>Choose significance level α</li>
+                    <li>Select appropriate test statistic</li>
+                    <li>Compute observed test statistic from data</li>
+                    <li>Find p-value or critical value</li>
+                    <li>Make decision: reject or fail to reject H₀</li>
+                    <li>State conclusion in context</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h2>7. Exam Checklist</h2>
+                <ul>
+                    <li>Set up H₀ and H₁ (one-tailed vs two-tailed)</li>
+                    <li>Compute Z or t statistic</li>
+                    <li>Find p-value and compare to α</li>
+                    <li>Identify Type I and Type II errors in context</li>
+                    <li>State Neyman-Pearson lemma and likelihood ratio test</li>
+                    <li>Relate to confidence intervals</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="07-confidence-intervals.html">← Previous</a>
+                <a href="index.html">Back to All Notes →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

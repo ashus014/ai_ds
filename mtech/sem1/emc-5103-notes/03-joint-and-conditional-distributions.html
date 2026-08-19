@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 3 — Joint &amp; Conditional Distributions | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 3 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Joint, Marginal &amp; Conditional Distributions</h1>
+
+            <div class="section">
+                <h2>1. Joint Distribution</h2>
+                <p>For two RVs X and Y:</p>
+                <div class="formula">Discrete: p(x,y) = P(X=x, Y=y) &nbsp;&nbsp; Continuous: f(x,y) with ∫∫ f(x,y) dx dy = 1</div>
+            </div>
+
+            <div class="section">
+                <h2>2. Marginal Distributions</h2>
+                <p>"Sum out" the other variable:</p>
+                <div class="formula">p_X(x) = Σᵧ p(x,y) &nbsp; [discrete] &nbsp;&nbsp; f_X(x) = ∫ f(x,y) dy &nbsp; [continuous]</div>
+            </div>
+
+            <div class="section">
+                <h2>3. Conditional Distribution</h2>
+                <div class="formula">p_{Y|X}(y|x) = p(x,y) / p_X(x) &nbsp;&nbsp; for p_X(x) &gt; 0</div>
+                <div class="formula">f_{Y|X}(y|x) = f(x,y) / f_X(x)</div>
+                <p>Conditional expectation: E[Y|X=x] = Σ y·p(y|x) or ∫ y·f(y|x) dy</p>
+            </div>
+
+            <div class="section">
+                <h2>4. Independence of Random Variables</h2>
+                <div class="formula">X and Y independent ⟺ p(x,y) = p_X(x)·p_Y(y) &nbsp; for all x,y</div>
+                <p>If independent: E[XY] = E[X]E[Y] and Var(X+Y) = Var(X) + Var(Y)</p>
+            </div>
+
+            <div class="section">
+                <h2>5. Covariance &amp; Correlation</h2>
+                <div class="formula">Cov(X,Y) = E[(X−μₓ)(Y−μᵧ)] = E[XY] − E[X]E[Y]</div>
+                <div class="formula">ρ(X,Y) = Cov(X,Y) / (σₓ · σᵧ) &nbsp;&nbsp; where −1 ≤ ρ ≤ 1</div>
+                <ul>
+                    <li>ρ = 1: perfect positive linear relationship</li>
+                    <li>ρ = −1: perfect negative linear relationship</li>
+                    <li>ρ = 0: uncorrelated (not necessarily independent!)</li>
+                </ul>
+                <div class="formula">Var(X + Y) = Var(X) + Var(Y) + 2·Cov(X,Y)</div>
+            </div>
+
+            <div class="section">
+                <h2>6. Functions of Random Variables</h2>
+                <p><strong>Discrete:</strong> If Y = g(X), then p_Y(y) = Σ p(xᵢ) where g(xᵢ) = y</p>
+                <p><strong>Continuous — CDF method:</strong> F_Y(y) = P(g(X) ≤ y) = P(X ∈ {x : g(x) ≤ y})</p>
+                <p><strong>Transformation:</strong> If Y = aX + b, then f_Y(y) = (1/|a|) f_X((y−b)/a)</p>
+            </div>
+
+            <div class="section">
+                <h2>7. Exam Checklist</h2>
+                <ul>
+                    <li>Find marginal from joint PMF/PDF</li>
+                    <li>Compute conditional distribution and E[Y|X]</li>
+                    <li>Check independence via p(x,y) = p_X(x)p_Y(y)</li>
+                    <li>Calculate Cov(X,Y) and correlation ρ</li>
+                    <li>Find distribution of Y = g(X)</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="02-random-variables-and-distributions.html">← Previous</a>
+                <a href="04-inequalities-and-convergence.html">Next: Inequalities →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

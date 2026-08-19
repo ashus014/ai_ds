@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 4 — Inequalities &amp; Convergence | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 4 of 8</span>
+            <span class="badge badge-medium">Medium</span>
+            <h1>Markov, Chebyshev &amp; Convergence</h1>
+
+            <div class="section">
+                <h2>1. Markov's Inequality</h2>
+                <p>For non-negative RV X and a &gt; 0:</p>
+                <div class="formula">P(X ≥ a) ≤ E[X] / a</div>
+                <p>Gives an upper bound on tail probability using only the mean. Loose but requires minimal assumptions.</p>
+                <div class="example">If E[X] = 10, then P(X ≥ 50) ≤ 10/50 = 0.2</div>
+            </div>
+
+            <div class="section">
+                <h2>2. Chebyshev's Inequality</h2>
+                <p>For any RV X with mean μ and variance σ², and k &gt; 0:</p>
+                <div class="formula">P(|X − μ| ≥ kσ) ≤ 1/k²</div>
+                <p>Equivalently: P(|X − μ| &lt; kσ) ≥ 1 − 1/k²</p>
+                <div class="example">At least 75% of values lie within 2σ of μ (k=2 → 1−1/4 = 0.75)</div>
+                <div class="tip">Chebyshev follows from Markov applied to (X−μ)². Used to prove WLLN.</div>
+            </div>
+
+            <div class="section">
+                <h2>3. Modes of Convergence</h2>
+                <h3>Convergence in Probability</h3>
+                <div class="formula">Xₙ →ᵖ X &nbsp; if &nbsp; P(|Xₙ − X| &gt; ε) → 0 for all ε &gt; 0</div>
+                <p>Used in Weak Law of Large Numbers.</p>
+
+                <h3>Convergence in Distribution (Weak Convergence)</h3>
+                <div class="formula">Xₙ →ᵈ X &nbsp; if &nbsp; Fₙ(x) → F(x) at continuity points of F</div>
+                <p>Used in Central Limit Theorem. Weaker than convergence in probability.</p>
+
+                <h3>Almost Sure Convergence</h3>
+                <div class="formula">Xₙ →ᵃ·ˢ· X &nbsp; if &nbsp; P(lim Xₙ = X) = 1</div>
+                <p>Strongest mode. Implies convergence in probability.</p>
+
+                <div class="tip"><strong>Hierarchy:</strong> a.s. ⟹ in probability ⟹ in distribution</div>
+            </div>
+
+            <div class="section">
+                <h2>4. Exam Checklist</h2>
+                <ul>
+                    <li>Apply Markov's inequality to bound tail probabilities</li>
+                    <li>Apply Chebyshev to find minimum % within k standard deviations</li>
+                    <li>Distinguish between convergence in probability vs distribution</li>
+                    <li>State conditions for each type of convergence</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="03-joint-and-conditional-distributions.html">← Previous</a>
+                <a href="05-wlln-and-clt.html">Next: WLLN &amp; CLT →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

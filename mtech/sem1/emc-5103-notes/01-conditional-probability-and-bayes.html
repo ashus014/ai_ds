@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 1 — Conditional Probability &amp; Bayes | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 1 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Conditional Probability, Bayes' Rule &amp; Independence</h1>
+
+            <div class="section">
+                <h2>1. Sample Space &amp; Basic Probability</h2>
+                <p>A <strong>sample space</strong> Ω is the set of all possible outcomes. An <strong>event</strong> A ⊆ Ω.</p>
+                <div class="formula">P(A) = (Number of favorable outcomes) / (Total outcomes) &nbsp; [equally likely case]</div>
+                <p><strong>Axioms of probability:</strong></p>
+                <ul>
+                    <li>P(A) ≥ 0 for any event A</li>
+                    <li>P(Ω) = 1</li>
+                    <li>For mutually exclusive events A₁, A₂, …: P(A₁ ∪ A₂ ∪ …) = P(A₁) + P(A₂) + …</li>
+                </ul>
+                <div class="tip"><strong>Key identity:</strong> P(Aᶜ) = 1 − P(A) &nbsp;|&nbsp; P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</div>
+            </div>
+
+            <div class="section">
+                <h2>2. Conditional Probability</h2>
+                <p>Probability of A <em>given</em> B has occurred — we restrict the sample space to B.</p>
+                <div class="formula">P(A | B) = P(A ∩ B) / P(B) &nbsp;&nbsp; provided P(B) &gt; 0</div>
+                <p><strong>Intuition:</strong> Out of all outcomes where B happened, what fraction also satisfies A?</p>
+                <h3>Multiplication Rule</h3>
+                <div class="formula">P(A ∩ B) = P(B) · P(A | B) = P(A) · P(B | A)</div>
+                <p>For n events: P(A₁ ∩ A₂ ∩ … ∩ Aₙ) = P(A₁)·P(A₂|A₁)·P(A₃|A₁∩A₂)…</p>
+            </div>
+
+            <div class="section">
+                <h2>3. Law of Total Probability</h2>
+                <p>If B₁, B₂, …, Bₙ partition Ω (mutually exclusive, cover all outcomes), then:</p>
+                <div class="formula">P(A) = Σᵢ P(A | Bᵢ) · P(Bᵢ)</div>
+                <p><strong>Example:</strong> A factory has 2 machines. Machine 1 produces 60% of items (2% defective). Machine 2 produces 40% (5% defective). P(defective) = 0.6×0.02 + 0.4×0.05 = 0.032</p>
+            </div>
+
+            <div class="section">
+                <h2>4. Bayes' Theorem</h2>
+                <div class="formula">P(B | A) = [P(A | B) · P(B)] / P(A)</div>
+                <p>With partition {Bᵢ}:</p>
+                <div class="formula">P(Bⱼ | A) = P(A | Bⱼ)·P(Bⱼ) / Σᵢ P(A | Bᵢ)·P(Bᵢ)</div>
+                <p><strong>Why it matters for AI/ML:</strong> Bayes' theorem is the foundation of Naive Bayes classifiers, Bayesian inference, and posterior updating in LLMs.</p>
+                <div class="example">
+                    <strong>Medical test example:</strong> Disease prevalence = 1%. Test sensitivity = 99%, specificity = 95%.<br>
+                    P(D|+) = (0.99 × 0.01) / (0.99×0.01 + 0.05×0.99) ≈ 16.7%<br>
+                    <em>Lesson: A positive test doesn't mean you're sick — prior probability matters hugely.</em>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>5. Independence of Events</h2>
+                <p>A and B are <strong>independent</strong> if knowing B doesn't change P(A):</p>
+                <div class="formula">P(A ∩ B) = P(A) · P(B) &nbsp;⟺&nbsp; P(A|B) = P(A)</div>
+                <p>Events A₁, A₂, …, Aₙ are mutually independent if for every subset:</p>
+                <div class="formula">P(Aᵢ₁ ∩ Aᵢ₂ ∩ … ∩ Aᵢₖ) = P(Aᵢ₁)·P(Aᵢ₂)·…·P(Aᵢₖ)</div>
+                <div class="tip"><strong>Exam trap:</strong> Mutually exclusive ≠ independent. If P(A)>0, P(B)>0 and A∩B=∅, they are dependent!</div>
+            </div>
+
+            <div class="section">
+                <h2>6. Exam Checklist</h2>
+                <ul>
+                    <li>Compute P(A|B) from given tables or Venn diagrams</li>
+                    <li>Apply total probability to find P(A)</li>
+                    <li>Apply Bayes' theorem to reverse conditioning</li>
+                    <li>Check independence using P(A∩B) = P(A)P(B)</li>
+                    <li>Tree diagrams for sequential problems</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <span></span>
+                <a href="02-random-variables-and-distributions.html">Next: Random Variables →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Topic 2 — Random Variables &amp; Distributions | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">Topic 2 of 8</span>
+            <span class="badge badge-high">High</span>
+            <h1>Random Variables, PMF, PDF, Expectation &amp; Variance</h1>
+
+            <div class="section">
+                <h2>1. What is a Random Variable?</h2>
+                <p>A <strong>random variable (RV)</strong> X is a function X: Ω → ℝ that assigns a number to each outcome.</p>
+                <ul>
+                    <li><strong>Discrete RV:</strong> Takes countable values (e.g., die roll: 1,2,3,4,5,6)</li>
+                    <li><strong>Continuous RV:</strong> Takes uncountable values (e.g., height, time, temperature)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>2. PMF — Probability Mass Function (Discrete)</h2>
+                <div class="formula">p(x) = P(X = x) &nbsp;&nbsp; where Σ p(x) = 1, p(x) ≥ 0</div>
+                <table>
+                    <tr><th>Distribution</th><th>PMF</th><th>Mean E[X]</th><th>Var Var(X)</th></tr>
+                    <tr><td>Bernoulli(p)</td><td>P(X=1)=p, P(X=0)=1−p</td><td>p</td><td>p(1−p)</td></tr>
+                    <tr><td>Binomial(n,p)</td><td>C(n,k)pᵏ(1−p)ⁿ⁻ᵏ</td><td>np</td><td>np(1−p)</td></tr>
+                    <tr><td>Poisson(λ)</td><td>e⁻λλᵏ/k!</td><td>λ</td><td>λ</td></tr>
+                    <tr><td>Geometric(p)</td><td>(1−p)ᵏ⁻¹p</td><td>1/p</td><td>(1−p)/p²</td></tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>3. PDF — Probability Density Function (Continuous)</h2>
+                <div class="formula">f(x) ≥ 0, &nbsp; ∫₋∞^∞ f(x) dx = 1</div>
+                <div class="formula">P(a ≤ X ≤ b) = ∫ₐᵇ f(x) dx</div>
+                <p>Note: P(X = x) = 0 for any single point in continuous case!</p>
+                <table>
+                    <tr><th>Distribution</th><th>PDF</th><th>Mean</th><th>Variance</th></tr>
+                    <tr><td>Uniform(a,b)</td><td>1/(b−a)</td><td>(a+b)/2</td><td>(b−a)²/12</td></tr>
+                    <tr><td>Exponential(λ)</td><td>λe⁻λˣ, x≥0</td><td>1/λ</td><td>1/λ²</td></tr>
+                    <tr><td>Normal(μ,σ²)</td><td>(1/√(2πσ²))e^(−(x−μ)²/2σ²)</td><td>μ</td><td>σ²</td></tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>4. CDF — Cumulative Distribution Function</h2>
+                <div class="formula">F(x) = P(X ≤ x)</div>
+                <ul>
+                    <li>Non-decreasing, right-continuous</li>
+                    <li>lim F(x) = 0 as x→−∞; lim F(x) = 1 as x→+∞</li>
+                    <li>Discrete: F(x) = Σ p(k) for k ≤ x</li>
+                    <li>Continuous: F(x) = ∫₋∞ˣ f(t) dt, &nbsp; f(x) = dF/dx</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>5. Expectation (Mean)</h2>
+                <div class="formula">E[X] = Σ x·p(x) &nbsp; [discrete] &nbsp;&nbsp; E[X] = ∫ x·f(x) dx &nbsp; [continuous]</div>
+                <div class="formula">E[g(X)] = Σ g(x)p(x) &nbsp; or &nbsp; ∫ g(x)f(x)dx</div>
+                <p><strong>Linearity:</strong> E[aX + b] = aE[X] + b &nbsp;|&nbsp; E[X + Y] = E[X] + E[Y] (always, even if dependent)</p>
+            </div>
+
+            <div class="section">
+                <h2>6. Variance &amp; Moments</h2>
+                <div class="formula">Var(X) = E[(X − μ)²] = E[X²] − (E[X])²</div>
+                <div class="formula">SD(X) = √Var(X)</div>
+                <p><strong>k-th moment:</strong> E[Xᵏ] &nbsp;|&nbsp; <strong>Central k-th moment:</strong> E[(X−μ)ᵏ]</p>
+                <div class="tip">Var(aX + b) = a²Var(X). For independent X,Y: Var(X+Y) = Var(X) + Var(Y)</div>
+            </div>
+
+            <div class="section">
+                <h2>7. Exam Checklist</h2>
+                <ul>
+                    <li>Identify distribution type and write PMF/PDF</li>
+                    <li>Compute E[X], Var(X) from definition or table</li>
+                    <li>Use CDF to find P(a &lt; X &lt; b)</li>
+                    <li>Recognize Binomial, Poisson, Normal problems from word statements</li>
+                    <li>Standardize Normal: Z = (X−μ)/σ</li>
+                </ul>
+            </div>
+
+            <div class="nav-footer">
+                <a href="01-conditional-probability-and-bayes.html">← Previous</a>
+                <a href="03-joint-and-conditional-distributions.html">Next: Joint Distributions →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
