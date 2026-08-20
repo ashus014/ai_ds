@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     <title>Forward Deployed Engineer — Notes</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,17 +73,86 @@
             padding: 20px 24px;
             margin-bottom: 28px;
         }
-        .toc h3 { color: #4338ca; margin-bottom: 10px; }
-        .toc ol { margin-left: 22px; line-height: 1.8; }
-        .toc a { color: #4338ca; text-decoration: none; }
-        .toc a:hover { text-decoration: underline; }
+        .toc h3 { color: #4338ca; margin-bottom: 12px; }
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toc-list li { margin: 0; padding: 0; }
+        .toc-list li::before { content: none; }
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.25);
+            background: white;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            line-height: 1.4;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .toc-list a:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+            transform: translateX(3px);
+        }
+        .toc-list a.is-active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #4338ca;
+            font-weight: 600;
+        }
+        .toc-num {
+            flex-shrink: 0;
+            width: 1.6em;
+            color: #667eea;
+            font-weight: 700;
+        }
+        .toc-arrow { color: #667eea; flex-shrink: 0; }
         .section {
-            margin-bottom: 35px;
+            display: none;
+            margin-bottom: 20px;
             padding: 25px;
             background: #f8f9fa;
             border-left: 5px solid #667eea;
             border-radius: 8px;
         }
+        .section.is-active { display: block; }
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid #dde3f0;
+        }
+        .section-nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #eef2ff;
+        }
+        .section-nav a:hover { background: #e0e7ff; color: #764ba2; }
+        .section-nav .spacer { flex: 1; }
+        .back-to-toc {
+            display: inline-block;
+            margin-bottom: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        .back-to-toc:hover { color: #764ba2; }
         .section h2 {
             color: #667eea;
             font-size: 1.55em;
@@ -182,17 +251,13 @@
             .header h1 { font-size: 1.7em; }
         }
     </style>
-    <link rel="stylesheet" href="../topic-progress.css">
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
-    </script>
+    <link rel="stylesheet" href="topic-progress.css">
 </head>
 <body>
     <div class="wrapper">
         <nav class="navbar">
-            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
-            <a href="../index.html" class="back-link">← Back to Home</a>
+            <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← Back to Home</a>
         </nav>
         <div class="container">
             <div class="header">
@@ -201,26 +266,27 @@
                 <span class="date-badge">20 Aug 2026</span>
             </div>
             <div class="content">
-                <div class="toc">
-                    <h3>On this page</h3>
-                    <ol>
-                        <li><a href="#intro">Introduction &amp; outcomes</a></li>
-                        <li><a href="#foundations">AI coding assistant foundations</a></li>
-                        <li><a href="#modes">Four interaction modes</a></li>
-                        <li><a href="#context">Context engineering</a></li>
-                        <li><a href="#mode-context">Modes have different contexts</a></li>
-                        <li><a href="#config">Configuration standards</a></li>
-                        <li><a href="#mcp">Model Context Protocol (MCP)</a></li>
-                        <li><a href="#workflows">Practical workflows</a></li>
-                        <li><a href="#advanced">Advanced workflows — tests, review, modernization</a></li>
-                        <li><a href="#features">Assistant features &amp; surfaces</a></li>
-                        <li><a href="#close">Final review &amp; what to do Monday</a></li>
+                <div class="toc" id="toc">
+                    <h3>Choose a section</h3>
+                    <ol class="toc-list">
+                        <li><a href="#intro" data-section="intro"><span><span class="toc-num">1.</span> Introduction &amp; outcomes</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#foundations" data-section="foundations"><span><span class="toc-num">2.</span> AI coding assistant foundations</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#modes" data-section="modes"><span><span class="toc-num">3.</span> Four interaction modes</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#context" data-section="context"><span><span class="toc-num">4.</span> Context engineering</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#mode-context" data-section="mode-context"><span><span class="toc-num">5.</span> Modes have different contexts</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#config" data-section="config"><span><span class="toc-num">6.</span> Configuration standards</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#mcp" data-section="mcp"><span><span class="toc-num">7.</span> Model Context Protocol (MCP)</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#workflows" data-section="workflows"><span><span class="toc-num">8.</span> Practical workflows</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#advanced" data-section="advanced"><span><span class="toc-num">9.</span> Advanced workflows — tests, review, modernization</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#features" data-section="features"><span><span class="toc-num">10.</span> Assistant features &amp; surfaces</span><span class="toc-arrow">→</span></a></li>
+                        <li><a href="#close" data-section="close"><span><span class="toc-num">11.</span> Final review &amp; what to do Monday</span><span class="toc-arrow">→</span></a></li>
                     </ol>
                 </div>
 
                 <!-- 1 -->
                 <div class="section" id="intro">
                     <h2>Introduction &amp; outcomes</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>AI agents will become a primary way we interact with computers — understanding needs and preferences, and helping with tasks and decisions. Forward deployed work means shipping those capabilities inside a customer’s real environment: right mode, right context, hard boundaries, and a human as the merge gate.</p>
                     <p>After this material you should be able to:</p>
                     <ul>
@@ -249,11 +315,17 @@
                         <li>What is your biggest concern about letting an assistant change production code — correctness, security posture, team trust, or something else?</li>
                         <li>How does your team enforce code quality today? Where are the gaps an assistant could fill, and where would you want a human firmly in the loop?</li>
                     </ul>
+                                    <div class="section-nav">
+                        <span></span>
+                        <span class="spacer"></span>
+                        <a href="#foundations" data-goto="foundations">AI coding assistant foundations →</a>
+                    </div>
                 </div>
 
                 <!-- 2 -->
                 <div class="section" id="foundations">
                     <h2>AI coding assistant foundations</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: describe architecture and components; explain context windows and token limits; apply plan → execute → iterate; evaluate output for correctness, safety, and quality; assess permission boundaries and responsible use.</p>
                     <h3>Overview</h3>
                     <ul>
@@ -440,11 +512,17 @@ Add that case to the same guard clause. Keep the error type consistent.</pre>
                         <li>What strategies will you use to detect hallucinations?</li>
                         <li>When should you trust output — and when should you verify it manually?</li>
                     </ul>
+                                    <div class="section-nav">
+                        <a href="#intro" data-goto="intro">← Introduction &amp; outcomes</a>
+                        <span class="spacer"></span>
+                        <a href="#modes" data-goto="modes">Four interaction modes →</a>
+                    </div>
                 </div>
 
                 <!-- 3 -->
                 <div class="section" id="modes">
                     <h2>Four interaction modes</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>One model with many surfaces. The mode you pick sets the supervision level.</p>
                     <table>
                         <thead><tr><th>Mode</th><th>What it is</th></tr></thead>
@@ -466,11 +544,17 @@ Add that case to the same guard clause. Keep the error type consistent.</pre>
                             <tr><td>A multi-step task where the shape is less clear</td><td>Plan mode → agent mode</td><td>Plan catches misunderstandings cheaply; agent logs and diffs keep you in control</td></tr>
                         </tbody>
                     </table>
+                                    <div class="section-nav">
+                        <a href="#foundations" data-goto="foundations">← AI coding assistant foundations</a>
+                        <span class="spacer"></span>
+                        <a href="#context" data-goto="context">Context engineering →</a>
+                    </div>
                 </div>
 
                 <!-- 4 -->
                 <div class="section" id="context">
                     <h2>Context engineering</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: explain how context influences output; apply context management; select reference systems (files, codebase, docs); construct prompts with structured techniques; distinguish prompting techniques from built-in extended thinking modes.</p>
                     <h3>Overview</h3>
                     <ul>
@@ -578,11 +662,17 @@ and what happens if object storage returns a 503.</pre>
                     <div class="callout">
                         <strong>Context recap:</strong> Context determines output quality. Zero-shot and few-shot fit different complexities. Chain-of-thought and extended thinking are distinct. Reference systems ground responses. Always validate — think in probabilities, not guarantees.
                     </div>
+                                    <div class="section-nav">
+                        <a href="#modes" data-goto="modes">← Four interaction modes</a>
+                        <span class="spacer"></span>
+                        <a href="#mode-context" data-goto="mode-context">Modes have different contexts →</a>
+                    </div>
                 </div>
 
                 <!-- 5 -->
                 <div class="section" id="mode-context">
                     <h2>Modes have different contexts</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>There is no single context model. What the assistant sees depends on the mode you pick. Effective prompting is knowing which sources are active right now and putting the right things in them.</p>
                     <table>
                         <thead><tr><th>Mode</th><th>Context sources</th><th>Who chooses them</th></tr></thead>
@@ -600,11 +690,17 @@ and what happens if object storage returns a 503.</pre>
                         <li><strong>Agent:</strong> the agent chooses most of what it reads, but your goal and starting workspace state anchor everything. If it drifted, revisit how you framed the goal, then check agent logs for which files it read before each change.</li>
                         <li><strong>Inline:</strong> context is almost entirely implicit. Close unrelated tabs and keep the relevant file in focus.</li>
                     </ul>
+                                    <div class="section-nav">
+                        <a href="#context" data-goto="context">← Context engineering</a>
+                        <span class="spacer"></span>
+                        <a href="#config" data-goto="config">Configuration standards →</a>
+                    </div>
                 </div>
 
                 <!-- 6 -->
                 <div class="section" id="config">
                     <h2>Configuration standards</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: differentiate configuration hierarchy levels and behavioral files; create project-level configs that encode team norms; apply file exclusion; design safe, predictable assistant behavior.</p>
                     <h3>Why configuration matters</h3>
                     <p>Configuration files define how an assistant is allowed to act inside a project. They create a shared understanding of boundaries, tone, and responsibilities. Think of configuration as infrastructure — it sits alongside source files in version control. Every developer who clones the repository inherits the same behavioral contract.</p>
@@ -653,11 +749,17 @@ Run pytest before suggesting a commit.</pre>
                     </ul>
                     <div class="warn">Secret exclusion is a security requirement, not a convenience — if the assistant can read a <code>.env</code> file, it can echo credentials in a suggestion.</div>
                     <p>Encode the decision in configuration so it applies to every developer on the team.</p>
+                                    <div class="section-nav">
+                        <a href="#mode-context" data-goto="mode-context">← Modes have different contexts</a>
+                        <span class="spacer"></span>
+                        <a href="#mcp" data-goto="mcp">Model Context Protocol (MCP) →</a>
+                    </div>
                 </div>
 
                 <!-- 7 -->
                 <div class="section" id="mcp">
                     <h2>Model Context Protocol (MCP)</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: describe MCP architecture and purpose; explain tools, resources, and prompts; identify security and permission considerations; evaluate when MCP is appropriate.</p>
                     <h3>What is MCP?</h3>
                     <p>A standard protocol for connecting AI assistants to external tools. It defines how assistants discover and use capabilities and enables structured, predictable interactions — discovery, invocation, response handling, and error reporting.</p>
@@ -739,11 +841,17 @@ flowchart LR
                         <li>Browser automation for UI testing and scraping workflows</li>
                     </ul>
                     <p>Before building a custom server, check the ecosystem — most common needs already have maintained servers ready to configure.</p>
+                                    <div class="section-nav">
+                        <a href="#config" data-goto="config">← Configuration standards</a>
+                        <span class="spacer"></span>
+                        <a href="#workflows" data-goto="workflows">Practical workflows →</a>
+                    </div>
                 </div>
 
                 <!-- 8 -->
                 <div class="section" id="workflows">
                     <h2>Practical workflows for developers</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: structured prompting for generation, scaffolding, and debugging; refactor, document, and automate Git; modernize legacy code incrementally; integrate output safely; generate targeted tests; conduct assistant-driven reviews focused on correctness and risk.</p>
                     <p>The recurring theme is control. You set direction, define constraints, and verify output. The assistant handles mechanical work in between.</p>
 
@@ -830,11 +938,17 @@ Guardrails: don't change existing signatures in utils/validation.py.</pre>
                     <p>Follow team naming: type prefix, ticket number, short description. Give the convention once in a configuration file and it will apply every time. Consistency across the team matters more than saving seconds on one name.</p>
                     <h4>PR descriptions</h4>
                     <p>Summarize changes and rationale; list testing performed; highlight risks and mitigations; include rollback plan; reference related issues. Verify every claim — especially “tests pass” and “no breaking changes.” If claims are not backed by evidence: rewrite using only the diff summary, tests you ran, and observed outputs. Remove assumptions.</p>
+                                    <div class="section-nav">
+                        <a href="#mcp" data-goto="mcp">← Model Context Protocol (MCP)</a>
+                        <span class="spacer"></span>
+                        <a href="#advanced" data-goto="advanced">Advanced workflows — tests, review, modernization →</a>
+                    </div>
                 </div>
 
                 <!-- 9 -->
                 <div class="section" id="advanced">
                     <h2>Advanced workflows — testing, review, modernization</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Checking correctness is a core skill: real-world software quality depends more on tests and review than on initial implementation. Assistants accelerate validation; you remain the quality gatekeeper.</p>
 
                     <h3>Unit tests</h3>
@@ -898,11 +1012,17 @@ Guardrails: don't change existing signatures in utils/validation.py.</pre>
                         <li>Document why the modernization occurred</li>
                     </ul>
                     <p>Self-critique catches issues before you compile, but it is not a substitute for running tests. Modernization is not complete until behavior is verified.</p>
+                                    <div class="section-nav">
+                        <a href="#workflows" data-goto="workflows">← Practical workflows</a>
+                        <span class="spacer"></span>
+                        <a href="#features" data-goto="features">Assistant features &amp; surfaces →</a>
+                    </div>
                 </div>
 
                 <!-- 10 -->
                 <div class="section" id="features">
                     <h2>Assistant features &amp; surfaces</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Objectives: select an appropriate model family and surface; apply agent mode and the cloud coding agent; use Spaces, extensions, and the agents window; configure workspace indexing and instruction files; run the CLI in non-interactive mode inside a pipeline with security controls.</p>
 
                     <h3>Model selection</h3>
@@ -1062,11 +1182,17 @@ Guardrails: don't change existing signatures in utils/validation.py.</pre>
                     <div class="callout">
                         <strong>Features recap:</strong> Surfaces (chat, inline, plan, agent, agents window, coding agent). Models (pick by task; credits meter access). Extension (Spaces, extensions, MCP — each with its own trust model). Configuration (instructions, path rules, AGENTS.md, indexing). Platform integration (review, PR summaries, platform participant, issue assignment). CLI in pipelines — report, don’t act.
                     </div>
+                                    <div class="section-nav">
+                        <a href="#advanced" data-goto="advanced">← Advanced workflows — tests, review, modernization</a>
+                        <span class="spacer"></span>
+                        <a href="#close" data-goto="close">Final review &amp; what to do Monday →</a>
+                    </div>
                 </div>
 
                 <!-- 11 -->
                 <div class="section" id="close">
                     <h2>Final review &amp; what to do Monday</h2>
+                    <a href="#toc" class="back-to-toc" data-show-toc>← All sections</a>
                     <p>Through this material you learned to:</p>
                     <ul>
                         <li>Select interaction modes deliberately — inline completions, Ask, Agent mode, Plan agent, cloud coding agent, CLI</li>
@@ -1092,9 +1218,89 @@ Guardrails: don't change existing signatures in utils/validation.py.</pre>
                         <li>Which extension surface (MCP server, agent skill, prompt file, custom agent, extension) would you reach for first, and what problem would it solve?</li>
                         <li>After today, where does the assistant genuinely help, where does it need structure to help, and where is it not worth the effort?</li>
                     </ul>
+                                    <div class="section-nav">
+                        <a href="#features" data-goto="features">← Assistant features &amp; surfaces</a>
+                        <span class="spacer"></span>
+                        <a href="#toc" data-show-toc>Back to all sections →</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+
+        const sections = Array.from(document.querySelectorAll('.content > .section[id]'));
+        const tocLinks = Array.from(document.querySelectorAll('.toc-list a[data-section]'));
+        const tocBox = document.getElementById('toc');
+        const renderedMermaid = new Set();
+
+        async function renderMermaidIn(section) {
+            const nodes = section.querySelectorAll('.mermaid:not([data-processed])');
+            if (!nodes.length) return;
+            await mermaid.run({ nodes });
+            renderedMermaid.add(section.id);
+        }
+
+        function showSection(id, { pushHash = true } = {}) {
+            const target = id ? sections.find((s) => s.id === id) : null;
+            if (!target) {
+                sections.forEach((s) => s.classList.remove('is-active'));
+                tocLinks.forEach((a) => a.classList.remove('is-active'));
+                if (tocBox) tocBox.hidden = false;
+                if (pushHash) history.replaceState(null, '', location.pathname + location.search);
+                return;
+            }
+
+            sections.forEach((s) => s.classList.toggle('is-active', s.id === id));
+            tocLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.section === id));
+            if (tocBox) tocBox.hidden = true;
+            if (pushHash) history.replaceState(null, '', '#' + id);
+            renderMermaidIn(target);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToc() {
+            showSection(null);
+            if (tocBox) tocBox.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        tocLinks.forEach((a) => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection(a.dataset.section);
+            });
+        });
+
+        document.querySelectorAll('[data-show-toc]').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                showToc();
+            });
+        });
+
+        document.querySelectorAll('[data-goto]').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection(el.dataset.goto);
+            });
+        });
+
+        const initial = (location.hash || '').replace(/^#/, '');
+        if (initial && sections.some((s) => s.id === initial)) {
+            showSection(initial, { pushHash: false });
+        } else {
+            showToc();
+        }
+
+        window.addEventListener('hashchange', () => {
+            const id = (location.hash || '').replace(/^#/, '');
+            if (id && sections.some((s) => s.id === id)) showSection(id, { pushHash: false });
+            else showToc();
+        });
+    </script>
 </body>
 </html>
