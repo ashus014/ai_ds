@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Forward Deployed Engineer — Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; }
+        .header p { font-size: 1.1em; opacity: 0.95; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+        .content { padding: 40px; }
+        .toc {
+            background: #eef2ff;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+        }
+        .toc h3 { color: #4338ca; margin-bottom: 10px; }
+        .toc ol { margin-left: 22px; line-height: 1.8; }
+        .toc a { color: #4338ca; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.55em;
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.15em;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 6px;
+        }
+        .section h4 {
+            color: #4338ca;
+            font-size: 1.02em;
+            margin: 16px 0 8px;
+        }
+        .section p { line-height: 1.65; margin-bottom: 12px; }
+        .section ul, .section ol { margin-left: 8px; margin-bottom: 12px; }
+        .section ul { list-style: none; }
+        .section ul li {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 8px;
+            line-height: 1.55;
+        }
+        .section ul li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.95em;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        table tr:hover { background: #f1f3ff; }
+        .callout {
+            background: #e8eaf6;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 14px 0;
+        }
+        .warn {
+            background: #fff4e5;
+            border-left: 4px solid #e67e22;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 14px 0;
+        }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #764ba2;
+            margin: 16px 0 6px;
+        }
+        pre {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 16px 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82em;
+            line-height: 1.5;
+            margin: 12px 0;
+            white-space: pre-wrap;
+        }
+        .mermaid { display: flex; justify-content: center; margin: 18px 0; }
+        @media (max-width: 768px) {
+            .content { padding: 20px; }
+            .header h1 { font-size: 1.7em; }
+        }
+    </style>
+    <link rel="stylesheet" href="../topic-progress.css">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>Forward Deployed Engineer</h1>
+                <p>Foundations of coding assistants — context, configuration, MCP, workflows, and safe shipping</p>
+                <span class="date-badge">20 Aug 2026</span>
+            </div>
+            <div class="content">
+                <div class="toc">
+                    <h3>On this page</h3>
+                    <ol>
+                        <li><a href="#intro">Introduction &amp; outcomes</a></li>
+                        <li><a href="#foundations">AI coding assistant foundations</a></li>
+                        <li><a href="#modes">Four interaction modes</a></li>
+                        <li><a href="#context">Context engineering</a></li>
+                        <li><a href="#mode-context">Modes have different contexts</a></li>
+                        <li><a href="#config">Configuration standards</a></li>
+                        <li><a href="#mcp">Model Context Protocol (MCP)</a></li>
+                        <li><a href="#workflows">Practical workflows</a></li>
+                        <li><a href="#advanced">Advanced workflows — tests, review, modernization</a></li>
+                        <li><a href="#features">Assistant features &amp; surfaces</a></li>
+                        <li><a href="#close">Final review &amp; what to do Monday</a></li>
+                    </ol>
+                </div>
+
+                <!-- 1 -->
+                <div class="section" id="intro">
+                    <h2>Introduction &amp; outcomes</h2>
+                    <p>AI agents will become a primary way we interact with computers — understanding needs and preferences, and helping with tasks and decisions. Forward deployed work means shipping those capabilities inside a customer’s real environment: right mode, right context, hard boundaries, and a human as the merge gate.</p>
+                    <p>After this material you should be able to:</p>
+                    <ul>
+                        <li>Select the right interaction mode for any task.</li>
+                        <li>Apply context engineering to produce consistent, reviewable output.</li>
+                        <li>Configure behavior with custom instructions, <code>AGENTS.md</code>, and related files.</li>
+                        <li>Extend the assistant with MCP tools, extensions, agent skills, prompt files, and custom agents.</li>
+                        <li>Integrate a CLI assistant into CI/CD with access controls and approval gates.</li>
+                    </ul>
+                    <h3>Agenda map</h3>
+                    <table>
+                        <thead><tr><th>Topic</th><th>Focus</th></tr></thead>
+                        <tbody>
+                            <tr><td>Foundations</td><td>How coding agents work under the hood, where they fail, how to collaborate safely across modes.</td></tr>
+                            <tr><td>Context engineering</td><td>Structured prompting and mode-appropriate context — what each mode sees, and how to make sure it sees the right things.</td></tr>
+                            <tr><td>Configuration standards</td><td>Custom instructions, <code>AGENTS.md</code>, content exclusion — predictability, safety, team alignment.</td></tr>
+                            <tr><td>MCP</td><td>External tools and data through a standardized, permission-aware protocol; how to design and secure what you expose.</td></tr>
+                            <tr><td>Practical workflows</td><td>Scaffolding, debugging, refactoring, test suites, CI/CD — assistant as collaborator.</td></tr>
+                            <tr><td>Feature survey</td><td>Chat, slash commands, agent skills, hooks, custom agents, CLI, coding agent, MCP, extensions, instructions hierarchy; optional non-interactive pipeline mode with security gates.</td></tr>
+                            <tr><td>Close</td><td>Recap mapped to objectives, concrete next steps for adoption.</td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Thoughts to get started</h3>
+                    <ul>
+                        <li>Think about a task from this week that took longer than it should have. Which part could an assistant have handled, and which part would you still want to do yourself?</li>
+                        <li>What is your biggest concern about letting an assistant change production code — correctness, security posture, team trust, or something else?</li>
+                        <li>How does your team enforce code quality today? Where are the gaps an assistant could fill, and where would you want a human firmly in the loop?</li>
+                    </ul>
+                </div>
+
+                <!-- 2 -->
+                <div class="section" id="foundations">
+                    <h2>AI coding assistant foundations</h2>
+                    <p>Objectives: describe architecture and components; explain context windows and token limits; apply plan → execute → iterate; evaluate output for correctness, safety, and quality; assess permission boundaries and responsible use.</p>
+                    <h3>Overview</h3>
+                    <ul>
+                        <li>How assistants work: architecture, LLMs, and context windows</li>
+                        <li>Plan–execute–iterate for multi-step coding tasks</li>
+                        <li>Evaluating output: correctness, safety, hallucination detection</li>
+                        <li>Permission boundaries and responsible use</li>
+                        <li>Autonomous operations: file, terminal, and Git actions</li>
+                        <li>Reviewing and accepting generated changes</li>
+                    </ul>
+
+                    <h3>What are AI coding assistants?</h3>
+                    <p>LLM-powered tools embedded in your editor that understand code structure, not just syntax:</p>
+                    <ul>
+                        <li><strong>Reasoning engines</strong> — they analyze intent, not just patterns</li>
+                        <li><strong>Context-aware</strong> — they read open files, imports, and project structure</li>
+                        <li><strong>Multi-modal</strong> — generation, refactoring, debugging, documentation, and review in one tool</li>
+                        <li><strong>Iterative</strong> — they improve through conversation, not only single-shot completion</li>
+                    </ul>
+                    <p>They generate code, explain or improve existing code, help with debugging, produce documentation, and build small multi-file structures. Quality depends entirely on the instructions you provide — vague prompts produce vague code.</p>
+
+                    <h4>Architecture &amp; components</h4>
+                    <table>
+                        <thead><tr><th>Component</th><th>Role</th></tr></thead>
+                        <tbody>
+                            <tr><td>LLM</td><td>Reasoning and generation — processes tokens, produces output</td></tr>
+                            <tr><td>Context manager</td><td>Determines what information the model sees for each request</td></tr>
+                            <tr><td>Tooling layer</td><td>File access, terminal commands, Git operations</td></tr>
+                            <tr><td>Safety &amp; guardrails</td><td>Prevent harmful or unsafe actions</td></tr>
+                            <tr><td>IDE / surface integration</td><td>Extension, CLI, or standalone IDE you interact with</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Every assistant packages these five components differently. The integration model determines what the assistant can see and do.</p>
+
+                    <h4>Integration models</h4>
+                    <table>
+                        <thead><tr><th>Model</th><th>What it means</th></tr></thead>
+                        <tbody>
+                            <tr><td>IDE extension</td><td>Adds chat and inline suggestions to an existing editor. Operates in the editor sandbox; needs explicit permissions for terminal or Git.</td></tr>
+                            <tr><td>Standalone CLI</td><td>Runs in the terminal, reading and writing files directly. Often has full filesystem and terminal access by default.</td></tr>
+                            <tr><td>Standalone IDE</td><td>Replaces the editor — assistant wired into every surface.</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Autonomy levels</h4>
+                    <ul>
+                        <li><strong>Level 0 — Passive:</strong> autocomplete, inline suggestions</li>
+                        <li><strong>Level 1 — Reactive:</strong> responds to prompts, no independent action</li>
+                        <li><strong>Level 2 — Guided autonomy:</strong> executes steps when instructed (run tests, modify files)</li>
+                        <li><strong>Level 3 — Semi-autonomous:</strong> plans and executes multi-step tasks with oversight</li>
+                        <li><strong>Level 4 — Fully autonomous (emerging):</strong> end-to-end feature delivery with human approval at checkpoints</li>
+                    </ul>
+                    <p>Most tools operate across several levels depending on mode. Inline completions are Level 0. Chat is Level 1. Permission to run commands or edit files is Level 2. Agent / composer modes operate at Level 3. Match autonomy to risk: autocomplete for small edits; agent mode for larger refactors with review at each step.</p>
+
+                    <h3>How assistants process input</h3>
+                    <p>The input pipeline:</p>
+                    <ul>
+                        <li>User prompt</li>
+                        <li>Context assembly (files, codebase, history)</li>
+                        <li>Tokenization</li>
+                        <li>Model inference</li>
+                        <li>Output tokens generated</li>
+                        <li>Optional assistant actions (file edits, commands)</li>
+                    </ul>
+                    <p>Assistants do not “think” — they process text in steps. Everything is broken into tokens; the model predicts the best output one token at a time. Every step is mechanical. There is no understanding — pattern matching over tokens. The better your input, the better the patterns matched.</p>
+
+                    <h4>Context windows</h4>
+                    <p>The assistant can only see what fits in its context window — the maximum text the model can process at once. That includes your prompt, file contents, conversation history, and system instructions.</p>
+                    <ul>
+                        <li>A 128K token window holds roughly 400 pages of text — about 50 source files of 200 lines each.</li>
+                        <li>A 10-turn conversation with file references can consume 30–40% of that budget before you ask your question.</li>
+                    </ul>
+                    <p>Bigger window ≠ better reasoning — but it determines how much of your codebase the assistant can work with at once. Focused prompts beat long rambling conversations. Every token wasted on vague context is a token not spent on your actual codebase.</p>
+
+                    <h4>Token limits</h4>
+                    <ul>
+                        <li>1 token ≈ 3–4 characters</li>
+                        <li>Models have strict token limits</li>
+                        <li>If you exceed the limit: truncate, compress context, or refuse the request</li>
+                    </ul>
+                    <p>When you hit the limit, the assistant is flying blind on whatever it dropped. Keep prompts focused and reference only the files that matter for the current task.</p>
+
+                    <h4>Truncation &amp; compression</h4>
+                    <p><strong>Truncation</strong> drops oldest or least relevant content — risk: missing important details. <strong>Compression</strong> summarizes to fit — risk: losing nuance. Your job: provide explicit references to the files or details that matter. If earlier content is removed or compressed you get missing details, incorrect assumptions, and hallucinations.</p>
+                    <div class="warn">If you are several turns in and the assistant starts making mistakes it did not make earlier, context compression is likely the cause. Start a fresh conversation and re-attach the relevant files.</div>
+
+                    <h3>The plan → execute → iterate cycle</h3>
+                    <p>The most reliable workflow for multi-step tasks:</p>
+                    <ul>
+                        <li><strong>Plan</strong> — ask the assistant to outline steps before writing code</li>
+                        <li><strong>Execute</strong> — have it perform one step at a time</li>
+                        <li><strong>Iterate</strong> — review output, refine the prompt, repeat</li>
+                    </ul>
+                    <p>Prevents runaway actions and keeps the developer in control. You catch mistakes at each step instead of after half the file is rewritten.</p>
+                    <p class="code-label">In practice</p>
+<pre>Plan: I need to add input validation to checkout in src/cart/checkout.ts.
+Before writing any code, outline what validations are needed and where each check should go.
+
+Execute: Implement the null cart check from step 1.
+Use an early return that throws InvalidCartError. Don't change anything else yet.
+
+Iterate: The null check works, but it doesn't handle an empty items array.
+Add that case to the same guard clause. Keep the error type consistent.</pre>
+                    <ul>
+                        <li>Plan forces reasoning before coding — you review the plan, not the code.</li>
+                        <li>Execute limits blast radius — one change, one review.</li>
+                        <li>Iterate builds on real output, not guesses.</li>
+                    </ul>
+                    <p>The plan prompt says “before writing any code” on purpose. Jumping to “add validation” writes code immediately and you lose the chance to shape the approach. The execute prompt names the check, the error type, and “don’t change anything else.” Without that, the assistant may “helpfully” refactor nearby code.</p>
+
+                    <h4>Why explicit planning?</h4>
+                    <ul>
+                        <li>They don’t know your intent unless you state it</li>
+                        <li>They can hallucinate missing steps</li>
+                        <li>They may take shortcuts</li>
+                        <li>They benefit from structured constraints</li>
+                    </ul>
+                    <p>Planning makes the workflow predictable and safe. Every major tool surfaces its plan before executing — learn what your tool does by default, and prompt for a plan explicitly when it does not. Some tools show a high-level summary for whole approval; others show file-level diffs to accept or reject individually.</p>
+
+                    <h4>Breaking tasks into steps</h4>
+                    <p>Instead of “Build a login system,” break into: define requirements and constraints → generate folder structure → implement authentication → add tests per module → integrate with existing code.</p>
+                    <div class="callout">If reviewing a single step takes more than a minute, the step was too big. Good steps have clear boundaries, single responsibility, observable outputs, and opportunities for review.</div>
+
+                    <h3>Autonomous operations</h3>
+                    <p>Assistants can perform file, terminal, and Git operations. Autonomy levels vary. Always review and validate. You are the final gatekeeper. The more access an assistant has, the more damage a bad prompt can cause — treat autonomous ops the way you treat production deployments.</p>
+                    <h4>File operations</h4>
+                    <p>Read, create, modify, delete. Follow user instructions. Apply patches. Require clear paths, formats, and expected outcomes. Ambiguity leads to incorrect file changes. Before accepting any file change, name the exact file and ask for the diff. If you cannot tell what changed by reading the diff, the change is not ready to accept.</p>
+                    <h4>Terminal operations</h4>
+                    <p>Capabilities: run commands, interpret output, propose next steps, automate repetitive workflows, surface logs and errors. Constraints: assistants only “see” command output; they cannot infer environment state; they may hallucinate commands if the toolchain is unspecified. State the toolchain explicitly — “use pytest, not unittest” or “use npm, not yarn.”</p>
+                    <h4>Git operations</h4>
+                    <p>Stage and commit, generate commit messages, create branches, propose diffs and rewrites, review before applying. Treat every assistant-generated commit the way you would treat a pull request from a new team member: read every line before you merge it.</p>
+
+                    <h3>Reviewing &amp; accepting changes</h3>
+                    <ul>
+                        <li>Inspect diffs line by line</li>
+                        <li>Validate alignment with the request</li>
+                        <li>Check for unintended side effects</li>
+                        <li>Ensure naming, structure, and style consistency</li>
+                        <li>Confirm no functionality was removed unintentionally</li>
+                    </ul>
+                    <p>Common silent extras: a dynamic tax-rate lookup replaced with a hardcoded rate; a loyalty discount deleted; a cache dependency added to a simple database query without being asked. Also check whether the diff introduces dependencies or behaviors you did not request. After reviewing what changed, explicitly scan for what was removed.</p>
+                    <h4>Review checklist</h4>
+                    <ul>
+                        <li>Does the diff match what you asked for — and only that?</li>
+                        <li>Were any function calls removed or replaced?</li>
+                        <li>Are there hardcoded values that should be dynamic?</li>
+                        <li>Does the style match the rest of the project?</li>
+                        <li>Did variable names or return types change?</li>
+                    </ul>
+
+                    <h4>Identifying &amp; detecting hallucinations</h4>
+                    <p>Common patterns: nonexistent functions or methods; wrong API signatures; fabricated file paths; outdated imports that compile against the wrong library major (for example persistence packages renamed between EE generations). Hallucinations look most dangerous when they compile successfully — a wrong import can pass syntax checks and fail at runtime.</p>
+                    <p>They are not random gibberish — plausible-looking code that happens to be wrong. When something looks too clean, verify it. Ask whether that import works with your exact framework version. A good assistant corrects itself; a hallucinating one doubles down.</p>
+                    <ul>
+                        <li>Cross-check against the codebase and library documentation</li>
+                        <li>Ask for file or line references — if it cannot cite them, that is a red flag</li>
+                        <li>Request self-critique — many assistants catch their own mistakes when prompted</li>
+                        <li>Run the build and tests to validate assumptions</li>
+                    </ul>
+                    <p>Hallucinations cluster around version-sensitive APIs, recently renamed packages, and framework features that changed between major releases. The training data includes all versions, so the model may confidently generate code for the wrong one.</p>
+
+                    <h4>Ensuring correctness</h4>
+                    <ul>
+                        <li>Ask for step-by-step reasoning</li>
+                        <li>Request test cases or edge-case analysis</li>
+                        <li>Compare multiple versions</li>
+                        <li>Use self-critique prompts</li>
+                        <li>Run the code and inspect logs</li>
+                    </ul>
+                    <p>Correctness is never assumed — it is verified. The first answer is a draft, not a deliverable.</p>
+
+                    <h4>Security considerations</h4>
+                    <p>Risks in AI-generated code: hard-coded secrets; overly permissive IAM roles; unsafe input handling; incorrect trust assumptions; insecure defaults.</p>
+                    <p>Best practices: specify security constraints explicitly; ask assistants to justify security decisions; request a security review of generated code. State security constraints in every prompt — the assistant does not inherit your organization’s security policies. Add “use least-privilege IAM” and “validate all inputs” as part of the specification, not as afterthoughts.</p>
+
+                    <div class="callout">
+                        <strong>Foundations recap:</strong> LLM + context manager + tooling + safety + IDE surface. 128K tokens ≈ 400 pages ≈ 50 files; conversation history shares the budget. Plan → execute → iterate, one step at a time. Cross-check against the codebase; ask for citations. File, terminal, Git access — always review first.
+                    </div>
+                    <h4>Reflection</h4>
+                    <ul>
+                        <li>How do the five components affect what the assistant can and cannot do?</li>
+                        <li>How does understanding context windows change the way you structure prompts?</li>
+                        <li>When you apply plan → execute → iterate, what signals tell you a step was scoped too broadly?</li>
+                        <li>What strategies will you use to detect hallucinations?</li>
+                        <li>When should you trust output — and when should you verify it manually?</li>
+                    </ul>
+                </div>
+
+                <!-- 3 -->
+                <div class="section" id="modes">
+                    <h2>Four interaction modes</h2>
+                    <p>One model with many surfaces. The mode you pick sets the supervision level.</p>
+                    <table>
+                        <thead><tr><th>Mode</th><th>What it is</th></tr></thead>
+                        <tbody>
+                            <tr><td>Inline completions (and next-edit suggestions)</td><td>Keystroke-level autocomplete using the current file, cursor, and open tabs. Lowest supervision; review every accept in unfamiliar code.</td></tr>
+                            <tr><td>Ask mode</td><td>Conversational, read-only chat. Panel chat persists across turns for multi-file thinking; inline chat (Ctrl+I / Cmd+I) is local to a selection. Use it to think, not to change.</td></tr>
+                            <tr><td>Agent mode</td><td>Autonomous execution in the IDE — reads files, runs commands, iterates on test failures. Agent logs are your supervision surface; review the diff before accepting.</td></tr>
+                            <tr><td>Plan mode</td><td>Produces a written, reviewable plan before any code is written. It asks clarifying questions, then you approve. The plan agent saves the plan to a markdown file (<code>plan.md</code> in session memory; <code>*.plan.md</code> for custom planning agents). “Start implementation” hands it to agent mode. Correcting a plan costs one prompt; correcting wrong code costs a revert.</td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Choosing a mode</h3>
+                    <table>
+                        <thead><tr><th>If the task is…</th><th>Use…</th><th>Because…</th></tr></thead>
+                        <tbody>
+                            <tr><td>A single line or obvious completion</td><td>Inline completions</td><td>Cheapest surface, lowest friction</td></tr>
+                            <tr><td>A question about code you did not write</td><td>Ask (chat panel)</td><td>Conversation history and workspace context help you think</td></tr>
+                            <tr><td>A quick explanation of the block you are looking at</td><td>Ask (inline chat)</td><td>Keeps the question local, no panel context to manage</td></tr>
+                            <tr><td>A small, well-understood change</td><td>Agent mode (single turn)</td><td>Executes and shows a diff; cheap to review, cheap to revert</td></tr>
+                            <tr><td>A multi-step task where the shape is less clear</td><td>Plan mode → agent mode</td><td>Plan catches misunderstandings cheaply; agent logs and diffs keep you in control</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 4 -->
+                <div class="section" id="context">
+                    <h2>Context engineering</h2>
+                    <p>Objectives: explain how context influences output; apply context management; select reference systems (files, codebase, docs); construct prompts with structured techniques; distinguish prompting techniques from built-in extended thinking modes.</p>
+                    <h3>Overview</h3>
+                    <ul>
+                        <li>What context is and why it determines whether output is accurate or hallucinated</li>
+                        <li>How to scope, ground, and reduce noise</li>
+                        <li>Which reference systems to attach — files, codebase, documentation, and web — and when each is appropriate</li>
+                        <li>Zero-shot, few-shot, and structured prompting for reliable, reproducible results</li>
+                        <li>How prompt-driven reasoning differs from built-in extended thinking, and when to use each</li>
+                    </ul>
+
+                    <h3>What is context?</h3>
+                    <ul>
+                        <li>Everything the assistant uses to interpret your request</li>
+                        <li>Reusable prompts (instructions, rules) set standing behavior</li>
+                        <li>Context interfaces (tools, MCP, file references) connect to live artifacts</li>
+                        <li>Workspace files (code, configs, docs) supply the material reasoned over</li>
+                    </ul>
+                    <p>Together these determine how the assistant frames the problem. When a response hallucinates an API or invents a function signature, the root cause is almost always missing context — the assistant filled the gap with plausible fiction.</p>
+
+                    <h4>Types of context</h4>
+                    <ul>
+                        <li><strong>Instructional</strong> — shapes what the assistant does; write instructions it can follow literally</li>
+                        <li><strong>Reference</strong> — grounds in real artifacts; attach files, codebase, or docs to eliminate guesswork</li>
+                        <li><strong>Conversational</strong> — carries prior decisions; restate constraints that must survive across turns</li>
+                        <li><strong>Environmental</strong> — exposes tools and repository state the assistant can act on</li>
+                    </ul>
+                    <p>Context can be LLM-initiated (the assistant searches), human-initiated (you attach a file), or loaded by agent software (configuration files, MCP servers). Knowing which type helps you decide where to invest effort. Most developers default to instructional context only. Real gains come from combining all four.</p>
+
+                    <h4>Why context matters</h4>
+                    <p>Most assistant failures trace back to missing or vague context.</p>
+                    <p class="code-label">Weak vs strong</p>
+<pre>Weak: Fix the bug in the login function.
+
+Strong: The login function in auth/login.ts returns 200 even when
+bcrypt.compare resolves to false on line 42. The response sends before
+the await completes. Fix the race condition.</pre>
+                    <div class="callout">Start every prompt by attaching the file you want changed — the rest of the context flows from there. When the assistant invents an API or misses the bug, ask first: “Did I give it enough to work with?”</div>
+
+                    <h3>Prompting techniques</h3>
+                    <ul>
+                        <li><strong>Zero-shot</strong> — simple, unambiguous tasks where expected output is obvious</li>
+                        <li><strong>Few-shot</strong> — 2–3 examples so the assistant imitates format and style</li>
+                        <li><strong>Structured prompting</strong> — step-by-step workflow instructions for complex tasks</li>
+                        <li><strong>Reference-based</strong> — attach files, code, or docs</li>
+                        <li><strong>Stepwise</strong> — break large tasks into atomic requests</li>
+                    </ul>
+                    <p>Match the technique to the task. A simple rename is zero-shot. A multi-file refactor with strict formatting needs few-shot examples and file references.</p>
+                    <h4>Zero-shot</h4>
+                    <p>No examples. Assistant infers structure from the request. Best for simple, well-defined tasks.</p>
+<pre>Add a validate_email function to utils/validators.py that returns True
+if the input matches RFC 5322. Use the re module. Return a bool.</pre>
+                    <h4>Few-shot</h4>
+                    <p>Provide examples of desired behavior. Useful for formatting, style, or domain-specific tasks. Two or three examples are usually enough.</p>
+<pre>Convert these to snake_case:
+- getUserName → get_user_name
+- setPageTitle → set_page_title
+- fetchOrderById → ?
+
+Generate docstrings following this pattern:
+Example input: def add(a, b): return a + b
+Example output: """Add two numbers..."""
+Now generate a docstring for: def calculate_discount(price, rate):</pre>
+
+                    <h3>Reference systems</h3>
+                    <p>Assistants can read and reason over files, codebases, documentation, and web content (when allowed). Attaching real artifacts is the fastest way to eliminate hallucinations.</p>
+                    <h4>Attach a file</h4>
+                    <p>Most precise grounding. Use for bug fixes, refactoring, documentation. Without it, the assistant guesses signatures, names, and imports.</p>
+                    <h4>Search the codebase</h4>
+                    <p>Use for architecture summaries, dependency tracing, multi-file changes. Some tools need an explicit keyword (<code>@workspace</code>, <code>#codebase</code>); agent tools may search automatically.</p>
+                    <h4>Attach documentation</h4>
+                    <p>Use for API alignment, requirements, constraints. Without a spec, the assistant invents endpoints, field names, and status codes.</p>
+                    <h4>Fetch web content</h4>
+                    <p>Use for library docs, standards, examples that post-date training data. Be selective — a focused SDK reference works; a sprawling tutorial site introduces noise. Not every product supports fetch.</p>
+
+                    <h3>Reasoning techniques</h3>
+                    <p>Two categories:</p>
+                    <ul>
+                        <li><strong>Prompting techniques</strong> — you guide reasoning (chain of thought, deliberate reasoning). Universal.</li>
+                        <li><strong>Extended thinking</strong> — architectural features built into some agents that enable a deeper pass before responding. Tool-specific; costs extra time.</li>
+                    </ul>
+                    <h4>Chain of thought</h4>
+                    <p>Step-by-step reasoning. Useful for logic, algorithms, debugging. Reveals hidden assumptions. Ask the assistant to walk each branch and show where a return is missing.</p>
+                    <h4>Deliberate reasoning</h4>
+                    <p>Ask for multiple candidate solutions, compare (latency, invalidation, cost), choose the best. The first solution is rarely the best — alternatives force tradeoffs the model would otherwise skip.</p>
+                    <h4>Risks and verification</h4>
+                    <ul>
+                        <li>Reasoning steps can be fluent but wrong — verify each step against the actual code</li>
+                        <li>A hallucinated logic chain reads authoritatively even when it rests on a false premise (e.g. assuming sync when it returns a Promise)</li>
+                        <li>Compressed history causes misinterpretation of earlier constraints</li>
+                        <li>Hidden assumptions get stated as facts — name the failure modes you care about</li>
+                    </ul>
+                    <div class="warn">Never trust a reasoning chain at face value — always verify each step against the actual code.</div>
+
+                    <h3>Self-critique</h3>
+                    <p>Asking the assistant to critique its own output surfaces mistakes it would otherwise ship. Naming specific failure modes (size limits, path traversal, timeout behavior) gets actionable findings — a generic “any issues?” does not.</p>
+<pre>Review the upload handler you just wrote.
+Check for: missing file size limits, path traversal in the filename,
+and what happens if object storage returns a 503.</pre>
+
+                    <h3>Memory &amp; persistence</h3>
+                    <p>What gets lost: the schema you described 30 messages ago; the constraint that the API must stay backward-compatible; the specific error from your last test run.</p>
+                    <p>How to prevent it: restate constraints in each new prompt; re-attach key files instead of relying on history; keep conversations focused — start a new session for a new task; use configuration files for persistent project rules.</p>
+                    <div class="callout">Start a new session for each new task — stale context from a previous task is the most common source of silent drift. Assistants have no long-term memory. Do not trust the assistant to remember.</div>
+
+                    <div class="callout">
+                        <strong>Context recap:</strong> Context determines output quality. Zero-shot and few-shot fit different complexities. Chain-of-thought and extended thinking are distinct. Reference systems ground responses. Always validate — think in probabilities, not guarantees.
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div class="section" id="mode-context">
+                    <h2>Modes have different contexts</h2>
+                    <p>There is no single context model. What the assistant sees depends on the mode you pick. Effective prompting is knowing which sources are active right now and putting the right things in them.</p>
+                    <table>
+                        <thead><tr><th>Mode</th><th>Context sources</th><th>Who chooses them</th></tr></thead>
+                        <tbody>
+                            <tr><td>Inline completions</td><td>Current file, cursor, surrounding code, open tabs, imports</td><td>Mostly implicit (what you have open)</td></tr>
+                            <tr><td>Ask mode</td><td>Prompt, conversation history, attached files, codebase when invoked</td><td>You (explicit opt-in)</td></tr>
+                            <tr><td>Agent mode (IDE)</td><td>Autonomous file reads, terminal output, compiler/linter feedback, anything you attach</td><td>Mostly the agent (your goal as the anchor)</td></tr>
+                            <tr><td>Cloud coding agent</td><td>Repository index, instruction files, MCP-connected sources, cross-session memory</td><td>Repository + platform configuration</td></tr>
+                        </tbody>
+                    </table>
+                    <h3>Debugging a disappointing output</h3>
+                    <p>When the assistant misses, identify which row of the table you were in and ask whether those sources actually contained what was needed.</p>
+                    <ul>
+                        <li><strong>Ask:</strong> context quality is your responsibility. Wrong or shallow answers usually mean the relevant code, file, or constraint was never in the prompt — adding it is the fix.</li>
+                        <li><strong>Agent:</strong> the agent chooses most of what it reads, but your goal and starting workspace state anchor everything. If it drifted, revisit how you framed the goal, then check agent logs for which files it read before each change.</li>
+                        <li><strong>Inline:</strong> context is almost entirely implicit. Close unrelated tabs and keep the relevant file in focus.</li>
+                    </ul>
+                </div>
+
+                <!-- 6 -->
+                <div class="section" id="config">
+                    <h2>Configuration standards</h2>
+                    <p>Objectives: differentiate configuration hierarchy levels and behavioral files; create project-level configs that encode team norms; apply file exclusion; design safe, predictable assistant behavior.</p>
+                    <h3>Why configuration matters</h3>
+                    <p>Configuration files define how an assistant is allowed to act inside a project. They create a shared understanding of boundaries, tone, and responsibilities. Think of configuration as infrastructure — it sits alongside source files in version control. Every developer who clones the repository inherits the same behavioral contract.</p>
+                    <ul>
+                        <li><strong>Predictability</strong> — two developers asking the same question get equivalent output</li>
+                        <li><strong>Safety</strong> — the assistant is blocked from deleting migration files even when explicitly asked</li>
+                        <li><strong>Reproducibility</strong> — a new team member gets identical assistant behavior from day one</li>
+                    </ul>
+                    <p>Without these files, every developer gets a slightly different assistant — different tone, assumptions, and risk tolerance. Configuration eliminates that drift. Diff it in pull requests; roll it back if something breaks.</p>
+
+                    <h3>Common configuration files</h3>
+                    <ul>
+                        <li><strong>Behavioral configs</strong> — define persona, tone, and hard boundaries for a project</li>
+                        <li><strong>Multi-agent configs</strong> (e.g. <code>AGENTS.md</code> style) — assign distinct roles and responsibilities</li>
+                        <li>Project-level path constraints; operation allowlists and denylists</li>
+                    </ul>
+                    <p>These files outlast any single prompt or chat session. Once committed, they govern every future interaction in that project.</p>
+                    <h4>Behavioral configuration</h4>
+                    <p>Different tools, same concept — a file in the repository that defines persona, constraints, and allowed operations. Typical location patterns: project root instruction files, editor rule files, or a dedicated instructions folder in the repo. Content includes tone, role and expectations, allowed vs disallowed actions, safety constraints, communication style. Treat it as the assistant’s job description.</p>
+<pre># Project: payments-api
+You are a backend developer working on a Python FastAPI service.
+Use snake_case for all functions. Follow PEP 8.
+Never modify files in the /migrations directory.
+Always include type hints on function signatures.
+Run pytest before suggesting a commit.</pre>
+                    <h4>Multi-agent configuration</h4>
+                    <p>Define multiple roles, each with boundaries: developer (writes), reviewer (critiques, may not edit), tester, architect. Separation of concerns: a reviewer that cannot edit produces more honest reviews. When each agent has a well-defined role and hard boundaries, the system behaves more like a real team.</p>
+
+                    <h3>Advanced patterns &amp; safety constraints</h3>
+                    <p>Basic configuration tells the assistant how to behave. Advanced patterns tell it what not to touch and how to fail safely: safety constraints, file exclusion, least privilege.</p>
+                    <ul>
+                        <li>Restrict dangerous operations</li>
+                        <li>Enforce least-privilege behavior</li>
+                        <li>Prevent unintended file writes</li>
+                        <li>Limit scope of autonomous actions</li>
+                    </ul>
+                    <p>When a constraint fires: complete the safe portion, explain why it stopped. Partial completion with transparency — not silent failure or blind obedience.</p>
+                    <div class="callout">Write safety constraints as “never” rules — harder for the assistant to rationalize away than “avoid” or “prefer not to.”</div>
+
+                    <h3>File exclusion strategies</h3>
+                    <p>Exclusion patterns keep the assistant focused on source code and away from noise. Use gitignore-style syntax.</p>
+                    <ul>
+                        <li><strong>Build artifacts</strong> — <code>node_modules/</code>, <code>dist/</code>, <code>bin/</code>, <code>target/</code> — large and irrelevant</li>
+                        <li><strong>Secrets</strong> — <code>.env</code>, API keys, credential files, tokens — must never appear in assistant context</li>
+                        <li><strong>Generated output</strong> — coverage, caches — adds noise, no value</li>
+                    </ul>
+                    <div class="warn">Secret exclusion is a security requirement, not a convenience — if the assistant can read a <code>.env</code> file, it can echo credentials in a suggestion.</div>
+                    <p>Encode the decision in configuration so it applies to every developer on the team.</p>
+                </div>
+
+                <!-- 7 -->
+                <div class="section" id="mcp">
+                    <h2>Model Context Protocol (MCP)</h2>
+                    <p>Objectives: describe MCP architecture and purpose; explain tools, resources, and prompts; identify security and permission considerations; evaluate when MCP is appropriate.</p>
+                    <h3>What is MCP?</h3>
+                    <p>A standard protocol for connecting AI assistants to external tools. It defines how assistants discover and use capabilities and enables structured, predictable interactions — discovery, invocation, response handling, and error reporting.</p>
+                    <h4>The problem: fragmentation</h4>
+                    <p>Before MCP, every assistant–tool integration was a one-off: custom plugins, bespoke APIs, one-off scripts. Adding a new tool meant separate glue for each assistant. No shared schema for tool definitions, errors, or request formats. Debugging meant reverse-engineering each integration. MCP eliminates this with one schema, one request/response format, one error approach.</p>
+                    <h4>What MCP enables</h4>
+                    <ul>
+                        <li>Write a tool server once; use it from any MCP-compatible assistant</li>
+                        <li>Common JSON Schema for tool definitions, inputs, and errors</li>
+                        <li>Swap assistants without rewriting integrations</li>
+                        <li>Predictable debugging: inspect a standard request/response pair</li>
+                    </ul>
+
+                    <h3>MCP architecture</h3>
+                    <div class="mermaid">
+flowchart LR
+  Dev[Developer] --> Host[Host app]
+  Host --> Client[MCP client]
+  Client --> Srv[MCP server]
+  Srv --> Tools[Tools]
+  Srv --> Res[Resources]
+  Srv --> Prompts[Prompts]
+                    </div>
+                    <ul>
+                        <li><strong>Client</strong> — the assistant or host that discovers and invokes capabilities</li>
+                        <li><strong>MCP server</strong> — declares tools, resources, and prompts; runs as trusted code</li>
+                        <li><strong>Tools</strong> — actions (API calls, queries, file operations)</li>
+                        <li><strong>Resources</strong> — read-only context (files, docs, config)</li>
+                        <li><strong>Prompts</strong> — predefined templates for consistent workflows</li>
+                    </ul>
+                    <p>The server declares what is available; the host decides what to allow. MCP servers run with OS-level permissions — not sandboxed by the protocol. Confusing those two is the most common MCP security mistake.</p>
+                    <h4>Configuring a server</h4>
+                    <p>Each host uses its own config file. Typical pattern: a <code>command</code> executable plus <code>args</code>; the host starts the server, connects over stdio, and discovers tools. The server binary is the same regardless of which host launches it — only the config format differs.</p>
+                    <h4>What a tool declaration looks like</h4>
+<pre>{
+  "name": "query_database",
+  "description": "Run a read-only SQL query",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": { "type": "string" },
+      "database": { "type": "string" }
+    },
+    "required": ["query", "database"]
+  }
+}</pre>
+                    <p>The model reads <code>description</code> to decide when to call the tool. Clear, specific descriptions improve tool-selection accuracy. <code>inputSchema</code> uses JSON Schema so inputs can be validated before the call.</p>
+
+                    <h3>Security, permissions &amp; observability</h3>
+                    <ul>
+                        <li><strong>Protocol</strong> — message formats and tool declarations; no built-in auth, encryption, or sandboxing</li>
+                        <li><strong>Server</strong> — declares tools; runs as trusted code with OS permissions</li>
+                        <li><strong>Host</strong> — enforces permission boundaries, controls invocation, implements human-in-the-loop approval</li>
+                    </ul>
+                    <div class="warn">The protocol moves messages — the host decides whether those messages should be allowed to execute. Never treat MCP itself as a security layer.</div>
+                    <p><strong>Least privilege:</strong> grant only the minimum required capabilities; avoid broad unrestricted tools; reduce blast radius; improve auditability. A database server that only needs schemas should not expose “run arbitrary SQL.”</p>
+                    <p>Defense in depth example: developer asks to drop a table → server only exposes read-only tools → assistant cannot comply because no destructive tool exists → even if a drop tool were added later, the host would show a permission prompt. Both layers would have to fail for data loss.</p>
+                    <p><strong>Observability:</strong> log tool usage; keep traceability of assistant actions; support audits and debugging. In regulated environments, answering “which tool, with what inputs, what came back?” is not optional.</p>
+
+                    <h3>When to use MCP</h3>
+                    <div class="callout">If you are copy-pasting the same external data into assistant conversations repeatedly, that is the workflow MCP was designed to replace.</div>
+                    <p><strong>Use when:</strong> live external data (databases, APIs, cloud resources); same tool across multiple assistants; safety, permissions, and audit trails matter; reproducibility across users and environments.</p>
+                    <p><strong>Skip when:</strong> simple prompt with no external tooling; built-in features already cover it; you only need file context (use file references instead).</p>
+                    <h4>Real-world scenarios</h4>
+                    <ul>
+                        <li>Documentation grounding — index API docs so generated code matches real endpoints</li>
+                        <li>Database access — read-only schema and sample queries without write access</li>
+                        <li>CI/CD integration — retrieve build logs and test results to diagnose failures</li>
+                        <li>Cloud resource queries — read resource metadata for infrastructure-aware generation</li>
+                    </ul>
+                    <h4>Invocation flow</h4>
+                    <p>Developer asks a natural-language question → model selects a tool → host shows a permission prompt → server executes and returns results → assistant may chain additional calls → compose the answer. Assistants rarely answer complex questions with a single invocation — they iterate.</p>
+                    <h4>Notable server types</h4>
+                    <ul>
+                        <li>Version-specific library documentation (reduces hallucinated APIs)</li>
+                        <li>Repository / issues / pull-request access</li>
+                        <li>Scoped filesystem with configurable read/write boundaries</li>
+                        <li>Read-only SQL databases for schema exploration</li>
+                        <li>Browser automation for UI testing and scraping workflows</li>
+                    </ul>
+                    <p>Before building a custom server, check the ecosystem — most common needs already have maintained servers ready to configure.</p>
+                </div>
+
+                <!-- 8 -->
+                <div class="section" id="workflows">
+                    <h2>Practical workflows for developers</h2>
+                    <p>Objectives: structured prompting for generation, scaffolding, and debugging; refactor, document, and automate Git; modernize legacy code incrementally; integrate output safely; generate targeted tests; conduct assistant-driven reviews focused on correctness and risk.</p>
+                    <p>The recurring theme is control. You set direction, define constraints, and verify output. The assistant handles mechanical work in between.</p>
+
+                    <h3>Code generation — clear requirements</h3>
+                    <p>Assistants behave like junior developers: they do best when they fully understand the problem. Good requirements include what the function should do, input/output formats, edge cases or constraints, and examples.</p>
+<pre>Write a REST endpoint in src/api/orders.ts that accepts POST /orders
+with customerId (string) and items (array of {sku, qty}).
+Return 201 with the created order ID. Validate qty > 0.
+Use the existing db.insert() from lib/db.ts.</pre>
+                    <h4>Prompt pattern: good → better → best</h4>
+                    <ul>
+                        <li><strong>Good</strong> — what you want</li>
+                        <li><strong>Better</strong> — inputs/outputs + constraints</li>
+                        <li><strong>Best</strong> — examples + acceptance criteria + guardrails (“don’t change X”)</li>
+                    </ul>
+<pre>GOOD: Write a Python function to validate an email.
+
+BETTER: Write validate_email(email: str) -> bool. Reject missing @,
+missing domain, spaces. No external deps.
+
+BEST: Write validate_email(email: str) -> bool.
+Constraints: no external deps, &lt;25 lines, PEP8.
+Acceptance: 8 pytest cases (normal + edge + invalid).
+Guardrails: don't change existing signatures in utils/validation.py.</pre>
+                    <p>When the assistant drifts, the prompt usually lacked a concrete definition of done. Add acceptance criteria like “tests pass,” “returns X on Y,” “no new dependencies,” “only modify file Z.” Make the assistant restate requirements before coding.</p>
+                    <h4>Constraints &amp; acceptance criteria</h4>
+                    <p>Performance, security, style/architecture, testability, definition of done. Without constraints, the assistant optimizes for “plausible code”; with constraints, it optimizes for code that fits your system. Define “done” before you generate code.</p>
+
+                    <h3>Multi-file scaffolding</h3>
+                    <p>Folder structures, initial modules, interfaces, and stubs can be generated in one prompt. Specify naming and module boundaries first. Workflow: generate → review the diff → integrate — keeps each step reversible. Scaffolding is where assistants save the most time and introduce the most risk — review every generated file.</p>
+                    <p>Ask for structure + rationale first; then scaffolding only (placeholders); keep it small: max files, flat layout, no rewrites.</p>
+                    <h4>Designing folder structures</h4>
+                    <p>Organize by feature or layer; keep modules cohesive; avoid deep nesting; align with team conventions. Let the assistant propose and explain, but validate against your team’s actual conventions before accepting any restructure.</p>
+                    <h4>Modular code patterns</h4>
+                    <p>Separation of concerns, reusable components, clear interfaces, dependency minimization. Assistants default to “make it work” — your job is to enforce “make it modular” by telling which boundaries matter before generation (validator / pricing / payment / notification; thin orchestrator).</p>
+
+                    <h3>Debugging with assistants</h3>
+                    <p>Structured investigation, not just “fix the bug”: log interpretation → hypothesis generation → diagnostic steps → iterative narrowing.</p>
+                    <h4>Log interpretation</h4>
+                    <p>Extract key errors, identify failure points, propose likely causes, suggest next diagnostic steps. Confirm conclusions against the raw output before acting.</p>
+                    <h4>Hypothesis generation</h4>
+                    <p>Propose multiple root causes; rank by likelihood; suggest targeted tests; avoid premature conclusions. Asking for three ranked hypotheses before changing code keeps you from chasing the first plausible explanation.</p>
+                    <h4>Stepwise debugging</h4>
+                    <p>Reproduce → inspect logs and state → apply minimal fixes → retest and iterate. Saying “step 1 only” keeps the assistant from jumping to a fix before you understand the root cause.</p>
+                    <h4>Integrate output safely</h4>
+                    <ol>
+                        <li><strong>Diff review</strong> — what changed and why? Watch for new dependencies, changed interfaces, unsafe calls.</li>
+                        <li><strong>Run checks</strong> — tests, lint, type checks.</li>
+                        <li><strong>Commit</strong> — small, reversible commits with messages that capture intent.</li>
+                    </ol>
+                    <div class="warn">When the assistant changes more files than you expected, revert and re-prompt with a tighter scope instead of reviewing a large diff.</div>
+                    <p>Checklist: diff reviewed; tests run; no new secrets/keys; no widened permissions; commit message captures intent.</p>
+
+                    <h3>Refactoring workflows</h3>
+                    <p>Refactoring improves structure without changing behavior. Incremental small-diff changes are safer than large rewrites. Behavior preservation is non-negotiable — every refactoring prompt should include it explicitly.</p>
+                    <ul>
+                        <li>Ask for a plan first</li>
+                        <li>Require behavior identical</li>
+                        <li>Request output as a unified diff</li>
+                        <li>Validate with tests immediately</li>
+                    </ul>
+                    <p>If refactoring changes behaviour, it wasn’t refactoring — it was rewriting. If a module has weak/no tests, generate minimal tests first. A refactor that touches 200 lines is a rewrite — ask for small diffs, review each one, run tests between steps.</p>
+                    <h4>Identifying smells</h4>
+                    <p>Long functions, duplicate logic, tight coupling, poor naming, dead code. Require the assistant to cite line ranges and name the pattern — generic “this could be improved” is not actionable.</p>
+                    <h4>Suggesting improvements</h4>
+                    <p>Simplify logic, improve naming, extract functions, reduce dependencies, increase readability. Asking for a plan before code gives you options to evaluate — then ask for implementation.</p>
+
+                    <h3>Documentation generation</h3>
+                    <p>API docs, inline comments, architectural summaries, onboarding materials. Add the guardrail “only describe behavior visible in the code” to prevent inventing functionality. If anything is ambiguous, add a note with a question instead of guessing.</p>
+                    <h4>API docs</h4>
+                    <p>Function descriptions, parameters, return values, error conditions. Point the assistant at the code and the existing doc format.</p>
+                    <h4>Avoid invented details</h4>
+                    <p>Specify doc style; require “only based on code shown”; ask for assumptions + edge cases + errors. The most common documentation failure mode is confident invention. Treat generated docs like generated code: review critically.</p>
+                    <h4>Inline comments</h4>
+                    <p>Explain complex logic and intent; highlight assumptions; avoid restating obvious code. Best comments explain “why,” not “what.”</p>
+                    <h4>Architectural summaries</h4>
+                    <p>High-level overview, module relationships, data flow, key responsibilities. Only describe what is visible; flag unclear modules. Verify against the actual dependency graph before sharing.</p>
+
+                    <h3>Git automation</h3>
+                    <p>Generate commit messages from staged diffs; create branch names from ticket descriptions; produce PR descriptions with rationale and risks; summarize multi-file diffs. Git artifacts create traceability. Every generated Git artifact should be reviewed before it leaves your machine.</p>
+                    <h4>Commit messages</h4>
+                    <p>Summarize changes, not files touched. Follow Conventional Commits or team format. Explain the “why” in the body. Reference ticket numbers. First line under 72 chars, imperative mood. The diff already shows what — the body should focus on why.</p>
+                    <h4>Branch creation</h4>
+                    <p>Follow team naming: type prefix, ticket number, short description. Give the convention once in a configuration file and it will apply every time. Consistency across the team matters more than saving seconds on one name.</p>
+                    <h4>PR descriptions</h4>
+                    <p>Summarize changes and rationale; list testing performed; highlight risks and mitigations; include rollback plan; reference related issues. Verify every claim — especially “tests pass” and “no breaking changes.” If claims are not backed by evidence: rewrite using only the diff summary, tests you ran, and observed outputs. Remove assumptions.</p>
+                </div>
+
+                <!-- 9 -->
+                <div class="section" id="advanced">
+                    <h2>Advanced workflows — testing, review, modernization</h2>
+                    <p>Checking correctness is a core skill: real-world software quality depends more on tests and review than on initial implementation. Assistants accelerate validation; you remain the quality gatekeeper.</p>
+
+                    <h3>Unit tests</h3>
+                    <ul>
+                        <li>Each unit test targets a single function in isolation</li>
+                        <li>Edge cases must be explicitly requested — the assistant does not infer them</li>
+                        <li>Predictable behavior is confirmed through assertions, not assumptions</li>
+                    </ul>
+                    <p>Provide: clear function signature, expected behavior, edge-case scenarios, framework, and mocking strategy. Good unit tests come from good specifications.</p>
+
+                    <h3>Integration tests</h3>
+                    <p>Verify interactions between modules; validate data flow; catch interface mismatches; ensure end-to-end behavior. Tell the assistant which boundaries are real and which should be mocked.</p>
+
+                    <h3>Mocking strategies</h3>
+                    <p>Replace external dependencies; control the test environment; simulate APIs, databases, services. Tell the assistant exactly what the mock should return, when it should throw, and how to inject it. Vague mocking instructions produce mocks that hide real bugs.</p>
+
+                    <h3>Assistant-driven code review</h3>
+                    <p>Identify issues and smells; highlight risky patterns; suggest improvements; provide rationale. Use as a first-pass reviewer for mechanical issues (naming, null checks, missing error handling) so humans can focus on design and intent. Assistants do not understand domain context unless you provide it.</p>
+                    <h4>Review prompts</h4>
+                    <p>Ask for structured reviews, line-by-line analysis, risk-focused feedback, alternative implementations. “Review this code” produces generic feedback; “check this auth handler for SQL injection and missing rate limiting” produces actionable findings. Rate findings: critical / warning / nit.</p>
+                    <h4>Risk identification</h4>
+                    <p>Security, performance, maintainability, hidden assumptions. “What risks do you see?” is one of the highest-value prompts — it forces a scan across security, performance, and correctness simultaneously.</p>
+                    <div class="callout">Assistants accelerate quality workflows — you ensure the quality is real. You decide which findings matter, which tests are correct, and when the code is ready to ship.</div>
+
+                    <h3>Modernizing legacy code</h3>
+                    <p>Assistants excel at mechanical, repetitive migrations: API upgrades; language modernization; pattern migration (callbacks → async/await); dependency updates. Run the full test suite after every transformation — edge cases around serialization and reflection can break silently.</p>
+                    <h4>Java modernization patterns</h4>
+                    <ul>
+                        <li><code>Collections.unmodifiableList()</code> → stream <code>toList()</code></li>
+                        <li><code>instanceof</code> + cast → pattern matching</li>
+                        <li>Anonymous classes → lambdas and records</li>
+                        <li>Legacy date APIs → modern date/time formatters</li>
+                        <li>Switch statements → switch expressions with arrow syntax</li>
+                    </ul>
+                    <p>The assistant handles mechanical translation — you verify JVM version, library compatibility, and deployment constraints.</p>
+                    <h4>.NET modernization patterns</h4>
+                    <ul>
+                        <li>Verbose project files → SDK-style projects</li>
+                        <li>Legacy HTTP clients → modern HTTP client factories</li>
+                        <li>Older ORM stacks → current ORM with async patterns</li>
+                        <li>Sync data access → async/await</li>
+                        <li>Legacy web dependencies → modern middleware</li>
+                    </ul>
+                    <p>Assistants can outline a migration plan and rewrite classes — they cannot verify environmental compatibility. That requires running the application and its tests against the target runtime.</p>
+
+                    <h3>Transformation &amp; safety</h3>
+                    <ul>
+                        <li>Preserve behavior</li>
+                        <li>Avoid breaking changes</li>
+                        <li>Validate assumptions</li>
+                        <li>Apply incremental updates</li>
+                    </ul>
+                    <p>Tell the assistant: “Preserve behavior.” “Do not introduce new features.” “Apply only these changes…” Without that phrase, the assistant will opportunistically modernize anything it notices.</p>
+                    <h4>Large-scale changes</h4>
+                    <p>Apply consistent patterns across files; update many files in one pass; maintain architectural integrity; use generated diffs. Repetitive multi-file changes are a sweet spot — but large changes magnify risk. Review every change carefully. Assistants scale your reach; you protect system integrity.</p>
+                    <h4>Validating transformations</h4>
+                    <ul>
+                        <li>Run tests</li>
+                        <li>Compare old vs new behavior</li>
+                        <li>Request assistant self-critique</li>
+                        <li>Document why the modernization occurred</li>
+                    </ul>
+                    <p>Self-critique catches issues before you compile, but it is not a substitute for running tests. Modernization is not complete until behavior is verified.</p>
+                </div>
+
+                <!-- 10 -->
+                <div class="section" id="features">
+                    <h2>Assistant features &amp; surfaces</h2>
+                    <p>Objectives: select an appropriate model family and surface; apply agent mode and the cloud coding agent; use Spaces, extensions, and the agents window; configure workspace indexing and instruction files; run the CLI in non-interactive mode inside a pipeline with security controls.</p>
+
+                    <h3>Model selection</h3>
+                    <p>Several model families typically appear in the picker, shared across chat, plan mode, and agent mode. Pick deliberately by task — families behave differently under load.</p>
+                    <table>
+                        <thead><tr><th>Family profile</th><th>Reach for it when…</th></tr></thead>
+                        <tbody>
+                            <tr><td>General-purpose default</td><td>Well-rounded coverage; broad tasks</td></tr>
+                            <tr><td>Multi-step reasoning</td><td>Complex refactors, plan agent, hard reasoning</td></tr>
+                            <tr><td>Alternate family (plan/region gated)</td><td>Your plan exposes it and the task profile fits</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Plan tier gates the list. Org admins can further restrict. Treat the picker the way you treat any model choice — pick by what the task needs, not by what feels biggest.</p>
+                    <h4>Optimizing model choice</h4>
+                    <ul>
+                        <li>Reasoning-leaning — plan agent, hard refactors</li>
+                        <li>Speed-leaning — completions, quick ask turns</li>
+                        <li>Balanced — general-purpose default</li>
+                    </ul>
+                    <p>Avoid the “always pick the biggest” reflex — premium reasoning on a small completion is overhead, not value.</p>
+                    <h4>Usage metering (credits)</h4>
+                    <p>Higher-cost usage is often metered by token consumption (input, output, cached) at per-model rates — not flat per-request units. Typically metered: chat, plan mode, agent mode, code review, CLI, coding agent. Often not metered: inline completions and next-edit suggestions. When the allowance is spent, premium features stop until you buy more or the cycle resets; inline completions may keep working. Admins can set budgets and caps. Credit burn is driven by both model choice and context size.</p>
+                    <h4>Spending habits</h4>
+                    <ul>
+                        <li>Free surfaces first — lean on inline completions for routine code</li>
+                        <li>Match the model to the task</li>
+                        <li>Scope the context — fewer tokens in means fewer credits out</li>
+                        <li>Plan before you act — a wrong agent run spends credits twice; catching it in plan mode costs one prompt</li>
+                    </ul>
+                    <p>The cheapest credit is the one you never needed to spend. Long unattended agent loops with broad context are a common source of surprise burn.</p>
+
+                    <h3>Chat surfaces</h3>
+                    <p>Five surfaces, same model, different scope and supervision:</p>
+                    <table>
+                        <thead><tr><th>Surface</th><th>Scope</th><th>Behavior</th><th>Typical use</th></tr></thead>
+                        <tbody>
+                            <tr><td>Chat panel</td><td>Workspace-wide</td><td>Read-only Q&amp;A</td><td>Multi-turn investigation</td></tr>
+                            <tr><td>Inline chat</td><td>Selection-local</td><td>Read-only Q&amp;A</td><td>Quick “what does this do?”</td></tr>
+                            <tr><td>Plan mode</td><td>Workspace-wide</td><td>Reviewable plan; no edits</td><td>Scope a change before agent runs</td></tr>
+                            <tr><td>Agent mode</td><td>Workspace + tools</td><td>Runs &amp; edits</td><td>Autonomous execution; coordinated multi-file refactors</td></tr>
+                            <tr><td>Agents window</td><td>Multi-project</td><td>Agent sessions</td><td>Cross-project orchestration</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Chat panel</h4>
+                    <p>Persistent across turns; workspace-aware when scoped; chat participants (terminal, editor, platform); slash commands (explain, fix, tests, doc, new). Best for multi-file questions and multi-turn investigation. Treat it as a working conversation with attached context and follow-ups — not a search box.</p>
+                    <h4>Inline chat</h4>
+                    <p>Floating prompt anchored to selection (Ctrl+I / Cmd+I). Ephemeral — no history across invocations. Best for local questions you act on once. The panel remembers; inline chat does not.</p>
+                    <h4>Plan mode</h4>
+                    <p>Describe the goal, answer clarifying questions, review the plan, approve. Plan artifact written to markdown. No edits. “Start implementation” hands off to agent mode. Older multi-file edit surfaces are deprecated — that role moved into agent mode. Plan mode → agent mode is the path forward.</p>
+                    <h4>Agent mode</h4>
+                    <p>Contract: goal in, diff out. Workspace actions: read files, run terminal commands, propose diffs. Agent logs are your supervision surface. Diff review: the assistant proposes; you approve. Pair with plan agent. Also handles coordinated multi-file changes. Students who skip logs and diffs produce green suites that hide broken code.</p>
+                    <h4>Agents window</h4>
+                    <p>Dedicated window for agent-first, multi-project work: sessions grouped by project; customizations (custom agents, skills, instructions, hooks, MCP servers, plugins); chat; changes tabs with diffs; session controls; commit / merge / checkout / discard. Best for many sessions, one supervisor.</p>
+
+                    <h3>The cloud coding agent</h3>
+                    <p>Lives on the platform rather than the IDE. Asynchronous, sandboxed work whose result the team reviews as a PR. Initiated by assigning an issue or prompting on the web. Structural sandboxing (branch protections, controlled network, approval gates) makes useful autonomy safe without granting keys to production.</p>
+                    <h4>Execution loop</h4>
+                    <ul>
+                        <li>Research — read the repository</li>
+                        <li>Plan — outline the implementation</li>
+                        <li>Commit — push to a draft PR</li>
+                        <li>Self-review — run automated review on the diff</li>
+                        <li>Security scan — before requesting review</li>
+                        <li>Request review — hand off to a human</li>
+                    </ul>
+                    <p>Merge is never automatic — the final step is always human review.</p>
+                    <h4>Supervision</h4>
+                    <ul>
+                        <li>Session logs — cloud-side agent logs</li>
+                        <li>PR review comments — in-loop feedback channel</li>
+                        <li>Branch protections — by design; CI/CD needs human approval</li>
+                        <li>Model picker — by task complexity</li>
+                    </ul>
+                    <p>Structural gates rather than operator-dependent ones — the safety envelope holds even when “the operator forgot” is the failure mode.</p>
+
+                    <h3>Spaces</h3>
+                    <p>Curated, named context collections. Reference a Space to load its bundle into chat or agent mode: files and references, Space-specific instructions, named and shareable, cumulative on top of the mode’s normal context. Solves reassembling the same bundle by hand each time.</p>
+                    <table>
+                        <thead><tr><th>Surface</th><th>What it encodes</th></tr></thead>
+                        <tbody>
+                            <tr><td>Space</td><td>Reusable context bundle — files, references, ad-hoc instructions for a kind of work. Loaded when referenced.</td></tr>
+                            <tr><td>Prompt file</td><td>Reusable prompt — what to ask in a specific situation. Invoked as a slash command.</td></tr>
+                            <tr><td>Repo instructions file</td><td>Always-true rules for the repository. Loaded on every turn.</td></tr>
+                            <tr><td>Path-specific instructions</td><td>Rules scoped to a directory or language via applyTo globs.</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Ask: is this what I want considered, what I want asked, or what should always be true? The right surface follows.</p>
+
+                    <h3>Extensions, plugins &amp; custom agents</h3>
+                    <p>Third-party chat participants appear as <code>@name</code> in chat. Installed at org or account level. Chat-context access when invoked. Discoverable in the marketplace.</p>
+                    <h4>Trust model</h4>
+                    <p>Treat like any third-party OAuth application: review scopes at installation; audit usage on a cadence; remove what you do not use; org-level controls restrict what can be installed. Chat-context access is equivalent to a SaaS integration seeing what you paste.</p>
+                    <table>
+                        <thead><tr><th>Concept</th><th>What it is</th></tr></thead>
+                        <tbody>
+                            <tr><td>Extensions</td><td>Third-party chat participants. Cross-organization. Reach outside the team.</td></tr>
+                            <tr><td>CLI plugins</td><td>Installable packages that bundle MCP servers, agents, skills, and hooks for the CLI. Local terminal tooling.</td></tr>
+                            <tr><td>Custom agents</td><td>Specialized agent configs (e.g. <code>.agent.md</code>). Scoped to a repository. Reviewed like other config.</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Short mental model: extensions reach outside the team; plugins reach inside the terminal; custom agents reach inside the repository. Trust models follow from the reach.</p>
+
+                    <h3>Workspace indexing</h3>
+                    <table>
+                        <thead><tr><th>Mode</th><th>What it is</th></tr></thead>
+                        <tbody>
+                            <tr><td>Remote index</td><td>Server-side index of the repository. Fastest and most complete. Production-quality experience.</td></tr>
+                            <tr><td>Local index</td><td>Built on the engineer’s machine when remote is unavailable. Less complete; depends on local resources.</td></tr>
+                            <tr><td>Basic index</td><td>Lightweight in-IDE retrieval over open and recently edited files. Fine for small workspaces; degrades as the repo grows.</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Active mode is set by organization policy — engineers do not choose it per turn. Two people, same query, different quality often means different index modes. Codebase search quality follows the active index. Remote indexing means the platform holds the index — often a data-residency conversation. Confirm residency requirements, enable remote indexing, then exercise workspace-scoped features against a real repo before broad rollout.</p>
+
+                    <h3>Configuration hierarchy (product-specific)</h3>
+                    <p>Repository-level instructions (commonly in a dedicated instructions path in the repo) are always loaded on every turn: conventions, stack, style, hard boundaries. Living documentation — update when conventions change. Treat the file as code.</p>
+                    <ul>
+                        <li><strong>Path-specific instructions</strong> — files with an <code>applyTo</code> glob; apply only when working on matching files</li>
+                        <li><strong>AGENTS.md</strong> — agent-specific guidance for autonomous work (IDE agent or coding agent)</li>
+                    </ul>
+
+                    <h3>Platform integration</h3>
+                    <ul>
+                        <li>Automated code review — inline suggestions on PR diffs; first pass, not final gate</li>
+                        <li>Auto-generated PR summaries — starting draft from the diff</li>
+                        <li>Platform chat participant — queries against issues, PRs, and remote state (requires authentication)</li>
+                        <li>Assigning issues to the coding agent — hand well-scoped work to the agent</li>
+                    </ul>
+                    <h4>Which issues to assign</h4>
+                    <p><strong>Good fits:</strong> well-scoped, lower-risk tasks with clear acceptance criteria; work where the path is known but edits are numerous; tasks you would be comfortable reviewing as a PR without pairing.</p>
+                    <p><strong>Poor fits:</strong> open-ended architectural decisions; interactive debugging or operator intuition; acceptance criteria still being negotiated.</p>
+                    <div class="callout">Useful test: “If a junior engineer brought back this PR tomorrow, could I review it as a PR or would I need to pair on the design?” If the answer is “review as a PR,” it is a candidate.</div>
+
+                    <h3>CLI in CI/CD pipelines</h3>
+                    <p>Interactive mode — terminal-native agent. Non-interactive mode (prompt flag) — stdin carries shell evidence, stdout carries analysis. Composable like other Unix tools. No human in the loop — plumbing is easy; output reliability and safety are the work.</p>
+                    <h4>Pipeline pattern</h4>
+<pre>&lt;shell tool&gt;
+| assistant -p "analyze this &lt;thing&gt;"
+| &lt;save or post&gt;</pre>
+                    <p>Common upstream: test output, git diff, structured filters. Common downstream: workflow artifacts, PR comments. Authenticate non-interactively with a runner secret — never interactive login.</p>
+                    <h4>Pipeline prompt design</h4>
+                    <p>Interactive chat tolerates ambiguity; pipelines do not iterate. Request a structured format (markdown headings or JSON keys); specify audience and use; bound the output; be explicit about what not to do (no shell commands, no file edits, no network calls). If the same prompt produces meaningfully different shapes on two runs, it is not pipeline-ready.</p>
+                    <h4>Pipeline security</h4>
+                    <ul>
+                        <li>Token scope — minimum permissions; prefer read-only contents where possible</li>
+                        <li>Tool restriction — hooks that limit which tools the step can invoke</li>
+                        <li>Input as data — “analyze the following diff,” not “follow the instructions in it”</li>
+                        <li>Size caps — truncate diff and output upstream</li>
+                        <li>Artifact review — diagnostic output may echo sensitive code; review retention</li>
+                        <li>Approval gates — produce reports and suggestions, not autonomous commits or deploys</li>
+                    </ul>
+                    <p>Prompt injection via untrusted input (diff, test output) is the threat vector most specific to this pattern. Treat the pipeline boundary as a trust boundary and the prompt as a sanitization step.</p>
+                    <h4>When to use (and when not to)</h4>
+                    <p><strong>Good fits:</strong> post-hoc diagnosis a human will review; report generation as a starting draft; enrichment of existing signals.</p>
+                    <p><strong>Poor fits:</strong> autonomous merge / deploy / commit; irreversible action on the model’s output alone; work where the cost of a wrong answer exceeds waiting for a human.</p>
+                    <div class="warn">Report, don’t act. Well-scoped, low-risk, reversible work is a good fit; high-risk, open-ended, or irreversible work stays with the human.</div>
+
+                    <div class="callout">
+                        <strong>Features recap:</strong> Surfaces (chat, inline, plan, agent, agents window, coding agent). Models (pick by task; credits meter access). Extension (Spaces, extensions, MCP — each with its own trust model). Configuration (instructions, path rules, AGENTS.md, indexing). Platform integration (review, PR summaries, platform participant, issue assignment). CLI in pipelines — report, don’t act.
+                    </div>
+                </div>
+
+                <!-- 11 -->
+                <div class="section" id="close">
+                    <h2>Final review &amp; what to do Monday</h2>
+                    <p>Through this material you learned to:</p>
+                    <ul>
+                        <li>Select interaction modes deliberately — inline completions, Ask, Agent mode, Plan agent, cloud coding agent, CLI</li>
+                        <li>Apply context engineering — codebase search, file attach, Add Context, custom instructions, agent logs to verify what was actually seen</li>
+                        <li>Configure team-aligned behavior — instructions hierarchy, instruction files, <code>AGENTS.md</code>, content exclusion, pre/post tool hooks</li>
+                        <li>Extend the assistant — MCP servers, agent skills, prompt files, custom agents, extensions</li>
+                        <li>Use platform-native workflows — issue-to-PR loop, automated code review, PR summaries, platform chat participant</li>
+                        <li>Integrate CLI into CI/CD — non-interactive mode as a pipeline primitive with token scope, tool restriction, and human approval gates</li>
+                    </ul>
+                    <h3>What to do Monday</h3>
+                    <p>Pick one item from each area and do it this week:</p>
+                    <ul>
+                        <li><strong>Modes</strong> — ask Plan for a plan before your next multi-step task; run one task through Agent mode and read the agent logs end to end before accepting the diff</li>
+                        <li><strong>Context</strong> — audit (or create) your team’s instruction file with the three standing rules that would prevent your most common corrections</li>
+                        <li><strong>Extension</strong> — install a first-party MCP server and do one task with it — assign an issue, search code, open a PR</li>
+                        <li><strong>Platform-native</strong> — assign a well-scoped issue to the coding agent; review the resulting PR using its session logs</li>
+                        <li><strong>CI/CD</strong> — add one non-interactive CLI step that turns a failing test into a downloadable diagnostic artifact. Report, don’t act.</li>
+                    </ul>
+                    <h3>Reflection</h3>
+                    <ul>
+                        <li>Which technique will change how you work this week?</li>
+                        <li>Where in your team’s workflow would you deploy the assistant first — and where would you wait?</li>
+                        <li>Which extension surface (MCP server, agent skill, prompt file, custom agent, extension) would you reach for first, and what problem would it solve?</li>
+                        <li>After today, where does the assistant genuinely help, where does it need structure to help, and where is it not worth the effort?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
