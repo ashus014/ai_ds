@@ -177,16 +177,42 @@
             font-size: 0.95em;
             line-height: 1.5;
         }
-        .heap-card {
-            max-width: 560px;
-            margin: 0 auto;
-        }
-        table.heap-only { min-width: 0; }
         .footnote {
             margin-top: 10px;
             color: #777;
             font-size: 0.85em;
             text-align: center;
+        }
+        .notation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .notation-card {
+            background: #fafafa;
+            border: 1px solid #e6e6e6;
+            border-radius: 12px;
+            padding: 18px 16px;
+        }
+        .notation-card h4 {
+            color: #667eea;
+            font-size: 1.25em;
+            margin-bottom: 8px;
+        }
+        .notation-card .aka {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+        .notation-card p { color: #333; line-height: 1.55; font-size: 0.95em; }
+        .notation-card code {
+            font-family: Consolas, 'Courier New', monospace;
+            background: #eee;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+        @media (max-width: 800px) {
+            .notation-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 15px; }
@@ -475,48 +501,8 @@
                         </tbody>
                     </table>
                 </div>
-                <p class="footnote">Access on a binary heap is peek min/max (root). Search is an arbitrary-element scan. Insertion / deletion of the root are heapify up/down. Build heap is listed in the section below.</p>
-            </section>
-
-            <!-- Binary Heap dedicated -->
-            <section class="section" id="binary-heap">
-                <h3>Binary Heap (Min Heap / Max Heap)</h3>
-                <div class="heap-card">
-                    <div class="table-scroll">
-                        <table class="cheat heap-only">
-                            <thead>
-                                <tr>
-                                    <th>Operation</th>
-                                    <th>Binary Heap</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="name">Access (min/max)</span></td>
-                                    <td><span class="badge c-exc">O(1)</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="name">Search</span></td>
-                                    <td><span class="badge c-fair">O(n)</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="name">Insertion</span></td>
-                                    <td><span class="badge c-good">O(log n)</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="name">Deletion (root)</span></td>
-                                    <td><span class="badge c-good">O(log n)</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="name">Build Heap</span></td>
-                                    <td><span class="badge c-fair">O(n)</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="heap-note">
-                        A heap is usually listed as <strong>Binary Heap (Min Heap / Max Heap)</strong>. Peeking the root is constant time. Floyd’s heapify builds the heap in linear time, which is better than n successive inserts (O(n log n)).
-                    </div>
+                <div class="heap-note" id="binary-heap">
+                    A heap is usually listed as <strong>Binary Heap (Min Heap / Max Heap)</strong>. Access is peek min/max at the root (O(1)). Search is a scan (O(n)). Insert and delete-root are O(log n). Floyd’s heapify <strong>builds the heap in O(n)</strong>, which is better than n successive inserts (O(n log n)).
                 </div>
             </section>
 
@@ -633,6 +619,39 @@
                         </tbody>
                     </table>
                 </div>
+            </section>
+
+            <section class="section">
+                <h3>What Θ, O, and Ω Mean</h3>
+                <div class="notation-grid">
+                    <div class="notation-card">
+                        <h4>O — Big O</h4>
+                        <div class="aka">Upper bound</div>
+                        <p>
+                            <code>O(f(n))</code> is an <strong>upper bound</strong>: the algorithm never grows faster than <code>f(n)</code> (up to a constant) for large <code>n</code>.
+                            Example: merge sort is <code>O(n log n)</code> in the worst case — it will not be worse than that.
+                        </p>
+                    </div>
+                    <div class="notation-card">
+                        <h4>Ω — Big Omega</h4>
+                        <div class="aka">Lower bound</div>
+                        <p>
+                            <code>Ω(f(n))</code> is a <strong>lower bound</strong>: the algorithm takes <em>at least</em> on the order of <code>f(n)</code> in the case being described (often the best case).
+                            Example: insertion sort is <code>Ω(n)</code> — even the best input still needs a linear scan.
+                        </p>
+                    </div>
+                    <div class="notation-card">
+                        <h4>Θ — Big Theta</h4>
+                        <div class="aka">Tight bound</div>
+                        <p>
+                            <code>Θ(f(n))</code> is a <strong>tight bound</strong>: the growth is both <code>O(f(n))</code> and <code>Ω(f(n))</code>, so it is on the order of <code>f(n)</code> from both sides.
+                            Example: binary search is <code>Θ(log n)</code> in the worst case — not just “at most,” but exactly that order.
+                        </p>
+                    </div>
+                </div>
+                <p class="footnote" style="margin-top: 16px;">
+                    Informal rule: O = “no worse than”, Ω = “no better than”, Θ = “exactly on the order of”. Everyday speech often uses O for all three.
+                </p>
             </section>
         </div>
     </div>
