@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Time Complexity | Learning Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .wrapper { width: 100%; max-width: 1280px; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .navbar-links { display: flex; gap: 20px; list-style: none; }
+        .navbar-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            position: relative;
+        }
+        .navbar-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        .navbar-links a:hover::after,
+        .navbar-links a.active::after { width: 100%; }
+        .navbar-links a.active { color: #667eea; }
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 36px 50px;
+            animation: fadeInUp 0.7s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-title {
+            color: #667eea;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 36px;
+            font-size: 1.05em;
+        }
+        .section {
+            margin-bottom: 48px;
+        }
+        .section h3 {
+            color: #3d3d3d;
+            font-size: 1.55em;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .legend span {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #222;
+            border: 1px solid rgba(0,0,0,0.12);
+        }
+        .lg-horrible { background: #f4a8a8; }
+        .lg-bad { background: #f5c27a; }
+        .lg-fair { background: #f6e27a; }
+        .lg-good { background: #c8e06a; }
+        .lg-excellent { background: #7dcf5b; }
+        .chart-wrap {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 16px 12px 8px;
+            overflow-x: auto;
+        }
+        .chart-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+        .axis-label { font-style: italic; font-size: 13px; fill: #222; font-family: 'Segoe UI', sans-serif; }
+        .curve-label { font-size: 13px; font-weight: 700; fill: #111; font-family: Georgia, 'Times New Roman', serif; }
+        .table-scroll { overflow-x: auto; border-radius: 10px; }
+        table.cheat {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88em;
+            min-width: 860px;
+        }
+        table.cheat th, table.cheat td {
+            border: 1px solid #d8d8d8;
+            padding: 7px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        table.cheat thead th {
+            background: linear-gradient(#f7f7f7, #ececec);
+            color: #333;
+            font-weight: 600;
+        }
+        table.cheat tbody td:first-child {
+            text-align: left;
+            white-space: nowrap;
+            background: #fff;
+        }
+        table.cheat tbody tr:nth-child(even) { background: #fbfbfb; }
+        table.cheat a, table.cheat .name {
+            color: #2a6bb5;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .badge {
+            display: inline-block;
+            min-width: 72px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            font-weight: 600;
+            border: 1px solid rgba(0,0,0,0.12);
+        }
+        .c-exc { background: #4caf50; color: #111; }
+        .c-good { background: #8bc34a; color: #111; }
+        .c-fair { background: #ffeb3b; color: #111; }
+        .c-bad { background: #ff9800; color: #111; }
+        .c-hor { background: #f44336; color: #111; }
+        .c-na { background: #e0e0e0; color: #555; }
+        .heap-note {
+            margin-top: 12px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: #333;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        .heap-card {
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        table.heap-only { min-width: 0; }
+        .footnote {
+            margin-top: 10px;
+            color: #777;
+            font-size: 0.85em;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            .main-container { padding: 28px 16px 36px; }
+            .page-title { font-size: 1.55em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <ul class="navbar-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="time-complexity.html" class="active">Time Complexity</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-container">
+            <h2 class="page-title">Time Complexity Cheat Sheet</h2>
+            <p class="page-subtitle">Big-O growth rates, common data structure operations, binary heap, and sorting algorithms.</p>
+
+            <!-- Big-O chart -->
+            <section class="section">
+                <h3>Big-O Complexity Chart</h3>
+                <div class="legend">
+                    <span class="lg-horrible">Horrible</span>
+                    <span class="lg-bad">Bad</span>
+                    <span class="lg-fair">Fair</span>
+                    <span class="lg-good">Good</span>
+                    <span class="lg-excellent">Excellent</span>
+                </div>
+                <div class="chart-wrap">
+                    <svg viewBox="0 0 720 430" role="img" aria-label="Big-O complexity chart">
+                        <!-- colored zones -->
+                        <defs>
+                            <linearGradient id="gHorrible" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#f4a8a8"/>
+                                <stop offset="100%" stop-color="#f8c4c4"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- plot area: x 70-680, y 30-360 -->
+                        <polygon fill="#f4a8a8" points="70,30 680,30 680,95 420,200 70,360"/>
+                        <polygon fill="#f5c27a" points="70,360 420,200 680,95 680,155 480,240 70,360"/>
+                        <polygon fill="#f6e27a" points="70,360 480,240 680,155 680,210 540,280 70,360"/>
+                        <polygon fill="#c8e06a" points="70,360 540,280 680,210 680,270 600,320 70,360"/>
+                        <polygon fill="#7dcf5b" points="70,360 600,320 680,270 680,360"/>
+
+                        <!-- axes -->
+                        <line x1="70" y1="360" x2="680" y2="360" stroke="#111" stroke-width="2"/>
+                        <line x1="70" y1="30" x2="70" y2="360" stroke="#111" stroke-width="2"/>
+                        <polygon points="680,360 668,354 668,366" fill="#111"/>
+                        <polygon points="70,30 64,42 76,42" fill="#111"/>
+                        <text class="axis-label" x="28" y="200" transform="rotate(-90 28 200)">Operations</text>
+                        <text class="axis-label" x="350" y="400">Elements</text>
+
+                        <!-- curves -->
+                        <!-- n! almost vertical -->
+                        <path d="M70,360 C78,220 86,80 95,30" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- 2^n -->
+                        <path d="M70,360 C95,250 120,90 145,30" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- n^2 -->
+                        <path d="M70,360 Q180,250 280,30" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- n log n -->
+                        <path d="M70,360 Q280,310 620,70" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- n -->
+                        <path d="M70,360 L680,250" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- log n -->
+                        <path d="M70,360 Q200,348 680,328" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- 1 -->
+                        <path d="M70,350 L680,348" fill="none" stroke="#111" stroke-width="2"/>
+
+                        <text class="curve-label" x="102" y="48">O(n!)</text>
+                        <text class="curve-label" x="152" y="48">O(2ⁿ)</text>
+                        <text class="curve-label" x="250" y="52">O(n²)</text>
+                        <text class="curve-label" x="530" y="95">O(n log n)</text>
+                        <text class="curve-label" x="590" y="248">O(n)</text>
+                        <text class="curve-label" x="530" y="322">O(log n), O(1)</text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Data structures -->
+            <section class="section">
+                <h3>Common Data Structure Operations</h3>
+                <div class="table-scroll">
+                    <table class="cheat">
+                        <thead>
+                            <tr>
+                                <th rowspan="3">Data Structure</th>
+                                <th colspan="8">Time Complexity</th>
+                                <th colspan="1">Space Complexity</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4">Average</th>
+                                <th colspan="4">Worst</th>
+                                <th>Worst</th>
+                            </tr>
+                            <tr>
+                                <th>Access</th><th>Search</th><th>Insertion</th><th>Deletion</th>
+                                <th>Access</th><th>Search</th><th>Insertion</th><th>Deletion</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="name">Array</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Stack</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Queue</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Singly-Linked List</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Doubly-Linked List</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Skip List</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Hash Table</span></td>
+                                <td><span class="badge c-na">N/A</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-na">N/A</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Binary Search Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Cartesian Tree</span></td>
+                                <td><span class="badge c-na">N/A</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-na">N/A</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">B-Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Red-Black Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Splay Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">AVL Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">KD Tree</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><a href="#binary-heap">Binary Heap (Min / Max)</a></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-exc">Θ(1)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-good">Θ(log n)</span></td>
+                                <td><span class="badge c-fair">Θ(n)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="footnote">Access on a binary heap is peek min/max (root). Search is an arbitrary-element scan. Insertion / deletion of the root are heapify up/down. Build heap is listed in the section below.</p>
+            </section>
+
+            <!-- Binary Heap dedicated -->
+            <section class="section" id="binary-heap">
+                <h3>Binary Heap (Min Heap / Max Heap)</h3>
+                <div class="heap-card">
+                    <div class="table-scroll">
+                        <table class="cheat heap-only">
+                            <thead>
+                                <tr>
+                                    <th>Operation</th>
+                                    <th>Binary Heap</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="name">Access (min/max)</span></td>
+                                    <td><span class="badge c-exc">O(1)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="name">Search</span></td>
+                                    <td><span class="badge c-fair">O(n)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="name">Insertion</span></td>
+                                    <td><span class="badge c-good">O(log n)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="name">Deletion (root)</span></td>
+                                    <td><span class="badge c-good">O(log n)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="name">Build Heap</span></td>
+                                    <td><span class="badge c-fair">O(n)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="heap-note">
+                        A heap is usually listed as <strong>Binary Heap (Min Heap / Max Heap)</strong>. Peeking the root is constant time. Floyd’s heapify builds the heap in linear time, which is better than n successive inserts (O(n log n)).
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sorting -->
+            <section class="section">
+                <h3>Array Sorting Algorithms</h3>
+                <div class="table-scroll">
+                    <table class="cheat">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Algorithm</th>
+                                <th colspan="3">Time Complexity</th>
+                                <th>Space Complexity</th>
+                            </tr>
+                            <tr>
+                                <th>Best</th>
+                                <th>Average</th>
+                                <th>Worst</th>
+                                <th>Worst</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="name">Quicksort</span></td>
+                                <td><span class="badge c-bad">Ω(n log n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-good">O(log n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Mergesort</span></td>
+                                <td><span class="badge c-bad">Ω(n log n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-bad">O(n log n)</span></td>
+                                <td><span class="badge c-fair">O(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Timsort</span></td>
+                                <td><span class="badge c-fair">Ω(n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-bad">O(n log n)</span></td>
+                                <td><span class="badge c-fair">O(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Heapsort</span></td>
+                                <td><span class="badge c-bad">Ω(n log n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-bad">O(n log n)</span></td>
+                                <td><span class="badge c-exc">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Bubble Sort</span></td>
+                                <td><span class="badge c-fair">Ω(n)</span></td>
+                                <td><span class="badge c-hor">Θ(n²)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-exc">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Insertion Sort</span></td>
+                                <td><span class="badge c-fair">Ω(n)</span></td>
+                                <td><span class="badge c-hor">Θ(n²)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-exc">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Selection Sort</span></td>
+                                <td><span class="badge c-hor">Ω(n²)</span></td>
+                                <td><span class="badge c-hor">Θ(n²)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-exc">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Tree Sort</span></td>
+                                <td><span class="badge c-bad">Ω(n log n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-fair">O(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Shell Sort</span></td>
+                                <td><span class="badge c-bad">Ω(n log n)</span></td>
+                                <td><span class="badge c-bad">Θ(n (log n)²)</span></td>
+                                <td><span class="badge c-bad">O(n (log n)²)</span></td>
+                                <td><span class="badge c-exc">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Bucket Sort</span></td>
+                                <td><span class="badge c-exc">Ω(n+k)</span></td>
+                                <td><span class="badge c-exc">Θ(n+k)</span></td>
+                                <td><span class="badge c-hor">O(n²)</span></td>
+                                <td><span class="badge c-fair">O(n)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Radix Sort</span></td>
+                                <td><span class="badge c-exc">Ω(nk)</span></td>
+                                <td><span class="badge c-exc">Θ(nk)</span></td>
+                                <td><span class="badge c-exc">O(nk)</span></td>
+                                <td><span class="badge c-fair">O(n+k)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Counting Sort</span></td>
+                                <td><span class="badge c-exc">Ω(n+k)</span></td>
+                                <td><span class="badge c-exc">Θ(n+k)</span></td>
+                                <td><span class="badge c-exc">O(n+k)</span></td>
+                                <td><span class="badge c-fair">O(k)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="name">Cubesort</span></td>
+                                <td><span class="badge c-fair">Ω(n)</span></td>
+                                <td><span class="badge c-bad">Θ(n log n)</span></td>
+                                <td><span class="badge c-bad">O(n log n)</span></td>
+                                <td><span class="badge c-fair">O(n)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
