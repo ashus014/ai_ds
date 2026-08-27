@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>322 — Coin Change — Blind 75</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #764ba2; }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.85em; margin-bottom: 12px; font-weight: 700; line-height: 1.25; }
+        .header p { font-size: 1.05em; opacity: 0.95; line-height: 1.55; max-width: 720px; margin: 0 auto; }
+        .header code {
+            background: rgba(255, 255, 255, 0.96);
+            color: #312e81;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-text-fill-color: #312e81;
+        }
+        .header .meta {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.92em;
+        }
+        .content { padding: 36px 28px 40px; }
+        .section {
+            padding: 22px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+        .section:last-child { margin-bottom: 0; }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.45em;
+            margin-bottom: 12px;
+        }
+        .section h3 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 0 0 10px;
+        }
+        .section h3.spaced { margin-top: 24px; }
+        .section > p { line-height: 1.7; margin-bottom: 16px; color: #444; }
+        code {
+            background: #e8eaf6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+        }
+        .snippet-surface {
+            margin-top: 6px;
+            padding: 20px;
+            background: linear-gradient(160deg, #dcd6f7 0%, #c4b5fd 45%, #ddd6fe 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .code-window {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 40px rgba(30, 27, 75, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.12);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        .code-window-titlebar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: linear-gradient(180deg, #3d3d4f 0%, #2f2f3d 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .traffic-lights span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .traffic-lights .tl-red { background: #ff5f57; }
+        .traffic-lights .tl-yellow { background: #febc2e; }
+        .traffic-lights .tl-green { background: #28c840; }
+        .code-window-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #b4b4c6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .code-window-actions {
+            margin-left: auto;
+            z-index: 2;
+        }
+        .copy-all-btn {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.12);
+            color: #e8e8ef;
+            cursor: pointer;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .copy-all-btn:hover { background: rgba(255, 255, 255, 0.22); }
+        .copy-all-btn:focus-visible {
+            outline: 2px solid #a5b4fc;
+            outline-offset: 2px;
+        }
+        .code-window-body {
+            margin: 0;
+            padding: 20px 22px 22px;
+            background: #282a36;
+            color: #f8f8f2;
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        .code-window-body code {
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        .sh-kw { color: #ff79c6; font-weight: 500; }
+        .sh-type { color: #ffb4a8; }
+        .sh-call { color: #5eead4; }
+        .sh-comment { color: #7a7a8c; font-style: normal; }
+        .sh-lit { color: #f8f8f2; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="../../blind-75.html" class="back-link">← Back to Blind 75</a>
+            <a href="../../index.html" class="back-link">← Back to Home</a>
+        </nav>
+        <div class="container">
+            <div class="header">
+                <h1>322. Coin Change</h1>
+                <p>Blind 75 #55 — Take/skip each coin (reuse allowed on take). Return min coins, or <code>-1</code> if impossible. Recursion or memo.</p>
+                <span class="meta">Blind 75 / 1-D DP</span>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>Hint</h2>
+                    <p>Take/skip: take coin[idx] (reuse idx) or skip to idx+1. amount==0 → 0; invalid → MAX. Return min, else -1. Recurse or memo t[idx][amount].</p>
+                </div>
+                <div class="section">
+                    <h2>Answers</h2>
+
+                    <h3>Simple recursion</h3>
+                    <p>At each coin: take it (stay at <code>idx</code>) or skip it. Invalid paths return <code>Integer.MAX_VALUE</code>; map that to <code>-1</code>.</p>
+                    <script type="text/plain" id="copy-buffer-recursion">class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int result = solve(coins, 0, amount);
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
+    
+    private int solve(int[] coins, int idx, int amount) {
+        // Base cases
+        if (amount == 0) {
+            return 0; // Successfully made the amount
+        }
+        
+        if (idx >= coins.length || amount < 0) {
+            return Integer.MAX_VALUE; // Invalid path
+        }
+        
+        // For the current coin at index 'idx', we have two choices:
+        
+        // 1. TAKE the current coin
+        int take = Integer.MAX_VALUE;
+        if (amount >= coins[idx]) {
+            int takeResult = solve(coins, idx, amount - coins[idx]);
+            if (takeResult != Integer.MAX_VALUE) {
+                take = 1 + takeResult;
+            }
+        }
+        
+        // 2. NOT TAKE the current coin (move to next coin)
+        int notTake = solve(coins, idx + 1, amount);
+        
+        // Return the minimum number of coins needed
+        return Math.min(take, notTake);
+    }
+}</script>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Coin change simple recursion Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — recursion</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-recursion" title="Copy simple recursion">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">coinChange</span>(<span class="sh-kw">int</span>[] coins, <span class="sh-kw">int</span> amount) {
+        <span class="sh-kw">int</span> result = <span class="sh-call">solve</span>(coins, <span class="sh-lit">0</span>, amount);
+        <span class="sh-kw">return</span> result == <span class="sh-type">Integer</span>.MAX_VALUE ? -<span class="sh-lit">1</span> : result;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">solve</span>(<span class="sh-kw">int</span>[] coins, <span class="sh-kw">int</span> idx, <span class="sh-kw">int</span> amount) {
+        <span class="sh-comment">// Base cases</span>
+        <span class="sh-kw">if</span> (amount == <span class="sh-lit">0</span>) {
+            <span class="sh-kw">return</span> <span class="sh-lit">0</span>; <span class="sh-comment">// Successfully made the amount</span>
+        }
+
+        <span class="sh-kw">if</span> (idx &gt;= coins.length || amount &lt; <span class="sh-lit">0</span>) {
+            <span class="sh-kw">return</span> <span class="sh-type">Integer</span>.MAX_VALUE; <span class="sh-comment">// Invalid path</span>
+        }
+
+        <span class="sh-comment">// For the current coin at index 'idx', we have two choices:</span>
+
+        <span class="sh-comment">// 1. TAKE the current coin</span>
+        <span class="sh-kw">int</span> take = <span class="sh-type">Integer</span>.MAX_VALUE;
+        <span class="sh-kw">if</span> (amount &gt;= coins[idx]) {
+            <span class="sh-kw">int</span> takeResult = <span class="sh-call">solve</span>(coins, idx, amount - coins[idx]);
+            <span class="sh-kw">if</span> (takeResult != <span class="sh-type">Integer</span>.MAX_VALUE) {
+                take = <span class="sh-lit">1</span> + takeResult;
+            }
+        }
+
+        <span class="sh-comment">// 2. NOT TAKE the current coin (move to next coin)</span>
+        <span class="sh-kw">int</span> notTake = <span class="sh-call">solve</span>(coins, idx + <span class="sh-lit">1</span>, amount);
+
+        <span class="sh-comment">// Return the minimum number of coins needed</span>
+        <span class="sh-kw">return</span> <span class="sh-type">Math</span>.min(take, notTake);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="spaced">✅ Memoisation</h3>
+                    <p>Same take/skip, cached in <code>t[idx][amount]</code> so each state is solved once.</p>
+                    <script type="text/plain" id="copy-buffer-memo">import java.util.Arrays;
+
+class Solution {
+    int[][] t;
+
+    public int coinChange(int[] coins, int amount) {
+        int n = coins.length;
+        
+        t = new int[n][amount + 1];
+        for (int[] row : t) Arrays.fill(row, -1);
+        
+        int result = solve(coins, 0, amount);
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
+    
+    private int solve(int[] coins, int idx, int amount) {
+        // Base cases
+        if (amount == 0) {
+            return 0;
+        }
+        
+        if (idx >= coins.length || amount < 0) {
+            return Integer.MAX_VALUE;
+        }
+        
+        // 🔥 memo check
+        if (t[idx][amount] != -1) {
+            return t[idx][amount];
+        }
+        
+        // TAKE: use current coin
+        int take = Integer.MAX_VALUE;
+        if (amount >= coins[idx]) {
+            int takeResult = solve(coins, idx, amount - coins[idx]);
+            if (takeResult != Integer.MAX_VALUE) {
+                take = 1 + takeResult;
+            }
+        }
+        
+        // NOT TAKE: skip current coin
+        int notTake = solve(coins, idx + 1, amount);
+        
+        // store + return
+        return t[idx][amount] = Math.min(take, notTake);
+    }
+}</script>
+                    <div class="snippet-surface">
+                        <div class="code-window" aria-label="Coin change memoisation Java">
+                            <div class="code-window-titlebar">
+                                <div class="traffic-lights" aria-hidden="true">
+                                    <span class="tl-red"></span>
+                                    <span class="tl-yellow"></span>
+                                    <span class="tl-green"></span>
+                                </div>
+                                <span class="code-window-title">Solution.java — memoisation</span>
+                                <div class="code-window-actions">
+                                    <button type="button" class="copy-all-btn" data-copy-target="copy-buffer-memo" title="Copy memoisation">Copy all</button>
+                                </div>
+                            </div>
+<pre class="code-window-body"><code><span class="sh-kw">import</span> java.util.Arrays;
+
+<span class="sh-kw">class</span> <span class="sh-type">Solution</span> {
+    <span class="sh-kw">int</span>[][] t;
+
+    <span class="sh-kw">public</span> <span class="sh-kw">int</span> <span class="sh-call">coinChange</span>(<span class="sh-kw">int</span>[] coins, <span class="sh-kw">int</span> amount) {
+        <span class="sh-kw">int</span> n = coins.length;
+
+        t = <span class="sh-kw">new</span> <span class="sh-kw">int</span>[n][amount + <span class="sh-lit">1</span>];
+        <span class="sh-kw">for</span> (<span class="sh-kw">int</span>[] row : t) <span class="sh-type">Arrays</span>.fill(row, -<span class="sh-lit">1</span>);
+
+        <span class="sh-kw">int</span> result = <span class="sh-call">solve</span>(coins, <span class="sh-lit">0</span>, amount);
+        <span class="sh-kw">return</span> result == <span class="sh-type">Integer</span>.MAX_VALUE ? -<span class="sh-lit">1</span> : result;
+    }
+
+    <span class="sh-kw">private</span> <span class="sh-kw">int</span> <span class="sh-call">solve</span>(<span class="sh-kw">int</span>[] coins, <span class="sh-kw">int</span> idx, <span class="sh-kw">int</span> amount) {
+        <span class="sh-comment">// Base cases</span>
+        <span class="sh-kw">if</span> (amount == <span class="sh-lit">0</span>) {
+            <span class="sh-kw">return</span> <span class="sh-lit">0</span>;
+        }
+
+        <span class="sh-kw">if</span> (idx &gt;= coins.length || amount &lt; <span class="sh-lit">0</span>) {
+            <span class="sh-kw">return</span> <span class="sh-type">Integer</span>.MAX_VALUE;
+        }
+
+        <span class="sh-comment">// 🔥 memo check</span>
+        <span class="sh-kw">if</span> (t[idx][amount] != -<span class="sh-lit">1</span>) {
+            <span class="sh-kw">return</span> t[idx][amount];
+        }
+
+        <span class="sh-comment">// TAKE: use current coin</span>
+        <span class="sh-kw">int</span> take = <span class="sh-type">Integer</span>.MAX_VALUE;
+        <span class="sh-kw">if</span> (amount &gt;= coins[idx]) {
+            <span class="sh-kw">int</span> takeResult = <span class="sh-call">solve</span>(coins, idx, amount - coins[idx]);
+            <span class="sh-kw">if</span> (takeResult != <span class="sh-type">Integer</span>.MAX_VALUE) {
+                take = <span class="sh-lit">1</span> + takeResult;
+            }
+        }
+
+        <span class="sh-comment">// NOT TAKE: skip current coin</span>
+        <span class="sh-kw">int</span> notTake = <span class="sh-call">solve</span>(coins, idx + <span class="sh-lit">1</span>, amount);
+
+        <span class="sh-comment">// store + return</span>
+        <span class="sh-kw">return</span> t[idx][amount] = <span class="sh-type">Math</span>.min(take, notTake);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var label = 'Copy all';
+            document.querySelectorAll('.copy-all-btn[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var ta = document.getElementById(id);
+                    if (!ta) return;
+                    var text = ta.textContent;
+                    function ok() {
+                        btn.textContent = 'Copied!';
+                        setTimeout(function () { btn.textContent = label; }, 2000);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(ok).catch(function () {
+                            try {
+                                document.execCommand('copy');
+                                ok();
+                            } catch (e) {}
+                        });
+                    } else {
+                        try {
+                            document.execCommand('copy');
+                            ok();
+                        } catch (e) {}
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
