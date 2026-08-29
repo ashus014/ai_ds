@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Lecture 6 — Algorithm Analysis &amp; Runtime | ECS 5101</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../ecs-5101-design-and-analysis-of-algorithms.html" class="back-link">← ECS 5101</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">ECS 5101 · Lecture 6 (Theory) · Instructor deck labelled Lecture 3 · Dr Rahul Mishra</span>
+            <span class="badge badge-high">High</span>
+            <h1>Algorithm Analysis and Runtime</h1>
+            <p class="lede">Growth of functions, key/dominating operations, best/average/worst case, linear search, and the start of asymptotic analysis (&Theta;). Date on these notes: <strong>29 August 2026</strong>.</p>
+
+            <div class="section">
+                <h2>Jump to a topic</h2>
+                <ol class="toc">
+                    <li><a href="#recap">1. Recap — standard functions</a></li>
+                    <li><a href="#control">2. Structure of an algorithm &amp; control logic</a></li>
+                    <li><a href="#why">3. What analysis is and why we need it</a></li>
+                    <li><a href="#platform">4. Platform-independent analysis</a></li>
+                    <li><a href="#eff">5. Efficiency, scalability, time and space</a></li>
+                    <li><a href="#key">6. Key / dominating operations and f(n)</a></li>
+                    <li><a href="#cases">7. Best, average, worst case</a></li>
+                    <li><a href="#linear">8. Linear search (Algorithm 2.4)</a></li>
+                    <li><a href="#growth">9. Growth of functions</a></li>
+                    <li><a href="#asymp">10. Asymptotic analysis and &Theta;-notation</a></li>
+                    <li><a href="#exam">11. Exam sheet</a></li>
+                </ol>
+            </div>
+
+            <div class="section" id="recap">
+                <h2>1. Recap — standard notations and common functions</h2>
+                <p>The previous class (and the opening of the instructor PPT) covered functions that show up when you write <code>f(n)</code>, analyse loops, solve recurrences, and compare growth:</p>
+                <ul>
+                    <li>Monotonicity</li>
+                    <li>Floor and ceiling</li>
+                    <li>Modulo / congruence</li>
+                    <li>Polynomials (and polynomially bounded functions)</li>
+                    <li>Also used later: factorial, Fibonacci, logs, exponentials</li>
+                </ul>
+                <p>Floor &lfloor;x&rfloor; and ceiling &lceil;x&rceil; appear again and again in later algorithms (binary search midpoints, divide-and-conquer sizes, etc.).</p>
+
+                <h3>1.1 Monotonicity (PPT)</h3>
+                <div class="formula">Monotonically increasing:  m ≤ n  ⇒  f(m) ≤ f(n)
+Monotonically decreasing: m ≤ n  ⇒  f(m) ≥ f(n)
+Strictly increasing:      m &lt; n  ⇒  f(m) &lt; f(n)
+Strictly decreasing:      m &lt; n  ⇒  f(m) &gt; f(n)</div>
+
+                <h3>1.2 Floor and ceiling (PPT)</h3>
+                <p><strong>Floor</strong> &lfloor;x&rfloor; = greatest integer ≤ x (greatest integer that does not exceed x).</p>
+                <p><strong>Ceiling</strong> &lceil;x&rceil; = least integer ≥ x (least integer that is not less than x).</p>
+                <p>For any real x:</p>
+                <div class="formula">x − 1  &lt;  ⌊x⌋  ≤  x  ≤  ⌈x⌉  &lt;  x + 1</div>
+                <div class="example">x = 3.14: &nbsp; 2.14 &lt; 3 ≤ 3.14 ≤ 4 &lt; 4.14</div>
+                <p>For any integer n:</p>
+                <div class="formula">⌈n/2⌉ + ⌊n/2⌋ = n</div>
+                <div class="example">n = 5: ⌈2.5⌉ + ⌊2.5⌋ = 3 + 2 = 5</div>
+
+                <h3>1.3 Modular arithmetic (PPT)</h3>
+                <p>For integer a and <strong>positive</strong> integer n, <code>a mod n</code> (read “a modulo n”) is the remainder (residue) of a/n.</p>
+                <div class="formula">k = nq + r   with   0 ≤ r &lt; n
+k mod n = r   (unique)</div>
+                <div class="example">25 mod 7 = 4 &nbsp;|&nbsp; 25 mod 5 = 0 &nbsp;|&nbsp; 35 mod 11 = 2 &nbsp;|&nbsp; 3 mod 8 = 3</div>
+                <p>If (a mod n) = (b mod n), write <strong>a ≡ b (mod n)</strong> and say a is congruent (equivalent) to b modulo n. Equivalent: n divides (b − a).</p>
+
+                <h3>1.4 Polynomials (PPT, numbered “8” on the handwritten sheet)</h3>
+                <p>For nonnegative integer degree d, with coefficients a<sub>0</sub>, …, a<sub>d</sub> and <strong>a<sub>d</sub> ≠ 0</strong>:</p>
+                <div class="formula">p(n) = Σ<sub>i=0</sub><sup>d</sup> a<sub>i</sub> n<sup>i</sup></div>
+                <p>p is <strong>asymptotically positive</strong> iff a<sub>d</sub> &gt; 0. Then p(n) = &Theta;(n<sup>d</sup>) — the highest power dominates.</p>
+                <p>For real constant a: n<sup>a</sup> is monotonically increasing if a &gt; 0, monotonically decreasing if a ≤ 0.</p>
+                <p>f(n) is <strong>polynomially bounded</strong> if f(n) = O(n<sup>k</sup>) for some constant k.</p>
+
+                <h3>1.5 Factorial and input growth (class)</h3>
+                <p>5! versus 25! is used to feel how work explodes when the “size” of the object grows. Computational complexity generally increases as input size increases.</p>
+            </div>
+
+            <div class="section" id="control">
+                <h2>2. Structure of an algorithm and three control logics</h2>
+                <p>An algorithm generally has a start, an end, control logic, and the statements that do the work. Control logic decides the flow.</p>
+                <p>PPT: three types of logic / flow of control:</p>
+                <ol>
+                    <li><strong>Sequence logic</strong> (sequential flow)</li>
+                    <li><strong>Selection logic</strong> (conditional flow)</li>
+                    <li><strong>Iteration logic</strong> (repetitive flow)</li>
+                </ol>
+
+                <h3>2.1 Sequence</h3>
+                <p>Unless told otherwise, modules run in the obvious order: Module A → Module B → Module C. No decision changes the path. Class picture: 1 → 2 → 3 → … → 8.</p>
+
+                <h3>2.2 Selection (PPT)</h3>
+                <p>Selection uses conditions to pick <strong>one of several alternative modules</strong>. Implemented by a <strong>conditional structure / IF statement</strong>, closed by “End of IF structure”.</p>
+                <p>Three kinds: <strong>single</strong>, <strong>double</strong>, <strong>multiple</strong> alternatives. Class examples: if, if-else, else-if, switch/case.</p>
+                <p><strong>Single alternative</strong> (PPT):</p>
+                <pre class="code"><code>IF condition, then:
+    [Module A]
+[End of IF structure]</code></pre>
+                <p>Flowchart: diamond “Condition?” — Yes goes through Module A; No skips it and joins below.</p>
+                <p>Class: path can jump, e.g. 1 → 2 → 3 → 8 → 17 → 20, depending on conditions.</p>
+
+                <h3>2.3 Iteration (PPT)</h3>
+                <p>Each type begins with a <strong>Repeat</strong> statement; the repeated module is the <strong>body</strong> of the loop.</p>
+                <p><strong>Repeat-for</strong> uses an index (e.g. k):</p>
+                <pre class="code"><code>Repeat for k = R to S by T:
+    [Module]
+[End of loop.]</code></pre>
+                <p>R = initial value, S = end / test value, T = increment (if T &gt; 0) or decrement (if T &lt; 0).</p>
+                <p>Flowchart (a): K ← R; diamond “Is K &gt; S?”; if No, run body then K ← K + T and test again; if Yes, leave.</p>
+                <p><strong>Repeat-while</strong> uses a condition:</p>
+                <pre class="code"><code>Repeat while condition:
+    [Module]
+[End of loop.]</code></pre>
+                <p>Flowchart (b): diamond “Condition?”; Yes → body → back to test; No → exit. Class: for / while; execute → check → execute … until termination.</p>
+                <div class="fig">
+                    <img src="images/loop-flowcharts.jpeg" alt="Handwritten flowcharts for repeat-for and repeat-while">
+                    <div class="cap">Instructor slide: (a) Repeat-for &nbsp; (b) Repeat-while</div>
+                </div>
+            </div>
+
+            <div class="section" id="why">
+                <h2>3. What algorithmic analysis is and why we need it</h2>
+                <p><strong>Design</strong> = build a correct algorithm. <strong>Analysis</strong> = how good / efficient it is. Design is often not the hard part; comparing correct algorithms is.</p>
+                <p>PPT definition: algorithm analysis evaluates performance in terms of <strong>efficiency</strong> and <strong>scalability</strong>. Primary goal: understand behaviour as input size grows, and find bottlenecks.</p>
+                <p>Two approaches in the PPT:</p>
+                <ul>
+                    <li><strong>Empirical:</strong> run on different sizes and time each run.</li>
+                    <li><strong>Theoretical:</strong> count operations as a function of input size (this course’s main path).</li>
+                </ul>
+                <p>Class: four students S1…S4 write codes C1…C4; all correct, no bugs, right output. Correctness does not tell you which is superior. Analysis is how we compare.</p>
+                <div class="tip"><strong>Central question:</strong> how does the algorithm behave as the size of the input increases?</div>
+            </div>
+
+            <div class="section" id="platform">
+                <h2>4. Platform-independent analysis</h2>
+                <p>Goal: a <strong>theoretical, platform-independent</strong> model. Wall-clock time on one machine is unfair: slow PC vs fast PC, HDD vs SSD, less vs more RAM, different OS. The same algorithm can look faster only because hardware is faster.</p>
+                <p>So we count work in the algorithm, not stopwatch time on one laptop.</p>
+            </div>
+
+            <div class="section" id="eff">
+                <h2>5. Efficiency, scalability, time and space</h2>
+                <p><strong>Efficiency</strong> (class): time taken — in analysis, time means key-operation count, not a single machine’s clock.</p>
+                <p><strong>Scalability:</strong> how work changes when n changes (linear search on 20 vs 10,000 elements).</p>
+                <p>For small n (e.g. 10) two algorithms A1, A2 may look similar; at n = 10,000 the gap can explode. An algorithm that is “fine” on a toy input can be unusable on a large one. <strong>Input growth is central.</strong></p>
+
+                <h3>5.1 Other factors (PPT)</h3>
+                <ul>
+                    <li><strong>Memory</strong> — space complexity. Class: merge sort often uses extra space on the order of the input (talked about as 2n in the simplified model).</li>
+                    <li><strong>Parallelism</strong> — some work can run at the same time; can cut practical time.</li>
+                    <li><strong>Heuristics / optimisation</strong> — can improve practical performance or help pick an algorithm for a hard problem.</li>
+                </ul>
+                <p>PPT: these are also “analysis” (space, parallelism, optimisation). This lecture still focuses on <strong>time / runtime</strong>.</p>
+
+                <h3>5.2 Two main measures (PPT handwritten sheet)</h3>
+                <p>Suppose M is an algorithm and n is the size of the input.</p>
+                <ol>
+                    <li>Time and space used by M are the two main efficiency measures.</li>
+                    <li>Time is measured by counting <strong>key operations</strong> — in sorting and searching, e.g. the number of <strong>comparisons</strong>.</li>
+                    <li>Key operations are defined so that time for other operations is <strong>much less than, or at most proportional to</strong>, the time for the key operations.</li>
+                    <li>Space is measured by counting the <strong>maximum memory</strong> needed.</li>
+                    <li>Complexity of M is a function <strong>f(n)</strong> giving running time and/or storage in terms of n.</li>
+                </ol>
+                <p>PPT extra: storage space is often simply a multiple of data size n. <strong>Unless otherwise stated, “complexity” means running time.</strong></p>
+                <p>n is a positive integer in this model: 1, 2, 3, … (sorting 10 numbers ⇒ n = 10; 10,000 numbers ⇒ n = 10,000). PPT later: asymptotic notations are defined on natural numbers N = {0, 1, 2, …} for worst-case T(n) on integer sizes.</p>
+            </div>
+
+            <div class="section" id="key">
+                <h2>6. Key / dominating operations and deriving f(n)</h2>
+                <p>A <strong>key (dominating) operation</strong> is the one done repeatedly whose cost is most of the work. Do not treat every assignment as equal to a heavy operation.</p>
+                <p>Class: multiplication may dominate addition. For <strong>search and sort</strong> in this course, the key operation is almost always <strong>comparison</strong> (<code>A[i] == key</code>, <code>A[i] &lt; A[j]</code>). Assignment like <code>x = 10</code> is treated as cheap. PPT whiteboard: finding the max also goes through comparison; comparison is the key operation in search/sort; f(n) depends on input size and the dominating operation.</p>
+
+                <h3>6.1 Counting a loop (class)</h3>
+                <pre class="code"><code>for i = 1 to n
+    perform operation</code></pre>
+                <p>Body ~ n times; condition often ~ n+1 (extra failing check). Init once, increment n times. One possible aggregate:</p>
+                <div class="formula">f(n) = 3n + 4   (or 3n + constant)</div>
+                <p>Exact constants depend on what you count. For large n, 4 is negligible next to 3n, so 3n + 4 ~ n, i.e. <strong>O(n)</strong> / later <strong>&Theta;(n)</strong>.</p>
+                <div class="tip">Workflow: identify n → identify key operation → count it → write f(n) → best/average/worst → drop lower-order terms → match a standard g(n) → write O / Ω / Θ / o / ω.</div>
+            </div>
+
+            <div class="section" id="cases">
+                <h2>7. Best case, average case, worst case</h2>
+                <p>Running time depends not only on n but on the <strong>particular data</strong>.</p>
+                <p>PPT text example: search a short English <strong>TEXT</strong> for a 3-letter word w. If w is “the”, it likely appears near the start → f(n) small (best-like). If w is “zoo” (class used “two”), it may never appear → scan everything → f(n) large (worst-like). Same n, same algorithm, different behaviour.</p>
+                <p>Array example from class: [7, 9, 3, 2, 5, 21, 31], n = 7, linear search.</p>
+                <ul>
+                    <li>Search 9 or 7 near the front → few comparisons (best-type).</li>
+                    <li>Search 5 or 21 in the middle → several comparisons (not automatically “the average”).</li>
+                    <li>Search 31 (last) or 41 (absent) → ~n comparisons (worst).</li>
+                </ul>
+
+                <h3>Formal (class + PPT)</h3>
+                <div class="formula">Best(n)    = minimum f(n) over all inputs of size n
+Worst(n)   = maximum f(n) over all inputs of size n
+Average(n) = expected value of f(n) under an assumed probability model</div>
+                <p>Do <strong>not</strong> say “the middle position is always the average case.” Average needs a probability distribution. Positions need not be equally likely.</p>
+                <p>If values m<sub>1</sub>, …, m<sub>k</sub> occur with probabilities p<sub>1</sub>, …, p<sub>k</sub> (PPT):</p>
+                <div class="formula">E = m<sub>1</sub>p<sub>1</sub> + m<sub>2</sub>p<sub>2</sub> + … + m<sub>k</sub>p<sub>k</sub>
+(class: E[C] = Σ C<sub>i</sub> P<sub>i</sub>)</div>
+                <p>A common assumption: all n positions equally likely, each p = 1/n. PPT also: all permutations of the input equally likely (typical for sorting analysis later).</p>
+                <div class="tip"><strong>Why worst case is the default:</strong> it is an upper limit, predictable, no distribution guess. PPT: average is usually much harder; the assumed distribution may not match reality. <strong>Unless otherwise stated, complexity means worst-case running time vs n.</strong> For many algorithms average is proportional to worst case.</div>
+            </div>
+
+            <div class="section" id="linear">
+                <h2>8. Linear search — full algorithm and complexity</h2>
+                <p>Array DATA with n elements; given ITEM; find LOC of ITEM or report it is missing. Compare ITEM with DATA[1], DATA[2], … until found or the list ends.</p>
+                <p>Variables: DATA, ITEM, LOC (0 means not found yet). Counter K starts at 1.</p>
+
+                <h3>Algorithm 2.4 (Linear Search) — instructor PPT</h3>
+                <p>Given DATA with N elements and ITEM. Find LOC of ITEM or set LOC = 0.</p>
+                <pre class="code"><code>1. [Initialize]  Set K := 1 and LOC := 0.
+2. Repeat Steps 3 and 4 while LOC = 0 and K ≤ N.
+3.     IF ITEM = DATA[K], then: Set LOC := K.
+4.     Set K := K + 1.     [Increments counter.]
+   [End of Step 2 loop.]
+5. [Successful?]
+   IF LOC = 0, then:
+       Write: ITEM is not in the array DATA.
+   Else:
+       Write: LOC is the location of ITEM.
+   [End of If structure.]
+6. Exit.</code></pre>
+                <p>Loop ends when the item is found (LOC ≠ 0) or K goes past N.</p>
+
+                <h3>Complexity C(n) = number of comparisons ITEM vs DATA[K] (PPT)</h3>
+                <p><strong>Worst case:</strong> ITEM is last, or not in DATA. Then C(n) = n. Worst-case complexity of linear search is n, i.e. <strong>O(n)</strong> (linear).</p>
+                <p><strong>Best case:</strong> found at the first position (e.g. search 7 in the class array). Constant work → <strong>O(1)</strong>.</p>
+                <p><strong>Average case (successful search, equal probability):</strong> number of comparisons is 1, 2, …, n each with p = 1/n.</p>
+                <div class="formula">C(n) = (1 + 2 + … + n) · (1/n)
+     = [n(n+1)/2] · (1/n)
+     = (n+1)/2
+≈ n/2 for large n</div>
+                <p>This matches the intuition “about half the list.” Asymptotically still <strong>O(n)</strong> / &Theta;(n). Average ≈ n/2 and worst = n are <em>not</em> equal as numbers; they <em>are</em> the same growth class.</p>
+                <table>
+                    <thead><tr><th>Case</th><th>Work (comparisons)</th><th>Order</th></tr></thead>
+                    <tbody>
+                        <tr><td>Best</td><td>constant (found first)</td><td>O(1)</td></tr>
+                        <tr><td>Average (equal p, successful)</td><td>(n+1)/2</td><td>O(n)</td></tr>
+                        <tr><td>Worst</td><td>n (last or absent)</td><td>O(n)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="growth">
+                <h2>9. Growth of functions</h2>
+                <p>After f(n) = 3n + 4 we compare with a standard g(n) of the same growth. PPT: complexity of M increases with n; we examine the <strong>rate of increase</strong> vs standard functions.</p>
+                <div class="formula">log n  &lt;  n  &lt;  n log n  &lt;  n²  &lt;  n³  &lt;  2ⁿ
+(for sufficiently large n)</div>
+                <p>Standard list (PPT box): log<sub>2</sub> n, n, n log<sub>2</sub> n, n², n³, 2<sup>n</sup>.</p>
+
+                <h3>PPT table (rounded, to feel the explosion)</h3>
+                <table>
+                    <thead>
+                        <tr><th>n</th><th>log<sub>2</sub> n</th><th>n</th><th>n log<sub>2</sub> n</th><th>n²</th><th>n³</th><th>2<sup>n</sup></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>5</td><td>3</td><td>5</td><td>15</td><td>25</td><td>125</td><td>32</td></tr>
+                        <tr><td>10</td><td>4</td><td>10</td><td>40</td><td>100</td><td>10³</td><td>~10³</td></tr>
+                        <tr><td>100</td><td>7</td><td>100</td><td>700</td><td>10⁴</td><td>10⁶</td><td>~10<sup>30</sup></td></tr>
+                        <tr><td>1000</td><td>10</td><td>10³</td><td>10⁴</td><td>10⁶</td><td>10⁹</td><td>~10<sup>300</sup></td></tr>
+                    </tbody>
+                </table>
+                <p>Class more precise samples: log<sub>2</sub> 5 ≈ 2.32, n log<sub>2</sub> n ≈ 11.61; log<sub>2</sub> 10 ≈ 3.32, n log<sub>2</sub> n ≈ 33.22; log<sub>2</sub> 1000 ≈ 9.97, n log<sub>2</sub> n ≈ 9966. Same story: log stays tiny; 2<sup>n</sup> becomes impossible.</p>
+                <ul>
+                    <li>O(log n) stays usable as n grows.</li>
+                    <li>O(n) grows in proportion to n.</li>
+                    <li>O(n²): double n ≈ 4× dominant work.</li>
+                    <li>O(n³): double n ≈ 8×.</li>
+                    <li>O(2<sup>n</sup>): explodes.</li>
+                </ul>
+                <p>f(n) = 3n + 4 has the same order as g(n) = n.</p>
+            </div>
+
+            <div class="section" id="asymp">
+                <h2>10. Asymptotic analysis and &Theta;-notation</h2>
+                <p>PPT dictionary idea: an asymptotic function approaches a given value as an expression containing a variable tends to infinity. We care how running time increases with input size <strong>in the limit</strong>, as size increases without bound (n → ∞). An algorithm that is asymptotically more efficient is the best choice for all but very small inputs. Do not only ask “faster on today’s tiny test”; ask “which scales?”</p>
+                <p>Class five notations (details of O, Ω, o, ω continue later; this deck develops &Theta;):</p>
+                <div class="formula">O( )   Ω( )   Θ( )   o( )   ω( )</div>
+                <p>Exact f(n) keeps constants; the notation is the growth class. 3n + 4 is &Theta;(n) and therefore also O(n).</p>
+
+                <h3>10.1 Formal &Theta; (PPT)</h3>
+                <p>For a given g(n), &Theta;(g(n)) is the <strong>set</strong> of functions</p>
+                <div class="formula">Θ(g(n)) = { f(n) : there exist positive constants c<sub>1</sub>, c<sub>2</sub> and n<sub>0</sub>
+such that  0 ≤ c<sub>1</sub> g(n) ≤ f(n) ≤ c<sub>2</sub> g(n)  for all n ≥ n<sub>0</sub> }</div>
+                <p>Read: “f of n is theta of g of n.” Because it is a set we may write f(n) ∈ &Theta;(g(n)); we usually write <strong>f(n) = &Theta;(g(n))</strong> for the same idea.</p>
+                <p>For all n at and to the right of n<sub>0</sub>, f(n) lies at or above c<sub>1</sub>g(n) and at or below c<sub>2</sub>g(n). Then <strong>g(n) is an asymptotically tight bound</strong> for f(n).</p>
+                <div class="fig">
+                    <img src="images/theta-sandwich.jpeg" alt="Graph of c1 g(n), f(n), c2 g(n) with threshold n0">
+                    <div class="cap">Instructor figure: f(n) sandwiched between c<sub>1</sub>g(n) and c<sub>2</sub>g(n) for n ≥ n<sub>0</sub></div>
+                </div>
+                <p>Every member f ∈ &Theta;(g(n)) must be <strong>asymptotically nonnegative</strong>: f(n) ≥ 0 for all sufficiently large n.</p>
+
+                <h3>10.2 Worked example (PPT)</h3>
+                <p>f(n) = 18n + 9. Given f(n) &gt; 18n and f(n) ≤ 27n for n ≥ 1. Take g(n) = 3n. Need</p>
+                <div class="formula">c<sub>1</sub> · 3n  ≤  18n + 9  ≤  c<sub>2</sub> · 3n</div>
+                <p>Works with <strong>c<sub>1</sub> = 6</strong> (6·3n = 18n ≤ 18n+9), <strong>c<sub>2</sub> = 9</strong> (9·3n = 27n ≥ 18n+9), <strong>n<sub>0</sub> = 1</strong>. So 18n + 9 ∈ &Theta;(3n), i.e. &Theta;(n).</p>
+            </div>
+
+            <div class="section" id="exam">
+                <h2>11. Exam sheet</h2>
+                <h3>Definitions to write</h3>
+                <ul>
+                    <li><strong>Algorithmic analysis:</strong> evaluate efficiency and scalability.</li>
+                    <li><strong>Efficiency:</strong> computational time/work (key-op count).</li>
+                    <li><strong>Scalability:</strong> behaviour as n grows.</li>
+                    <li><strong>Key / dominating operation:</strong> the op whose cost is most of the work; others much smaller or at most proportional.</li>
+                    <li><strong>Time complexity:</strong> how work grows with n. <strong>Space:</strong> maximum memory vs n.</li>
+                    <li><strong>Best / worst / average:</strong> min / max / expected f(n).</li>
+                    <li><strong>Asymptotic analysis:</strong> n → ∞; drop constants and lower-order terms.</li>
+                    <li><strong>&Theta;:</strong> tight bound; sandwich with two positive constants past n<sub>0</sub>.</li>
+                </ul>
+                <h3>Must-remember formulae</h3>
+                <div class="formula">1 + 2 + … + n = n(n+1)/2
+Linear search average (equal p, success) = (n+1)/2
+Linear search worst C(n) = n
+⌈n/2⌉ + ⌊n/2⌋ = n
+k = nq + r,  0 ≤ r &lt; n</div>
+                <h3>Linear search orders</h3>
+                <p>Best O(1); average O(n); worst O(n). Default “complexity” in this course = <strong>worst case</strong>.</p>
+                <h3>One-line summary</h3>
+                <p>Turn an algorithm into f(n) by counting the key operation, study best/average/worst, then classify growth with standard functions and asymptotic notation as n becomes very large.</p>
+            </div>
+
+            <div class="nav-footer">
+                <a href="index.html">← All ECS 5101 notes</a>
+                <a href="../ecs-5101-design-and-analysis-of-algorithms.html">Course page →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
