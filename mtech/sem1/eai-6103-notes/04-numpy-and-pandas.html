@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Lecture 4 — NumPy &amp; Pandas | EAI 6103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../advanced-machine-learning.html" class="back-link">← EAI 6103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">EAI 6103 · Lecture 4 of the practical sequence</span>
+            <span class="badge badge-high">High</span>
+            <h1>NumPy &amp; Pandas — complete exam notes</h1>
+            <p class="lede">Merged from the Lecture 4 practical class and the instructor Word file <strong>3-Numpy + Pandas.docx</strong>. Date on these notes: <strong>29 August 2026</strong>. Use this page as the single revision source — every class idea and every handout snippet is here.</p>
+
+            <div class="section">
+                <h2>Jump to a topic</h2>
+                <ol class="toc"><li><a href="#sources">How these notes were built</a></li>
+<li><a href="#context">1. Lecture context</a></li>
+<li><a href="#libs">2. Five libraries for ML (class list)</a></li>
+<li><a href="#numpy-intro">3. NumPy — what it is</a></li>
+<li><a href="#install">4. Install and import</a></li>
+<li><a href="#vectors">5. Vectors, matrices, and arrays (handout + class)</a></li>
+<li><a href="#dims">6. Dimensions: 0-D through N-D</a></li>
+<li><a href="#describe">7. Describing an array: shape, size, ndim, dtype</a></li>
+<li><a href="#index">8. Indexing (class + every handout example)</a></li>
+<li><a href="#slice">9. Slicing (start included, stop excluded)</a></li>
+<li><a href="#ops">10. Element-wise operations, vectorize, transpose</a></li>
+<li><a href="#reshape">11. Reshape (class + handout)</a></li>
+<li><a href="#iter">12. Iterating arrays (handout)</a></li>
+<li><a href="#join">13. Joining: concatenate, stack, hstack, vstack, dstack</a></li>
+<li><a href="#split">14. Splitting arrays (handout)</a></li>
+<li><a href="#search">15. Searching and sorting (handout)</a></li>
+<li><a href="#pandas-intro">16. Pandas — why it sits in front of every ML model</a></li>
+<li><a href="#series">17. Series (handout)</a></li>
+<li><a href="#df">18. DataFrame — the main table</a></li>
+<li><a href="#files">19. Loading files: CSV, JSON, Excel, XML</a></li>
+<li><a href="#inspect">20. Inspect a dataset (class core + handout extras)</a></li>
+<li><a href="#manipulate">21. Select, filter, sort, copy, missing values (handout car_data)</a></li>
+<li><a href="#split-ml">22. Manual train/test split (handout)</a></li>
+<li><a href="#pipeline">23. NumPy vs Pandas in the ML pipeline</a></li>
+<li><a href="#practice">24. Practice instructions from class</a></li>
+<li><a href="#qa">25. Student questions (class) — short answers</a></li>
+<li><a href="#cheatsheet">26. One-page command sheet</a></li>
+<li><a href="#takeaways">27. Exam takeaways (do not skip)</a></li></ol>
+            </div>
+            <div class="section" id="sources"><h2>How these notes were built</h2>
+<p>These notes merge <strong>everything</strong> from two sources so you can revise from one place before exams:</p>
+<ul>
+<li><strong>Lecture 4 (practical class)</strong> — NumPy and Pandas as taught, including instructor comments, environment notes (local vs Colab), and student questions.</li>
+<li><strong>Instructor handout</strong> <code>3-Numpy + Pandas.docx</code> — every example, including vectors/matrices, SciPy sparse matrices, <code>dtype</code>, iterating, stacking/splitting/searching/sorting, Series, <code>info()</code>, cleaning, and a 70/30 train–test split.</li>
+</ul>
+<div class="tip"><strong>Exam stance:</strong> the course is not “learn all of Python”. It is “learn the Python that feeds Machine Learning”. NumPy = numbers/arrays. Pandas = datasets/tables. Matplotlib, Seaborn, and Scikit-learn come next.</div>
+</div><div class="section" id="context"><h2>1. Lecture context</h2>
+<p>The previous class covered Python basics: installing Python, where to write code, and general language fundamentals.</p>
+<p>From this lecture onward the focus is <strong>Python that is directly related to Machine Learning</strong> — not the entire language. You need enough Python to handle numeric data, datasets, and later ML models (basic ML, deep learning, and this advanced ML course).</p>
+</div><div class="section" id="libs"><h2>2. Five libraries for ML (class list)</h2>
+<p>The instructor listed five libraries used across ML / data science:</p>
+<ol>
+<li><strong>NumPy</strong> — Numerical Python: arrays, matrices, linear algebra, Fourier transforms, math ops.</li>
+<li><strong>Pandas</strong> — load, analyse, clean, explore, manipulate structured/tabular data.</li>
+<li><strong>Matplotlib</strong> — graphs, charts, visualisation (including high-dimensional plots later).</li>
+<li><strong>Seaborn</strong> — statistical visualisation, richer plots on top of Matplotlib ideas.</li>
+<li><strong>Scikit-learn</strong> — models, train–test split utilities, preprocessing, ML pipeline tools. When you pick a model for a dataset, many live here.</li>
+</ol>
+<p>This lecture is dedicated to the first two. Later classes: Matplotlib and Scikit-learn, then models.</p>
+<div class="formula">NumPy → Pandas → Matplotlib → Seaborn → Scikit-learn → ML models</div>
+</div><div class="section" id="numpy-intro"><h2>3. NumPy — what it is</h2>
+<p><strong>NumPy = Numerical Python.</strong> Whenever you need numerical computation in Python for ML/data science, you use NumPy.</p>
+<p>From the handout (and class): NumPy is a library for working with <strong>arrays</strong>. It also has functions for linear algebra, Fourier transform, and matrices.</p>
+<ul>
+<li>Created in <strong>2005 by Travis Oliphant</strong>.</li>
+<li><strong>Open source</strong> — use it freely. Third-party package: install, then import.</li>
+<li>Python lists can store values, but they are <strong>slow</strong> for numeric work. NumPy’s array object is commonly described as up to about <strong>50× faster</strong> than lists for some workloads. The class treated 50× as a conceptual claim, not a universal benchmark — speed still depends on the operation and data.</li>
+<li>The array type is <code>ndarray</code> (<strong>N-dimensional array</strong>) with many helper functions.</li>
+<li>Why faster: <strong>homogeneous dtype</strong> + <strong>contiguous memory</strong> vs general-purpose lists.</li>
+</ul>
+<p>Python already has list, tuple, set, dict. For ML numeric workloads those are not the preferred array engine.</p>
+<pre class="code"><code>my_list = [1, 2, 3, 4, 5]  # Python list — looks like an array, is not ndarray</code></pre>
+<div class="tip"><strong>Do not confuse a list with an array.</strong> <code>[1, 2, 3]</code> is a list. <code>np.array([1, 2, 3])</code> is an <code>ndarray</code>.</div>
+</div><div class="section" id="install"><h2>4. Install and import</h2>
+<p><code>pip</code> is Python’s package manager (same idea for pandas, matplotlib, seaborn, scikit-learn). Skip install if already present (Colab usually has them).</p>
+<pre class="code"><code>pip install numpy
+pip install pandas
+pip install matplotlib
+pip install seaborn
+pip install scikit-learn</code></pre>
+<p>Handout Windows-style prompt: <code>C:\Users\Your Name&gt;pip install numpy</code> (same command on macOS/Linux without that prefix).</p>
+<h3>Import — full name vs nickname</h3>
+<p>Class analogy: long legal name vs household nickname. Standard aliases:</p>
+<pre class="code"><code>import numpy
+arr = numpy.array([1, 2, 3, 4, 5])
+print(arr)</code></pre>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+print(arr)
+print(type(arr))</code></pre>
+<div class="out">Expected / typical output:
+[1 2 3 4 5]
+&lt;class &#x27;numpy.ndarray&#x27;&gt;</div>
+<p>You can also build from a <strong>tuple</strong> (handout):</p>
+<pre class="code"><code>import numpy as np
+arr = np.array((1, 2, 3, 4, 5))
+print(arr)</code></pre>
+<p>Pandas alias is the same idea: <code>import pandas as pd</code>.</p>
+</div><div class="section" id="vectors"><h2>5. Vectors, matrices, and arrays (handout + class)</h2>
+<p><strong>Vector:</strong> built from ordinary numbers; think of a list of numbers and algebra on those numbers. In NumPy, a vector is a <strong>1-D array</strong> (class: 1-D → vector).</p>
+<h3>Row vector vs column vector</h3>
+<pre class="code"><code>import numpy as np
+
+vector_row = np.array([1, 2, 3])
+
+vector_column = np.array([[1],
+                          [2],
+                          [3]])</code></pre>
+<h3>Matrix</h3>
+<p>A <strong>matrix</strong> is a special case of a 2-D array where every row has the <strong>same length</strong> (strictly same size). Every matrix is a 2-D array; not every 2-D array in the wild is a well-formed matrix if rows were ragged (NumPy usually requires rectangular arrays anyway).</p>
+<p>Class: <strong>2-D array → matrix</strong> (rows and columns).</p>
+<pre class="code"><code>import numpy as np
+
+matrix = np.array([[1, 2],
+                   [1, 2],
+                   [1, 2]])</code></pre>
+<h3>Sparse matrix (SciPy — in the Word file)</h3>
+<p>Most entries zero → store compressed. Handout uses CSR (compressed sparse row):</p>
+<pre class="code"><code>import numpy as np
+from scipy import sparse
+
+matrix = np.array([[0, 0],
+                   [0, 1],
+                   [3, 0]])
+
+matrix_sparse = sparse.csr_matrix(matrix)
+print(matrix_sparse)</code></pre>
+<div class="out">Expected / typical output:
+(1, 1)	1
+(2, 0)	3</div>
+<p>Only the non-zeros are stored: value <code>1</code> at row 1 col 1, value <code>3</code> at row 2 col 0 (0-based).</p>
+</div><div class="section" id="dims"><h2>6. Dimensions: 0-D through N-D</h2>
+<p>NumPy supports 0-D, 1-D, 2-D, 3-D, 4-D, 5-D, … N-D. Datasets in ML are often multi-axis tensors.</p>
+<h3>Cheat for nested brackets</h3>
+<div class="formula">Count nesting of [ ]  →  1 level = 1-D, 2 = 2-D, 3 = 3-D, …
+Reliable in code: arr.ndim</div>
+<p>Humans visualise X+Y (rows/cols) and X+Y+Z (depth). Five physical dimensions cannot be seen; the computer still stores extra axes. That is normal in ML.</p>
+<h3>0-D (scalar array)</h3>
+<pre class="code"><code>import numpy as np
+arr = np.array(42)
+print(arr)
+print(arr.ndim)</code></pre>
+<div class="out">Expected / typical output:
+42
+0</div>
+<h3>1-D</h3>
+<pre class="code"><code>arr = np.array([1, 2, 3, 4, 5])</code></pre>
+<h3>2-D</h3>
+<pre class="code"><code>arr = np.array([[1, 2, 3], [4, 5, 6]])</code></pre>
+<h3>3-D (two stacked 2-D blocks — handout)</h3>
+<pre class="code"><code>arr = np.array([[[1, 2, 3], [4, 5, 6]],
+                [[1, 2, 3], [4, 5, 6]]])</code></pre>
+<h3>ndim exercise (handout)</h3>
+<pre class="code"><code>import numpy as np
+a = np.array(42)
+b = np.array([1, 2, 3, 4, 5])
+c = np.array([[1, 2, 3], [4, 5, 6]])
+d = np.array([[[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 5, 6]]])
+print(a.ndim, b.ndim, c.ndim, d.ndim)</code></pre>
+<div class="out">Expected / typical output:
+0 1 2 3</div>
+<h3>Force 5-D with ndmin (handout + class demo idea)</h3>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4], ndmin=5)
+print(arr)
+print(&#x27;number of dimensions :&#x27;, arr.ndim)
+print(&#x27;shape of array :&#x27;, arr.shape)</code></pre>
+<div class="out">Expected / typical output:
+[[[[[1 2 3 4]]]]]
+number of dimensions : 5
+shape of array : (1, 1, 1, 1, 4)</div>
+<p>Class: you can create 5-D arrays; they are hard to picture but valid.</p>
+</div><div class="section" id="describe"><h2>7. Describing an array: shape, size, ndim, dtype</h2>
+<h3>Matrix metadata (handout)</h3>
+<pre class="code"><code>import numpy as np
+matrix = np.array([[1, 2, 3, 4],
+                   [5, 6, 7, 8],
+                   [9, 10, 11, 12]])
+print(matrix.shape)  # rows, columns
+print(matrix.size)   # rows * columns
+print(matrix.ndim)   # number of axes</code></pre>
+<div class="out">Expected / typical output:
+(3, 4)
+12
+2</div>
+<h3>shape of a 2-D array (handout)</h3>
+<pre class="code"><code>arr = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+print(arr.shape)</code></pre>
+<div class="out">Expected / typical output:
+(2, 4)</div>
+<h3>dtype (handout — not emphasised in class but exam-useful)</h3>
+<pre class="code"><code>import numpy as np
+print(np.array([1, 2, 3, 4]).dtype)
+print(np.array([&#x27;apple&#x27;, &#x27;banana&#x27;, &#x27;cherry&#x27;]).dtype)
+arr_s = np.array([1, 2, 3, 4], dtype=&#x27;S&#x27;)
+print(arr_s, arr_s.dtype)
+arr_i4 = np.array([1, 2, 3, 4], dtype=&#x27;i4&#x27;)
+print(arr_i4, arr_i4.dtype)</code></pre>
+<div class="out">Expected / typical output:
+int64   (or int32 on some Windows)
+&lt;U6     (Unicode strings, max length 6)
+[b&#x27;1&#x27; b&#x27;2&#x27; b&#x27;3&#x27; b&#x27;4&#x27;] |S1
+[1 2 3 4] int32</div>
+<p><code>dtype='S'</code> is a byte string. <code>i4</code> is 32-bit integer. Homogeneous dtype is why NumPy is fast.</p>
+</div><div class="section" id="index"><h2>8. Indexing (class + every handout example)</h2>
+<p><strong>Zero-based.</strong> First element is index 0. Class: “searching” an element = indexing.</p>
+<pre class="code"><code>arr = np.array([1, 2, 3, 4, 5])
+# index: 0 1 2 3 4</code></pre>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4])
+print(arr[0])       # 1
+print(arr[1])       # 2
+print(arr[2] + arr[3])  # 3+4 = 7</code></pre>
+<h3>2-D: comma indexing vs chained brackets</h3>
+<p>Handout style <code>arr[row, col]</code> is the NumPy-native way. Class also used <code>arr[i][j][k]</code> for nested access. Both work; comma form is preferred.</p>
+<pre class="code"><code>arr = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
+print(&#x27;2nd element on 1st dim: &#x27;, arr[0, 1])   # 2
+print(&#x27;5th element on 2nd dim: &#x27;, arr[1, 4])   # 10
+print(&#x27;Last element from 2nd dim: &#x27;, arr[1, -1])  # 10</code></pre>
+<h3>3-D — walk outside → inside</h3>
+<p>Class walkthrough: pick outer block, then inner matrix, then element (e.g. locating 6).</p>
+<pre class="code"><code>arr = np.array([[[1, 2, 3], [4, 5, 6]],
+                [[7, 8, 9], [10, 11, 12]]])
+print(arr[0, 1, 2])   # 6
+# same idea: arr[0][1][2]</code></pre>
+<h3>Handout selecting elements (vector + matrix)</h3>
+<pre class="code"><code>import numpy as np
+vector = np.array([1, 2, 3, 4, 5, 6])
+matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])
+vector[2]       # 3  (third element)
+matrix[1, 1]    # 5
+vector[:]       # all
+vector[:3]      # up to, not including index 3 if we used Python slice end-exclusive — here [:3] → 1,2,3
+vector[3:]      # after third element → 4,5,6
+vector[-1]      # 6
+matrix[:2, :]   # first two rows, all columns
+matrix[:, 1:2]  # all rows, second column as a column vector</code></pre>
+<h3>Negative indexing</h3>
+<div class="formula">-1 last, -2 second-last, -3 third-last (from the right)</div>
+</div><div class="section" id="slice"><h2>9. Slicing (start included, stop excluded)</h2>
+<div class="tip"><strong>Rule (repeat until automatic):</strong> <code>start</code> is included, <code>stop</code> is excluded. Optional <code>step</code> is the jump.</div>
+<div class="formula">array[start:stop]
+array[start:]
+array[:stop]
+array[start:stop:step]
+array[::step]</div>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5, 6, 7])
+print(arr[1:5])     # [2 3 4 5]   indexes 1,2,3,4
+print(arr[4:])      # [5 6 7]
+print(arr[:4])      # [1 2 3 4]
+print(arr[-3:-1])   # [5 6]       class also showed a negative slice yielding [5 6]
+print(arr[1:5:2])   # [2 4]
+print(arr[::2])     # [1 3 5 7]
+print(arr[1:6:2])   # class jump example: 2, 4, 6</code></pre>
+<h3>2-D slicing (handout)</h3>
+<pre class="code"><code>arr = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
+print(arr[1, 1:4])     # [7 8 9]
+print(arr[0:2, 2])     # [3 8]   column index 2 from both rows
+print(arr[0:2, 1:4])   # rows 0–1, cols 1–3</code></pre>
+</div><div class="section" id="ops"><h2>10. Element-wise operations, vectorize, transpose</h2>
+<h3>Broadcasting — add 100 to every entry</h3>
+<pre class="code"><code>import numpy as np
+matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])
+print(matrix + 100)</code></pre>
+<div class="out">Expected / typical output:
+[[101 102 103]
+ [104 105 106]
+ [107 108 109]]</div>
+<h3>np.vectorize (handout)</h3>
+<p>Wrap a Python function so it runs on each element. For simple arithmetic, <code>matrix + 100</code> is cleaner and faster.</p>
+<pre class="code"><code>add_100 = lambda i: i + 100
+vectorized_add_100 = np.vectorize(add_100)
+print(vectorized_add_100(matrix))</code></pre>
+<h3>Transpose</h3>
+<pre class="code"><code>print(matrix.T)  # rows become columns</code></pre>
+<div class="out">Expected / typical output:
+[[1 4 7]
+ [2 5 8]
+ [3 6 9]]</div>
+</div><div class="section" id="reshape"><h2>11. Reshape (class + handout)</h2>
+<p><code>reshape</code> changes layout, not the values. <strong>Product of new dimensions = number of elements.</strong></p>
+<p>Class example: 6 elements → <code>reshape(2, 3)</code>.</p>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+print(arr.reshape(4, 3))      # 1-D → 2-D
+print(arr.reshape(2, 3, 2))   # 1-D → 3-D</code></pre>
+<h3>-1 means “you calculate this axis”</h3>
+<p>Class: <code>arr.reshape(2, -1)</code> on 6 elements → second dim becomes 3. Handout flatten:</p>
+<pre class="code"><code>arr = np.array([[1, 2, 3], [4, 5, 6]])
+print(arr.reshape(-1))   # [1 2 3 4 5 6]</code></pre>
+</div><div class="section" id="iter"><h2>12. Iterating arrays (handout)</h2>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3])
+for x in arr:
+    print(x)</code></pre>
+<p>2-D: outer loop yields rows; nested loop yields scalars. 3-D: three nested loops, or <code>np.nditer</code> to walk every scalar once.</p>
+<pre class="code"><code>arr = np.array([[1, 2, 3], [4, 5, 6]])
+for x in arr:
+    print(x)
+for x in arr:
+    for y in x:
+        print(y)
+
+arr3 = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+for x in arr3:
+    print(x)
+for x in arr3:
+    for y in x:
+        for z in y:
+            print(z)
+
+arr4 = np.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+for x in np.nditer(arr4):
+    print(x)</code></pre>
+</div><div class="section" id="join"><h2>13. Joining: concatenate, stack, hstack, vstack, dstack</h2>
+<p>Student question in class: how do we add another array? Answer: <strong>concatenation</strong> (and related stack helpers in the Word file).</p>
+<pre class="code"><code>import numpy as np
+arr1 = np.array([1, 2, 3])
+arr2 = np.array([4, 5, 6])
+print(np.concatenate((arr1, arr2)))   # [1 2 3 4 5 6]</code></pre>
+<h3>Axis (class rule of thumb)</h3>
+<div class="formula">Axis 0 → row-wise (think vertical / down rows)
+Axis 1 → column-wise (think horizontal / across columns)</div>
+<p>Exact geometry depends on the operation — practise both axes on two small arrays. Class: do not panic; try <code>axis=0</code> and <code>axis=1</code> and look.</p>
+<pre class="code"><code>arr1 = np.array([[1, 2], [3, 4]])
+arr2 = np.array([[5, 6], [7, 8]])
+print(np.concatenate((arr1, arr2), axis=1))</code></pre>
+<div class="out">Expected / typical output:
+[[1 2 5 6]
+ [3 4 7 8]]</div>
+<h3>stack / hstack / vstack / dstack (handout)</h3>
+<pre class="code"><code>arr1 = np.array([1, 2, 3])
+arr2 = np.array([4, 5, 6])
+print(np.stack((arr1, arr2), axis=1))
+print(np.hstack((arr1, arr2)))   # horizontal — like concatenate 1-D
+print(np.vstack((arr1, arr2)))   # vertical — 2 rows
+print(np.dstack((arr1, arr2)))   # depth-wise (third axis)</code></pre>
+<div class="out">Expected / typical output:
+stack axis=1:
+[[1 4]
+ [2 5]
+ [3 6]]
+
+hstack: [1 2 3 4 5 6]
+
+vstack:
+[[1 2 3]
+ [4 5 6]]
+
+dstack: shape (1, 3, 2) depth pairing (1,4), (2,5), (3,6)</div>
+</div><div class="section" id="split"><h2>14. Splitting arrays (handout)</h2>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(np.array_split(arr, 3))   # three parts
+print(np.array_split(arr, 4))   # four parts (uneven OK)
+newarr = np.array_split(arr, 3)
+print(newarr[0], newarr[1], newarr[2])</code></pre>
+<pre class="code"><code>arr = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
+print(np.array_split(arr, 3))
+
+arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9],
+                [10, 11, 12], [13, 14, 15], [16, 17, 18]])
+print(np.array_split(arr, 3))
+print(np.array_split(arr, 3, axis=1))
+print(np.hsplit(arr, 3))   # split columns into 3</code></pre>
+</div><div class="section" id="search"><h2>15. Searching and sorting (handout)</h2>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5, 4, 4])
+print(np.where(arr == 4))          # indexes of 4
+
+arr = np.array([1, 2, 3, 4, 5, 6, 7, 8])
+print(np.where(arr % 2 == 0))      # even indexes
+print(np.where(arr % 2 == 1))      # odd
+
+arr = np.array([6, 7, 8, 9])
+print(np.searchsorted(arr, 7))                 # insertion index from left
+print(np.searchsorted(arr, 7, side=&#x27;right&#x27;))
+print(np.searchsorted(np.array([1, 3, 5, 7]), [2, 4, 6]))</code></pre>
+<pre class="code"><code>print(np.sort(np.array([3, 2, 0, 1])))
+print(np.sort(np.array([&#x27;banana&#x27;, &#x27;cherry&#x27;, &#x27;apple&#x27;])))
+print(np.sort(np.array([True, False, True])))
+print(np.sort(np.array([[3, 2, 4], [5, 0, 1]])))  # sorts each row</code></pre>
+<p>Class “how do we search?” for 1-D was indexing (<code>arr[0]</code>…). Handout <code>np.where</code> / <code>searchsorted</code> find positions by value in sorted data.</p>
+</div><div class="section" id="pandas-intro"><h2>16. Pandas — why it sits in front of every ML model</h2>
+<p>Pandas is a Python library for <strong>working with data sets</strong>: analysing, cleaning, exploring, manipulating. Name refers to <strong>Panel Data</strong> and <strong>Python Data Analysis</strong>; created by <strong>Wes McKinney in 2008</strong> (handout).</p>
+<p>It can analyse large data and support statistical conclusions. Cleaning messy data into something relevant matters because <strong>the dataset plays a central role in ML</strong>.</p>
+<div class="formula">Acquire → upload/load → analyse → clean → explore → manipulate → prepare → apply ML</div>
+<p>Install: <code>pip install pandas</code> (handout: same Windows prompt style as NumPy).</p>
+<pre class="code"><code>import pandas as pd</code></pre>
+</div><div class="section" id="series"><h2>17. Series (handout)</h2>
+<p>A Series is one labelled column (1-D). Default index 0, 1, 2, …</p>
+<pre class="code"><code>import pandas as pd
+a = [1, 7, 2]
+myvar = pd.Series(a)
+print(myvar)
+print(myvar[0])
+
+myvar = pd.Series(a, index=[&quot;x&quot;, &quot;y&quot;, &quot;z&quot;])
+print(myvar)</code></pre>
+</div><div class="section" id="df"><h2>18. DataFrame — the main table</h2>
+<p>A <strong>DataFrame</strong> is rows × columns. Variable name can be <code>df</code>, <code>data</code>, <code>myvar</code>, even <code>myvari</code> — that name is not a special Pandas concept.</p>
+<h3>From a dict — class-style</h3>
+<pre class="code"><code>import pandas as pd
+data = {
+    &quot;duration&quot;: [30, 45, 50],
+    &quot;location&quot;: [&quot;Hyderabad&quot;, &quot;Delhi&quot;, &quot;Mumbai&quot;],
+}
+df = pd.DataFrame(data)
+print(df)</code></pre>
+<h3>Handout cars example (three import styles)</h3>
+<pre class="code"><code>import pandas as pd
+mydataset = {
+    &quot;cars&quot;: [&quot;BMW&quot;, &quot;Volvo&quot;, &quot;Ford&quot;],
+    &quot;passings&quot;: [3, 7, 2],
+}
+myvar = pd.DataFrame(mydataset)
+print(myvar)
+
+# also valid: import pandas; pandas.DataFrame(...)
+# also: import pandas as pd  (preferred)</code></pre>
+<h3>Calories / duration + locate rows</h3>
+<pre class="code"><code>data = {&quot;calories&quot;: [420, 380, 390], &quot;duration&quot;: [50, 40, 45]}
+df = pd.DataFrame(data)
+print(df)
+print(df.loc[0])           # one row (Series)
+print(df.loc[[0, 1]])      # two rows (DataFrame)
+
+df = pd.DataFrame(data, index=[&quot;day1&quot;, &quot;day2&quot;, &quot;day3&quot;])
+print(df)
+print(df.loc[&quot;day2&quot;])      # named index</code></pre>
+<p>Class also: <code>df["location"]</code> or <code>df.location</code>; positional <code>df.iloc[0]</code>; label <code>df.loc[0]</code>. Indexing is zero-based like NumPy unless you set custom labels.</p>
+</div><div class="section" id="files"><h2>19. Loading files: CSV, JSON, Excel, XML</h2>
+<p><strong>CSV</strong> = Comma-Separated Values (tabular text; Excel-like table in a plain file).</p>
+<div class="formula">Volume,Weight
+10,20
+15,30
+20,40</div>
+<p>Different formats → <strong>different read functions</strong> → still a DataFrame.</p>
+<pre class="code"><code>import pandas as pd
+df = pd.read_csv(&quot;data.csv&quot;)
+print(df)
+print(df.to_string())   # handout: full table, not truncated
+
+df = pd.read_json(&quot;data.json&quot;)
+print(df.to_string())
+
+df = pd.read_excel(&quot;data.xlsx&quot;)</code></pre>
+<p>XML was mentioned in class: Python can read it, but the function/library differs. Focus for this lecture: CSV and JSON.</p>
+<h3>JSON</h3>
+<p><strong>JavaScript Object Notation</strong> — structured text, often key/value. Looks like a Python dict but is a <strong>file/interchange format</strong>, not Python itself.</p>
+<pre class="code"><code>{
+  &quot;id&quot;: 1,
+  &quot;name&quot;: &quot;John&quot;,
+  &quot;age&quot;: 30
+}</code></pre>
+<p>Class: converting JSON→CSV is a possible workflow but <strong>not required</strong>; <code>read_json</code> is enough.</p>
+<h3>Path / upload</h3>
+<p><strong>Local</strong> (VS Code, Spyder, Jupyter): put the file somewhere you can reach; paste the path into <code>read_csv</code>.</p>
+<p><strong>Google Colab:</strong> Files panel on the left → upload → then <code>pd.read_csv("data.csv")</code>. Instructor said Pandas is often already installed. Instructor was out of station (no writing pad); material would be shared as Word + <code>data.csv</code> and other files.</p>
+<pre class="code"><code>df = pd.read_csv(&quot;path/to/data.csv&quot;)
+df = pd.read_csv(&quot;car_data.csv&quot;)  # handout filename</code></pre>
+</div><div class="section" id="inspect"><h2>20. Inspect a dataset (class core + handout extras)</h2>
+<pre class="code"><code>print(df.head())       # first 5 rows (top)
+print(df.head(10))     # first 10
+print(df.head(2))      # handout
+print(df.tail())       # last 5
+print(df.tail(10))
+print(df.info())       # handout: dtypes, non-null counts, memory
+print(df.dtypes)       # class: per-column types
+print(df.describe())   # numeric summary
+print(df.to_numpy())   # handout: DataFrame → ndarray</code></pre>
+<p><code>describe()</code> typically reports: count, mean, std, min, 25%, 50% (median), 75%, max.</p>
+<p>Why dtypes matter for ML: numeric columns vs text/categories (encoding later). Example conceptual output: <code>age int64</code>, <code>weight float64</code>, <code>name object</code>.</p>
+</div><div class="section" id="manipulate"><h2>21. Select, filter, sort, copy, missing values (handout car_data)</h2>
+<p>Handout assumes a frame <code>df</code> from <code>car_data.csv</code> (columns include at least <code>Age</code> in the examples).</p>
+<pre class="code"><code>df.sort_index(axis=1, ascending=True)   # sort column labels
+df.sort_values(&quot;Age&quot;, ascending=False)
+
+df[&quot;Age&quot;]           # one column
+df2 = df[0:3]       # first three rows (Python slice)
+df[df.Age &gt; 35]     # condition
+
+copied_df = df.copy()
+copied_df[&quot;Age2&quot;] = [&quot;24&quot;, &quot;30&quot;, &quot;50&quot;, &quot;60&quot;, &quot;15&quot;, &quot;16&quot;, &quot;18&quot;, &quot;17&quot;, &quot;18&quot;, &quot;16&quot;]
+
+copied_df.dropna(how=&quot;any&quot;)     # drop rows with any NaN
+copied_df.fillna(value=5)       # fill NaNs with 5
+# note: handout typed Copied_df.fillna — same idea, watch capital C vs copied_df</code></pre>
+</div><div class="section" id="split-ml"><h2>22. Manual train/test split (handout)</h2>
+<p>Scikit-learn’s split comes later; the Word file shows a Pandas-only 70/30 split after shuffling:</p>
+<pre class="code"><code>import pandas as pd
+
+shuffle_df = df.sample(frac=1)           # shuffle all rows
+train_size = int(0.7 * len(df))
+train_set = shuffle_df[:train_size]
+test_set = shuffle_df[train_size:]</code></pre>
+<div class="tip">Shuffle first so the last 30% is not a biased “end of file” chunk. Later you will use <code>sklearn.model_selection.train_test_split</code> with a <code>random_state</code> for reproducibility.</div>
+</div><div class="section" id="pipeline"><h2>23. NumPy vs Pandas in the ML pipeline</h2>
+<table><thead><tr><th>NumPy</th><th>Pandas</th></tr></thead><tbody>
+<tr><td>Numerical computation, arrays, matrices, linear algebra, FFT</td><td>Structured/tabular datasets, DataFrames</td></tr>
+<tr><td><code>np.array([...])</code></td><td><code>pd.read_csv(...)</code> / <code>DataFrame</code></td></tr>
+<tr><td>Indexing, reshape, concat, axis</td><td>Load, clean, explore, manipulate</td></tr>
+</tbody></table>
+<div class="formula">DATASET → Pandas (load/explore/clean) → DataFrame → prepare → NumPy ops → sklearn → model</div>
+</div><div class="section" id="practice"><h2>24. Practice instructions from class</h2>
+<p>Instructor: do not obsess over theory yet. Practise arrays (index, slice, reshape, axis) by creating two arrays and watching the result. Practice is the point.</p>
+<ol>
+<li>Get a dataset (shared files or your own).</li>
+<li>Save it locally or upload in Colab.</li>
+<li>Copy path if needed.</li>
+<li><code>read_csv</code> / <code>read_json</code>.</li>
+<li><code>head</code>, <code>tail</code>, <code>describe</code>, <code>dtypes</code> / <code>info</code>.</li>
+</ol>
+</div><div class="section" id="qa"><h2>25. Student questions (class) — short answers</h2>
+<div class="qa"><strong>Add elements / add a whole array?</strong> Yes — concatenate, stack, and related ops. Practise rather than only reading.</div>
+<div class="qa"><strong>Is the inner <code>[1,2,3]</code> a list?</strong> Bare brackets = list. Passed into <code>np.array</code> it becomes ndarray. We define an array with <code>np.array()</code>, not by “being a list”.</div>
+<div class="qa"><strong>Higher-D indexing?</strong> Level by level, e.g. <code>arr[0][1][2]</code> or <code>arr[0,1,2]</code>. 5-D is allowed; visualisation stops at 3.</div>
+<div class="qa"><strong>Search an element in 1-D?</strong> Zero-based index. In 3-D, outer → inner → element (class found 6 that way). Handout also: <code>np.where</code>.</div>
+<div class="qa"><strong>Negative index?</strong> Yes, from the end.</div>
+<div class="qa"><strong>Other file formats?</strong> CSV, JSON, Excel, XML — different functions.</div>
+<div class="qa"><strong>JSON like Python?</strong> Similar look to dict; JSON is a data format. Can use JSON directly via <code>read_json</code>.</div>
+<div class="qa"><strong>First/last rows? Stats? dtypes?</strong> <code>head</code>/<code>tail</code> (default 5), <code>describe</code>, <code>dtypes</code> (and handout <code>info</code>).</div>
+</div><div class="section" id="cheatsheet"><h2>26. One-page command sheet</h2>
+<h3>NumPy</h3>
+<pre class="code"><code>import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+arr.ndim; arr.shape; arr.size; arr.dtype
+arr[0]; arr[-1]; arr[1:5]; arr[1:6:2]
+arr.reshape(2, 3); arr.reshape(2, -1)
+np.concatenate((a, b)); np.concatenate((A, B), axis=0)  # or 1
+np.stack / np.hstack / np.vstack / np.dstack
+np.array_split(arr, 3); np.hsplit(M, 3)
+np.where(arr == 4); np.searchsorted(sorted_arr, 7)
+np.sort(arr)
+matrix.T; matrix + 100; np.vectorize(fn)(matrix)
+sparse.csr_matrix(matrix)  # scipy</code></pre>
+<h3>Pandas</h3>
+<pre class="code"><code>import pandas as pd
+df = pd.read_csv(&quot;data.csv&quot;)          # also read_json, read_excel
+df = pd.DataFrame(data)
+s = pd.Series([1, 7, 2], index=[&quot;x&quot;, &quot;y&quot;, &quot;z&quot;])
+df.head(); df.tail(); df.info(); df.dtypes; df.describe(); df.to_numpy()
+df.loc[0]; df.loc[[0, 1]]; df.iloc[0]; df[&quot;col&quot;]
+df.sort_index(axis=1); df.sort_values(&quot;Age&quot;, ascending=False)
+df[0:3]; df[df.Age &gt; 35]; df.copy()
+df.dropna(how=&quot;any&quot;); df.fillna(value=5)
+shuffle = df.sample(frac=1)
+train = shuffle[:int(0.7*len(df))]; test = shuffle[int(0.7*len(df)):]</code></pre>
+</div><div class="section" id="takeaways"><h2>27. Exam takeaways (do not skip)</h2>
+<ol>
+<li>NumPy = numerical arrays (<code>ndarray</code>); Pandas = datasets (DataFrame).</li>
+<li>Index from 0; slice stop excluded; negative from the end; step = jump.</li>
+<li>1-D vector, 2-D matrix; N-D exists; <code>ndim</code> / <code>shape</code> / <code>size</code> / <code>dtype</code>.</li>
+<li><code>reshape</code> keeps element count; <code>-1</code> infers a dimension.</li>
+<li>Axis 0 vs 1 — verify by printing; concatenate vs stack/hstack/vstack/dstack.</li>
+<li>Load with the matching reader; inspect with head/tail/describe/dtypes/info.</li>
+<li>JSON ≠ dict; both can look similar.</li>
+<li>Cleaning: copy, filter, dropna, fillna; split only after shuffle if you roll your own 70/30.</li>
+<li>Goal of the lecture: foundation for ML, not becoming a Python language lawyer.</li>
+</ol>
+</div>
+            <div class="nav-footer">
+                <a href="index.html">← All EAI 6103 notes</a>
+                <a href="../advanced-machine-learning.html">Course page →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
