@@ -1255,25 +1255,46 @@
                         <td class="slno">65</td>
                         <td class="stmt">435. Non-overlapping Intervals</td>
                         <td><span class="pill diff-medium">Medium</span></td>
-                        <td class="solution"><a class="sol-link" href="blind-75/solution.html?n=65">Sol</a></td>
+                        <td class="solution"><a class="sol-link" href="blind-75/solutions/65-non-overlapping-intervals.html">Sol</a></td>
                         <td class="linkcell"><a href="https://leetcode.com/problems/non-overlapping-intervals/description/" target="_blank" rel="noopener noreferrer">Open</a></td>
-                        <td class="hint muted">—</td>
+                        <td class="hint hint-tooltip-cell">
+                            <button
+                                type="button"
+                                class="hint-dot"
+                                aria-label="Show hint"
+                                data-hint="Sort by start. No overlap → keep current. Overlap: if current ends later, remove current; else remove previous (keep current). Count removals."
+                            >?</button>
+                        </td>
                     </tr>
                     <tr>
                         <td class="slno">66</td>
                         <td class="stmt">252. Meeting Rooms</td>
                         <td><span class="pill diff-easy">Easy</span></td>
-                        <td class="solution"><a class="sol-link" href="blind-75/solution.html?n=66">Sol</a></td>
+                        <td class="solution"><a class="sol-link" href="blind-75/solutions/66-meeting-rooms.html">Sol</a></td>
                         <td class="linkcell"><a href="https://neetcode.io/problems/meeting-schedule/question?list=blind75" target="_blank" rel="noopener noreferrer">Open</a></td>
-                        <td class="hint muted">—</td>
+                        <td class="hint hint-tooltip-cell">
+                            <button
+                                type="button"
+                                class="hint-dot"
+                                aria-label="Show hint"
+                                data-hint="Sort by start. Scan: if intervals[i].start &lt; intervals[i-1].end → overlap, return false. Else true."
+                            >?</button>
+                        </td>
                     </tr>
                     <tr>
                         <td class="slno">67</td>
                         <td class="stmt">253. Meeting Rooms II</td>
                         <td><span class="pill diff-medium">Medium</span></td>
-                        <td class="solution"><a class="sol-link" href="blind-75/solution.html?n=67">Sol</a></td>
+                        <td class="solution"><a class="sol-link" href="blind-75/solutions/67-meeting-rooms-ii.html">Sol</a></td>
                         <td class="linkcell"><a href="https://neetcode.io/problems/meeting-schedule-ii/question?list=blind75" target="_blank" rel="noopener noreferrer">Open</a></td>
-                        <td class="hint muted">—</td>
+                        <td class="hint hint-tooltip-cell">
+                            <button
+                                type="button"
+                                class="hint-dot"
+                                aria-label="Show hint"
+                                data-hint="Sort by start. Min-heap of end times: if peek() ≤ start, poll (reuse room). Always add current end. Return heap.size()."
+                            >?</button>
+                        </td>
                     </tr>
                     <tr class="cat-row"><td colspan="6">Math &amp; Geometry</td></tr>
                     <tr>
