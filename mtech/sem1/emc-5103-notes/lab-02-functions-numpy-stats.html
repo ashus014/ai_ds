@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Lecture 5 (Lab) — Functions, NumPy &amp; grouped stats | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">EMC 5103 · Lecture 5 (Lab) · Lab 2 · notebook EMC5103_Lab2.ipynb</span>
+            <span class="badge badge-high">High</span>
+            <h1>Functions, NumPy arrays, and grouped mean / median</h1>
+            <p class="lede">Second lab notebook: write a function, scan a list for a minimum, vector arithmetic, NumPy summaries, then mean and median of a frequency table. Date on these notes: <strong>31 August 2026</strong>.</p>
+
+            <div class="section">
+                <h2>Jump to a topic</h2>
+                <ol class="toc">
+                    <li><a href="#fn">1. Functions</a></li>
+                    <li><a href="#min">2. Minimum — NumPy vs loop</a></li>
+                    <li><a href="#vec">3. Vector operations</a></li>
+                    <li><a href="#summ">4. min, max, mean, variance, median</a></li>
+                    <li><a href="#sort">5. Sorting</a></li>
+                    <li><a href="#gmean">6. Mean of a grouped distribution</a></li>
+                    <li><a href="#gmed">7. Median of a grouped distribution</a></li>
+                    <li><a href="#sheet">8. Exam sheet</a></li>
+                </ol>
+            </div>
+
+            <div class="section" id="fn">
+                <h2>1. Functions</h2>
+                <p>A function packages a calculation you can call later. Lab pattern: <code>def name(args):</code> then <code>return</code> a value (or print inside the function).</p>
+                <h3>1.1 Sum of two numbers</h3>
+                <pre class="code"><code>def sum_a_b(a,b):
+    sum = a+b
+    return sum
+
+# Test the function
+m=int(input(f"Enter your first number: "))
+n=int(input(f"Enter your second number: "))
+c=sum_a_b(m,n)
+print(f"The sum of {m} and {n} is {c}")</code></pre>
+                <div class="out">Enter your first number: 5
+Enter your second number: 10
+The sum of 5 and 10 is 15</div>
+                <p><code>sum</code> here is only a local variable name; it shadows Python’s built-in <code>sum()</code> inside the function. Fine for this lab.</p>
+
+                <h3>1.2 Even / odd as a function</h3>
+                <pre class="code"><code>def odd_even(a):
+  if a%2==0:
+    return print(f"The number {a} is even number")
+  else:
+    return print(f"The number {a} is odd number")</code></pre>
+                <pre class="code"><code>odd_even(5)</code></pre>
+                <div class="out">The number 5 is odd number</div>
+                <p><code>return print(...)</code> prints the message and returns <code>None</code> (because <code>print</code> returns <code>None</code>). For a later lab you would usually <code>return "even"</code> / <code>"odd"</code> and print at the call site.</p>
+            </div>
+
+            <div class="section" id="min">
+                <h2>2. Minimum — NumPy vs a loop</h2>
+                <pre class="code"><code>import numpy as np
+
+v1=np.array([2,1,3,6,0])
+v2=np.array([4,5,6,4,5,6])
+
+print(f"The minimum of given array is {np.min(v1)}")</code></pre>
+                <div class="out">The minimum of given array is 0</div>
+                <p><code>v2</code> is unused in this cell. <code>np.min</code> reads the smallest entry.</p>
+                <p>Same idea by hand: start with the first element, walk the rest, replace whenever you see a smaller value.</p>
+                <pre class="code"><code>def min_1(v):
+    min_val=v[0]
+    for num in v:
+      if num&lt;min_val:
+         min_val=num
+    return min_val
+print(f"The minimum of {v1} is {min_1(v1)}")</code></pre>
+                <div class="out">The minimum of [2 1 3 6 0] is 0</div>
+                <p>This cell still uses <code>v1</code> from the previous cell (Jupyter kernel). For exams: this is how you would argue “scan n elements, keep a running min.”</p>
+            </div>
+
+            <div class="section" id="vec">
+                <h2>3. Vector operations (same length)</h2>
+                <p>Here both arrays have length 5, so elementwise <code>+</code>, <code>*</code>, <code>/</code> work. (The unused <code>v2</code> in the min cell had length 6 — that would fail if added to <code>v1</code>.)</p>
+                <pre class="code"><code>import numpy as np
+
+v1=np.array([2,1,3,6,0])
+v2=np.array([4,5,6,4,6])
+
+# Addition
+print(f"The addition of v1 and v2 is {v1+v2}")
+
+# Elementwise product
+print(f"The elementwise product of v1 and v2 is {v1*v2}")
+
+# dot product
+print(f"The dot product of v1 and v2 is {v1@v2}")
+
+# Elementwise division
+print(f"The elementwise divisio of v1 and v2 is {v1/v2}")
+
+# sclar multiplication
+print(f"The multiplication of scalar {2} in v1 is {2*v1}")</code></pre>
+                <div class="out">The addition of v1 and v2 is [ 6  6  9 10  6]
+The elementwise product of v1 and v2 is [ 8  5 18 24  0]
+The dot product of v1 and v2 is 55
+The elementwise divisio of v1 and v2 is [0.5 0.2 0.5 1.5 0. ]
+The multiplication of scalar 2 in v1 is [4 3 5 8 2]</div>
+                <div class="formula">v1 + v2 = (2+4, 1+5, 3+6, 6+4, 0+6) = (6, 6, 9, 10, 6)
+v1 * v2 = (8, 5, 18, 24, 0)
+v1 · v2 = 8+5+18+24+0 = 55   (same as v1 @ v2)
+2 * v1  = (4, 3, 5, 8, 2)</div>
+                <p><code>*</code> is <strong>not</strong> matrix multiply; it is per-component. Dot product is <code>@</code> (or <code>np.dot</code>).</p>
+            </div>
+
+            <div class="section" id="summ">
+                <h2>4. NumPy summaries on v1 = [2, 1, 3, 6, 0]</h2>
+                <pre class="code"><code>import numpy as np
+
+v1=np.array([2,1,3,6,0])
+
+print(f"The minimum of given array is {np.min(v1)}")
+
+print(f"The maximum of given array is {np.max(v1)}")
+
+print(f"The minimum of given array is {np.mean(v1)}")
+
+print(f"The variance of given array is {np.var(v1)}")
+
+print(f"The median of given array is {np.median(v1)}")</code></pre>
+                <div class="out">The minimum of given array is 0
+The maximum of given array is 6
+The minimum of given array is 2.4
+The variance of given array is 4.24
+The median of given array is 2.0</div>
+                <p>Sorted values: 0, 1, 2, 3, 6. Mean (2+1+3+6+0)/5 = 12/5 = <strong>2.4</strong>. Median is the middle of five numbers: <strong>2</strong>. Variance here is NumPy’s default <strong>population</strong> variance (divide by n, not n−1):</p>
+                <div class="formula">var = [(2−2.4)² + (1−2.4)² + (3−2.4)² + (6−2.4)² + (0−2.4)²] / 5
+    = (0.16 + 1.96 + 0.36 + 12.96 + 5.76) / 5
+    = 21.2 / 5 = 4.24</div>
+                <div class="tip">The third print still says “minimum” but the code is <code>np.mean(v1)</code>. Trust the number 2.4, not that word. Saved Colab output also had an extra “ascending order” line from an older version of the cell; current source does not print that.</div>
+            </div>
+
+            <div class="section" id="sort">
+                <h2>5. Sorting</h2>
+                <pre class="code"><code>v1=[2,1,3,6,0]
+v3=sorted(v1,reverse=True)
+print(f"The ascending order of given array is {v3}")</code></pre>
+                <div class="out">The ascending order of given array is [6, 3, 2, 1, 0]</div>
+                <p><code>reverse=True</code> is <strong>descending</strong>. The print text still says “ascending”. For true ascending: <code>sorted(v1)</code> → <code>[0, 1, 2, 3, 6]</code>.</p>
+            </div>
+
+            <div class="section" id="gmean">
+                <h2>6. Mean of a grouped (class-interval) distribution</h2>
+                <p>For a frequency table, take the <strong>mid-point</strong> of each class as the stand-in for x, then</p>
+                <div class="formula">mean = (Σ f<sub>i</sub> x<sub>i</sub>) / (Σ f<sub>i</sub>)</div>
+                <pre class="code"><code>class_interval=[(0,10), (10,20), (20,30), (30,40),(40,50),(50,60)]
+frequency=[12,18,27,20,17,6]
+
+sum_fx=0
+sum_f=0
+for i in range(len(frequency)):
+    lower=class_interval[i][0]
+    upper=class_interval[i][1]
+    mid_point=(lower+upper)/2
+    sum_fx=sum_fx+frequency[i]*mid_point
+    sum_f=sum_f+frequency[i]
+
+mean=sum_fx/sum_f
+print(f"The mean of given distribution is {mean}")</code></pre>
+                <div class="out">The mean of given distribution is 28.0</div>
+                <table>
+                    <thead><tr><th>Class</th><th>f</th><th>mid x</th><th>f·x</th></tr></thead>
+                    <tbody>
+                        <tr><td>0–10</td><td>12</td><td>5</td><td>60</td></tr>
+                        <tr><td>10–20</td><td>18</td><td>15</td><td>270</td></tr>
+                        <tr><td>20–30</td><td>27</td><td>25</td><td>675</td></tr>
+                        <tr><td>30–40</td><td>20</td><td>35</td><td>700</td></tr>
+                        <tr><td>40–50</td><td>17</td><td>45</td><td>765</td></tr>
+                        <tr><td>50–60</td><td>6</td><td>55</td><td>330</td></tr>
+                        <tr><td></td><td>N = 100</td><td></td><td>Σfx = 2800</td></tr>
+                    </tbody>
+                </table>
+                <p>2800 / 100 = <strong>28</strong>.</p>
+            </div>
+
+            <div class="section" id="gmed">
+                <h2>7. Median of a grouped distribution</h2>
+                <p>Standard formula once you know the median class (first class whose cumulative frequency ≥ N/2):</p>
+                <div class="formula">Median = ℓ + h · (N/2 − C) / f</div>
+                <p>ℓ = lower limit of median class, h = class width, f = frequency of that class, C = cumulative frequency <strong>before</strong> that class, N = total frequency.</p>
+                <pre class="code"><code>class_interval=[(2000,3000), (3000,4000), (4000,5000), (5000,6000)]
+frequency=[3,5,20,10,5]
+
+N=sum(frequency)
+N_half=N/2
+
+cf=[]
+total=0
+for f in frequency:
+    total=total+f
+    cf.append(total)
+
+for i in range(len(cf)):
+    if cf[i]&gt;=N_half:
+      median_index=i
+      break
+
+h=class_interval[i][1]-class_interval[i][0]
+l=class_interval[i][0]
+f=frequency[i]
+c=cf[i-1]
+
+median=l+h*(N_half-c)/f
+print(f"Median of class interval is {median}")</code></pre>
+                <div class="out">Median of class interval is 4675.0</div>
+                <p>N = 3+5+20+10+5 = <strong>43</strong>, N/2 = <strong>21.5</strong>.</p>
+                <table>
+                    <thead><tr><th>Class</th><th>f</th><th>cf</th></tr></thead>
+                    <tbody>
+                        <tr><td>2000–3000</td><td>3</td><td>3</td></tr>
+                        <tr><td>3000–4000</td><td>5</td><td>8</td></tr>
+                        <tr><td>4000–5000</td><td>20</td><td>28 ← first cf ≥ 21.5</td></tr>
+                        <tr><td>5000–6000</td><td>10</td><td>38</td></tr>
+                        <tr><td>(extra f = 5, no matching interval)</td><td>5</td><td>43</td></tr>
+                    </tbody>
+                </table>
+                <div class="formula">ℓ = 4000,  h = 1000,  f = 20,  C = 8
+Median = 4000 + 1000 · (21.5 − 8) / 20
+       = 4000 + 1000 · 13.5 / 20
+       = 4000 + 675 = 4675</div>
+                <div class="tip">The notebook has <strong>4 class intervals and 5 frequencies</strong>. The extra 5 is included in N and in cf, but the median class is still index i = 2, which exists, so the printed 4675 is consistent with this code. For a clean exam answer, frequencies should match the number of classes. Also: after the loop, <code>i</code> is the same as <code>median_index</code>; they used <code>i</code> in the formula.</div>
+            </div>
+
+            <div class="section" id="sheet">
+                <h2>8. Exam sheet</h2>
+                <table>
+                    <thead><tr><th>Need</th><th>Lab pattern</th></tr></thead>
+                    <tbody>
+                        <tr><td>Reusable calculation</td><td><code>def f(x): return ...</code></td></tr>
+                        <tr><td>Smallest entry</td><td><code>np.min</code> or running min in a loop</td></tr>
+                        <tr><td>Elementwise vs dot</td><td><code>v1*v2</code> vs <code>v1 @ v2</code></td></tr>
+                        <tr><td>Mean of a list</td><td><code>np.mean</code> = Σx / n</td></tr>
+                        <tr><td>Grouped mean</td><td>mid-point x, then Σfx / Σf</td></tr>
+                        <tr><td>Grouped median</td><td>ℓ + h(N/2 − C)/f on the median class</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Lab 2 takeaway:</strong> functions + NumPy for raw data; class intervals use mid-points for the mean and the cumulative-frequency formula for the median. Those two grouped formulae are the statistical core of this lab.</p>
+            </div>
+
+            <div class="nav-footer">
+                <a href="lab-01-python-basics.html">← Lecture 3 (Lab 1)</a>
+                <a href="../emc-5103-probability-and-statistics.html">Course page →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
