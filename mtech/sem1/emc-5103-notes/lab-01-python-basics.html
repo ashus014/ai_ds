@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Lecture 3 (Lab) — Python basics | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">EMC 5103 · Lecture 3 (Lab) · Lab 1 · notebook EMC5103_Lab1.ipynb</span>
+            <span class="badge badge-high">High</span>
+            <h1>Python basics for Probability &amp; Statistics lab</h1>
+            <p class="lede">First lab notebook: lists, input and arithmetic, strings, if/else, loops, prime check, swap, Fibonacci. Date on these notes: <strong>31 August 2026</strong>. Later labs will use this syntax for simulations and sampling.</p>
+
+            <div class="section">
+                <h2>Jump to a topic</h2>
+                <ol class="toc">
+                    <li><a href="#lists">1. Lists</a></li>
+                    <li><a href="#arith">2. Input and arithmetic</a></li>
+                    <li><a href="#str">3. Strings</a></li>
+                    <li><a href="#if">4. if / else (even–odd)</a></li>
+                    <li><a href="#loop">5. for loops</a></li>
+                    <li><a href="#prime">6. Prime check</a></li>
+                    <li><a href="#swap">7. Swap two numbers</a></li>
+                    <li><a href="#fib">8. Fibonacci series</a></li>
+                    <li><a href="#sheet">9. Command sheet</a></li>
+                </ol>
+            </div>
+
+            <div class="section" id="lists">
+                <h2>1. Lists</h2>
+                <p>A list holds an ordered sequence. Elements can be mixed types (int and string in this lab). Indexing is <strong>0-based</strong>; <code>mylist[-1]</code> is the last element.</p>
+                <table>
+                    <thead><tr><th>Operation</th><th>What it does in this notebook</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>print(...)</code></td><td>Show a value</td></tr>
+                        <tr><td><code>append(x)</code></td><td>Add <code>x</code> at the end</td></tr>
+                        <tr><td><code>insert(i, x)</code></td><td>Put <code>x</code> at index <code>i</code> (here index 1 = after the first item)</td></tr>
+                        <tr><td><code>len(mylist)</code></td><td>Number of elements</td></tr>
+                        <tr><td><code>del mylist[0]</code></td><td>Delete by position</td></tr>
+                        <tr><td><code>remove('Lab')</code></td><td>Delete the first matching <em>value</em></td></tr>
+                        <tr><td><code>mylist[0] = 'AMC'</code></td><td>Replace the element at index 0</td></tr>
+                        <tr><td><code>extend([...])</code></td><td>Append several values at once</td></tr>
+                        <tr><td><code>count(20)</code></td><td>How many times 20 appears</td></tr>
+                        <tr><td><code>index('EMC5103')</code></td><td>First index of that value</td></tr>
+                        <tr><td><code>clear()</code></td><td>Empty the list → <code>[]</code></td></tr>
+                    </tbody>
+                </table>
+                <pre class="code"><code># To print anything in Python
+print("Hello world")
+
+# Define list
+mylist=[1,2,'EMC5103']
+print(mylist)
+
+# Append any other element in the list
+mylist.append('Lab')
+print(mylist)
+
+# If you want to enter some new element in between two elements
+mylist.insert(1,'Monday')
+print(mylist)
+
+# To print based on the index
+print(mylist[-1])
+
+# Length of the list
+print(len(mylist))
+
+# To delete any element
+del mylist[0]
+print(mylist)
+
+# Remove the element based on the information about element
+mylist.remove('Lab')
+print(mylist)
+
+# To change element
+mylist[0]='AMC'
+print(mylist)
+
+# Add multiple elements
+mylist.extend([10,20,30,10])
+print(mylist)
+
+# Count the number occurance of any element
+a=mylist.count(20)
+print(a)
+
+# To get the index of element
+print(mylist.index('EMC5103'))
+
+# Clear the list
+mylist.clear()
+print(mylist)</code></pre>
+                <div class="out">Hello world
+[1, 2, 'EMC5103']
+[1, 2, 'EMC5103', 'Lab']
+[1, 'Monday', 2, 'EMC5103', 'Lab']
+Lab
+5
+['Monday', 2, 'EMC5103', 'Lab']
+['Monday', 2, 'EMC5103']
+['AMC', 2, 'EMC5103']
+['AMC', 2, 'EMC5103', 10, 20, 30, 10]
+1
+2
+[]</div>
+                <div class="tip"><strong>Trace after insert:</strong> <code>[1, 'Monday', 2, 'EMC5103', 'Lab']</code> has length 5. After <code>del mylist[0]</code> the 1 is gone. <code>count(20)</code> is 1 (only one 20). <code>index('EMC5103')</code> is 2 on <code>['AMC', 2, 'EMC5103', 10, 20, 30, 10]</code>.</div>
+            </div>
+
+            <div class="section" id="arith">
+                <h2>2. Input and arithmetic</h2>
+                <p><code>input()</code> always returns a <strong>string</strong>. Wrap with <code>int(...)</code> before doing numeric work. f-strings put variables inside <code>{ }</code>.</p>
+                <p>Notebook operators: <code>+</code> sum, <code>-</code> subtraction (spelled “substraction” in the print text), <code>*</code> product, <code>/</code> true division (float), <code>%</code> remainder (“Reminder” in the print text).</p>
+                <pre class="code"><code>a=int(input("Enter your first element "))
+b=int(input("Enter your second element "))
+
+print(f"The sum of {a} and {b} is {a+b}")
+print(f"The substraction of {a} and {b} is {a-b}")
+print(f"The product of {a} and {b} is {a*b}")
+print(f"The division of {a} by {b} is {a/b}")
+print(f"Reminder when {a} is devided by {b} is {a%b}")</code></pre>
+                <div class="out">Enter your first element 10
+Enter your second element 3
+The sum of 10 and 3 is 13
+The substraction of 10 and 3 is 7
+The product of 10 and 3 is 30
+The division of 10 by 3 is 3.3333333333333335
+Reminder when 10 is devided by 3 is 1</div>
+                <div class="example">10 % 3 = 1 because 3×3=9 with remainder 1. <code>/</code> is not integer division; use <code>//</code> if you later need the quotient 3.</div>
+            </div>
+
+            <div class="section" id="str">
+                <h2>3. Strings</h2>
+                <p><code>+</code> concatenates. <code>.upper()</code> / <code>.lower()</code> change case. <code>.count('C')</code> counts that character (here 1 in <code>EMC</code>).</p>
+                <pre class="code"><code># Strings
+str1=input("Enter your first choice")
+str2=input("Enter your second choice")
+
+print(str1+str2)
+print(str1.upper())
+print(str1.lower())
+print(str1.count('C'))</code></pre>
+                <div class="out">Enter your first choiceEMC
+Enter your second choiceLab
+EMCLab
+EMC
+emc
+1</div>
+                <p>Lab run: first string already uppercase, so <code>.upper()</code> looks unchanged.</p>
+            </div>
+
+            <div class="section" id="if">
+                <h2>4. if / else — even and odd</h2>
+                <p>Notebook skeleton:</p>
+                <pre class="code"><code># if condition 1:
+#    statement 1
+# elif condition 2:
+#    statement 2
+# .....
+# else:
+#     statemnt n</code></pre>
+                <p>Even ⇔ divisible by 2 ⇔ <code>a % 2 == 0</code>.</p>
+                <pre class="code"><code># Check even and odd number
+
+a=int(input("Enter your choice"))
+
+if a%2==0:
+  print(f"The number {a} is even number")
+else:
+  print(f"The number {a} is odd number")</code></pre>
+                <div class="out">Enter your choice3
+The number 3 is odd number</div>
+            </div>
+
+            <div class="section" id="loop">
+                <h2>5. for loops</h2>
+                <p>Use a loop when a block should run again and again.</p>
+                <h3>5.1 Index style — <code>range(len(...))</code></h3>
+                <p><code>range(len(mylist1))</code> gives 0, 1, …, n−1. Then <code>mylist1[x]</code> is the element at that index.</p>
+                <pre class="code"><code># We want to run certain block again and again then we use loop
+
+mylist1=[1,2,'EMC5103',190,10,298,19]
+print(mylist1)
+
+for x in range(len(mylist1)):
+   print(mylist1[x])</code></pre>
+                <div class="out">[1, 2, 'EMC5103', 190, 10, 298, 19]
+1
+2
+EMC5103
+190
+10
+298
+19</div>
+                <h3>5.2 Direct style — <code>for x in mylist1</code></h3>
+                <p>Same printed elements; <code>x</code> is the value, not the index. Next cell still uses <code>mylist1</code> from this cell (Colab/Jupyter kernel state).</p>
+                <pre class="code"><code>for x in mylist1:
+   print(x)</code></pre>
+                <div class="out">1
+2
+EMC5103
+190
+10
+298
+19</div>
+            </div>
+
+            <div class="section" id="prime">
+                <h2>6. Prime check</h2>
+                <p>A prime is an integer &gt; 1 whose only positive divisors are 1 and itself. Lab logic:</p>
+                <ul>
+                    <li>If <code>a &lt;= 1</code> → not prime.</li>
+                    <li>Else trial-divide by <code>i</code> from 2 through <code>int(a/2)+1</code> (inclusive of the last range stop? <code>range(2, int(a/2)+1)</code> goes up to <code>int(a/2)</code> because range’s end is exclusive). If any <code>a % i == 0</code>, not prime, set <code>flag = 1</code> and <code>break</code>.</li>
+                    <li>If <code>flag</code> stayed 0 → prime.</li>
+                </ul>
+                <pre class="code"><code>a=int(input("Enter your number: "))
+
+if a &lt;= 1:
+    print("Number is not prime")
+else:
+   flag = 0
+   for i in range(2, int(a/2)+1):
+        if a%i == 0:
+            print("Number is not prime")
+            flag = 1
+            break
+
+   if flag == 0:
+        print("number is prime")</code></pre>
+                <div class="out">Enter your number: 5
+number is prime</div>
+                <div class="tip">For 5, <code>int(5/2)+1 = 3</code>, so <code>range(2, 3)</code> tests only i = 2. 5 % 2 ≠ 0 → flag stays 0 → prime. This is a teaching version, not a fastest primality test.</div>
+            </div>
+
+            <div class="section" id="swap">
+                <h2>7. Swap two numbers</h2>
+                <p>Classic three-step swap with a temporary variable so you do not lose the first value:</p>
+                <div class="formula">var1 = a
+a = b
+b = var1</div>
+                <pre class="code"><code>a=int(input("Enter your first number: "))
+b=int(input("Enter your second number: "))
+
+print(f"The numbers before swapping are {a} and {b}")
+var1=a
+a=b
+b=var1
+
+print(f"The numbers after swapping are {a} and {b}")</code></pre>
+                <div class="out">Enter your first number: 10
+Enter your second number: 2
+The numbers before swapping are 10 and 2
+The numbers aftre swapping are 2 and 10</div>
+                <p>Source prints “after”; the saved Colab output shows the typo “aftre”. Values 10 and 2 swap to 2 and 10. Python can also swap with <code>a, b = b, a</code>; the lab uses an explicit temp.</p>
+            </div>
+
+            <div class="section" id="fib">
+                <h2>8. Fibonacci series</h2>
+                <p>Start with <code>[0, 1]</code>. Each next term is the sum of the previous two. Loop from index 2 up to (not including) <code>n</code> so the list has length <code>n</code>.</p>
+                <pre class="code"><code>n=int(input("Enter the limit of the series: "))
+fib=[0, 1]
+
+for i in range(2,n):
+     fib.append(fib[i-2]+fib[i-1])
+
+print(fib)</code></pre>
+                <div class="out">Enter the limit of the series: 10
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</div>
+                <div class="tip">If someone entered n = 0 or 1 this starter list would be wrong; the lab assumes n ≥ 2 (here n = 10). Fibonacci shows up later in algorithms and discrete maths; here it is just list + loop practice.</div>
+            </div>
+
+            <div class="section" id="sheet">
+                <h2>9. Command sheet</h2>
+                <table>
+                    <thead><tr><th>Need</th><th>Lab pattern</th></tr></thead>
+                    <tbody>
+                        <tr><td>Read an integer</td><td><code>a = int(input("..."))</code></td></tr>
+                        <tr><td>Print with values</td><td><code>print(f"... {a} ...")</code></td></tr>
+                        <tr><td>Remainder / even</td><td><code>a % b</code>, <code>a % 2 == 0</code></td></tr>
+                        <tr><td>Grow a list</td><td><code>append</code>, <code>insert</code>, <code>extend</code></td></tr>
+                        <tr><td>Walk a list</td><td><code>for x in L:</code> or <code>for i in range(len(L)):</code></td></tr>
+                        <tr><td>Stop a loop early</td><td><code>break</code> (prime cell)</td></tr>
+                        <tr><td>Swap</td><td>temp, or later <code>a, b = b, a</code></td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Lab 1 takeaway:</strong> lists + input + conditions + loops are enough to write the small programs in this notebook. Probability labs will reuse the same ideas when you generate samples and count outcomes.</p>
+            </div>
+
+            <div class="nav-footer">
+                <a href="index.html">← All EMC 5103 notes</a>
+                <a href="01-conditional-probability-and-bayes.html">Theory topic 1 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
