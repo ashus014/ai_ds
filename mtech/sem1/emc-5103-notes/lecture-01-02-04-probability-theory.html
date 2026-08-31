@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../../favicon.png">
+    <title>Lectures 1, 2 &amp; 4 — Probability Theory | EMC 5103</title>
+    <link rel="stylesheet" href="notes-style.css">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+    <style>
+        .page-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 0.75em;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        .section ol {
+            list-style: decimal;
+            margin-left: 8px;
+            padding-left: 22px;
+        }
+        .section ol li {
+            padding-left: 6px;
+        }
+        .section ol li:before { content: none; }
+        .section ul {
+            list-style: none;
+        }
+        mjx-container {
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        mjx-container[display="true"] {
+            display: block;
+            margin: 12px 0;
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <a href="../../../index.html" class="navbar-brand">🎓 Ashu Singh</a>
+            <a href="index.html" class="back-link">← All Notes</a>
+            <a href="../emc-5103-probability-and-statistics.html" class="back-link">← EMC 5103</a>
+        </nav>
+        <div class="main-content">
+            <span class="topic-num">EMC 5103 · Lectures 1, 2 &amp; 4 (theory) · handwritten notes pages 2–24</span>
+            <span class="badge badge-high">High</span>
+            <h1>Probability theory</h1>
+            <p class="lede">Combined theory for Lectures 1, 2 and 4. Transcribed from the original handwritten notes (pages 2–24). Every definition, remark, theorem, proof, numerical and Bayes example from that HTML is on this page. Formulas use MathJax.</p>
+
+            <div class="section">
+                <h2>Jump to a topic</h2>
+                <ol class="toc">
+                    <li><a href="#p2">1. Probability &mdash; Introduction</a></li>
+                    <li><a href="#p3">2. Basic Terminology</a></li>
+                    <li><a href="#p4">Short Story (History)</a></li>
+                    <li><a href="#p5">Events &amp; Mathematical Probability</a></li>
+                    <li><a href="#p6">Remarks &amp; Limitation of Classical Def<sup>n</sup></a></li>
+                    <li><a href="#p7">Examples (not equally likely)</a></li>
+                    <li><a href="#p8">Numericals (Q1&ndash;Q3)</a></li>
+                    <li><a href="#p9">Solutions (Q3) &amp; Q4, Q5</a></li>
+                    <li><a href="#p10">Statistical &amp; Subjective Probability; Sets</a></li>
+                    <li><a href="#p11">Axiomatic Approach to Probability</a></li>
+                    <li><a href="#p12">Theorems on Probability (1 &amp; 2)</a></li>
+                    <li><a href="#p13">Theorem 3 (two events)</a></li>
+                    <li><a href="#p14">Addition Theorem of Probability</a></li>
+                    <li><a href="#p15">Proof by Induction (n events)</a></li>
+                    <li><a href="#p16">Examples: loaded die; university</a></li>
+                    <li><a href="#p17">University example (solution)</a></li>
+                    <li><a href="#p18">Multiplication Theorem of Probability</a></li>
+                    <li><a href="#p19">Conditional Probability; Bayes Theorem</a></li>
+                    <li><a href="#p20">Multiplication Theorem for n Events</a></li>
+                    <li><a href="#p21">Independence of Events</a></li>
+                    <li><a href="#p22">Bayes Theorem (statement &amp; proof)</a></li>
+                    <li><a href="#p23">The Tabular Approach</a></li>
+                    <li><a href="#p24">Bayes Theorem &mdash; Numerical</a></li>
+                </ol>
+            </div>
+            <div class="section" id="p2">
+<span class="page-label">Page 1</span>
+          <h2>Probability</h2>
+          <p>If an experiment is repeated under essentially homogeneous &amp; similar conditions, we generally come across two types of situations &mdash;</p>
+          <ol>
+            <li>The result or what is usually known as the &lsquo;outcome&rsquo; is unique or certain.</li>
+            <li>The result is not unique but may be one of the several possible outcomes.</li>
+          </ol>
+          <p>The phenomenon covered by (i) are known as &lsquo;deterministic&rsquo; or phenomenon. By deterministic phenomenon we mean one in which the result can be predicted with certainty.</p>
+          <p>eg-(a) For a perfect gas, \(V \propto \dfrac{1}{P}\) &nbsp; i.e. \(PV = \text{constt.}\)</p>
+          <p>(b) Newton law, \(v = u + at\)</p>
+          <p>(c) Ohm's Law, \(C = \dfrac{E}{R}\)</p>
+          <p>(d) Speed \(= \dfrac{\text{Distance}}{\text{Time}}\)</p>
+          <p>However, there are phenomenon which do not lend themselves to deterministic approach &amp; are known as probabilistic phenomenon.</p>
+          <p>eg (a) In a random toss of a uniform coin we are not sure of getting the head or tail.</p>
+          <p>(b) A manufacturer cannot ascertain the future demand of his product with certainty.</p>
+          <p>(c) Possibly, it will rain tonight.</p>
+          <p>(d) There is a high chance of my getting the job next month.</p>
+          <p>(e) The odds are 3:2 in favour of getting the contract applied for.</p>
+            </div>
+            <div class="section" id="p3">
+<span class="page-label">Page 2</span>
+          <p>All the above sentences, with words like &lsquo;possibly&rsquo;, &lsquo;high chance&rsquo;, &lsquo;likely&rsquo; &amp; &lsquo;odds&rsquo; are expressions indicating a degree of uncertainty about the happening of the event.</p>
+          <p>A numerical measures of uncertainty is provided by important branch of Mathematics called the &ldquo;Theory of Probability&rdquo;.</p>
+          <p>Broadly, there are three possible states of expectation &mdash; &lsquo;certainty&rsquo;, &lsquo;impossibility&rsquo; &amp; &lsquo;uncertainty&rsquo;. The probability theory describes certainty by 1, impossibility by 0 &amp; the various grades of uncertainties by coefficients ranging between 0 &amp; 1.</p>
+          <h3>Basic Terminology</h3>
+          <ol>
+            <li><strong>Random Experiment :&mdash;</strong> If in each trial of an experiment conducted under identical conditions, the outcome is not unique, but may be any one of the possible outcomes, then such an experiment is called a random experiment.</li>
+            <li><strong>Outcome :&mdash;</strong> The result of a random experiment will be called an outcome.</li>
+            <li><strong>Trial &amp; Event :&mdash;</strong> Any particular performance of a random experiment is called a trial &amp; outcome or combination of outcomes are termed as events.</li>
+            <li><strong>Exhaustive Events or Cases :&mdash;</strong> The total number of possible outcomes of a random experiment is known as the exhaustive events or cases.</li>
+            <li><strong>Favourable Events :&mdash;</strong> The number of cases favourable to an event in a trial is the number of outcomes which entail the happening of the event.</li>
+          </ol>
+            </div>
+            <div class="section" id="p4">
+<span class="page-label">Page 3</span>
+          <h2>Short Story</h2>
+          <p>Galileo (1564&ndash;1642), an Italian mathematician, was the first to attempt at a quantitative measure of probability while dealing with some problems related to the theory of dice in gambling.</p>
+          <p>But the first foundation of the mathematical theory of prob. was laid in the mid-seventeenth century of two French mathematician, B. Pascal (1623&ndash;62) &amp; P. Fermat (1601&ndash;65), while solving a number of problems posed by French gambler &amp; noble man Chevalier-De-Mere to Pascal. The famous &lsquo;problem of points&rsquo; posed by De-Mere to Pascal is:</p>
+          <div class="tip">&ldquo;Two persons play a game of chance&rdquo;. the person who first gains a certain number of points wins the stake. They stop playing before the game is completed. How is the stake to be decided on the basis of the number of points each has won?&rdquo;</div>
+          <p>The two mathematicians, after a correspondence between themselves ultimately solved this problem &amp; this correspondence laid the first foundation of the science of probability.</p>
+          <ul>
+            <li>J. Bernoulli (1654&ndash;1705) &rarr; Treatise on Probability</li>
+            <li>&rarr; T. Bayes (Inverse prob.)</li>
+            <li>&rarr; P.S. Laplace</li>
+            <li>&rarr; Chebyshev</li>
+            <li>&rarr; Markoff</li>
+            <li>&rarr; Liapounoff</li>
+            <li>&rarr; Khintchine</li>
+            <li>&rarr; A. Kolmogorov</li>
+          </ul>
+            </div>
+            <div class="section" id="p5">
+<span class="page-label">Page 4</span>
+          <ol start="6">
+            <li><strong>Mutually Exclusive Events :&mdash;</strong> Events are said to be mutually exclusive if the happening of any one of them precludes the happening of all the others i.e. if no two or more of them can happen simultaneously in the same trial.</li>
+            <li><strong>Equally Likely Events :&mdash;</strong> Outcomes of trial are said to be equally likely if taking into consideration all the relevant evidences, there is no reason to expect one in preference to the others.</li>
+            <li><strong>Independent Events :&mdash;</strong> Several events are said to be independent if the happening of an event is not affected by the supplementary knowledge concerning the occurence of any number of the remaining events.</li>
+          </ol>
+          <h3>Mathematical (or Classical or &lsquo;A Priori&rsquo;) Probability :&mdash;</h3>
+          <p><strong>Def<sup>n</sup>:&mdash;</strong> If a random experiment or trial results in &lsquo;n&rsquo; exhaustive, mutually exclusive &amp; equally likely outcomes, out of which &lsquo;m&rsquo; are favourable to the occurence of an event E, then the probability &lsquo;p&rsquo; of occurence of E, is denoted by P(E), is given by &mdash;</p>
+          <p>\[ p = P(E) = \frac{\text{Number of favourable cases}}{\text{Total no. of exhaustive cases}} = \frac{m}{n} \qquad (*) \]</p>
+          <div class="tip">This definition was given by James Bernoulli who was the first person to obtain quantitative measure of uncertainty.</div>
+            </div>
+            <div class="section" id="p6">
+<span class="page-label">Page 4</span>
+          <h3>Remarks</h3>
+          <p>(i) Since \(m \geq 0,\ n > 0\ \&\ m \leq n\) &mdash;</p>
+          <p>\[ P(E) \geq 0 \quad \& \quad P(E) \leq 1 \]</p>
+          <p>\[ \Rightarrow \quad \boxed{\,0 \leq P(E) \leq 1\,} \]</p>
+          <p>(ii) Sometimes I we express (*) by saying that &ldquo;odds in favour of E are \(m:(n-m)\) odds against E are \((n-m):m\).</p>
+          <p>(iii) The non-happening of the event E is called the complementary event of E &amp; is denoted by \(\bar{E}\) or \(E^c\).</p>
+          <p>\[ p + q = 1 \]</p>
+          <p>\[ P(E) + P(\bar{E}) = 1 \]</p>
+          <p>(iv) \(P(E) = 1\), E is called a certain event</p>
+          <p>\(P(E) = 0\), E is called an impossible event</p>
+          <h3>Limitation of Classical Def<sup>n</sup></h3>
+          <p>This definition of classical probability break down in the following cases &mdash;</p>
+          <ol>
+            <li>If the various outcomes of the random experiment are not equally likely.</li>
+            <li>If the exhaustive number of outcomes of the random experiment is infinite or unknown.</li>
+          </ol>
+            </div>
+            <div class="section" id="p7">
+<span class="page-label">Page 5</span>
+          <p>.(i)</p>
+          <p>eg -(a) The prob. that a candidate will pass in a certain test is not 50% since two possible outcomes, viz, success &amp; failure (excluding the possible of a compartment) are not equally likely.</p>
+          <p>(b) The probability that a ceiling fan in a room will fall is \(\tfrac{1}{2}\), since the events of the fan &lsquo;falling&rsquo; &amp; &lsquo;not falling&rsquo; though mutually exclusive &amp; exhaustive, are not equally likely. In fact, the prob. of the fan falling will be almost zero.</p>
+          <p>(c) If a person jumps from a running train, then the prob. of his survival will not be 50%, since in this case the events survival &amp; death, though exhaustive and mutually exclusive, are not equally likely.</p>
+            </div>
+            <div class="section" id="p8">
+<span class="page-label">Page 6</span>
+          <h2>Numericals</h2>
+          <p><strong>(1)</strong> What is the chance that a leap year selected at random will contain 53 Sundays?</p>
+          <p><strong>Sol.</strong> In a leap year (which consist of 366 days), there are 52 complete weeks and 2 days over. The following are the possible combinations for these two over days.</p>
+          <ol>
+            <li>Sunday &amp; Monday &check;</li>
+            <li>Monday &amp; Tuesday</li>
+            <li>Tuesday &amp; Wednesday</li>
+            <li>Wednesday &amp; Thursday</li>
+            <li>Thursday &amp; Friday</li>
+            <li>Friday &amp; Saturday</li>
+            <li>Saturday &amp; Sunday &check;</li>
+          </ol>
+          <p>\(\therefore\) Required Probability \(= \dfrac{2}{7}\) &nbsp;&nbsp;[unbiased]</p>
+          <p><strong>(2)</strong> Two dice are thrown. Find the probability that</p>
+          <ol>
+            <li>both the dice show the same number</li>
+            <li>the first die shows 6</li>
+            <li>the total of the number on the dice is 8</li>
+            <li>the total of the number on the dice is greater than 8.</li>
+            <li>the total of the number on the dice is 13,</li>
+            <li>the total of the number on the dice is any number from 2 to 12.</li>
+          </ol>
+          <p><strong>(3) (a)</strong> Among the digits 1,2,3,4,5 at first one is chosen &amp; then a second selection is made among the remaining four digits. Assuming that all twenty possible outcomes have equal probabilities, find the probability that on odd digit will be selected.</p>
+          <p>(i) the first time, (ii) the second time, &amp; (iii) both times</p>
+          <p><strong>(b)</strong> From 25 tickets, marked with first 25 numerals, one is drawn at random. Find the chance that (i) it is multiple of 5 or 7</p>
+          <p>(ii) it is multiple of 3 or 7.</p>
+            </div>
+            <div class="section" id="p9">
+<span class="page-label">Page 7</span>
+          <p><strong>Sol.</strong></p>
+          <p>(i) Now there are 12 cases in which the first digit is odd, i.e.</p>
+          <p>(1,2), (1,3), (1,4), (1,5), (3,1), (3,2), (3,4), (3,5), (5,1), (5,2), (5,3) &amp; (5,4)</p>
+          <p>\(\therefore\) Required Probability \(= \dfrac{12}{20} = \dfrac{3}{5}\)</p>
+          <p>(ii) Also there are 12 cases in which the second digit drawn is odd i.e.</p>
+          <p>(2,1), (3,1), (4,1), (5,1), (1,3), (2,3), (4,3), (5,3), (1,5), (2,5), (3,5) &amp; (4,5)</p>
+          <p>\(\therefore\) R.P. \(= \dfrac{12}{20} = \dfrac{3}{5}\)</p>
+          <p>(iii) There are six cases in which both the digits drawn are odd ie.</p>
+          <p>(1,3), (1,5), (3,1), (3,5), (5,1) &amp; (5,3)</p>
+          <p>R.P. \(= \dfrac{6}{20} = \dfrac{3}{10}\)</p>
+          <p><strong>b.(i)</strong> Multiple of 5 are 5,10,15,20 &amp; 25 i.e. 5</p>
+          <p>&amp; multiple of 7 are 7,14,21 i.e. 3</p>
+          <p>\(\therefore RP = \dfrac{5+3}{25} = \dfrac{8}{25}\)</p>
+          <p>(ii) Multiple of 3 are 3,6,9,12,15,18,21,24 i.e. 8</p>
+          <p>Multiple of 7 &nbsp; i.e. 3</p>
+          <p>\(\therefore RP = \dfrac{8+3}{25}\)</p>
+          <p><strong>Que (4)</strong> What is the probability of getting 9 cards of the same suit in one hand at a game of bridge.</p>
+          <p><strong>Sol.</strong></p>
+          <p><strong>Que (5)</strong> A man is dealt 4 spade cards from an ordinary pack of 52 cards. If he is given three more cards, find the probability p at least one of the additional card is also a spade.</p>
+          <p><strong>Sol.</strong></p>
+            </div>
+            <div class="section" id="p10">
+<span class="page-label">Page 5</span>
+          <h2>Statistical (or Empirical) Probability</h2>
+          <p><strong>Def<sup>n</sup>:&mdash;</strong> If an experiment is performed repeatedly under essentially homogeneous &amp; identical conditions, then the limiting value of the ratio of the number of times the event occurs to the number of trials, as the number of trials becomes indefinitely large, is called the probability of happening of the event, it being assumed that the limit is finite &amp; unique.</p>
+          <p>Symbolically, if in N-trials an event E happens M times, then the probability of the happening of E, denoted by P(E), is given by :</p>
+          <p>\[ P(E) = \lim_{N \to \infty} \frac{M}{N} \]</p>
+          <h3>Limitation</h3>
+          <ol>
+            <li>If an experiment is repeated a large number of times, the experimental conditions may not remain identical &amp; homogeneous.</li>
+            <li>The limit may not attain a unique value, however large N may be.</li>
+          </ol>
+          <p><strong>Subjective Probability :&mdash;</strong> The probabilities of occurence of the corresponding events are assigned by individuals and are based on their personal judgement, wisdom, intuition &amp; expertise. These probabilities are called the subjective probabilities &amp; represent the degree of belief &amp; the confidence, one has in the occurence of the respective event.</p>
+          <p>The set theory was developed by the German mathematician, G. Cantor (1845 &ndash; 1918).</p>
+          <p><strong>Set :&mdash;</strong> A set is a well-defined collection of all possible objects having given properties &amp; so specified according to well-defined rule.</p>
+          <p>The objects comprising a set by are called elements. Sets are often denoted by capital letters, viz, A, B, C, etc.</p>
+          <p>eg \(\rightarrow A = \{x : x \text{ rational}, x \geq 0, x^2 < 2\}\)</p>
+            </div>
+            <div class="section" id="p11">
+<span class="page-label">Page 6</span>
+          <h3>Remarks</h3>
+          <ol>
+            <li>Every set is a subset of itself.</li>
+            <li>An empty set is subset of every set.</li>
+          </ol>
+          <h2>Axiomatic Approach to Probability</h2>
+          <p>It closely relates the theory of probability with the modern theory of functions &amp; also set theory, was proposed by A.N. Kolmogorov, a Russian mathematician, in 1933.</p>
+          <p>The axiomatic definition of probability includes both the classical &amp; the statistical definitions as particular cases &amp; overcomes the deficiencies of each of them.</p>
+          <p>A purely mathematical definition of probability cannot give the actual value of P(A), the probability of occurence of the event A &amp; this must be considered as a function defined on all events.</p>
+          <p>Accordingly, as in the case of any function we need a domain space which is the \(\sigma\)-field B of the events, generated by S; a range space which is the closed interval [0,1] on the real line, and a rule which assigns a value to every element of the domain space B.</p>
+          <p><strong>Def<sup>n</sup>:&mdash;</strong> P(A) is the probability function defined on a \(\sigma\)-field B of events if the following properties or axioms holds &mdash;</p>
+          <p>(1) For each \(A \in B\), P(A) is defined, is real &amp; \(P(A) \geq 0\). &nbsp;<em>(Axiom of non-negativity)</em></p>
+          <p>(2) \(P(S) = 1\) &nbsp;<em>(Axiom of certainty)</em></p>
+          <p>(3) If \(\{A_n\}\) is any finite or infinite sequence of disjoint events in B, then</p>
+          <p>\[ P\left(\bigcup_{i=1}^{n} A_i\right) = \sum_i P(A_i) \qquad \textit{(Axiom of additivity)} \]</p>
+            </div>
+            <div class="section" id="p12">
+<span class="page-label">Page (Theorems)</span>
+          <h2>Some Theorems on Probability</h2>
+          <p><strong>(1)</strong> Probability of complementary event \(\bar{A}\) of A is given by</p>
+          <p>\[ P(\bar{A}) = 1 - P(A) \]</p>
+          <p><strong>Proof &mdash;</strong> A &amp; \(\bar{A}\) are mutually disjointe events, so that</p>
+          <p>\[ A \cup \bar{A} = S \]</p>
+          <p>\[ \Rightarrow P(A \cup \bar{A}) = P(S) \]</p>
+          <p>Hence, from Axioms 2 &amp; 3 of probability, we have &mdash;</p>
+          <p>\[ P(A) + P(\bar{A}) = P(S) = 1 \]</p>
+          <p>\[ \Rightarrow \boxed{\,P(\bar{A}) = 1 - P(A)\,} \]</p>
+          <p><em>[Figure: rectangle S contains circle A; inside A a smaller circle B, with the region \(A \cap \bar{B}\).]</em></p>
+          <p><strong>(2)</strong> If \(B \subset A\), then</p>
+          <p>(i) \(P(A \cap \bar{B}) = P(A) - P(B)\)</p>
+          <p>(ii) \(P(B) \leq P(A)\)</p>
+          <p><strong>Proof:</strong> (i) When \(B \subset A\), B &amp; \(A \cap \bar{B}\) are mutually exclusive events so that</p>
+          <p>\[ A = B \cup (A \cap \bar{B}) \]</p>
+          <p>\[ \Rightarrow P(A) = P[B \cup (A \cap \bar{B})] \]</p>
+          <p>\[ \Rightarrow P(A) = P(B) + P(A \cap \bar{B}) \qquad [\text{By Axiom 3}] \]</p>
+          <p>\[ \Rightarrow P(A \cap \bar{B}) = P(A) - P(B) \]</p>
+          <p>(ii) \(P(A \cap \bar{B}) \geq 0\)</p>
+          <p>\[ \Rightarrow P(A) - P(B) \geq 0 \]</p>
+          <p>\[ \Rightarrow P(B) \leq P(A) \]</p>
+          <p>Hence \(B \subset A\)</p>
+          <p>\[ \Rightarrow P(B) \leq P(A) \]</p>
+            </div>
+            <div class="section" id="p13">
+<span class="page-label">Page (Theorems)</span>
+          <p><strong>(3)</strong> For any two events A &amp; B, we have</p>
+          <p>(i) \(P(\bar{A} \cap B) = P(B) - P(A \cap B)\)</p>
+          <p>(ii) \(P(A \cap \bar{B}) = P(A) - P(A \cap B)\)</p>
+          <p><strong>Proof (i)</strong> From the Venn Diagram, we get</p>
+          <p>\[ B = (A \cap B) \cup (\bar{A} \cap B) \]</p>
+          <p>where \(\bar{A} \cap B\) and \(A \cap B\) are disjoint events</p>
+          <p><em>[Figure: rectangle S with two overlapping circles A and B; regions \(A \cap \bar{B}\), \(A \cap B\), and \(\bar{A} \cap B\) (\(\leftarrow B\)).]</em></p>
+          <p>Hence by Axiom (3), we get</p>
+          <p>\[ P(B) = P(A \cap B) + P(\bar{A} \cap B) \]</p>
+          <p>\[ \Rightarrow P(\bar{A} \cap B) = P(B) - P(A \cap B) \]</p>
+          <p><strong>(ii)</strong> Similarly, we have</p>
+          <p>\[ A = (A \cap B) \cup (A \cap \bar{B}) \]</p>
+          <p>where \((A \cap B)\) &amp; \((A \cap \bar{B})\) are disjoint events. Hence, by Axiom 3, we get &mdash;</p>
+          <p>\[ P(A) = P(A \cap B) + P(A \cap \bar{B}) \]</p>
+          <p>\[ \Rightarrow P(A \cap \bar{B}) = P(A) - P(A \cap B) \]</p>
+            </div>
+            <div class="section" id="p14">
+<span class="page-label">Page 7</span>
+          <h2>Addition Theorem of Probability</h2>
+          <p><strong>Theorem &mdash;</strong> If A &amp; B are any two events (subset of sample space S) and are not disjoint, then</p>
+          <p>\[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]</p>
+          <p><strong>Proof:</strong> From the Venn Diagram, we have &mdash;</p>
+          <p><em>[Figure: rectangle with two overlapping circles B and A; regions \(\bar{A} \cap B\), \(A \cap B\) (shaded), and \(A \cap \bar{B}\).]</em></p>
+          <p>\[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]</p>
+          <p>where A &amp; \(\bar{A} \cap B\) are mutually disjoint.</p>
+          <p>\[ \therefore P(A \cup B) = P[A \cup (\bar{A} \cap B)] \]</p>
+          <p>\[ = P(A) + P(\bar{A} \cap B) \]</p>
+          <p>\[ = P(A) + P(B) - P(A \cap B) \]</p>
+          <p>If the events A &amp; B are mutually disjoint, then &mdash;</p>
+          <p>\[ A \cap B = \phi \]</p>
+          <p>\[ \Rightarrow P(A \cup B) = P(A) + P(B) \]</p>
+          <p><strong>Note:</strong> For three non-mutually exclusive events A, B &amp; C, we have&mdash;</p>
+          <p>\[ P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(B \cap C) - P(C \cap A) + P(A \cap B \cap C) \]</p>
+          <h3>Extension of Addition Theorem of Probability to n Events</h3>
+          <p><strong>Theorem &mdash;</strong> For n events \(A_1, A_2, \ldots A_n\), we have &mdash;</p>
+          <p>\[ P\left(\bigcup_{i=1}^{n} A_i\right) = \sum_i P(A_i) - \sum\sum_{1 \leq i < j \leq n} P(A_i \cap A_j) + \sum\sum\sum_{1 \leq i < j < k \leq n} P(A_i \cap A_j \cap A_k) \]</p>
+          <p>\[ + \cdots + (-1)^{n-1} P(A_1 \cap A_2 \cap \cdots \cap A_n) \qquad (\circledast) \]</p>
+          <p><strong>Proof &mdash;</strong> For two events \(A_1\) &amp; \(A_2\), we have &mdash;</p>
+          <p>\[ P(A_1 \cup A_2) = P(A_1) + P(A_2) - P(A_1 \cap A_2) \qquad (*) \]</p>
+          <p>Hence (*) is true for \(n = 2\)</p>
+            </div>
+            <div class="section" id="p15">
+<span class="page-label">Page (Proof)</span>
+          <p>Let us now suppose that (*) is true for \(n = r\), so that &mdash;</p>
+          <p>\[ P\left(\bigcup_{i=1}^{r} A_i\right) = \sum_i P(A_i) - \sum\sum_{1 \leq i < j \leq r} P(A_i \cap A_j) + \cdots + (-1)^{r-1} P(A_1 \cap A_2 \cap \cdots \cap A_r) \qquad (**) \]</p>
+          <p>Now,</p>
+          <p>\[ P\left(\bigcup_{i=1}^{r+1} A_i\right) = P\left\{\left(\bigcup_{i=1}^{r} A_i\right) \cup A_{r+1}\right\} \]</p>
+          <p>\[ = P\left(\bigcup_{i=1}^{r} A_i\right) + P(A_{r+1}) - P\left\{\left(\bigcup_{i=1}^{r} A_i\right) \cap A_{r+1}\right\} \qquad \{\text{Using } *\} \]</p>
+          <p>\[ = P\left(\bigcup_{i=1}^{r} A_i\right) + P(A_{r+1}) - P\left\{\bigcup_{i=1}^{r} (A_i \cap A_{r+1})\right\} \qquad \{\text{By Distributive Law}\} \]</p>
+          <p>\[ = \sum_{i=1}^{r} P(A_i) - \sum\sum_{1 \leq i < j \leq r} P(A_i \cap A_j) + \cdots + (-1)^{r-1} P(A_1 \cap A_2 \cap \cdots \cap A_r) + P(A_{r+1}) - P\left\{\bigcup_{i=1}^{r} (A_i \cap A_{r+1})\right\} \quad [\text{From } (**)] \]</p>
+          <p>\[ = \sum_{i=1}^{r+1} P(A_i) - \sum\sum_{1 \leq i < j \leq r} P(A_i \cap A_j) + \cdots + (-1)^{r-1} P(A_1 \cap A_2 \cap \cdots \cap A_r) \]</p>
+          <p>\[ - \left\{\sum_{i=1}^{r} P(A_i \cap A_{r+1}) - \sum\sum_{1 \leq i < j \leq r} P(A_i \cap A_j \cap A_{r+1}) + \cdots + (-1)^{r-1} P(A_1 \cap A_2 \cap \cdots \cap A_r \cap A_{r+1})\right\} \quad [\text{From } (**)] \]</p>
+          <p>\[ \Rightarrow P\left(\bigcup_{i=1}^{r+1} A_i\right) = \sum_{i=1}^{r+1} P(A_i) - \left\{\sum\sum_{1 \leq i < j \leq r} P(A_i \cap A_j) + \sum_{i=1}^{r} P(A_i \cap A_{r+1})\right\} + \cdots + (-1)^{r} P\{(A_1 \cap A_2 \cap \cdots \cap A_{r+1})\} \]</p>
+          <p>\[ = \sum_{i=1}^{r+1} P(A_i) - \sum\sum_{1 \leq i < j \leq (r+1)} P(A_i \cap A_j) + \cdots + (-1)^{r} P(A_1 \cap A_2 \cap \cdots \cap A_{r+1}) \]</p>
+          <p>Hence (X) is true for \(n = r\) [proved], it is also true for \(n = r+1\). But we have in (*) that (X) is true for \(n = 2\). Hence by the principle of mathematical induction, it follows that (X) is true for all positive integral values of n.</p>
+            </div>
+            <div class="section" id="p16">
+<span class="page-label">Page (Examples)</span>
+          <p><strong>Eg-(1)</strong> A die is loaded (not all outcomes are equally likely) such that the probability that the number i shows up is \(K_i\), \(i = 1, 2, \ldots, 6\) where k is constant. Find</p>
+          <p>(a) the value of k.</p>
+          <p>(b) the probability that a number greater than 3 shows up.</p>
+          <p><strong>Sol. (a)</strong> Here the sample space S has six outcomes \(\{1, 2, \ldots, 6\}\).</p>
+          <p>Hence, using axioms (2) &amp; (3) we have</p>
+          <p>\[ P(1) + P(2) + \cdots + P(6) = 1 \]</p>
+          <p>Since \(P(i) = K_i\), we have &mdash;</p>
+          <p>\[ k.(1) + k.(2) + k.(3) + k.(4) + k.(5) + k.(6) = 1 \]</p>
+          <p>\[ \Rightarrow k(1 + 2 + 3 + 4 + 5 + 6) = 1 \]</p>
+          <p>\[ \Rightarrow k.(21) = 1 \]</p>
+          <p>\[ \Rightarrow k = \frac{1}{21} \]</p>
+          <p><strong>(b)</strong> Let A be the event that a number greater than 3 shows up.</p>
+          <p>Then the outcomes in A are \(\{4, 5, 6\}\) &amp; they are mutually exclusive. Therefore &mdash;</p>
+          <p>\[ P(A) = P(4) + P(5) + P(6) \]</p>
+          <p>\[ = \frac{4}{21} + \frac{5}{21} + \frac{6}{21} = \frac{15}{21} \]</p>
+          <p><strong>(2)</strong> In a large university, the freshman profile for one year's fall admission says that 40% of the students were in the top 10% of their high school class, &amp; that 65% are white, of whom 25% were in the top 10% of their high school class. What is the prob. that a freshman student selected randomly from this class either was in the top % of his or high her high school class or is white?</p>
+          <p><strong>Sol.</strong> Let \(E_1\) be the event that a person chosen at random was in the top 10% of his or her high school class, &amp; let \(E_2\) be the event that the student is white.</p>
+            </div>
+            <div class="section" id="p17">
+<span class="page-label">Page (Example)</span>
+          <p>We are given &mdash;</p>
+          <p>\[ P(E_1) = 0.40 \]</p>
+          <p>\[ P(E_2) = 0.65 \]</p>
+          <p>\[ \& \quad P(E_1 \cap E_2) = 0.25 \]</p>
+          <p>Then the event that the student chosen is white or was in the top 10% of his or her high school class is represented by \(E_1 \cup E_2\).</p>
+          <p>Thus &mdash;</p>
+          <p>\[ P(E_1 \cup E_2) = P(E_1) + P(E_2) - P(E_1 \cap E_2) \]</p>
+          <p>\[ = 0.40 + 0.65 - 0.25 \]</p>
+          <p>\[ = 0.80 \]</p>
+            </div>
+            <div class="section" id="p18">
+<span class="page-label">Page (Multiplication)</span>
+          <h2>Multiplication Theorem of Probability</h2>
+          <p><strong>Theorem :&mdash;</strong> For two events A &amp; B,</p>
+          <p>\[ \left. \begin{aligned} P(A \cap B) &= P(A) \cdot P(B|A), \quad P(A) > 0 \\ &= P(B) \cdot P(A|B), \quad P(B) > 0 \end{aligned} \right\} \quad (\circledast) \]</p>
+          <p>where \(P(B|A)\) represents conditional probability of occurence of B when the event A has already happened &amp; \(P(A|B)\) is the conditional probability of happening of A, given that B has already happened.</p>
+          <p><strong>Proof:</strong> In the usual notations, we have &mdash;</p>
+          <p>\[ P(A) = \frac{n(A)}{n(S)} \ ; \ P(B) = \frac{n(B)}{n(S)} \ \& \ P(A \cap B) = \frac{n(A \cap B)}{n(S)} \qquad (*) \]</p>
+          <p>for the conditional event A|B, the favourable outcomes must be one of the sample points of B, i.e., for the event A|B, the sample space is B &amp; out of the \(n(B)\) sample points, \(n(A \cap B)\) pertain to the occurence of the event A. Hence &mdash;</p>
+          <p>\[ P(A|B) = \frac{n(A \cap B)}{n(B)} \]</p>
+          <p>Rewriting (*), we get</p>
+          <p>\[ P(A \cap B) = \frac{n(B)}{n(S)} \times \frac{n(A \cap B)}{n(B)} = P(B) \cdot P(A|B) \qquad (**) \]</p>
+          <p>Similarly, we get from (*)</p>
+          <p>\[ P(A \cap B) = \frac{n(A)}{n(S)} \times \frac{n(A \cap B)}{n(A)} = P(A) \cdot P(B|A) \qquad (***) \]</p>
+          <p>From (**) &amp; (***) we get \(\circledast\).</p>
+          <p>Thus, we have proved that &ldquo;the prob. of the simultaneous occurence of two events A &amp; B is equal to the product of the prob. of one of these events &amp; the conditional probability of the other, given that the first one has occured.</p>
+          <p><strong>Remark&mdash;</strong> \(P(B|A) = \dfrac{P(A \cap B)}{P(A)}\) &amp; \(P(A|B) = \dfrac{P(A \cap B)}{P(B)}\)</p>
+          <p>Thus the conditional probabilities \(P(B|A)\) &amp; \(P(A|B)\) are defined iff \(P(A) \neq 0\) &amp; \(P(B) \neq 0\) respectively</p>
+            </div>
+            <div class="section" id="p19">
+<span class="page-label">Page 10</span>
+          <h2>Conditional Probability</h2>
+          <p>It is the probability of an event occuring given that another event has already occured. If A &amp; B are two events, the conditional probability of A given B (denoted as \(P(A|B)\)) is defined as :&mdash;</p>
+          <p>\[ P(A|B) = \frac{n(A \cap B)}{n(B)}, \quad \text{where } P(B) > 0 \]</p>
+          <ul>
+            <li>\(n(A \cap B)\) :&mdash; The event that both A &amp; B occur</li>
+            <li>\(P(B)\) :&mdash; The event that B occurs (the condition)</li>
+          </ul>
+          <p>The formula essentially measures how likely A is, considering that B has already happened.</p>
+          <div class="tip">
+            <p><strong>Remark</strong> (1) \(P(A|B) = \dfrac{P(A \cap B)}{P(B)}\) &amp; \(P(B|A) = \dfrac{P(A \cap B)}{P(A)}\)</p>
+            <p>Thus the conditional probabilities \(P(B|A)\) &amp; \(P(A|B)\) are defined iff \(P(A) \neq 0\) &amp; \(P(B) \neq 0\) respectively.</p>
+          </div>
+          <h2>Bayes Theorem :&mdash;</h2>
+          <p style="text-align:center; font-weight:600;">Prior Probabilities &rarr; New Information &rarr; Application of Bayes&rsquo; Theorem &rarr; Posterior Probabilities</p>
+          <p>In the discussion of conditional probability we indicated that revising when new information is obtained is an important phase of probability analysis. Often, we begin our analysis with initial or prior probability estimates for specific events of interest. Then, from sources such as a sample, a special report, a product test, &amp; so on we obtain some additional information about the events. Given this new information, we update the prior probability values by calculating revised probabilities, referred to as posterior probabilities.</p>
+            </div>
+            <div class="section" id="p20">
+<span class="page-label">Page (Multiplication, n events)</span>
+          <h2>Extension of Multiplication Theorem of Probability to n Events</h2>
+          <p><strong>Theorem</strong> For n events \(A_1, A_2, \ldots A_n\), we have</p>
+          <p>\[ P(A_1 \cap A_2 \cap \cdots \cap A_n) = P(A_1) \cdot P(A_2|A_1) \cdot P(A_3|A_1 \cap A_2) \cdots P(A_n | A_1 \cap A_2 \cap \cdots \cap A_{n-1}) \qquad (*) \]</p>
+          <p>where \(P(A_i | A_j \cap A_k \cap \cdots \cap A_l)\) represents conditional probability of the event \(A_i\) given that the events \(A_j, A_k, \ldots A_l\) have already happened.</p>
+          <p><strong>Proof</strong> For two events \(A_1\) &amp; \(A_2\), \(P(A_1 \cap A_2) = P(A_1) \cdot P(A_2|A_1)\)</p>
+          <p>We have three events \(A_1, A_2\) &amp; \(A_3\)</p>
+          <p>\[ P(A_1 \cap A_2 \cap A_3) = P\{A_1 \cap (A_2 \cap A_3)\} \]</p>
+          <p>\[ = P(A_1) \cdot P\{(A_2 \cap A_3)|A_1\} \]</p>
+          <p>\[ = P(A_1) \cdot P(A_2|A_1) \cdot P\{A_3|(A_1 \cap A_2)\} \]</p>
+          <p>Thus we have find that (*) is true for \(n = 2\) &amp; \(n = 3\). Let us suppose that (*) is true for \(n = k\), so that</p>
+          <p>\[ P(A_1 \cap A_2 \cap \cdots \cap A_k) = P(A_1) P(A_2|A_1) P(A_3|A_1 \cap A_2) \cdots P(A_k|A_1 \cap A_2 \cap \cdots \cap A_{k-1}) \]</p>
+          <p>Now,</p>
+          <p>\[ P[(A_1 \cap A_2 \cap \cdots \cap A_{k+1})] = P(A_1 \cap A_2 \cap \cdots \cap A_k) \times P(A_{k+1} | A_1 \cap A_2 \cap \cdots \cap A_k) \]</p>
+          <p>\[ = P(A_1) \cdot P(A_2|A_1) \cdots P(A_k|A_1 \cap A_2 \cap \cdots \cap A_{k-1}) \times P(A_{k+1}|A_1 \cap A_2 \cap \cdots \cap A_k) \]</p>
+          <p>Thus it is true for \(n = k+1\).</p>
+          <p>Therefore by the principle of mathematical induction, it is true for all positive integral values of n.</p>
+            </div>
+            <div class="section" id="p21">
+<span class="page-label">Page (Independence)</span>
+          <h2>Independence of events :&mdash;</h2>
+          <p>Two or more events are said to be independent if the happening or non-happening of any one of them, does not, in any way, affect the happening of them.</p>
+          <p><strong>Def<sup>n</sup>:&mdash;</strong> An event A is said to be independent of another event B, if the conditional probability of A given B i.e. \(P(A|B)\) is equal to the unconditional probability of B i.e. if</p>
+          <p>\[ \boxed{P(A|B) = P(A)} \ ; \ P(B) \neq 0 \]</p>
+          <p>Similarly, \[ \boxed{P(B|A) = P(B)} \ ; \ P(A) \neq 0 \]</p>
+          <p><strong>Theorem&mdash;</strong> If the events A &amp; B are such that \(P(A) \neq 0\), \(P(B) \neq 0\) &amp; A is independent of B, then B is independent of A.</p>
+          <p><strong>Proof:</strong> Since the event A is independent of B, we have</p>
+          <p>\[ P(A|B) = P(A) \]</p>
+          <p>\[ \Rightarrow P(A|B) = \frac{P(A \cap B)}{P(B)} \]</p>
+          <p>\[ \Rightarrow P(A|B) = \frac{P(A) \cdot P(B)}{P(B)} \qquad \{\because P(A \cap B) = P(A) \cdot P(B)\} \]</p>
+          <p>\[ \Rightarrow P(A|B) = P(A) \]</p>
+          <p>Similarly \[ P(B|A) = P(B) \]</p>
+            </div>
+            <div class="section" id="p22">
+<span class="page-label">Page 11</span>
+          <h2>Bayes Theorem</h2>
+          <p>If \(E_1, E_2, \ldots E_n\) are mutually disjoint events with \(P(E_i) \neq 0\) \((i = 1, 2, \ldots n)\) then for any arbitrary event A which is subset of \(\bigcup_{i=1}^{n} E_i\) such that \(P(A) > 0\), we have &mdash;</p>
+          <p>\[ P(E_i | A) = \frac{P(E_i) \cdot P(A|E_i)}{\displaystyle\sum_{i=1}^{n} P(E_i) \cdot P(A|E_i)} \]</p>
+          <p><strong>Proof</strong> Since \(A \subset \bigcup_{i=1}^{n} E_i\), we have</p>
+          <p>\[ A = A \cap \left(\bigcup_{i=1}^{n} E_i\right) = \bigcup_{i=1}^{n} (A \cap E_i) \]</p>
+          <p>Since \((A \cap E_i) \subset E_i\), \((i = 1, 2, \ldots n)\) are mutually disjoint events, we have by addition theorem of probability &mdash; (by distributive law)</p>
+          <p>\[ P(A) = P\left\{\bigcup_{i=1}^{n} (A \cap E_i)\right\} = \sum_{i=1}^{n} P(A \cap E_i) = \sum_{i=1}^{n} P(E_i) \cdot P(A|E_i) \]</p>
+          <p>by multiplication theorem of probability.</p>
+          <p>Also we have, \(P(A \cap E_i) = P(A) \cdot P(E_i|A)\)</p>
+          <p>\[ \Rightarrow P(E_i|A) = \frac{P(A \cap E_i)}{P(A)} = \frac{P(E_i) \cdot P(A|E_i)}{\displaystyle\sum_{i=1}^{n} P(E_i) P(A|E_i)} \]</p>
+          <div class="tip">
+            <p><strong>Remark</strong></p>
+            <p>1. The probabilities \(P(E_1), P(E_2), \ldots P(E_n)\) are termed as the a prior probabilities because they exist before we gain any information from the experiment itself.</p>
+            <p>2. The probabilities \(P(A|E_i)\) \(i = 1, 2, \ldots n\) are called &lsquo;likelihood&rsquo; because they indicate how likely the event A under consideration is to occur, given each &amp; every a prior probability</p>
+            <p>3. The probability \(P(E_i|A)\), \(i = 1, 2, \ldots n\) are called posterior probabilities because they are determined after the results of the experiment are known.</p>
+          </div>
+            </div>
+            <div class="section" id="p23">
+<span class="page-label">Page (Tabular Approach)</span>
+          <h2>The Tabular Approach</h2>
+          <p>The posterior probabilities, using Bayes Theorem can be obtained conveniently in a tabular form, which involves the following steps &mdash;</p>
+          <p><strong>(1)</strong> Prepare the following three columns &mdash;</p>
+          <p><strong>Column 1</strong> &mdash; The list of all mutually exclusive events \(E_i\), \(i = 1, 2, \text{-} n\) occur in the problem</p>
+          <p><strong>Column 2</strong> &mdash; The prior probabilities \(P(E_i)\); \(i = 1, 2, \ldots n\) for the events</p>
+          <p><strong>Column 3</strong> &mdash; The conditional probabilities of the new information (A) given each event, viz \(P(A|E_i)\) ; \(i = 1, 2, \ldots, n\)</p>
+          <p><strong>(2)</strong> In column 4, compute joint probabilities for each event using the formula</p>
+          <p>\[ P(E_i \cap A) = P(E_i) \cdot P(A|E_i) \]</p>
+          <p><strong>(3)</strong> Sum the joint probability column to find the probability of the new information, i.e. \(P(A)\).</p>
+          <p><strong>(4)</strong> In column 5, compute the posterior probabilities using the basic relationship of conditional probability.</p>
+          <p>\[ P(E_i|A) = \frac{P(E_i \cap A)}{P(A)} \ ; \ i = 1, 2, \ldots n. \]</p>
+            </div>
+            <div class="section" id="p24">
+<span class="page-label">Page (Bayes Numerical)</span>
+          <p><strong>Que.</strong> From a vessel containing 3 white &amp; 5 black balls, 4 balls are transferred into an empty vessel. From this vessel a ball is drawn &amp; is found to be white. What is the probability that out of four balls transferred 3 are white &amp; 1 is black?</p>
+          <p><strong>Sol.</strong> Let us define the following events :</p>
+          <p>\(E_1\) : Transfer of 0 white &amp; 4 black balls</p>
+          <p>\(E_2\) : Transfer of 1 white &amp; 3 black balls</p>
+          <p>\(E_3\) : Transfer of 2 white &amp; 2 black balls</p>
+          <p>\(E_4\) : Transfer of 3 white &amp; 1 black balls</p>
+          <p>(Since the urn contains 3 white balls, more than 3 white balls cannot be transferred from the vessel)</p>
+          <p>\(E = \) Drawing of a white ball from the second vessel</p>
+          <p>Then</p>
+          <p>\[ P(E_1) = \frac{{}^5C_4}{{}^8C_4} = \frac{1}{14} \]</p>
+          <p>\[ P(E_2) = \frac{{}^3C_1 \times {}^5C_3}{{}^8C_4} = \frac{3}{7} \]</p>
+          <p>\[ P(E_3) = \frac{{}^3C_2 \times {}^5C_2}{{}^8C_4} = \frac{3}{7} \]</p>
+          <p>\[ P(E_4) = \frac{{}^3C_3 \times {}^5C_1}{{}^8C_4} = \frac{1}{14} \]</p>
+          <p>Also \(P(E|E_1) = 0\), \(P(E|E_2) = \dfrac{1}{4}\), \(P(E|E_3) = \dfrac{2}{4}\) &amp; \(P(E|E_4) = \dfrac{3}{4}\)</p>
+          <p>Hence, by Bayes Theorem, the probability that out of four balls transferred, 3 are white &amp; 1 black is &mdash;</p>
+          <p>\[ P(E_4|E_0) = \frac{P(E_4) \cdot P(E|E_4)}{P(E_1) \cdot P(E|E_1) + P(E_2) \cdot P(E|E_2) + P(E_3) \cdot P(E|E_3) + P(E_4) \cdot P(E|E_4)} \]</p>
+          <p>\[ = \frac{\dfrac{1}{14} \times \dfrac{3}{4}}{\dfrac{1}{14} \times 0 + \dfrac{3}{7} \times \dfrac{1}{4} + \dfrac{3}{7} \times \dfrac{1}{2} + \dfrac{1}{14} \times \dfrac{3}{4}} \]</p>
+          <p>\[ = \frac{3}{6 + 12 + 3} = \frac{1}{7} = 0.14 \]</p>
+            </div>
+            <div class="nav-footer">
+                <a href="index.html">← All EMC 5103 notes</a>
+                <a href="lab-01-python-basics.html">Lecture 3 (Lab 1) →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
